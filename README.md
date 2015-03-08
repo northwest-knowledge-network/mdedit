@@ -2,6 +2,16 @@
 
 A data-driven metadata editor.
 
+To try it out:
+
+```bash
+$ git clone https://github.com/northwest-knowledge-network/mdedit.git
+$ cd mdedit
+$ python -m SimpleHTTPServer
+```
+
+then open a browser window and visit `localhost:8000`.
+
 # What it does
 
 Uses [D3](http://d3js.org/) to read a JSON metadata record, like 
@@ -37,7 +47,6 @@ var mandatory_fields_default = [
 And translate them into this:
 
 ![Metadata View](https://raw.githubusercontent.com/northwest-knowledge-network/mdedit/master/snapshot_mdedit_3-7.png)
-
 
 It's a work in progress, but the beginnings of a solution that will be flexible
 enough to account for the different ways in which a scientist could construct
