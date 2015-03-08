@@ -38,7 +38,6 @@ And translate them into this:
 
 ![Metadata View](https://raw.githubusercontent.com/northwest-knowledge-network/mdedit/master/snapshot_mdedit_3-7.png)
 
-
 It's a work in progress, but the beginnings of a solution that will be flexible
 enough to account for the different ways in which a scientist could construct
 valid metadata according to the ISO 19115 Standard.
