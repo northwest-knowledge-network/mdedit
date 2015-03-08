@@ -1,0 +1,15 @@
+.hierarchy {
+   margin: 20px;
+} 
+
+.level0 {
+    color: red;
+} 
+
+.level1 {
+    color: blue;
+} 
+
+.level2 {
+    color: green;
+} 
