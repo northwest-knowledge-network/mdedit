@@ -17,17 +17,13 @@ var mandatory_fields_default = [
 {"title": "Should inform content as well as context"},
   // TODO: encapsulate and format for levels of nesting //
 {"CI_Date":
-    [{"cidate.date": "ISO 8601: 2015-01-25T09:30:47"},
-     {"cidate.dateType": "publication"}]
+    [{"date": "2015-01-25T09:30:47"},
+     {"dateType": "publication"}]
 },
 // has depth of two
-{"Other shit":
-
-    [
-      {"thing 1": "yoyoy"},
-
+{"Other stuff":
+    [ {"thing 1": "yoyoy"},
        {"deepest": 
-
            [
               {"machine": "rage"}, 
               {"manu": "chao"}
