@@ -1,12 +1,3 @@
-var mandatory = d3.select("body")
-                  .append("form");
-
-var suggested = d3.select("body")
-                  .append("form");
-
-var merely_esoteric = d3.select("body")
-                        .append("form");
-
 function httpGet(theUrl)
 {
     var xmlHttp = null;
@@ -17,39 +8,6 @@ function httpGet(theUrl)
     return JSON.parse(xmlHttp.responseText);
 }
 
-// implicitly my rules and this sample data are saying, "if a string is a value
-// at a level, then the string is an entry. If there's an array, then its 
-// elements' values are entries. If there's an object, that is an indication of
-// a deepening hierarcy
-//
-// TODO: Does this make any sense?
-//
-//var mandatory_fields_default = [
-  ////metadata point of contact
-//{"organisationName": "Point of contact for metadata record"},
-//{"title": "Should inform content as well as context"},
-  //// TODO: encapsulate and format for levels of nesting //
-//{"CI_Date":
-    //[{"date": "2015-01-25T09:30:47"},
-     //{"dateType": "publication"}]
-//},
-//// has depth of two
-//{"Other stuff":
-    //[ {"thing 1": "yoyoy"},
-       //{"deepest": 
-           //[
-              //{"machine": "rage"}, 
-              //{"manu": "chao"}
-           //]
-       //}
-    //] // next put another array of objects in here for a second hierarchical level.
-//},
-//{"fake field": "Homer Simpson"},
-//{"even more fake": "Marge Simpson"}
-//]; 
-var url = "http://129.24.196.43///apps/my_app/search/datasets.json?version=3"
-//var mandatory_fields_default = httpGet(url);
-//mandatory_fields_default = mandatory_fields_default.results;
 
 // using examples `from http://json.org/example <http://json.org/example>`_
 var proper_json =
@@ -68,6 +26,25 @@ var proper_json =
     { 
       "thing 1": "yoyoy",
       "deepest": 
+        {
+          "machine": "rage",
+          "manu": "chao"
+        },
+      "deep 2": 
+        {
+          "machine": "rage",
+          "manu": "chao"
+        }
+    },
+  "O stuff":
+    { 
+      "thing 1": "yoyoy",
+      "deepest": 
+        {
+          "machine": "rage",
+          "manu": "chao"
+        },
+      "deep 2": 
         {
           "machine": "rage",
           "manu": "chao"
