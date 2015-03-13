@@ -10,6 +10,7 @@
     width: 100%;
   background-image: -webkit-linear-gradient(top,dodgerblue 35%,#206da4 100%);
   background-image: -webkit-gradient(top,dodgerblue 35%,#206da4 100%);
+  background-image: -moz-linear-gradient(top,dodgerblue 35%,#206da4 100%);
   background-image: linear-gradient(top,dodgerblue 35%,#206da4 100%);
 } 
 body {
@@ -17,6 +18,7 @@ body {
 } 
 .navbar {
   background-image: -webkit-linear-gradient(right,#FFA6C9 5%, dodgerblue 100%);
+  background-image: -moz-linear-gradient(right,#FFA6C9 5%, dodgerblue 100%);
   background-image: -webkit-gradient(right,#FFA6C9 5%, dodgerblue 100%);
   background-image: linear-gradient(right,#FFA6C9 5%, dodgerblue, 100%);
 } 
@@ -28,9 +30,19 @@ body {
     text-shadow: 0;
     /*color: #000;*/
 } 
+.navbar-inverse .navbar-toggle  {
+  border: 2px solid white; 
+}
+button.navbar-toggle.collapsed:hover {
+  background-color: dodgerblue;
+}
+button.navbar-toggle.collapsed:focus {
+  background-color: dodgerblue;
+}
 .panel-heading.md-block {
   background-image: -webkit-linear-gradient(top,dodgerblue 35%,#206da4 100%);
   background-image: -webkit-gradient(top,dodgerblue 35%,#206da4 100%);
+  background-image: -moz-linear-gradient(top,dodgerblue 35%,#206da4 100%);
   background-image: linear-gradient(top,dodgerblue 35%,#206da4 100%);
 } 
 .panel-primary>.panel-heading {
@@ -38,12 +50,15 @@ body {
 } 
 .panel-primary {
   background-image: -webkit-linear-gradient(top,#EBC17F 65%, #FFA6C9 100%);
+  background-image: -moz-linear-gradient(top,#EBC17F 65%, #FFA6C9 100%);
   background-image: -webkit-gradient(top,#EBC17F 65%, #FFA6C9 100%);
   background-image: linear-gradient(top,#EBC17F 66%, #FFA6C9 100%);
   border-width: 1px;
   border-color: lightgrey;
 }
-
+.sr-only {
+  border: 2px solid white;
+}
 </style>
 
     <title>
