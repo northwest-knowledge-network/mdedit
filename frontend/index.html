@@ -1,0 +1,47 @@
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js">
+        </script>
+    
+    <script src='handlebars-v3.0.0.js'></script>
+    <title>
+        Yeah
+    </title>
+</head>
+    
+<body>
+<div id="main">
+
+</div>
+
+<script id="entry-template" type="text/x-handlebars-template">
+<div class="entry">
+    {{# posts }}
+    <h1>{{ title }}</h1>
+    <div class="body">
+    {{ body }}
+    </div>
+    {{/posts}}
+</div>
+</script>
+
+<script>
+var source = $("#entry-template").html();
+
+var template = Handlebars.compile(source);
+
+var context = {
+    posts: [
+        {title: "new post", body: "first one!"}, 
+        {title: "second one", body: "pro tips"}
+   ]
+}; 
+
+var html = template(context);
+
+$("#main").html(html);
+</script>
+
+
+</body>
+</html>
