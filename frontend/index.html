@@ -28,11 +28,22 @@
 <script id="entry-template" type="text/x-handlebars-template">
 <form class="form-horizontal" method="post">
     {{#each this}}
-<div class="panel panel-primary">
-    <div class="panel-heading">
-        <h4 class="panel-panel-title">{{blockTitle}}</h4>
+<div class="panel-group" id="accordion-{{blockLabel}}" role="tablist"
+     aria-multiselectable="true">
+  <div class="panel panel-primary">
+    <div class="panel-heading" role="tab" id="heading-{{blockLabel}}">
+        <h4 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion-{{blockLabel}}"
+               href="#body-{{blockLabel}}" 
+               aria-controls="body-{{blockLabel}}" aria-expanded="{{expanded}}">
+            {{blockTitle}}
+            </a>
+        </h4>
     </div>
-    <div class="panel-body">
+    <div id="body-{{blockLabel}}" class="panel-collapse collapse in"
+         aria-labelledby="heading-{{blockLabel}}" role="tabpanel"
+         >
+        <div class="panel-body">
     {{#formElements}}
         <div class="form-group">
             <label for="{{label}}" class="control-label col-sm-3">{{label}}</label>
@@ -49,11 +60,14 @@
                 {{longDescription}}
             </div>
         </div>
-        <br/>
+        <br />
     {{/formElements}}
-    </div>
-</div>
+        </div>
+      </div>
+  </div>
+    <br/>
     {{/each}}
+</div>
     <div class="col-sm-3"></div>
     <div class="col-sm-9">
         <button type="submit" class="btn btn-primary btn-lg">Submit</button>
@@ -70,6 +84,8 @@ var template = Handlebars.compile(source);
 var context = [
     {
         blockTitle: "Basic information",
+        blockLabel: "basic-information",
+        expanded: "true",
         formElements: 
         [  { 
               label: "Title",
@@ -88,6 +104,8 @@ var context = [
     },
     {
         blockTitle: "Researcher information",
+        blockLabel: "researcher-information",
+        expanded: "false",
         formElements:
         [
             {
