@@ -3,6 +3,15 @@ from . import db
 from flask import jsonify
 
 
+# TODO
+#: metadata form dictionary with aux info for building client-side form
+MD_FORM_DICT = dict(
+    title=dict(label='Title', tag='input', type='text', order=1, value=''),
+    date=dict(label='Date', tag='input', type='date', order=2, value='')
+    # researcher_name=dict(
+    )
+
+
 class Metadata(db.Model):  # Address, SpatialExtent, TemporalExtent, Address):
     """
     Metadata Model
@@ -32,7 +41,6 @@ class Metadata(db.Model):  # Address, SpatialExtent, TemporalExtent, Address):
         # TODO use id to populate form for editing existing record
 
         # each part has the form field name, field type, choices if they exist
-        title = dict(label='Title', tag='input', type='text', order=1)
-        date = dict(label='Date', tag='input', type='date', order=2)
+
         # no need to convert to json; will be handled by flask-restful
-        return jsonify(dict(title=title, date=date))
+        return jsonify(MD_FORM_DICT)

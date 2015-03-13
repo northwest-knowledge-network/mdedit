@@ -94,9 +94,11 @@ button.navbar-toggle.collapsed:focus {
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 
 <script src='handlebars-v3.0.0.js'></script>
-<script src='handlebars.form-helpers.js'> </script>
+
+
 <script id="entry-template" type="text/x-handlebars-template">
-<form class="form-horizontal" method="post">
+<form action="http://localhost:5000/api/metadata/" id="md-form"
+class="form-horizontal" method="post">
     {{#each this}}
 <div class="panel-group" id="accordion-{{blockLabel}}" role="tablist"
      aria-multiselectable="true">
@@ -114,13 +116,18 @@ button.navbar-toggle.collapsed:focus {
          aria-labelledby="heading-{{blockLabel}}" role="tabpanel"
          >
         <div class="panel-body">
+
+
     {{#formElements}}
+
+
         <div class="form-group">
             <label for="{{label}}" class="control-label col-sm-3">{{label}}</label>
             <div class="col-sm-9">
                 
                         <input type='{{type}}' class="form-control" 
-                          placeholder='{{stuff}}' id="{{label}}"/>
+                          placeholder='{{value}}' value='{{value}}'
+                          id="{{label}}"/>
             </div>
         </div>
     
@@ -131,9 +138,13 @@ button.navbar-toggle.collapsed:focus {
             </div>
         </div>
         <br />
+
     {{/formElements}}
+
         </div>
+
       </div>
+
   </div>
     <br/>
     {{/each}}
@@ -142,6 +153,28 @@ button.navbar-toggle.collapsed:focus {
 </div>
     </form>
 </script>
+
+<!--handle form data-->
+<script>
+/*$("#md-form").submit( function(event) {
+    
+    // stop from submitting normally
+    event.preventDefault();
+
+    // get values from elements
+    var $form = $( this ),
+        url = "http://localhost:5000/api/metadata";
+    
+    var posting = $.post(url, 
+});*/
+
+/*$("#md-form").submit(function(event){
+    alert("submitted!");
+    console.log($(this).serializeArray());
+    event.preventDefault();
+});*/
+</script>
+
 
 <script>
 var source = $("#entry-template").html();
@@ -158,14 +191,14 @@ var context = [
         [  { 
               label: "Title",
               type: "text",
-              stuff: "Title of my data",
+              value: "Title of my data",
               longDescription: "E.g., Data for June, 2014 Journal of Hydrology Paper"
 
             },
             {
               label: "Date",
               type: "date",
-              stuff: "2015/01/01", // will be sent by server to be 'today'
+              value: "2015-01-01", // will be sent by server to be 'today'
               longDescription: "Either the date data itself created or md create date?"
             } 
         ]
@@ -179,13 +212,13 @@ var context = [
             {
                 label: "Researcher Name",
                 type: "text",
-                stuff: "johnny flynn",
+                value: "johnny flynn",
                 longDescription: "Name of party who gathered or processed data; may not be metadata creator"
             },
             {
                 label: "Researcher Institution",
                 type: "text",
-                stuff: "UI",
+                value: "UI",
                 longDescription: "Affiliation of the investigator"
             } 
         ] 
@@ -196,7 +229,6 @@ var html = template(context);
 
 $("#main").html(html);
 </script>
-
 
 </body>
 </html>
