@@ -19,16 +19,9 @@
         event.preventDefault();
 
         var $form = $(this);
-        var inputData = 
-        {
-          a: $form.find("input[name='a']").val(),
-          b: $form.find("input[name='b']").val()
-        };
 
         var url = "http://localhost:5000/_add_numbers";
         var posting = $.post(url, $form.serialize());
-
-        console.log(inputData);
 
         posting.done(function(data) {
             console.log(data)

@@ -95,10 +95,33 @@ button.navbar-toggle.collapsed:focus {
 
 <script src='handlebars-v3.0.0.js'></script>
 
+<script>
+    $("#mdform").submit(function(event) {
+        event.preventDefault();
+
+        var $form = $(this);
+        var inputData = 
+        {
+          a: $form.find("input[name='a']").val(),
+          b: $form.find("input[name='b']").val()
+        };
+
+        var url = "http://localhost:5000/_add_numbers";
+        var posting = $.post(url, $form.serialize());
+
+        console.log(inputData);
+
+        posting.done(function(data) {
+            console.log(data)
+            //var content = $(data).find("result");
+            $("#result").empty().text(data.result);
+        });
+    });
+</script>
+
 
 <script id="entry-template" type="text/x-handlebars-template">
-<form action="http://localhost:5000/api/metadata/" id="md-form"
-class="form-horizontal" method="post">
+<form id="mdform" class="form-horizontal" method="post">
     {{#each this}}
 <div class="panel-group" id="accordion-{{blockLabel}}" role="tablist"
      aria-multiselectable="true">
@@ -127,7 +150,7 @@ class="form-horizontal" method="post">
                 
                         <input type='{{type}}' class="form-control" 
                           placeholder='{{value}}' value='{{value}}'
-                          id="{{label}}"/>
+                          id="{{label}}" name="{{label}}"/>
             </div>
         </div>
     
@@ -149,29 +172,29 @@ class="form-horizontal" method="post">
     <br/>
     {{/each}}
 </div>
-        <button type="submit" id="md-submit" class="btn btn-primary btn-lg">Submit</button>
+        <input type="submit" value='Submit' id="md-submit" class="btn btn-primary btn-lg"/>
 </div>
     </form>
 </script>
-
-<!--handle form data-->
 <script>
 
-$("#md-form").submit( function(event) {
-    
-    // stop from submitting normally
+  // attach a listener on submit button; POST form data to md server on submit
+  $('#mdform').on('submit', function(event) {
+
     event.preventDefault();
 
-    // get values from elements
-});
+    console.log('up in here');
 
-/*$("#md-form").submit(function(event){
-    alert("submitted!");
-    console.log($(this).serializeArray());
-    event.preventDefault();
-});*/
+    // $(this).serialize() gets read as request.form data in Flask
+    var posting = $.post(url, $(this).serialize());
+
+    posting.done(function(viewData) {
+      var html = template(viewData);
+      $("#main").html(html);
+    });
+
+  });
 </script>
-
 
 <script>
 var source = $("#entry-template").html();
@@ -179,53 +202,78 @@ var source = $("#entry-template").html();
 var template = Handlebars.compile(source);
 
 // this is a stand-in for data from metadata server
-var context = [
-    {
-        blockTitle: "Basic information",
-        blockLabel: "basic-information",
-        expanded: "true",
-        formElements: 
-        [  { 
-              label: "Title",
-              type: "text",
-              value: "Title of my data",
-              longDescription: "E.g., Data for June, 2014 Journal of Hydrology Paper"
+var context = [];
 
-            },
-            {
-              label: "Date",
-              type: "date",
-              value: "2015-01-01", // will be sent by server to be 'today'
-              longDescription: "Either the date data itself created or md create date?"
-            } 
-        ]
-    },
-    {
-        blockTitle: "Researcher information",
-        blockLabel: "researcher-information",
-        expanded: "false",
-        formElements:
-        [
-            {
-                label: "Researcher Name",
-                type: "text",
-                value: "johnny flynn",
-                longDescription: "Name of party who gathered or processed data; may not be metadata creator"
-            },
-            {
-                label: "Researcher Institution",
-                type: "text",
-                value: "UI",
-                longDescription: "Affiliation of the investigator"
-            } 
-        ] 
-    }
-]; 
+// populate the context for the forms on load
+//$(function() {
 
-var html = template(context);
+  // URL of the metadata server
+  var url = "http://localhost:5000/api/metadata";
 
-$("#main").html(html);
+  // md server's GET method returns default md form and autopop values
+  $.get(url, function(viewData) {
+    var html = template(viewData.form);
+    $("#main").html(html);
+  });
+
+$(function() {
+  // attach a listener on submit button; POST form data to md server on submit
+  $('#mdform').submit( function(event) {
+
+    event.preventDefault();
+
+    console.log('up in here');
+
+    // $(this).serialize() gets read as request.form data in Flask
+    var posting = $.post(url, $(this).serialize());
+
+    posting.done(function(viewData) {
+      var html = template(viewData);
+      $("#main").html(html);
+    });
+
+  });
+
+});
+  // attach a listener on submit button; POST form data to md server on submit
+  $('#mdform').on('submit', function(event) {
+
+    event.preventDefault();
+
+    console.log('up in here');
+
+    // $(this).serialize() gets read as request.form data in Flask
+    var posting = $.post(url, $(this).serialize());
+
+    posting.done(function(viewData) {
+      var html = template(viewData);
+      $("#main").html(html);
+    });
+
+  });
 </script>
+<script>
+    $("#mdform").submit(function(event) {
+        event.preventDefault();
 
+        var $form = $(this);
+        var inputData = 
+        {
+          a: $form.find("input[name='a']").val(),
+          b: $form.find("input[name='b']").val()
+        };
+
+        var url = "http://localhost:5000/_add_numbers";
+        var posting = $.post(url, $form.serialize());
+
+        console.log(inputData);
+
+        posting.done(function(data) {
+            console.log(data)
+            //var content = $(data).find("result");
+            $("#result").empty().text(data.result);
+        });
+    });
+</script>
 </body>
 </html>

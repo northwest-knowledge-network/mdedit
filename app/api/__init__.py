@@ -1,11 +1,8 @@
 """
 API Blueprint
 """
-# from flask import Blueprint
-from flask_restful import Api
-from .resources import MetadataResource
+from flask import Blueprint
 
-api = Api(prefix='/api/metadata')
-api.add_resource(MetadataResource, '/')
+api = Blueprint('api', __name__)
 
 from . import resources

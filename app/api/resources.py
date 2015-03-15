@@ -1,33 +1,32 @@
 """API"""
-from flask_restful import Resource, reqparse
+from flask import request, jsonify
+# from flask_restful import Resource, reqparse
+from flask_cors import cross_origin
 
-from ..models import Metadata, MD_FORM_DICT
+import json
+
+from . import api
+from ..models import Metadata
 
 
 METADATA = {}
 
-parser = reqparse.RequestParser()
-for k, v in MD_FORM_DICT.iteritems():
-    parser.add_argument(k, type=type(v['value']))
 
+@api.route('/api/metadata', methods=['GET', 'POST'])
+@cross_origin(origin='*', methods=['GET', 'POST', 'OPTIONS'],
+              headers=['X-Requested-With', 'Content-Type', 'Origin'])
+def metadata():
+    """Handle get and push requests coming to metadata server"""
+    print request.form
+    print request.method
 
-class MetadataResource(Resource):
-    """API resource for delivering Metadata model
-    """
-    def get(self):
-        # get metadata dictionary
-        return Metadata.to_dict()
+    if request.method == 'GET':
+        # creates 'jsonify'd Response; default code is 200, correct for this
+        return Metadata.to_json()
 
-    def post(self):
-        print "yo"
-        print METADATA
-        print MD_FORM_DICT
-        print parser
-        args = parser.parse_args()
-        print args
-        # resource_id = len(METADATA.keys())
-        # print args
-        # METADATA.update(args, id=resource_id)
-        # print METADATA
+    if request.method == 'POST':
 
-        # return METADATA[resource_id], 201
+        print request.form
+        print json.dumps(request.form)
+
+        # with (date.now().strfmt(
