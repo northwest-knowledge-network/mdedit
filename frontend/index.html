@@ -62,7 +62,7 @@ button.navbar-toggle.collapsed:focus {
 </style>
 
     <title>
-        Yeah
+        NKN Metadata Editor
     </title>
 </head>
     
@@ -83,10 +83,11 @@ button.navbar-toggle.collapsed:focus {
     </div>     
 </nav>
 
+<!--Handlebars will fill in the details here -->
 <form id="mdform" class="form-horizontal" method="post">
-<div id="form-main" class="container">
-</div>
-
+  <div id="form-main" class="container">
+  </div>
+</form>
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js">
@@ -125,7 +126,7 @@ button.navbar-toggle.collapsed:focus {
                 
                         <input type='{{type}}' class="form-control" 
                           placeholder='{{value}}' value='{{value}}'
-                          id="{{label}}" name="{{label}}"/>
+                          id="{{label}}" name="{{name}}"/>
             </div>
         </div>
     
@@ -149,19 +150,15 @@ button.navbar-toggle.collapsed:focus {
 </div>
         <input type="submit" value='Submit' id="md-submit" class="btn btn-primary btn-lg"/>
 </div>
-    </form>
 </script>
 
 <script>
-var source = $("#entry-template").html();
+  var source = $("#entry-template").html();
 
-var template = Handlebars.compile(source);
+  var template = Handlebars.compile(source);
 
-// this is a stand-in for data from metadata server
-var context = [];
-
-// populate the context for the forms on load
-//$(function() {
+  // this is a stand-in for data from metadata server
+  var context = [];
 
   // URL of the metadata server
   var url = "http://localhost:4000/api/metadata";
@@ -173,32 +170,27 @@ var context = [];
 
     $("#form-main").html(html);
   });
-//var viewData = {"blockLabel":"basic-information","blockTitle":"Basic Information","expanded":"true","formElements":[{"label":"Title","longDescription":"E.g., Data for June 2014 Journal of Hydrology Paper","order":1,"type":"text","value":"Title of my data"},{"label":"Date","longDescription":"Date data was last updated","order":1,"type":"date","value":"2015-01-01"}]}
-
-//var html = template([viewData]);
-
-//$("#main").html(html);
 
 // attach a listener on submit button; POST form data to md server on submit
-$('#mdform').submit( function(event) {
+  $('#mdform').submit( function(event) {
 
-  event.preventDefault();
+    event.preventDefault();
 
-  console.log('up in here');
+    console.log('up in here');
 
-  // $(this).serialize() gets read as request.form data in Flask
-  var posting = $.post(url, $(this).serialize());
+    // $(this).serialize() gets read as request.form data in Flask
+    var posting = $.post(url, $(this).serialize());
 
-  console.log(posting);
+    console.log(posting);
 
-  posting.done(function(viewData) {
-    console.log(viewData);
-    var html = template(viewData.form);
-    $("#form-main").html(html);
+    posting.done(function(viewData) {
+      console.log(viewData);
+      var html = template(viewData.form);
+      $("#form-main").html(html);
+    });
+    console.log("here");
+    $('#mdform').trigger("reset");
   });
-  console.log("here");
-  $('#mdform').trigger("reset");
-});
 </script>
 </body>
 </html>
