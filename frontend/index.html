@@ -83,7 +83,8 @@ button.navbar-toggle.collapsed:focus {
     </div>     
 </nav>
 
-<div id="main" class="container">
+<form id="mdform" class="form-horizontal" method="post">
+<div id="form-main" class="container">
 </div>
 
 
@@ -95,33 +96,7 @@ button.navbar-toggle.collapsed:focus {
 
 <script src='handlebars-v3.0.0.js'></script>
 
-<script>
-    $("#mdform").submit(function(event) {
-        event.preventDefault();
-
-        var $form = $(this);
-        var inputData = 
-        {
-          a: $form.find("input[name='a']").val(),
-          b: $form.find("input[name='b']").val()
-        };
-
-        var url = "http://localhost:5000/_add_numbers";
-        var posting = $.post(url, $form.serialize());
-
-        console.log(inputData);
-
-        posting.done(function(data) {
-            console.log(data)
-            //var content = $(data).find("result");
-            $("#result").empty().text(data.result);
-        });
-    });
-</script>
-
-
 <script id="entry-template" type="text/x-handlebars-template">
-<form id="mdform" class="form-horizontal" method="post">
     {{#each this}}
 <div class="panel-group" id="accordion-{{blockLabel}}" role="tablist"
      aria-multiselectable="true">
@@ -176,25 +151,6 @@ button.navbar-toggle.collapsed:focus {
 </div>
     </form>
 </script>
-<script>
-
-  // attach a listener on submit button; POST form data to md server on submit
-  $('#mdform').on('submit', function(event) {
-
-    event.preventDefault();
-
-    console.log('up in here');
-
-    // $(this).serialize() gets read as request.form data in Flask
-    var posting = $.post(url, $(this).serialize());
-
-    posting.done(function(viewData) {
-      var html = template(viewData);
-      $("#main").html(html);
-    });
-
-  });
-</script>
 
 <script>
 var source = $("#entry-template").html();
@@ -208,72 +164,41 @@ var context = [];
 //$(function() {
 
   // URL of the metadata server
-  var url = "http://localhost:5000/api/metadata";
+  var url = "http://localhost:4000/api/metadata";
 
   // md server's GET method returns default md form and autopop values
   $.get(url, function(viewData) {
+    console.log(JSON.stringify(viewData.form[0]));
     var html = template(viewData.form);
-    $("#main").html(html);
+
+    $("#form-main").html(html);
   });
+//var viewData = {"blockLabel":"basic-information","blockTitle":"Basic Information","expanded":"true","formElements":[{"label":"Title","longDescription":"E.g., Data for June 2014 Journal of Hydrology Paper","order":1,"type":"text","value":"Title of my data"},{"label":"Date","longDescription":"Date data was last updated","order":1,"type":"date","value":"2015-01-01"}]}
 
-$(function() {
-  // attach a listener on submit button; POST form data to md server on submit
-  $('#mdform').submit( function(event) {
+//var html = template([viewData]);
 
-    event.preventDefault();
+//$("#main").html(html);
 
-    console.log('up in here');
+// attach a listener on submit button; POST form data to md server on submit
+$('#mdform').submit( function(event) {
 
-    // $(this).serialize() gets read as request.form data in Flask
-    var posting = $.post(url, $(this).serialize());
+  event.preventDefault();
 
-    posting.done(function(viewData) {
-      var html = template(viewData);
-      $("#main").html(html);
-    });
+  console.log('up in here');
 
+  // $(this).serialize() gets read as request.form data in Flask
+  var posting = $.post(url, $(this).serialize());
+
+  console.log(posting);
+
+  posting.done(function(viewData) {
+    console.log(viewData);
+    var html = template(viewData.form);
+    $("#form-main").html(html);
   });
-
+  console.log("here");
+  $('#mdform').trigger("reset");
 });
-  // attach a listener on submit button; POST form data to md server on submit
-  $('#mdform').on('submit', function(event) {
-
-    event.preventDefault();
-
-    console.log('up in here');
-
-    // $(this).serialize() gets read as request.form data in Flask
-    var posting = $.post(url, $(this).serialize());
-
-    posting.done(function(viewData) {
-      var html = template(viewData);
-      $("#main").html(html);
-    });
-
-  });
-</script>
-<script>
-    $("#mdform").submit(function(event) {
-        event.preventDefault();
-
-        var $form = $(this);
-        var inputData = 
-        {
-          a: $form.find("input[name='a']").val(),
-          b: $form.find("input[name='b']").val()
-        };
-
-        var url = "http://localhost:5000/_add_numbers";
-        var posting = $.post(url, $form.serialize());
-
-        console.log(inputData);
-
-        posting.done(function(data) {
-            console.log(data)
-            //var content = $(data).find("result");
-            $("#result").empty().text(data.result);
-        });
-    });
 </script>
 </body>
 </html>

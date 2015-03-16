@@ -27,6 +27,10 @@ def metadata():
     if request.method == 'POST':
 
         print request.form
-        print json.dumps(request.form)
+        print type(request.form)
+
+        # print ret
 
         # with (date.now().strfmt(
+        # return jsonify(request.form)
+        return Metadata.to_json()
