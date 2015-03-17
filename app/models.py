@@ -5,11 +5,10 @@ from . import db
 
 
 
-class Metadata(db.Model):  # Address, SpatialExtent, TemporalExtent, Address):
+class Metadata(db.Model):
     """
     Metadata Model
     """
-
     id = db.Column(db.Integer, primary_key=True)
 
     ### Basic ###
@@ -31,9 +30,9 @@ class Metadata(db.Model):  # Address, SpatialExtent, TemporalExtent, Address):
     def from_json(self, j):
         """create a new Metadata record from a properly-formed dictionary
         """
-        # need to make date a datetime object; all others OK
         d = j.to_dict()
 
+        # need to make date a datetime object; all others OK
         d['date'] = datetime.strptime(j['date'], '%Y-%m-%d')
 
         return Metadata(**d)
@@ -45,13 +44,14 @@ class Metadata(db.Model):  # Address, SpatialExtent, TemporalExtent, Address):
         """
         # print "\n\n***** TO JSON *****\n\n"
         # print self.id
+        # res = Metadata.query.get(
 
-        return {
-                'id': self.id,
+        return { 'id': self.id,
                 'title': self.title,
                 # TODO T_FMT = '%Y-%m-%d'
                 # 'date': self.date.strftime('%Y-%m-%d'),
                 # 'date': self.date,
+                # 'date': datetime.strftime(self.date, '%Y-%m-%d'),
                 'rname': self.rname,
                 'rinst': self.rinst
                }

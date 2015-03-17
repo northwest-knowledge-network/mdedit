@@ -5,66 +5,7 @@
 
 <!-- Optional theme -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
-<style>
-#md-submit {
-    width: 100%;
-  background-image: -webkit-linear-gradient(top,dodgerblue 35%,#206da4 100%);
-  background-image: -webkit-gradient(top,dodgerblue 35%,#206da4 100%);
-  background-image: -moz-linear-gradient(top,dodgerblue 35%,#206da4 100%);
-  background-image: linear-gradient(top,dodgerblue 35%,#206da4 100%);
-} 
-body {
-    padding-top: 70px;
-} 
-.mdrow {
-  border: 1px solid #fff; 
-  background-color: #aaa;
-  padding: 0 2px;
-}
-.navbar {
-  background-image: -webkit-linear-gradient(right,#FFA6C9 5%, dodgerblue 100%);
-  background-image: -moz-linear-gradient(right,#FFA6C9 5%, dodgerblue 100%);
-  background-image: -webkit-gradient(right,#FFA6C9 5%, dodgerblue 100%);
-  background-image: linear-gradient(right,#FFA6C9 5%, dodgerblue, 100%);
-} 
-.navbar-fixed-top {
-  border-width: 0; 
-} 
-.navbar-inverse .navbar-brand {
-    color: #fff;
-    text-shadow: 0;
-    /*color: #000;*/
-} 
-.navbar-inverse .navbar-toggle  {
-  border: 2px solid white; 
-}
-button.navbar-toggle.collapsed:hover {
-  background-color: dodgerblue;
-}
-button.navbar-toggle.collapsed:focus {
-  background-color: dodgerblue;
-}
-.panel-heading.md-block {
-  background-image: -webkit-linear-gradient(top,dodgerblue 35%,#206da4 100%);
-  background-image: -webkit-gradient(top,dodgerblue 35%,#206da4 100%);
-  background-image: -moz-linear-gradient(top,dodgerblue 35%,#206da4 100%);
-  background-image: linear-gradient(top,dodgerblue 35%,#206da4 100%);
-} 
-.panel-primary>.panel-heading {
-    background-color: rgba(0, 117, 254, 0.2);
-} 
-.panel-primary {
-  background-image: -webkit-linear-gradient(top,#EBC17F 65%, #FFA6C9 100%);
-  background-image: -moz-linear-gradient(top,#EBC17F 65%, #FFA6C9 100%);
-  background-image: -webkit-gradient(top,#EBC17F 65%, #FFA6C9 100%);
-  background-image: linear-gradient(top,#EBC17F 66%, #FFA6C9 100%);
-  border-width: 1px;
-  border-color: lightgrey;
-}
-.sr-only {
-  border: 2px solid white;
-}
-</style>
+<link rel="stylesheet" type="text/css" href="metadata.css">
 
     <title>
         NKN Metadata Editor
@@ -161,83 +102,7 @@ button.navbar-toggle.collapsed:focus {
 </div>
 </script>
 
-<script>
-var refreshMdList = function() {
+<script src="metadata.js" type="text/javascript"></script>
 
-  console.log("here");
-
-  var url = "http://localhost:4000/api/metadata";
-
-  // get list of all metadata from server
-  $.get(url, function(mdListObj) {
-    // get list
-    var mdList = mdListObj.records;
-
-    var mdDisplay = '';
-   
-    $.each(mdList, function(idx, el) {
-        idx += 1;
-        console.log(el);
-        $('#mdlist').append('<div class="row"><div class="col-sm-6"><h4>Metadata #' + idx + '</h4></div>' +
-          '<div class="col-sm-3"><button href="' + url + '/' + idx + '">Edit</a></div>' +
-          '<div class="col-sm-3"><button href="' + url + '/' + idx + '/xml' + '">XML</a></div></div>'
-          );
-
-        var displayRow = ''
-        $.each(el, function(key, val) {
-            // display list 
-            displayRow += 
-            '<div class="col-xs-3 mdrow">' + key + ': ' + val + '</div>';
-            })
-
-          //$('#mdlist').append('<div class="row"><div class="col-xs-3"></div>' + displayRow + '<div class="col-xs-2"></div>');
-          $('#mdlist').append('<div class="row">' + displayRow + '</div>');
-      });
-  });
-};
-</script>
-
-<script>
-  var source = $("#entry-template").html();
-
-  var template = Handlebars.compile(source);
-
-  // this is a stand-in for data from metadata server
-  var context = [];
-
-  // URL of the metadata server
-  var url = "http://localhost:4000/api/metadata";
-
-  // md server's GET method for form returns default md form and autopop values
-  $.get(url + '/form', function(viewData) {
-
-    var html = template(viewData.form);
-
-    $("#form-main").html(html);
-  });
-
-refreshMdList();
-
-// attach a listener on submit button; POST form data to md server on submit
-  $('#mdform').submit( function(event) {
-
-    event.preventDefault();
-
-    console.log('up in here');
-
-    // $(this).serialize() gets read as request.form data in Flask
-    var posting = $.post(url, $(this).serialize());
-
-    console.log(posting);
-
-    posting.done(function(viewData) {
-      console.log(viewData);
-      var html = template(viewData.form);
-      $("#form-main").html(html);
-    });
-    console.log("here");
-    $('#mdform').trigger("reset");
-  });
-</script>
 </body>
 </html>
