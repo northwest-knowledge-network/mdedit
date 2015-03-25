@@ -24,11 +24,16 @@ def metadata():
         metadata = Metadata.query.all()
 
         # TODO is this the right way to do to_dict() in Metadata?
-        return jsonify({'records': [
+        recs = {'records': [
             {k: v for k, v in m.__dict__.iteritems()
                 if (k != '_sa_instance_state' and k != 'id')}
             for m in metadata]
-            })
+            }
+
+        for rec in recs['records']:
+            rec['date'] = rec['date'].strftime('%Y-%m-%d %H:%m:%S')
+
+    return jsonify(recs)
 
     # create a new metadata record
     if request.method == 'POST':
@@ -58,9 +63,16 @@ def get_single_metadata(id):
     """Get the common XML representation of the metadata record with
        given id.
     """
-    record = Metadata.query.get_or_404(id)
+    return _md_to_json(Metadata.query.get_or_404(id))
 
-    return jsonify(record)
+
+def _md_to_json(record):
+    """Convert Metadata record to JSON according to desired rules.
+    """
+    return jsonify(dict(id=record.id, date=record.date.strftime('%Y-%m-%d'),
+                        rname=record.rname, rinst=record.rinst,
+                        title=record.title))
+
 
 
 @api.route('/api/metadata/<int:id>/xml')

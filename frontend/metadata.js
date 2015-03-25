@@ -2,9 +2,8 @@
  * Javascript Front End for implementing views.
  */
 
+// refresh list of all existing metadata entries
 var refreshMdList = function() {
-
-  console.log("here");
 
   var url = "http://localhost:4000/api/metadata";
 
@@ -27,10 +26,9 @@ var refreshMdList = function() {
         $.each(el, function(key, val) {
             // display list 
             displayRow += 
-            '<div class="col-xs-3 mdrow">' + key + ': ' + val + '</div>';
+              '<div class="col-xs-3 mdrow">' + key + ': ' + val + '</div>';
             })
 
-          //$('#mdlist').append('<div class="row"><div class="col-xs-3"></div>' + displayRow + '<div class="col-xs-2"></div>');
           $('#mdlist').append('<div class="row">' + displayRow + '</div>');
       });
   });
@@ -52,6 +50,7 @@ $.get(url + '/form', function(viewData) {
   var html = template(viewData.form);
 
   $("#form-main").html(html);
+
 });
 
 refreshMdList();

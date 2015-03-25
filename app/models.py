@@ -46,14 +46,15 @@ class Metadata(db.Model):
         # print self.id
         # res = Metadata.query.get(
 
-        return { 'id': self.id,
-                'title': self.title,
-                # TODO T_FMT = '%Y-%m-%d'
-                # 'date': self.date.strftime('%Y-%m-%d'),
-                # 'date': self.date,
-                # 'date': datetime.strftime(self.date, '%Y-%m-%d'),
-                'rname': self.rname,
-                'rinst': self.rinst
-               }
+        print type(self.rname)
+        print type(self.rinst)
+
+        return {'rname': self.rname}
+        # return jsonify({k: v for k, v in self.__dict__.iteritems()
+                        # if k != '_sa_instance_state'
+                        # and '__' not in k})
+        # return {k: v for k, v in self.__dict__.iteritems()
+                        # if k != '_sa_instance_state'
+                        # and '__' not in k}
 
 
