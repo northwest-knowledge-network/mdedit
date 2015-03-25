@@ -10,7 +10,7 @@ from dicttoxml import dicttoxml
 
 from . import api
 from .. import db
-from ..models import Metadata
+from ..models import Metadata, _md_to_json
 
 
 @api.route('/api/metadata', methods=['GET', 'POST', 'PUT'])
@@ -33,25 +33,27 @@ def metadata():
         for rec in recs['records']:
             rec['date'] = rec['date'].strftime('%Y-%m-%d %H:%m:%S')
 
-    return jsonify(recs)
+        return jsonify(recs)
 
     # create a new metadata record
     if request.method == 'POST':
-        print request.form
-        newmd = Metadata.from_json(request.form)
-        print newmd.__dict__
-        cpy = copy(newmd)
+        # if no id, it is a new post
+        if 'id' not in request.form:
+            print request.form
+            newmd = Metadata.from_json(request.form)
+            print newmd.__dict__
+            cpy = copy(newmd)
 
-        db.session.add(newmd)
-        db.session.commit()
+            db.session.add(newmd)
+            db.session.commit()
 
-        cpy = {k: v for k, v in cpy.__dict__.iteritems()
-               if k != '_sa_instance_state'}
+            cpy = {k: v for k, v in cpy.__dict__.iteritems()
+                   if k != '_sa_instance_state'}
 
-        print cpy
-        cpy['date'] = datetime.strftime(cpy['date'], '%Y-%m-%d')
+            print cpy
+            cpy['date'] = datetime.strftime(cpy['date'], '%Y-%m-%d')
 
-        id = db.session.query(db.func.max(Metadata.id)).scalar()
+            id = db.session.query(db.func.max(Metadata.id)).scalar()
 
         # return a JSON record of new metadata to load into the page
         return jsonify(id=id, form=_make_mdform(cpy))
@@ -60,8 +62,10 @@ def metadata():
     if request.method == 'PUT':
 
         data = request.form
+        # if there's no id for a PUT it'd be strange, but not impossible
         if not data['id']:
-            return render_template('<p>Bad data</p>'), 422
+            return render_template('<h1>422: Bad Data</h1><p>Incorrect data '
+                                   'for request</p>'), 422
 
         else:
             return jsonify(data)
@@ -74,15 +78,6 @@ def get_single_metadata(id):
        given id.
     """
     return _md_to_json(Metadata.query.get_or_404(id))
-
-
-def _md_to_json(record):
-    """Convert Metadata record to JSON according to desired rules.
-    """
-    return jsonify(dict(id=record.id, date=record.date.strftime('%Y-%m-%d'),
-                        rname=record.rname, rinst=record.rinst,
-                        title=record.title))
-
 
 
 @api.route('/api/metadata/<int:id>/xml')

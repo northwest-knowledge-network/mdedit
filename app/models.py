@@ -37,24 +37,10 @@ class Metadata(db.Model):
 
         return Metadata(**d)
 
-    @classmethod
-    def to_json(self):
-        """Iterate over non-id, non-function, non-property attributes and pack
-           them in to a dict for use in API
-        """
-        # print "\n\n***** TO JSON *****\n\n"
-        # print self.id
-        # res = Metadata.query.get(
 
-        print type(self.rname)
-        print type(self.rinst)
-
-        return {'rname': self.rname}
-        # return jsonify({k: v for k, v in self.__dict__.iteritems()
-                        # if k != '_sa_instance_state'
-                        # and '__' not in k})
-        # return {k: v for k, v in self.__dict__.iteritems()
-                        # if k != '_sa_instance_state'
-                        # and '__' not in k}
-
-
+def _md_to_json(record):
+    """Convert Metadata record to JSON according to desired rules.
+    """
+    return jsonify(dict(id=record.id, date=record.date.strftime('%Y-%m-%d'),
+                        rname=record.rname, rinst=record.rinst,
+                        title=record.title))

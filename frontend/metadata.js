@@ -2,24 +2,66 @@
  * Javascript Front End for implementing views.
  */
 
+// URL of the metadata server
+var METADATA_URL = "http://localhost:4000/api/metadata";
+
+var TEMPLATE_SOURCE = $("#entry-template").html();
+
+var TEMPLATE = Handlebars.compile(TEMPLATE_SOURCE); 
+
+// this is a stand-in for data from metadata server
+var context = [];
+
+
+// on load refresh list of metadata
+$(function() { 
+  refreshMdList(); 
+
+  // md server's GET method for form returns default md form and autopop values
+  $.get(METADATA_URL + '/form', function(viewData) {
+
+    var html = TEMPLATE(viewData.form);
+
+    $("#form-main").html(html);
+
+  });
+
+});
+
+
 // refresh list of all existing metadata entries
+var initial = true;
+var firstAppend = true;
+var mdListIdxLen = 0;
 var refreshMdList = function() {
 
-  var url = "http://localhost:4000/api/metadata";
+  var mdlist = $('#mdlist');
+
 
   // get list of all metadata from server
-  $.get(url, function(mdListObj) {
+  $.get(METADATA_URL, function(mdListObj) {
     // get list
     var mdList = mdListObj.records;
+
+    // clear out previous list so we're really just appending anything new
+    if (!initial)
+    {
+      var mdListLen = mdList.length;
+      mdList = [mdList[mdListLen - 1]];
+      mdListIdxLen = mdListLen - 1; 
+    }
+    else
+    {
+      initial = false;
+    }
 
     var mdDisplay = '';
    
     $.each(mdList, function(idx, el) {
-        idx += 1;
-        console.log(el);
-        $('#mdlist').append('<div class="row"><div class="col-sm-6"><h4>Metadata #' + idx + '</h4></div>' +
-          '<div class="col-sm-3"><a href="' + url + '/' + idx + '">Edit</a></div>' +
-          '<div class="col-sm-3"><a href="' + url + '/' + idx + '/xml' + '">XML</a></div></div>'
+        idx += mdListIdxLen + 1;
+        mdlist.append('<div class="row"><div class="col-sm-6"><h4>Metadata #' + idx + '</h4></div>' +
+          '<div class="col-sm-3"><a href="' + METADATA_URL + '/' + idx + '">Edit</a></div>' +
+          '<div class="col-sm-3"><a href="' + METADATA_URL + '/' + idx + '/xml' + '">XML</a></div></div>'
           );
 
         var displayRow = ''
@@ -29,46 +71,35 @@ var refreshMdList = function() {
               '<div class="col-xs-3 mdrow">' + key + ': ' + val + '</div>';
             })
 
-          $('#mdlist').append('<div class="row">' + displayRow + '</div>');
+          mdlist.append('<div class="row">' + displayRow + '</div>');
       });
   });
+
 };
-
-var source = $("#entry-template").html();
-
-var template = Handlebars.compile(source);
-
-// this is a stand-in for data from metadata server
-var context = [];
-
-// URL of the metadata server
-var url = "http://localhost:4000/api/metadata";
-
-// md server's GET method for form returns default md form and autopop values
-$.get(url + '/form', function(viewData) {
-
-  var html = template(viewData.form);
-
-  $("#form-main").html(html);
-
-});
-
-refreshMdList();
 
 // attach a listener on submit button; POST form data to md server on submit
 $('#mdform').submit( function(event) {
 
   event.preventDefault();
+  console.log($(this).serializeArray().filter(function(el){return el.name == "title";})[0]);
 
-  // $(this).serialize() gets read as request.form data in Flask
-  var posting = $.post(url, $(this).serialize());
+  var idVal = $(this).serializeArray()
+                     .filter(function(el){ return el.name == "id"; })
+                     .value;
+  // if idVal exists, this is a PUT operation and record w/ idVal gets updated
+  if (idVal)
+  {
+    //
+  }
+  // otherwise this is a POST, which creates a new record
+  else
+  {
+    var posting = $.post(METADATA_URL, $(this).serialize());
 
-  console.log(posting);
-
-  posting.done(function(viewData) {
-    console.log(viewData.form);
-    var html = template(viewData.form);
-    $("#form-main").html(html);
-    refreshMdList();
-  });
+    posting.done(function(viewData) {
+      var html = TEMPLATE(viewData.form);
+      $("#form-main").html(html);
+      refreshMdList();
+    });
+  }
 });
