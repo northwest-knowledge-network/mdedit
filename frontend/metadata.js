@@ -18,6 +18,17 @@ $(function() {
   refreshMdList(); 
 
   // md server's GET method for form returns default md form and autopop values
+  resetForm();
+  
+
+});
+
+var resetForm = function()
+{
+  $("#form-header").empty();
+
+  $("#form-header").html("<h1>Add a new metadata record</h1>");
+
   $.get(METADATA_URL + '/form', function(viewData) {
 
     var html = TEMPLATE(viewData.form);
@@ -25,9 +36,7 @@ $(function() {
     $("#form-main").html(html);
 
   });
-
-});
-
+};
 
 // refresh list of all existing metadata entries
 var initial = true;
@@ -36,7 +45,6 @@ var mdListIdxLen = 0;
 var refreshMdList = function() {
 
   var mdlist = $('#mdlist');
-
 
   // get list of all metadata from server
   $.get(METADATA_URL, function(mdListObj) {
@@ -60,7 +68,7 @@ var refreshMdList = function() {
     $.each(mdList, function(idx, el) {
         idx += mdListIdxLen + 1;
         mdlist.append('<div class="row"><div class="col-sm-6"><h4>Metadata #' + idx + '</h4></div>' +
-          '<div class="col-sm-3"><a href="' + METADATA_URL + '/' + idx + '">Edit</a></div>' +
+          '<div class="col-sm-3"><a onclick="editRecord(this.id)" id="' + METADATA_URL + '/' + idx + '/form">Edit</a></div>' +
           '<div class="col-sm-3"><a href="' + METADATA_URL + '/' + idx + '/xml' + '">XML</a></div></div>'
           );
 
@@ -97,9 +105,36 @@ $('#mdform').submit( function(event) {
     var posting = $.post(METADATA_URL, $(this).serialize());
 
     posting.done(function(viewData) {
+
       var html = TEMPLATE(viewData.form);
       $("#form-main").html(html);
+
       refreshMdList();
+
+      displayEditModeHeader(viewData.id);
     });
   }
 });
+
+var displayEditModeHeader = function(recordId)
+{
+    $("#form-header")
+      .html('<div class="row"><div class="col-sm-6"><p>Editing record #' + 
+            recordId + 
+            '</p></div> <div class="col-sm-6"> ' +
+            '<button onclick="resetForm()">New Metadata Entry</button></div> </div>');
+}
+
+
+//$("a.edit").on("click",
+var editRecord = function(clickedHrefId)
+{
+    var endpoint = clickedHrefId;
+    var recordToEdit = $.get(endpoint, function(viewData) {
+      console.log(viewData.form);
+      //var html =  + TEMPLATE(viewData);
+      var html = TEMPLATE(viewData.form);
+      $("#form-main").html(html);
+      displayEditModeHeader(viewData.id);
+    });
+};

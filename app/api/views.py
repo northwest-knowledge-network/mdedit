@@ -74,10 +74,24 @@ def metadata():
 @api.route('/api/metadata/<int:id>')
 @cross_origin(origin='*', methods=['GET'])
 def get_single_metadata(id):
-    """Get the common XML representation of the metadata record with
-       given id.
+    """Get the JSON representation of the metadata record with given id.
     """
     return _md_to_json(Metadata.query.get_or_404(id))
+
+
+@api.route('/api/metadata/<int:id>/form')
+@cross_origin(origin='*', methods=['GET'])
+def get_form_metadata(id):
+    """Get form data for a given id for display on frontend"""
+    record = Metadata.query.get_or_404(id)
+    form_dict = {k: v for k, v in record.__dict__.iteritems()
+                 if (k != '_sa_instance_state' and k != 'id')}
+
+    form_dict['date'] = form_dict['date'].strftime('%Y-%m-%d')
+    # include id at root level separate from form
+    form = _make_mdform(form_dict)
+
+    return jsonify(id=id, form=form)
 
 
 @api.route('/api/metadata/<int:id>/xml')
@@ -125,7 +139,7 @@ def _make_mdform(val_dict=None):
                      value=val_dict['title'], name='title',
                      longDescription="E.g., Data for June 2014 Journal of Hydrology Paper"),
                 dict(label='Date', type='date', order=1, name='date',
-                     value=val_dict['date'],  # TODO strfmt now()
+                     value=val_dict['date'],
                      longDescription='Date data was last updated')]
          ),
 
