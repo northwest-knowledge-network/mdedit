@@ -2,7 +2,7 @@
 from copy import copy
 from datetime import datetime
 
-from flask import request, jsonify, Response
+from flask import request, jsonify, Response, render_template
 # from flask_restful import Resource, reqparse
 from flask_cors import cross_origin
 
@@ -55,6 +55,16 @@ def metadata():
 
         # return a JSON record of new metadata to load into the page
         return jsonify(id=id, form=_make_mdform(cpy))
+
+    # PUT request: edit of existing rec
+    if request.method == 'PUT':
+
+        data = request.form
+        if not data['id']:
+            return render_template('<p>Bad data</p>'), 422
+
+        else:
+            return jsonify(data)
 
 
 @api.route('/api/metadata/<int:id>')
