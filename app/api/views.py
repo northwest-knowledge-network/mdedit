@@ -38,45 +38,79 @@ def metadata():
     # create a new metadata record
     if request.method == 'POST':
         # if no id, it is a new post
-        if 'id' not in request.form:
-            print request.form
-            newmd = Metadata.from_json(request.form)
-            print newmd.__dict__
-            cpy = copy(newmd)
+        print request.form
+        newmd = Metadata.from_json(request.form)
+        print newmd.__dict__
+        cpy = copy(newmd)
 
-            db.session.add(newmd)
-            db.session.commit()
+        db.session.add(newmd)
+        db.session.commit()
 
-            cpy = {k: v for k, v in cpy.__dict__.iteritems()
-                   if k != '_sa_instance_state'}
+        cpy = {k: v for k, v in cpy.__dict__.iteritems()
+               if k != '_sa_instance_state'}
 
-            print cpy
-            cpy['date'] = datetime.strftime(cpy['date'], '%Y-%m-%d')
+        print cpy
+        cpy['date'] = datetime.strftime(cpy['date'], '%Y-%m-%d')
 
-            id = db.session.query(db.func.max(Metadata.id)).scalar()
+        id = db.session.query(db.func.max(Metadata.id)).scalar()
 
         # return a JSON record of new metadata to load into the page
-        return jsonify(id=id, form=_make_mdform(cpy))
+        return jsonify(id=id, form=_make_mdform(cpy, id=id))
 
-    # PUT request: edit of existing rec
+    # PUT request: edit of existing record
     if request.method == 'PUT':
 
         data = request.form
+
         # if there's no id for a PUT it'd be strange, but not impossible
-        if not data['id']:
+        if data['id'] == '/':
             return render_template('<h1>422: Bad Data</h1><p>Incorrect data '
                                    'for request</p>'), 422
 
         else:
+
             return jsonify(data)
 
 
-@api.route('/api/metadata/<int:id>')
-@cross_origin(origin='*', methods=['GET'])
+@api.route('/api/metadata/<int:id>', methods=['GET', 'PUT'])
+@cross_origin(origin='*', methods=['GET', 'PUT'],
+              headers=['X-Requested-With', 'Content-Type', 'Origin'])
 def get_single_metadata(id):
     """Get the JSON representation of the metadata record with given id.
     """
-    return _md_to_json(Metadata.query.get_or_404(id))
+
+    record = request.form
+    print request.method
+
+    if request.method == 'PUT':
+
+        md = Metadata.query.get_or_404(id)
+
+        for k, v in record.iteritems():
+            if k != 'id':
+                if k == 'date':
+                    v = datetime.strptime(v, '%Y-%m-%d')
+
+                setattr(md, k, v)
+
+        db.session.add(md)
+
+        db.session.commit()
+
+        md = Metadata.query.get_or_404(id)
+
+        record_dict = {k: v for k, v in md.__dict__.iteritems()
+                       if k != '_sa_instance_state'}
+
+        record_dict['date'] = record_dict['date'].strftime('%Y-%m-%d')
+
+        return jsonify(id=id, form=_make_mdform(record_dict, id=id))
+
+    else:
+
+        record = Metadata.query.get_or_404(id)
+
+        return _md_to_json(record)
 
 
 @api.route('/api/metadata/<int:id>/form')
@@ -88,8 +122,8 @@ def get_form_metadata(id):
                  if (k != '_sa_instance_state' and k != 'id')}
 
     form_dict['date'] = form_dict['date'].strftime('%Y-%m-%d')
-    # include id at root level separate from form
-    form = _make_mdform(form_dict)
+
+    form = _make_mdform(form_dict, id=id)
 
     return jsonify(id=id, form=form)
 
@@ -114,7 +148,7 @@ def get_form():
     return jsonify(form=_make_mdform())
 
 
-def _make_mdform(val_dict=None):
+def _make_mdform(val_dict=None, id=None):
     """Make metadata form for display on client.
 
         Args:
@@ -134,16 +168,17 @@ def _make_mdform(val_dict=None):
             blockLabel="basic-information",
             expanded="false",
             formElements=[
-
                 dict(label='Title', type='text', order=1,
                      value=val_dict['title'], name='title',
                      longDescription="E.g., Data for June 2014 Journal of Hydrology Paper"),
                 dict(label='Date', type='date', order=1, name='date',
                      value=val_dict['date'],
-                     longDescription='Date data was last updated')]
+                     longDescription='Date data was last updated'),
+                dict(type='hidden', id='hidden-form-id', value=id)
+                ]
          ),
 
-        dict(blockTitle="Researcher Information", blockLabel="researcher-information",
+        dict(blockTitle="RInformation", blockLabel="researcher-information",
          expanded="true",
          formElements=[
 
