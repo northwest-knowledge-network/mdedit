@@ -4,3 +4,4 @@
 *.sqlite
 migrations/*
 *.swo
+doc/build/*
