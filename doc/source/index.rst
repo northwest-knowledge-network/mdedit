@@ -8,6 +8,15 @@ mdedit
 A data-driven metadata editor with fully separate Flask API backend and 
 Javascript front end.
 
+Front end
+---------
+
+No matter what back end (meta)data server we use, the front end was designed to
+be mostly independent from it. All that needs to change is the URL where the
+front end pulls data from, as long as the backend fulfills the contract,
+currently implicit in the views in the frontend, but should be enumerated
+explicitly.
+
 Back end
 --------
 
@@ -15,6 +24,10 @@ The back end exposes a metadata API, powered by Flask. It's still rough and coul
 probably use some cleaning up, maybe using 
 `flask-restful <https://flask-restful.readthedocs.org/en/0.3.2/>`_ or
 `flask-restless <https://flask-restless.readthedocs.org/en/latest/>`_. 
+
+Future work and larger purpose
+------------------------------
+
 I'm also really excited about `CouchDB <http://couchdb.apache.org/>`_ and am
 thinking about just using CouchDB as the document server. After obsessively
 pouring over the freely-available O'Reilly publication written by major CouchDB
@@ -67,13 +80,3 @@ of the heavy lifting for me, allowing me to focus on user experience, which
 ultimately results in a more complete, *consilient* library of scientific data,
 with science being very large in scope.
 
-
-Front end
----------
-
-
-No matter what back end (meta)data server we use, the front end was designed to
-be mostly independent from it. All that needs to change is the URL where the
-front end pulls data from, as long as the backend fulfills the contract,
-currently implicit in the views in the frontend, but should be enumerated
-explicitly.

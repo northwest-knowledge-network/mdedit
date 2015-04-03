@@ -2,27 +2,27 @@
  * Javascript Front End for implementing views.
  */
 
-// URL of the metadata server
+/// URL of the metadata server
 var METADATA_URL = "http://localhost:4000/api/metadata";
 
+/// Compile page template
 var TEMPLATE_SOURCE = $("#entry-template").html();
-
 var TEMPLATE = Handlebars.compile(TEMPLATE_SOURCE); 
 
-// this is a stand-in for data from metadata server
-var context = [];
-
-
-// on load refresh list of metadata
+/// Page load: refresh list of metadata
 $(function() { 
+  
+  // refresh (create) list of existing metadata entries
   refreshMdList(); 
-
-  // md server's GET method for form returns default md form and autopop values
+  
+  // reset (initialize) metadata form
   resetForm();
   
-
 });
 
+/**
+ * Reset form to default values
+ */
 var resetForm = function()
 {
   $("#form-header").empty();
@@ -38,11 +38,20 @@ var resetForm = function()
   });
 };
 
-// refresh list of all existing metadata entries
+/**
+ * Depending on whether the user is just seeing the page for the first time,
+ * edited an existing record, or created a new record, refeshMdList reacts
+ * appropriately either displaying the full list (on init), editing the data
+ * for a single existing record (edit), or appending a new element in the HTML
+ * list (create new).
+ */
+
+/// state variables for each of the three situations listed above
 var initial = true;
 var firstAppend = true;
 var append = true;
 var mdListIdxLen = 0;
+
 var refreshMdList = function() {
 
   var mdlist = $('#mdlist');
@@ -120,22 +129,30 @@ var refreshMdList = function() {
 
 };
 
-// attach a listener on submit button; POST form data to md server on submit
+/**
+ * Listener on form's submit button. Checks if the hidden field of metadata id
+ * is populated. If it is, then PUT form data to md server on submit as is 
+ * proper for REST. If there is no metadata id, then this is a new metadata 
+ * submission, so we make a POST request.
+ */
 $('#mdform').submit( function(event) {
 
   event.preventDefault();
 
+  // `this` is form data
   var ser = $(this).serializeArray();
 
-  var idVal = ser.filter(function(el){ return el.name == "id"; }).pop()
+  var idVal = ser.filter(function(el){ return el.name == "id"; })
+                 .pop()
                  .value;
 
-  console.log(idVal);
   // if idVal is a str-rep of an integer, then we have a PUT: editing existing
   if (/^\+?[1-9]\d*$/.test(idVal))
   {
     var put = $.ajax({
+
       url: METADATA_URL + '/' + idVal, 
+
         type: 'PUT',
         data: ser,
         crossDomain: true,
@@ -145,13 +162,13 @@ $('#mdform').submit( function(event) {
 
             $("#form-main").html(html);
 
-            $.get(METADATA_URL + '/' + idVal, function(md) {
-              refreshMdList({append: false, 
-                             fields: md});
+            $.get(METADATA_URL + '/' + idVal, 
+              function(md) {
+                refreshMdList({append: false, 
+                               fields: md});
             });
 
             displayEditModeHeader(viewData.id);
-
           }
     });
   }
@@ -174,6 +191,10 @@ $('#mdform').submit( function(event) {
   }
 });
 
+/**
+ * In "edit mode" we display the metadata being edited and an option to stop
+ * editing to create a new entry instead.
+ */
 var displayEditModeHeader = function(recordId)
 {
     $("#form-header")
@@ -183,6 +204,9 @@ var displayEditModeHeader = function(recordId)
             '<button onclick="resetForm()">New Metadata Entry</button></div> </div>');
 }
 
+/**
+ * Initialize the view of editing an existing metadata record using the form
+ */
 var editRecord = function(clickedHrefId)
 {
     var endpoint = clickedHrefId;
