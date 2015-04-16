@@ -1,4 +1,4 @@
-mdFullstack: Optimize the whole metadata workflow
+mdedit: Optimize the whole metadata workflow
 ================================================= 
 
 This is a project to build a user-friendly metadata editor for use primarily by
