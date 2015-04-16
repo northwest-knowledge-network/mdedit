@@ -160,58 +160,6 @@
       <gmd:status>
         <gmd:MD_ProgressCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ProgressCode" codeListValue="completed">completed</gmd:MD_ProgressCode>
       </gmd:status>
-      <gmd:pointOfContact>
-        <gmd:CI_ResponsibleParty>
-          <gmd:individualName>
-            <gco:CharacterString>Linda Tedrow</gco:CharacterString>
-          </gmd:individualName>
-          <gmd:contactInfo>
-            <gmd:CI_Contact>
-              <gmd:phone>
-                <gmd:CI_Telephone>
-                  <gmd:voice>
-                    <gco:CharacterString>(208) 885-7085</gco:CharacterString>
-                  </gmd:voice>
-                  <gmd:facsimile>
-                    <gco:CharacterString>(208) 885-6564</gco:CharacterString>
-                  </gmd:facsimile>
-                </gmd:CI_Telephone>
-              </gmd:phone>
-              <gmd:address>
-                <gmd:CI_Address>
-                  <gmd:deliveryPoint>
-                    <gco:CharacterString>University of Idaho</gco:CharacterString>
-                  </gmd:deliveryPoint>
-                  <gmd:deliveryPoint>
-                    <gco:CharacterString>Department of Forest, Rangeland, and Fire Sciences</gco:CharacterString>
-                  </gmd:deliveryPoint>
-                  <gmd:deliveryPoint>
-                    <gco:CharacterString>875 Perimeter Drive, MS 1133</gco:CharacterString>
-                  </gmd:deliveryPoint>
-                  <gmd:city>
-                    <gco:CharacterString>Moscow</gco:CharacterString>
-                  </gmd:city>
-                  <gmd:administrativeArea>
-                    <gco:CharacterString>ID</gco:CharacterString>
-                  </gmd:administrativeArea>
-                  <gmd:postalCode>
-                    <gco:CharacterString>83844-1133</gco:CharacterString>
-                  </gmd:postalCode>
-                  <gmd:country>
-                    <gco:CharacterString>USA</gco:CharacterString>
-                  </gmd:country>
-                  <gmd:electronicMailAddress>
-                    <gco:CharacterString>ltedrow@uidaho.edu</gco:CharacterString>
-                  </gmd:electronicMailAddress>
-                </gmd:CI_Address>
-              </gmd:address>
-            </gmd:CI_Contact>
-          </gmd:contactInfo>
-          <gmd:role>
-            <gmd:CI_RoleCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="custodian">custodian</gmd:CI_RoleCode>
-          </gmd:role>
-        </gmd:CI_ResponsibleParty>
-      </gmd:pointOfContact>
       <gmd:resourceMaintenance>
         <gmd:MD_MaintenanceInformation>
           <gmd:maintenanceAndUpdateFrequency>
@@ -248,7 +196,7 @@
           </gmd:keyword>
           <gmd:keyword>
             <gco:CharacterString>USA</gco:CharacterString>
-          </gmd:keyword>    
+          </gmd:keyword>
           <gmd:type>
             <gmd:MD_KeywordTypeCode codeSpace="ISOTC211/19115" codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode" codeListValue="place">place</gmd:MD_KeywordTypeCode>
           </gmd:type>
@@ -313,7 +261,7 @@
         </gmd:EX_Extent>
       </gmd:extent>
     </gmd:MD_DataIdentification>
-  </gmd:identificationInfo> 
+  </gmd:identificationInfo>
   <gmd:distributionInfo>
     <gmd:MD_Distribution>
       <gmd:distributor>
@@ -391,7 +339,7 @@
                 </gmd:CI_OnlineResource>
               </gmd:onLine>
             </gmd:MD_DigitalTransferOptions>
-          </gmd:distributorTransferOptions> 
+          </gmd:distributorTransferOptions>
         </gmd:MD_Distributor>
       </gmd:distributor>
     </gmd:MD_Distribution>
