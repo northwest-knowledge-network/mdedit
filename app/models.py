@@ -1,41 +1,33 @@
 from flask import jsonify
-from datetime import datetime
 
 from . import db
 
 
+class Contact(db.EmbeddedDocument):
+    """Sub-document for use in list of citation and data access contacts"""
+    name = db.StringField(max_length=255, required=True)
+    org = db.StringField(max_length=255, required=True)
+    address = db.StringField(max_length=255, required=True)
+    city = db.StringField(max_length=255, required=True)
+    state = db.StringField(max_length=255, required=True)
+    country = db.StringField(max_length=255, required=True)
+    zipcode = db.StringField(max_length=255, required=True)
+    phone = db.StringField(max_length=255, required=True)
 
-class Metadata(db.Model):
-    """
-    Metadata Model
-    """
-    id = db.Column(db.Integer, primary_key=True)
 
-    ### Basic ###
-    title = db.Column(db.String(200), index=True)
-    date = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+class Metadata(db.Document):
+    """MongoDB Document representation of metadata"""
+    title = db.StringField(max_length=255, required=True)
+    summary = db.StringField(max_length=255, required=True)
+    first_pub_date = db.DateTimeField(required=True)
+    last_mod_date = db.DateTimeField(required=True)
+    theme_keywords = db.StringField(max_length=255)
+    place_keywords = db.StringField(max_length=255)
 
-    ### Researcher ###
-    rname = db.Column(db.String(100), index=True)
-    rinst = db.Column(db.String(100), index=True)
+    citation = db.ListField(db.EmbeddedDocumentField('Contact'))
+    access = db.ListField(db.EmbeddedDocumentField('Contact'))
 
-    ### Spatial Extent ###
-
-    ### Temporal Extent ###
-
-    ### Address 2 ###
-
-    ### Resource Info ###
-    @classmethod
-    def from_json(self, j):
-        """create a new Metadata record from a properly-formed dictionary
-        """
-        d = j.to_dict()
-
-        # need to make date a datetime object; all others OK
-        d['date'] = datetime.strptime(j['date'], '%Y-%m-%d')
-
-        return Metadata(**d)
+    meta = {'allow_inheritance': True}
 
 
 def _md_to_json(record):

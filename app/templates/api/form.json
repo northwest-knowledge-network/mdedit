@@ -1,0 +1,24 @@
+{
+    {% for panel in panels %} 
+    {
+        "blockTitle": "{{ panel.title }}",
+        "blockLabel": "{{ panel.label }}",
+        "expanded": "{{ panel.expanded }}",
+
+        "formElements": 
+        [
+        {% for field in panel.form_fields %}
+            {
+                "name": "{{ field.name }}",
+                "label": "{{ field.label }}",
+                "type": "{{ field.type }}",
+                "value": "{{ field.value }}"
+                {# "longDescription": {{ el.longDescription }}#}
+
+            }{% if not loop.last %},{% endif %}
+        {% endfor %}
+        ]
+
+    }{% if not loop.last %},{% endif %} 
+    {% endfor %}
+}

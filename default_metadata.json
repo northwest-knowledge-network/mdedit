@@ -1,0 +1,33 @@
+{
+  "first_pub_date": "2015-01-01", 
+  "last_mod_date": "2015-01-01",
+  "place_keywords": "idaho,dry creek",
+  "summary": "a good set of datasets",
+  "theme_keywords": "excellent",
+  "title": "new title",
+
+    "access": [
+      {
+        "address": "34 Concord",
+        "city": "moscow",
+        "country": "usa",
+        "name": "User Name",
+        "org": "UI",
+        "phone": "555-5555",
+        "state": "id",
+        "zipcode": "33434"
+      }
+    ],
+   "citation": [
+      {
+        "address": "34 Concord",
+        "city": "Moscow",
+        "country": "USA",
+        "name": "Matt",
+        "org": "UI",
+        "phone": "555-5555",
+        "state": "id",
+        "zipcode": "33434"
+      }
+    ]
+}

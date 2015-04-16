@@ -17,7 +17,7 @@ body {
   background-image: -webkit-linear-gradient(right,#FFA6C9 5%, dodgerblue 100%);
   background-image: -moz-linear-gradient(right,#FFA6C9 5%, dodgerblue 100%);
   background-image: -webkit-gradient(right,#FFA6C9 5%, dodgerblue 100%);
-  background-image: linear-gradient(right,#FFA6C9 5%, dodgerblue, 100%);
+  background-image: linear-gradient(right,#FFA6C9 5%, dodgerblue 100%);
 } 
 .navbar-fixed-top {
   border-width: 0; 

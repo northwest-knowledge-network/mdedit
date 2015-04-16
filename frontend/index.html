@@ -58,25 +58,25 @@
 
 <script id="entry-template" type="text/x-handlebars-template">
     {{#each this}}
-<div class="panel-group" id="accordion-{{blockLabel}}" role="tablist"
+<div class="panel-group" id="accordion-{{label}}" role="tablist"
      aria-multiselectable="true">
   <div class="panel panel-primary">
-    <div class="panel-heading md-block" role="tab" id="heading-{{blockLabel}}">
+    <div class="panel-heading md-block" role="tab" id="heading-{{label}}">
         <h4 class="panel-title">
-            <a data-toggle="collapse" data-parent="#accordion-{{blockLabel}}"
-               href="#body-{{blockLabel}}" 
-               aria-controls="body-{{blockLabel}}" aria-expanded="{{expanded}}">
-            {{blockTitle}}
+            <a data-toggle="collapse" data-parent="#accordion-{{label}}"
+               href="#body-{{label}}" 
+               aria-controls="body-{{label}}" aria-expanded="{{expanded}}">
+            {{title}}
             </a>
         </h4>
     </div>
-    <div id="body-{{blockLabel}}" class="panel-collapse collapse in"
-         aria-labelledby="heading-{{blockLabel}}" role="tabpanel"
+    <div id="body-{{label}}" class="panel-collapse collapse in"
+         aria-labelledby="heading-{{label}}" role="tabpanel"
          >
         <div class="panel-body">
 
 
-    {{#formElements}}
+    {{#form_fields}}
 
     {{#if id}}
       <input type={{type}} id={{id}} name='id' value={{value}} />
@@ -94,14 +94,14 @@
     
         <div class="row">
             <div class="col-sm-3"></div>
-            <div class="col-sm-9">
-                {{longDescription}}
-            </div>
+            <!--<div class="col-sm-9">-->
+                <!--{{longDescription}}-->
+            <!--</div>-->
         </div>
         <br />
     {{/if}}
 
-    {{/formElements}}
+    {{/form_fields}}
 
         </div>
 

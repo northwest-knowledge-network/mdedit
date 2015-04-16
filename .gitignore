@@ -5,3 +5,4 @@
 migrations/*
 *.swo
 doc/build/*
+venv

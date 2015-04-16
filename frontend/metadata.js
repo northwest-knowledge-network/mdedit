@@ -54,9 +54,9 @@ var mdListIdxLen = 0;
 
 var refreshMdList = function() {
 
-  var mdlist = $('#mdlist');
+  console.log("in refreshMdList");
 
-  console.log(typeof(arguments));
+  var domMdlist = $('#mdlist');
 
   var id = "/";
   var fields = {};
@@ -69,12 +69,11 @@ var refreshMdList = function() {
     id = fields.id;
   }
 
-  console.log(append);
-
   // get list of all metadata from server
   $.get(METADATA_URL, function(mdListObj) {
     // get list
-    var mdList = mdListObj.records;
+    var mdList = mdListObj.results;
+    console.log("in get callback");
 
     // clear out previous list so we're really just appending anything new
     if (!initial)
@@ -85,17 +84,23 @@ var refreshMdList = function() {
     }
     else
     {
+      console.log("initial");
       initial = false;
     }
 
     var mdDisplay = '';
     if (append) 
     {
+      console.log("appending");
+      console.log(mdList);
       $.each(mdList, function(idx, el) {
+          console.log(el);
           idx += mdListIdxLen + 1;
-          mdlist.append('<div class="row"><div class="col-sm-6"><h4>Metadata #' + idx + '</h4></div>' +
-            '<div class="col-sm-3"><a onclick="editRecord(this.id)" id="' + METADATA_URL + '/' + idx + '/form">Edit</a></div>' +
-            '<div class="col-sm-3"><a href="' + METADATA_URL + '/' + idx + '/xml' + '">XML</a></div></div>');
+          domMdlist.append('<div class="row"><div class="col-sm-6"><h4>Metadata #' + idx + '</h4></div>' +
+            '<div class="col-sm-3"><a onclick="editRecord(this.id)" href="/implementMe.html">Edit</a></div>' +
+            '<div class="col-sm-3"><a href="/implementMe.html">XML</a></div></div>');
+            //'<div class="col-sm-3"><a onclick="editRecord(this.id)" id="' + METADATA_URL + '/' + idx + '/form">Edit</a></div>' +
+            //'<div class="col-sm-3"><a href="' + METADATA_URL + '/' + idx + '/xml' + '">XML</a></div></div>');
 
           var displayRow = '';
           $.each(el, function(key, val) {
@@ -104,11 +109,12 @@ var refreshMdList = function() {
                 '<div class="col-xs-3 mdrow">' + key + ': ' + val + '</div>';
               });
 
-            mdlist.append('<div class="row" id="mdrow-' + idx + '">' + displayRow + '</div>');
+            domMdlist.append('<div class="row" id="mdrow-' + idx + '">' + displayRow + '</div>');
         });
       }
       else
       {
+        // TODO why does this use form route? That shouldn't be there, right?
         var byId = "http://localhost:4000/api/metadata/" + id + "/form";
         var displayRow = '';
         $.each(fields, function(key, val) {
@@ -119,7 +125,6 @@ var refreshMdList = function() {
         });
 
         var el_id = '#mdrow-' + id;
-        console.log(el_id);
         $(el_id).html(displayRow);
 
         append = true;
@@ -141,10 +146,14 @@ $('#mdform').submit( function(event) {
 
   // `this` is form data
   var ser = $(this).serializeArray();
+  
+  console.log(ser);
 
-  var idVal = ser.filter(function(el){ return el.name == "id"; })
-                 .pop()
-                 .value;
+  var idVal = ser.filter(function(el){ return el.name == "id"; });
+  if (! typeof idVal === 'undefined')
+  {
+    idVal = idVal.pop().value; 
+  }
 
   // if idVal is a str-rep of an integer, then we have a PUT: editing existing
   if (/^\+?[1-9]\d*$/.test(idVal))
