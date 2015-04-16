@@ -34,12 +34,62 @@
                 <xsl:value-of select=""/> 
                 -->
             </gmd:hierarchyLevel>
-            <gmd:contact>
-                <!--      
-                <xsl:for-each select="">
-                    <xsl:value-of select=""/>
-                </xsl:for-each>
-                -->
+            <!-- This contact is NKN because NKN is the distributor of the metadata record itself. This should be true for all records created with the NKN metadata editor -->
+            <gmd:contact xlink:title="NKN">
+                <gmd:CI_ResponsibleParty uuid="390bb26a-184d-4c30-8b3e-d74fe0783e28">
+                    <gmd:organisationName>
+                        <gco:CharacterString>Northwest Knowledge Network</gco:CharacterString>
+                    </gmd:organisationName>
+                    <gmd:contactInfo>
+                        <gmd:CI_Contact>
+                            <gmd:phone>
+                                <gmd:CI_Telephone>
+                                    <gmd:voice>
+                                        <gco:CharacterString>(208) 885-8456</gco:CharacterString>
+                                    </gmd:voice>
+                                </gmd:CI_Telephone>
+                            </gmd:phone>
+                            <gmd:address>
+                                <gmd:CI_Address>
+                                    <gmd:deliveryPoint>
+                                        <gco:CharacterString>University of Idaho Library</gco:CharacterString>
+                                    </gmd:deliveryPoint>
+                                    <gmd:deliveryPoint>
+                                        <gco:CharacterString>875 Perimeter Drive, MS 2358</gco:CharacterString>
+                                    </gmd:deliveryPoint>
+                                    <gmd:city>
+                                        <gco:CharacterString>Moscow</gco:CharacterString>
+                                    </gmd:city>
+                                    <gmd:administrativeArea>
+                                        <gco:CharacterString>ID</gco:CharacterString>
+                                    </gmd:administrativeArea>
+                                    <gmd:postalCode>
+                                        <gco:CharacterString>83844-2350</gco:CharacterString>
+                                    </gmd:postalCode>
+                                    <gmd:country>
+                                        <gco:CharacterString>USA</gco:CharacterString>
+                                    </gmd:country>
+                                    <gmd:electronicMailAddress>
+                                        <gco:CharacterString>info@northwestknowledge.net</gco:CharacterString>
+                                    </gmd:electronicMailAddress>
+                                </gmd:CI_Address>
+                            </gmd:address>
+                            <gmd:onlineResource>
+                                <gmd:CI_OnlineResource>
+                                    <gmd:linkage>
+                                        <gmd:URL>http://www.northwestknowledge.net</gmd:URL>
+                                    </gmd:linkage>
+                                    <gmd:name>
+                                        <gco:CharacterString>The home page for the Northwest Knowledge Network</gco:CharacterString>
+                                    </gmd:name>
+                                </gmd:CI_OnlineResource>
+                            </gmd:onlineResource>
+                        </gmd:CI_Contact>
+                    </gmd:contactInfo>
+                    <gmd:role>
+                        <gmd:CI_RoleCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="distributor">distributor</gmd:CI_RoleCode>
+                    </gmd:role>
+                </gmd:CI_ResponsibleParty>
             </gmd:contact>
             <gmd:dateStamp>
                 <xsl:value-of select="/root/record/last_mod_date/key"/>
@@ -75,12 +125,15 @@
                                     </gmd:date>
                                 </gmd:CI_Date>
                             </gmd:date>
+                            <!-- Contact info- authors -->
                             <xsl:for-each select="/root/record/citation/item">
                             <gmd:citedResponsibleParty>
                                 <gmd:CI_ResponsibleParty>
                                     <gmd:individualName>
                                         <gco:CharacterString>
-                                           <xsl:value-of select="/root/record/citation/item/name"/>     
+                                            <xsl:for-each select="/root/record/citation/item/name">
+                                                <xsl:value-of select="."/>
+                                            </xsl:for-each>
                                         </gco:CharacterString>
                                     </gmd:individualName>
                                     <gmd:contactInfo>
@@ -89,7 +142,9 @@
                                                 <gmd:CI_Telephone>
                                                     <gmd:voice>
                                                         <gco:CharacterString>
-                                                            <xsl:value-of select="/root/record/citation/item/phone"/>
+                                                            <xsl:for-each select="/root/record/citation/item/phone">
+                                                                <xsl:value-of select="."/>
+                                                            </xsl:for-each>
                                                         </gco:CharacterString>
                                                     </gmd:voice>
                                                 </gmd:CI_Telephone>
