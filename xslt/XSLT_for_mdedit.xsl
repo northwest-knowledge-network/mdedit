@@ -218,13 +218,44 @@
                     <gmd:abstract> 
                         <xsl:value-of select="root/record/summary"/>
                     </gmd:abstract>
-    <!-- Selects status of the dataset from the mdedit generic xml. This is selected from the dropdown list in mdedit. -->       
+    <!-- Selects status of the dataset from the mdedit generic xml. This is selected from the dropdown list in mdedit. --> 
+                    <!--
+                    <xsl:if test="root/record/progress = 'completed'>
                     <gmd:status>
                         <gmd:MD_ProgressCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ProgressCode" codeListValue="completed">completed</gmd:MD_ProgressCode>
-                        <!--
-                        <xsl:value-of select=""/>
-                        -->
                     </gmd:status>
+                    </xsl:if>
+                    <xsl:if test="root/record/progress = 'continually updated'>
+                        <gmd:status>
+                            <gmd:MD_ProgressCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ProgressCode" codeListValue="onGoing">onGoing</gmd:MD_ProgressCode>
+                        </gmd:status>
+                    </xsl:if>
+                    <xsl:if test="root/record/progress = 'in process'>
+                        <gmd:status>
+                            <gmd:MD_ProgressCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ProgressCode" codeListValue="underDevelopment">underDevelopment</gmd:MD_ProgressCode>
+                        </gmd:status>
+                    </xsl:if>
+                    <xsl:if test="root/record/progress = 'planned'>
+                        <gmd:status>
+                            <gmd:MD_ProgressCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ProgressCode" codeListValue="planned">planned</gmd:MD_ProgressCode>
+                        </gmd:status>
+                    </xsl:if>
+                    <xsl:if test="root/record/progress = 'needs to be generated or updated'>
+                        <gmd:status>
+                            <gmd:MD_ProgressCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ProgressCode" codeListValue="required">required</gmd:MD_ProgressCode>
+                        </gmd:status>
+                    </xsl:if>
+                    <xsl:if test="root/record/progress = 'stored in an offline facility'>
+                        <gmd:status>
+                            <gmd:MD_ProgressCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ProgressCode" codeListValue="historicalArchive">historicalArchive</gmd:MD_ProgressCode>
+                        </gmd:status>
+                    </xsl:if>
+                    <xsl:if test="root/record/progress = 'no longer valid'>
+                        <gmd:status>
+                            <gmd:MD_ProgressCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ProgressCode" codeListValue="obsolete">obsolete</gmd:MD_ProgressCode>
+                        </gmd:status>
+                    </xsl:if>
+                    -->
     <!-- Selects expected update frequency of the data itself from the mdedit generic xml. This is selected from the dropdown list in mdedit.
         This needs to be added as an issue in GitHub and to the design doc- Need to include this as a selecion field from a dropdown list. 
         It is for the expected frequency with which the data will be updated. 
