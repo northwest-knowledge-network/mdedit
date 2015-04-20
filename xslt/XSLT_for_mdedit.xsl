@@ -267,7 +267,7 @@
                             </gmd:maintenanceAndUpdateFrequency>
                         </gmd:MD_MaintenanceInformation>
                     </gmd:resourceMaintenance>
-                    <!--
+                    <!--If statement for update frequency
                     <xsl:if test="root/record/update = 'continual'">
                     <gmd:resourceMaintenance> 
                         <gmd:MD_MaintenanceInformation>
@@ -440,7 +440,7 @@
                     <gmd:topicCategory>
                         <gmd:MD_TopicCategoryCode>
                             <!--
-                            <xsl:value-of select=""/>
+                            <xsl:value-of select="/root/record/"/>
                             -->
                         </gmd:MD_TopicCategoryCode>
                     </gmd:topicCategory>
