@@ -267,6 +267,104 @@
                             </gmd:maintenanceAndUpdateFrequency>
                         </gmd:MD_MaintenanceInformation>
                     </gmd:resourceMaintenance>
+                    <!--
+                    <xsl:if test="root/record/update = 'continual'">
+                    <gmd:resourceMaintenance> 
+                        <gmd:MD_MaintenanceInformation>
+                            <gmd:maintenanceAndUpdateFrequency>
+                                <gmd:MD_MaintenanceFrequencyCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_MaintenanceFrequencyCode" codeListValue="continual">continual</gmd:MD_MaintenanceFrequencyCode>
+                            </gmd:maintenanceAndUpdateFrequency>
+                        </gmd:MD_MaintenanceInformation>
+                    </gmd:resourceMaintenance>  
+                    <xsl:if test="root/record/update = 'daily'">
+                        <gmd:resourceMaintenance> 
+                            <gmd:MD_MaintenanceInformation>
+                                <gmd:maintenanceAndUpdateFrequency>
+                                    <gmd:MD_MaintenanceFrequencyCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_MaintenanceFrequencyCode" codeListValue="daily">daily</gmd:MD_MaintenanceFrequencyCode>
+                                </gmd:maintenanceAndUpdateFrequency>
+                            </gmd:MD_MaintenanceInformation>
+                        </gmd:resourceMaintenance>  
+                    <xsl:if test="root/record/update = 'weekly'">
+                        <gmd:resourceMaintenance> 
+                            <gmd:MD_MaintenanceInformation>
+                                <gmd:maintenanceAndUpdateFrequency>
+                                    <gmd:MD_MaintenanceFrequencyCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_MaintenanceFrequencyCode" codeListValue="weekly">weekly</gmd:MD_MaintenanceFrequencyCode>
+                                </gmd:maintenanceAndUpdateFrequency>
+                            </gmd:MD_MaintenanceInformation>
+                        </gmd:resourceMaintenance>  
+                    <xsl:if test="root/record/update = 'fortnightly'">
+                        <gmd:resourceMaintenance> 
+                            <gmd:MD_MaintenanceInformation>
+                                <gmd:maintenanceAndUpdateFrequency>
+                                    <gmd:MD_MaintenanceFrequencyCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_MaintenanceFrequencyCode" codeListValue="fortnightly">fortnightly</gmd:MD_MaintenanceFrequencyCode>
+                                </gmd:maintenanceAndUpdateFrequency>
+                            </gmd:MD_MaintenanceInformation>
+                        </gmd:resourceMaintenance>  
+                    <xsl:if test="root/record/update = 'monthly'">
+                        <gmd:resourceMaintenance> 
+                            <gmd:MD_MaintenanceInformation>
+                                <gmd:maintenanceAndUpdateFrequency>
+                                    <gmd:MD_MaintenanceFrequencyCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_MaintenanceFrequencyCode" codeListValue="monthly">monthly</gmd:MD_MaintenanceFrequencyCode>
+                                </gmd:maintenanceAndUpdateFrequency>
+                            </gmd:MD_MaintenanceInformation>
+                        </gmd:resourceMaintenance>  
+                    <xsl:if test="root/record/update = 'quarterly'">
+                        <gmd:resourceMaintenance> 
+                            <gmd:MD_MaintenanceInformation>
+                                <gmd:maintenanceAndUpdateFrequency>
+                                    <gmd:MD_MaintenanceFrequencyCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_MaintenanceFrequencyCode" codeListValue="quarterly">quarterly</gmd:MD_MaintenanceFrequencyCode>
+                                </gmd:maintenanceAndUpdateFrequency>
+                            </gmd:MD_MaintenanceInformation>
+                        </gmd:resourceMaintenance>  
+                    <xsl:if test="root/record/update = 'biannually'">
+                        <gmd:resourceMaintenance> 
+                            <gmd:MD_MaintenanceInformation>
+                                <gmd:maintenanceAndUpdateFrequency>
+                                    <gmd:MD_MaintenanceFrequencyCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_MaintenanceFrequencyCode" codeListValue="biannually">biannually</gmd:MD_MaintenanceFrequencyCode>
+                                </gmd:maintenanceAndUpdateFrequency>
+                            </gmd:MD_MaintenanceInformation>
+                        </gmd:resourceMaintenance>  
+                    <xsl:if test="root/record/update = 'annually'">
+                        <gmd:resourceMaintenance> 
+                            <gmd:MD_MaintenanceInformation>
+                                <gmd:maintenanceAndUpdateFrequency>
+                                    <gmd:MD_MaintenanceFrequencyCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_MaintenanceFrequencyCode" codeListValue="asNeeded">annually</gmd:MD_MaintenanceFrequencyCode>
+                                </gmd:maintenanceAndUpdateFrequency>
+                            </gmd:MD_MaintenanceInformation>
+                        </gmd:resourceMaintenance>     
+                    <xsl:if test="root/record/update = 'as needed'">
+                        <gmd:resourceMaintenance> 
+                            <gmd:MD_MaintenanceInformation>
+                                <gmd:maintenanceAndUpdateFrequency>
+                                    <gmd:MD_MaintenanceFrequencyCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_MaintenanceFrequencyCode" codeListValue="asNeeded">asNeeded</gmd:MD_MaintenanceFrequencyCode>
+                                </gmd:maintenanceAndUpdateFrequency>
+                            </gmd:MD_MaintenanceInformation>
+                        </gmd:resourceMaintenance>       
+                    <xsl:if test="root/record/update = 'irregular'">
+                        <gmd:resourceMaintenance> 
+                            <gmd:MD_MaintenanceInformation>
+                                <gmd:maintenanceAndUpdateFrequency>
+                                    <gmd:MD_MaintenanceFrequencyCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_MaintenanceFrequencyCode" codeListValue="irregular">irregular</gmd:MD_MaintenanceFrequencyCode>
+                                </gmd:maintenanceAndUpdateFrequency>
+                            </gmd:MD_MaintenanceInformation>
+                        </gmd:resourceMaintenance>             
+                    <xsl:if test="root/record/update = 'not planned'">
+                        <gmd:resourceMaintenance> 
+                            <gmd:MD_MaintenanceInformation>
+                                <gmd:maintenanceAndUpdateFrequency>
+                                    <gmd:MD_MaintenanceFrequencyCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_MaintenanceFrequencyCode" codeListValue="notPlanned">notPlanned</gmd:MD_MaintenanceFrequencyCode>
+                                </gmd:maintenanceAndUpdateFrequency>
+                            </gmd:MD_MaintenanceInformation>
+                        </gmd:resourceMaintenance> 
+                    <xsl:if test="root/record/update = 'unknown'">
+                        <gmd:resourceMaintenance> 
+                            <gmd:MD_MaintenanceInformation>
+                                <gmd:maintenanceAndUpdateFrequency>
+                                    <gmd:MD_MaintenanceFrequencyCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_MaintenanceFrequencyCode" codeListValue="unknown">unknown</gmd:MD_MaintenanceFrequencyCode>
+                                </gmd:maintenanceAndUpdateFrequency>
+                            </gmd:MD_MaintenanceInformation>
+                        </gmd:resourceMaintenance> 
+                        -->
     <!-- Selects the theme keywords from the mdedit generic xml. Enables for multiple entires from a list. Defaults for projects will be built into the 
         frontend in html, at least for now-->
                     <gmd:descriptiveKeywords>
