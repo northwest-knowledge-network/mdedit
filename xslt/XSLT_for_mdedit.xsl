@@ -256,8 +256,7 @@
                         </gmd:status>
                     </xsl:if>
                     -->
-    <!-- Selects expected update frequency of the data itself from the mdedit generic xml. This is selected from the dropdown list in mdedit.
-        This needs to be added as an issue in GitHub and to the design doc- Need to include this as a selecion field from a dropdown list. 
+    <!-- Selects expected update frequency of the data itself from the mdedit generic xml. This is selected from the dropdown list in mdedit. 
         It is for the expected frequency with which the data will be updated. 
         For now we will use the default code for "As Needed".-->
                     <gmd:resourceMaintenance> 
