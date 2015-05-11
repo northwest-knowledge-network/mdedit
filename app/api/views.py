@@ -14,7 +14,7 @@ import json
 
 from . import api
 from .. import db
-from ..models import Metadata, _md_to_json
+from ..models import Metadata  # , _md_to_json
 
 
 @api.route('/api/metadata', methods=['GET', 'POST', 'PUT'])
@@ -35,19 +35,10 @@ def metadata():
         print request.form
         print "STRINGIFIED ******** \n"
         print str(request.form)
-        newmd = Metadata.from_json(json.dumps(request.form.__repr__))
-        print newmd.__dict__
-        cpy = newmd.to_json
 
-        newmd.save()
-        # db.session.add(newmd)
-        # db.session.commit()
+        new_md = Metadata.from_web_form(request.form)
 
-        # cpy = {k: v for k, v in cpy.__dict__.iteritems()
-               # if k != '_sa_instance_state'}
-
-        print cpy
-        cpy['date'] = datetime.strftime(cpy['date'], '%Y-%m-%d')
+        new_md.save()
 
         id = db.session.query(db.func.max(Metadata.id)).scalar()
 
@@ -111,25 +102,6 @@ def get_single_metadata(_oid):
         return jsonify(record=record)
 
 
-@api.route('/api/metadata/<string:_oid>/form')
-@cross_origin(origin='*', methods=['GET'])
-def get_form_metadata(_oid):
-    """Get form data for a given id for display on frontend"""
-
-    record = json.loads(Metadata.objects.get_or_404(pk=_oid).to_json)
-
-    exclude_fields = ['_cls', '_id']
-    form_dict = {k: v for k, v in record.iteritems()
-                 if k not in exclude_fields}
-
-    # date is wrong and form_dict is empty, probably because
-    print form_dict
-    form_dict['date'] = form_dict['date'].strftime('%Y-%m-%d')
-
-    panels = _make_form_panels(form_dict)
-
-    return jsonify(panels)
-
 @api.route('/api/metadata/xml')
 @cross_origin(origin='*', methods=['GET'])
 def get_xml_metadata():
@@ -155,132 +127,43 @@ def get_single_xml_metadata(_oid):
 @cross_origin(origin='*', methods=['GET', 'POST', 'PUT'],
               headers=['X-Requested-With', 'Content-Type', 'Origin'])
 def get_form():
+
     record = Metadata.objects[0]
-    panels = _make_form_panels(record)
+
+    # TODO remove this, use something smarter
+    panels = record.to_web_panels()
+
     return jsonify(form=[p.to_json() for p in panels])
 
 
-class Panel(object):
-    """Container for the metadata form page's `panels
-       <http://getbootstrap.com/components/#panels>`_
-    """
-    def __init__(self, title='Default Panel Title',
-                 label='default-panel-title', expanded='false',
-                 form_fields=None):
-
-        self.title = title
-        self.label = label
-        self.expanded = expanded
-
-        if form_fields:
-
-            if type(form_fields[0]) is FormField:
-                self.form_fields = form_fields
-
-            # TODO currently this transforms the dates? anyway contat info is
-            # missing
-            elif type(form_fields[0]) is tuple:
-                self.form_fields = [field
-                                    for fields in form_fields
-                                    for field in fields]
-
-        else:
-            self.form_fields = [FormField()]
-
-        # the form_fields should always be output as a list
-        assert type(self.form_fields) is list, \
-            "Check Input: Output form_fields is not a list!"
-
-    def __repr__(self):
-        sd = self.__dict__.copy()
-        sd['form_fields'] = [f.__dict__ for f in sd['form_fields']]
-        return str(sd)
-
-    def to_json(self):
-        sd = self.__dict__.copy()
-        sd['form_fields'] = [f.__dict__ for f in sd['form_fields']]
-        return sd
-
-class FormField(object):
-    """Container for an element that populates a single form field"""
-    def __init__(self, label='default-label', name='default name',
-                 type_='text', value='default-val',
-                 longDescription='a new metadata entry!'):
-        self.label = label
-        self.name = name
-        self.type = type_
-        self.value = value
+@api.route('/api/metadata/<string:_oid>/form')
+@cross_origin(origin='*', methods=['GET'])
+def get_form_metadata(_oid):
+    """Get form data for a given id for display on frontend"""
 
 
-def _make_form_panels(metadata):
-    """Make panels used in building the form via templates/api/form.json.
-       Expects a Metadata object (app.models)
-    """
-    metadata = json.loads(metadata.to_json())
-    basic_fields = \
-        [FormField('Title', 'title', 'text', metadata['title']),
-         FormField('Date Published', 'first-published-date', 'date',
-                   metadata['first_pub_date']['$date']),
-         FormField('Date Last Modified', 'last-modified-date', 'date',
-                   metadata['last_mod_date']['$date'])]
+    record = json.loads(Metadata.objects.get_or_404(pk=_oid).to_json())
 
-    data_fields = \
-        [FormField('Summary', 'summary', 'text', metadata['summary']),
-         FormField('Thematic Keywords', 'thematic-keywords', 'text',
-                   metadata['theme_keywords']),
-         FormField('Place Keywords', 'place-keywords', 'text',
-                   metadata['place_keywords'])]
+    exclude_fields = ['_cls', '_id']
+    form_dict = {k: v for k, v in record.iteritems()
+                 if k not in exclude_fields}
 
-    n_citations = len(metadata['citation'])
-    citation_fields = \
-        [(FormField('Name '+str(i+1),
-                    'citation-name-'+str(i+1), 'text',
-                    metadata['citation'][i]['name']),
-          FormField('Organization/Affiliation '+str(i+1), 'citation-org-'+str(i+1),
-                    'text', metadata['citation'][i]['org']),
-          FormField('Address '+str(i+1), 'citation-address-'+str(i+1),
-                    'text', metadata['citation'][i]['address']),
-          FormField('City '+str(i+1), 'citation-city-'+str(i+1),
-                    'text', metadata['citation'][i]['city']),
-          FormField('State '+str(i+1), 'citation-state-'+str(i+1),
-                    'text', metadata['citation'][i]['state']),
-          FormField('Country '+str(i+1), 'citation-country-'+str(i+1),
-                    'text', metadata['citation'][i]['country']),
-          FormField('Zip Code '+str(i+1), 'citation-zipcode-'+str(i+1),
-                    'text', metadata['citation'][i]['zipcode']),
-          FormField('Phone Number '+str(i+1), 'citation-phone-'+str(i+1),
-                    'text', metadata['citation'][i]['phone']))
+    # convert mongo stored dates to properly formatted dates
+    unix_moddate = form_dict['last_mod_date']['$date']
 
-         for i in range(n_citations)]
+    formatted_moddate = datetime.utcfromtimestamp(
+                            unix_moddate/1000).strftime('%Y-%m-%d')
 
-    n_access = len(metadata['access'])
-    access_fields = \
-        [(FormField('Name '+str(i+1), 'access-name-'+str(i+1),
-                    'text', metadata['access'][i]['name']),
-          FormField('Organization/Affiliation '+str(i+1), 'access-org-'+str(i+1),
-                    'text', metadata['access'][i]['org']),
-          FormField('Address '+str(i+1), 'access-address-'+str(i+1),
-                    'text', metadata['access'][i]['address']),
-          FormField('City '+str(i+1), 'access-city-'+str(i+1),
-                    'text', metadata['access'][i]['city']),
-          FormField('State '+str(i+1), 'access-state-'+str(i+1),
-                    'text', metadata['access'][i]['state']),
-          FormField('Country '+str(i+1), 'access-country-'+str(i+1),
-                    'text', metadata['access'][i]['country']),
-          FormField('Zip Code '+str(i+1), 'access-zipcode-'+str(i+1),
-                    'text', metadata['access'][i]['zipcode']),
-          FormField('Phone Number '+str(i+1), 'access-phone-'+str(i+1),
-                    'text', metadata['access'][i]['phone']))
+    form_dict['last_mod_date'] = formatted_moddate
 
-         for i in range(n_access)]
+    unix_pubdate = form_dict['first_pub_date']['$date']
 
-    panels = [Panel('Basic Information', 'basic-information', 'true',
-                    form_fields=basic_fields),
-              Panel('Data Information', 'data-information', 'false',
-                    form_fields=data_fields),
-              Panel('Citation Contact Info', 'citation-contact', 'false',
-                    form_fields=citation_fields),
-              Panel('Data Access Contact Info', 'access-contact', 'false',
-                    form_fields=access_fields)]
+    formatted_pubdate = datetime.utcfromtimestamp(
+                            unix_pubdate/1000).strftime('%Y-%m-%d')
+    form_dict['first_pub_date'] = formatted_pubdate
 
-    return panels
+    panels = _make_form_panels(form_dict)
+
+    return jsonify(form=[p.to_json() for p in panels])
+
+

@@ -145,11 +145,11 @@ $('#mdform').submit( function(event) {
   event.preventDefault();
 
   // `this` is form data
-  var ser = $(this).serializeArray();
+  var serializedForm = $(this).serializeArray();
   
-  console.log(ser);
+  console.log(serializedForm);
 
-  var idVal = ser.filter(function(el){ return el.name == "id"; });
+  var idVal = serializedForm.filter(function(el){ return el.name == "id"; });
   if (! typeof idVal === 'undefined')
   {
     idVal = idVal.pop().value; 
@@ -163,7 +163,7 @@ $('#mdform').submit( function(event) {
       url: METADATA_URL + '/' + idVal, 
 
         type: 'PUT',
-        data: ser,
+        data: serializedForm,
         crossDomain: true,
         success: function(viewData) {
 
@@ -184,9 +184,12 @@ $('#mdform').submit( function(event) {
   // otherwise this is a POST, which creates a new record
   else
   {
-    var posting = $.post(METADATA_URL, 
+    var posting = 
+      $.post(METADATA_URL, 
         // dont include id for posting; it's '/'
-        ser.filter(function(el){ return el.name != "id"; }));
+        serializedForm.filter(
+          function(el){ return el.name != "id"; 
+        }));
 
     posting.done(function(viewData) {
 
