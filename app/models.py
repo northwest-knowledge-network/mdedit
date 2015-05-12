@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 from flask import jsonify
 from werkzeug import ImmutableMultiDict
 
@@ -100,27 +100,33 @@ class Metadata(db.Document):
         for k in form_data.keys():
             kspl = k.split('-')
             if kspl[0] in ['citation', 'access']:
-                formatted_dict[kspl[0]][int(kspl[2])-1][kspl[1]] = form_data[k]
+                # import ipdb; ipdb.set_trace()
+                formatted_dict[kspl[0]][int(kspl[2])][kspl[1]] = form_data[k]
+
+        formatted_dict['last_mod_date'] = date.today().strftime('%Y-%m-%d')
 
         return Metadata.from_json(json.dumps(formatted_dict))
 
-    def to_web_panels(self, layout_doc='standard_form_layout.json'):
+    def to_web_form(self):
         """
         Using the layout_doc, create the web form.
         """
-        self.last_mod_date = \
-            datetime.strftime(self.last_mod_date, '%Y-%m-%d')
+        if type(self.last_mod_date) is datetime.date:
+            self.last_mod_date = \
+                datetime.strftime(self.last_mod_date, '%Y-%m-%d')
 
-        self.first_pub_date = \
-            datetime.strftime(self.first_pub_date, '%Y-%m-%d')
+        if type(self.last_mod_date) is datetime.date:
+            self.first_pub_date = \
+                datetime.strftime(self.first_pub_date, '%Y-%m-%d')
 
-        return _make_form_panels(self)
+        return _web_form_layout(self)
 
 
 def _get_contact_len(access_or_citation, form_data):
     "Get the length of the contact list for access or citation contacts"
+    # need to add +1 because numbering starts at zero
     return max([int(k.split('-')[-1]) for k in form_data.keys()
-                if k.split('-')[0] == access_or_citation])
+                if k.split('-')[0] == access_or_citation]) + 1
 
 
 def IsValidFormData(form_data):
@@ -141,14 +147,13 @@ class Panel(object):
         self.title = title
         self.label = label
         self.expanded = expanded
+        self.form_fields = []
 
         if form_fields:
 
             if type(form_fields[0]) is FormField:
                 self.form_fields = form_fields
 
-            # TODO currently this transforms the dates? anyway contat info is
-            # missing
             elif type(form_fields[0]) is tuple:
                 self.form_fields = [field
                                     for fields in form_fields
@@ -252,5 +257,48 @@ def _make_form_panels(metadata):
                     form_fields=citation_fields),
               Panel('Data Access Contact Info', 'access-contact', 'false',
                     form_fields=access_fields)]
+
+    return panels
+
+
+# use this to populate FormFields within Panels. FormField.name can be used to
+# access the value from the database. The first DB entry has the default form.
+def _web_form_layout(mongo_record):
+
+    metadata_form_layout = {
+        'Basic Information': [
+            FormField(label='Title', name='title',
+                      type_='text', value=mongo_record['title']),
+            FormField(label='First Published', name='first_pub_date',
+                      type_='date', value=mongo_record['first_pub_date'])
+            ],
+        'Data Information': [
+            FormField(label='Summary', name='summary',
+                      type_='text', value=mongo_record['summary']),
+            FormField(label='Thematic Keywords', name='theme_keywords',
+                      type_='text', value=mongo_record['theme_keywords']),
+            FormField(label='Place Keywords', name='place_keywords',
+                      type_='text', value=mongo_record['place_keywords'])
+            ],
+
+        'Citation Contact': [FormField(label=f.capitalize(),
+                                        name='citation-{}-{}'.format(f, i),
+                                        type_='text',
+                                        value=mongo_record['citation'][i][f])
+
+                              for f in Contact.__dict__['_fields'].keys()
+                             for i in range(len(mongo_record['citation']))],
+
+        'Access Contact': [FormField(label=f.capitalize(),
+                                     name='access-{}-{}'.format(f, i),
+                                     type_='text',
+                                     value=mongo_record['access'][i][f])
+
+                             for f in Contact.__dict__['_fields'].keys()
+                            for i in range(len(mongo_record['access']))],
+    }
+
+    panels = [Panel(k, k.lower(), form_fields=v) for
+              k, v in metadata_form_layout.iteritems()]
 
     return panels

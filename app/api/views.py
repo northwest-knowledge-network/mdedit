@@ -40,10 +40,10 @@ def metadata():
 
         new_md.save()
 
-        id = db.session.query(db.func.max(Metadata.id)).scalar()
+        panels = new_md.to_web_form()
 
         # return a JSON record of new metadata to load into the page
-        return jsonify(id=id, form=_make_mdform(cpy))
+        return jsonify(form=[p.to_json() for p in panels])
 
     # PUT request: edit of existing record
     if request.method == 'PUT':
@@ -131,7 +131,7 @@ def get_form():
     record = Metadata.objects[0]
 
     # TODO remove this, use something smarter
-    panels = record.to_web_panels()
+    panels = record.to_web_form()
 
     return jsonify(form=[p.to_json() for p in panels])
 
