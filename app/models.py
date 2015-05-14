@@ -25,8 +25,8 @@ class Metadata(db.Document):
     summary = db.StringField(max_length=255, required=True)
     first_pub_date = db.DateTimeField(required=True)
     last_mod_date = db.DateTimeField(required=True)
-    theme_keywords = db.StringField(max_length=255)
-    place_keywords = db.StringField(max_length=255)
+    theme_keywords = db.ListField(db.StringField(max_length=255))
+    place_keywords = db.ListField(db.StringField(max_length=255))
 
     citation = db.ListField(db.EmbeddedDocumentField('Contact'))
     access = db.ListField(db.EmbeddedDocumentField('Contact'))
@@ -90,6 +90,15 @@ class Metadata(db.Document):
         # create a dictionary of the non-contact fields
         formatted_dict = {k: form_data[k] for k in form_data.keys()
                           if k.split('-')[0] not in ['citation', 'access']}
+
+        # make a list out of comma-separated keywords
+        listify = lambda s: s.replace(' ', '').split(',')
+
+        formatted_dict['place_keywords'] = \
+            listify(formatted_dict['place_keywords'])
+
+        formatted_dict['theme_keywords'] = \
+            listify(formatted_dict['theme_keywords'])
 
         # by adding this info, the dictionary can be loaded to mongo
         formatted_dict['access'] = [{} for i in range(access_len)]
@@ -186,79 +195,6 @@ class FormField(object):
         self.name = name
         self.type = type_
         self.value = value
-
-
-def _make_form_panels(metadata):
-    """Make panels used in building the form via templates/api/form.json.
-       Expects a Metadata object (app.models)
-    """
-    basic_fields = \
-        [FormField('Title', 'title', 'text', metadata['title']),
-         FormField('Date Published', 'first-published-date', 'date',
-                   metadata['first_pub_date']),
-         FormField('Date Last Modified', 'last-modified-date', 'date',
-                   metadata['last_mod_date'])]
-
-    data_fields = \
-        [FormField('Summary', 'summary', 'text', metadata['summary']),
-         FormField('Thematic Keywords', 'thematic-keywords', 'text',
-                   metadata['theme_keywords']),
-         FormField('Place Keywords', 'place-keywords', 'text',
-                   metadata['place_keywords'])]
-
-    n_citations = len(metadata['citation'])
-    citation_fields = \
-        [(FormField('Name '+str(i+1),
-                    'citation-name-'+str(i+1), 'text',
-                    metadata['citation'][i]['name']),
-          FormField('Organization/Affiliation '+str(i+1), 'citation-org-'+str(i+1),
-                    'text', metadata['citation'][i]['org']),
-          FormField('Address '+str(i+1), 'citation-address-'+str(i+1),
-                    'text', metadata['citation'][i]['address']),
-          FormField('City '+str(i+1), 'citation-city-'+str(i+1),
-                    'text', metadata['citation'][i]['city']),
-          FormField('State '+str(i+1), 'citation-state-'+str(i+1),
-                    'text', metadata['citation'][i]['state']),
-          FormField('Country '+str(i+1), 'citation-country-'+str(i+1),
-                    'text', metadata['citation'][i]['country']),
-          FormField('Zip Code '+str(i+1), 'citation-zipcode-'+str(i+1),
-                    'text', metadata['citation'][i]['zipcode']),
-          FormField('Phone Number '+str(i+1), 'citation-phone-'+str(i+1),
-                    'text', metadata['citation'][i]['phone']))
-
-         for i in range(n_citations)]
-
-    n_access = len(metadata['access'])
-    access_fields = \
-        [(FormField('Name '+str(i+1), 'access-name-'+str(i+1),
-                    'text', metadata['access'][i]['name']),
-          FormField('Organization/Affiliation '+str(i+1), 'access-org-'+str(i+1),
-                    'text', metadata['access'][i]['org']),
-          FormField('Address '+str(i+1), 'access-address-'+str(i+1),
-                    'text', metadata['access'][i]['address']),
-          FormField('City '+str(i+1), 'access-city-'+str(i+1),
-                    'text', metadata['access'][i]['city']),
-          FormField('State '+str(i+1), 'access-state-'+str(i+1),
-                    'text', metadata['access'][i]['state']),
-          FormField('Country '+str(i+1), 'access-country-'+str(i+1),
-                    'text', metadata['access'][i]['country']),
-          FormField('Zip Code '+str(i+1), 'access-zipcode-'+str(i+1),
-                    'text', metadata['access'][i]['zipcode']),
-          FormField('Phone Number '+str(i+1), 'access-phone-'+str(i+1),
-                    'text', metadata['access'][i]['phone']))
-
-         for i in range(n_access)]
-
-    panels = [Panel('Basic Information', 'basic-information', 'true',
-                    form_fields=basic_fields),
-              Panel('Data Information', 'data-information', 'false',
-                    form_fields=data_fields),
-              Panel('Citation Contact Info', 'citation-contact', 'false',
-                    form_fields=citation_fields),
-              Panel('Data Access Contact Info', 'access-contact', 'false',
-                    form_fields=access_fields)]
-
-    return panels
 
 
 # use this to populate FormFields within Panels. FormField.name can be used to
