@@ -62,6 +62,14 @@ back end server. To see the back end emit metadata, try these routes:
   used by developers as a base for running XSLTs. Get ``_oid`` by inspecting
   a record from http://localhost:4000/api/metadata
 
+You can view an XML record for some metadata easily by clicking the ``XML`` link
+above the currently ugly list items. Or, to do it manually, find the ``_oid`` of
+interest by inspecting the list of JSON metadata at
+http://localhost:4000/api/metadata, find a metadata record of interest, copy the
+``_oid`` and insert it into the URL like so, and put the URL in your browser:
+``http://localhost:4000/api/metadata/{_oid}/xml``.  The braces and any other
+quotes should be dropped.
+
 
 More info
 ---------

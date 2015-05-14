@@ -1,33 +1,33 @@
 {
   "first_pub_date": "2015-01-01", 
   "last_mod_date": "2015-01-01",
-  "place_keywords": "idaho,dry creek",
-  "summary": "a good set of datasets",
-  "theme_keywords": "excellent",
-  "title": "new title",
+  "place_keywords": ["Dry Creek", "Idaho", "Boise", "Forest Service"],
+  "summary": "DEM of Dry Creek Watershed northeast of Boise, ID",
+  "theme_keywords": ["lidar", "dem", "hydrology"],
+  "title": "Dry Creek DEM",
 
     "access": [
       {
-        "address": "34 Concord",
-        "city": "moscow",
-        "country": "usa",
-        "name": "User Name",
+        "address": "850 Rayburn St",
+        "city": "Moscow",
+        "country": "United States",
+        "name": "NKN",
         "org": "UI",
         "phone": "555-5555",
-        "state": "id",
-        "zipcode": "33434"
+        "state": "Idaho",
+        "zipcode": "83844"
       }
     ],
    "citation": [
       {
-        "address": "34 Concord",
+        "address": "875 Bronco Drive",
         "city": "Moscow",
         "country": "USA",
-        "name": "Matt",
-        "org": "UI",
+        "name": "Janet Reno",
+        "org": "Boise State University",
         "phone": "555-5555",
-        "state": "id",
-        "zipcode": "33434"
+        "state": "Idaho",
+        "zipcode": "83844"
       }
     ]
 }
