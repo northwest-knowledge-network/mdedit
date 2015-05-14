@@ -78,8 +78,8 @@
 
     {{#form_fields}}
 
-    {{#if id}}
-      <input type={{type}} id={{id}} name='id' value={{value}} />
+    {{#if is_id}} 
+      <input type="hidden" class="form-control" id="id" name="id" value={{value}} />
     {{else}}
 
         <div class="form-group">

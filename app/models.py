@@ -10,6 +10,8 @@ from . import db
 class Contact(db.EmbeddedDocument):
     """Sub-document for use in list of citation and data access contacts"""
     name = db.StringField(max_length=255, required=True)
+    # TODO make this a mongoengine.fields.EmailField
+    email = db.StringField(max_length=255, required=True)
     org = db.StringField(max_length=255, required=True)
     address = db.StringField(max_length=255, required=True)
     city = db.StringField(max_length=255, required=True)
@@ -150,12 +152,10 @@ class Panel(object):
        <http://getbootstrap.com/components/#panels>`_
     """
     def __init__(self, title='Default Panel Title',
-                 label='default-panel-title', expanded='false',
-                 form_fields=None):
+                 label='default-panel-title', form_fields=None):
 
         self.title = title
         self.label = label
-        self.expanded = expanded
         self.form_fields = []
 
         if form_fields:
@@ -206,7 +206,9 @@ def _web_form_layout(mongo_record):
             FormField(label='Title', name='title',
                       type_='text', value=mongo_record['title']),
             FormField(label='First Published', name='first_pub_date',
-                      type_='date', value=mongo_record['first_pub_date'])
+                      type_='date', value=mongo_record['first_pub_date']),
+            # this is a hidden field
+            FormField(label='id', name='id', type_='hidden', value=str(mongo_record.id))
             ],
         'Data Information': [
             FormField(label='Summary', name='summary',
@@ -233,6 +235,8 @@ def _web_form_layout(mongo_record):
                              for f in Contact.__dict__['_fields'].keys()
                             for i in range(len(mongo_record['access']))],
     }
+
+    metadata_form_layout['Basic Information'][-1].is_id = True
 
     panels = [Panel(k, k.lower(), form_fields=v) for
               k, v in metadata_form_layout.iteritems()]

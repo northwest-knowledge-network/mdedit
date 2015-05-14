@@ -96,19 +96,27 @@ var refreshMdList = function() {
       $.each(mdList, function(idx, el) {
           console.log(el);
           idx += mdListIdxLen + 1;
-          domMdlist.append('<div class="row"><div class="col-sm-6"><h4>Metadata #' + idx + '</h4></div>' +
-            '<div class="col-sm-3"><a onclick="editRecord(this.id)" href="/implementMe.html">Edit</a></div>' +
-            '<div class="col-sm-3"><a href="/implementMe.html">XML</a></div></div>');
-            //'<div class="col-sm-3"><a onclick="editRecord(this.id)" id="' + METADATA_URL + '/' + idx + '/form">Edit</a></div>' +
-            //'<div class="col-sm-3"><a href="' + METADATA_URL + '/' + idx + '/xml' + '">XML</a></div></div>');
+          oid = el._id['$oid']
+          domMdlist.append(
+            
+            // metadata numbering header
+            '<div class="row"><div class="col-sm-6"><h4>Metadata #' + idx + '</h4></div>' +
+            // Edit link
+            '<div class="col-sm-3"><a onclick="editRecord(this.id)" id="' + 
+              METADATA_URL + '/' + oid + '/form">Edit</a></div>' +
+            // "generic" xml link
+            '<div class="col-sm-3"><a href="' + 
+              METADATA_URL + '/' + oid + '/xml' + '">XML</a></div></div>');
 
+          // append build each div.mdrow from domMdList element 
           var displayRow = '';
           $.each(el, function(key, val) {
-              // display list 
+              // create the row
               displayRow += 
                 '<div class="col-xs-3 mdrow">' + key + ': ' + val + '</div>';
               });
 
+            // append the row to div#mdlist
             domMdlist.append('<div class="row" id="mdrow-' + idx + '">' + displayRow + '</div>');
         });
       }
