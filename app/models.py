@@ -123,14 +123,13 @@ class Metadata(db.Document):
         for k in form_data.keys():
             kspl = k.split('-')
             if kspl[0] in ['citation', 'access']:
-                # import ipdb; ipdb.set_trace()
                 formatted_dict[kspl[0]][int(kspl[2])][kspl[1]] = form_data[k]
 
         formatted_dict['last_mod_date'] = date.today().strftime('%Y-%m-%d')
 
         return Metadata.from_json(json.dumps(formatted_dict))
 
-    def to_web_form(self):
+    def to_web_form(self, include_id=True):
         """
         Using the layout_doc, create the web form.
         """
@@ -142,7 +141,7 @@ class Metadata(db.Document):
             self.first_pub_date = \
                 datetime.strftime(self.first_pub_date, '%Y-%m-%d')
 
-        return _web_form_layout(self)
+        return _web_form_layout(self, include_id)
 
 
 def _get_contact_len(access_or_citation, form_data):
@@ -244,7 +243,7 @@ TOPIC_CATEGORY_OPTIONS = \
      "Society", "Structure", "Transportation", "Utilities/Communication"]
 
 
-def _web_form_layout(mongo_record):
+def _web_form_layout(mongo_record, include_id=True):
     """
     Build a dict representing the web form to be serialized to JSON in
     Metadata.to_web_form
@@ -262,8 +261,6 @@ def _web_form_layout(mongo_record):
                       type_='text', value=mongo_record['title']),
             FormField(label='First Published', name='first_pub_date',
                       type_='date', value=mongo_record['first_pub_date']),
-            # this is a hidden field
-            FormField(label='id', name='id', type_='hidden', value=str(mongo_record.id))
             ]),
         ('Data Information', [
             SelectField(label='Topic Category', name='topic_category',
@@ -297,8 +294,22 @@ def _web_form_layout(mongo_record):
                             for i in range(len(mongo_record['access']))])
         ])
 
+    # give the API developer the ability to hide the id if requested for a new
+    # metadata record
+    if include_id:
+        # this is a hidden field
+        metadata_form_layout['Basic Information'] += \
+            [FormField(label='id', name='id', type_='hidden',
+                       value=str(mongo_record.id))]
 
-    metadata_form_layout['Basic Information'][-1].is_id = True
+        metadata_form_layout['Basic Information'][-1].is_id = True
+
+    bi_pubdate = metadata_form_layout['Basic Information'][1].value
+
+    if isinstance(bi_pubdate, datetime):
+        metadata_form_layout['Basic Information'][1].value = \
+            datetime.strftime(metadata_form_layout['Basic Information'][1].value,
+                              '%Y-%m-%d')
 
     panels = [Panel(k, k.lower(), form_fields=v) for
               k, v in metadata_form_layout.iteritems()]

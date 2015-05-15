@@ -27,10 +27,6 @@ def metadata():
 
     # create a new metadata record
     if request.method == 'POST':
-        # if no id, it is a new post
-        print request.form
-        print "STRINGIFIED ******** \n"
-        print str(request.form)
 
         new_md = Metadata.from_web_form(request.form)
 
@@ -41,20 +37,6 @@ def metadata():
         # return a JSON record of new metadata to load into the page
         return jsonify(form=[p.to_json() for p in panels])
 
-    # PUT request: edit of existing record
-    if request.method == 'PUT':
-
-        data = request.form
-
-        # if there's no id for a PUT it'd be strange, but not impossible
-        if data['id'] == '/':
-            return render_template('<h1>422: Bad Data</h1><p>Incorrect data '
-                                   'for request</p>'), 422
-
-        else:
-
-            return jsonify(data)
-
 
 @api.route('/api/metadata/<string:_oid>', methods=['GET', 'PUT'])
 @cross_origin(origin='*', methods=['GET', 'PUT'],
@@ -63,37 +45,22 @@ def get_single_metadata(_oid):
     """Get the JSON representation of the metadata record with given id.
     """
 
-    record = request.form
-
     if request.method == 'PUT':
 
-        md = Metadata.objects.get_or_404(pk=_oid)
+        existing_record = Metadata.objects.get_or_404(pk=_oid)
 
-        for k, v in record.iteritems():
-            if k != 'id':
-                if k == 'date':
-                    v = datetime.strptime(v, '%Y-%m-%d')
+        for f in existing_record._fields:
+            existing_record[f] = Metadata.from_web_form(request.form)[f]
 
-                setattr(md, k, v)
+        existing_record.save()
 
-        db.session.add(md)
+        panels = existing_record.to_web_form()
 
-        db.session.commit()
-
-        md = Metadata.objects.get_or_404(pk=_oid)
-
-        record_dict = {k: v for k, v in md.__dict__.iteritems()
-                       if k != '_sa_instance_state'}
-
-        record_dict['date'] = record_dict['date'].strftime('%Y-%m-%d')
-
-        return jsonify(id=id, form=_make_mdform(record_dict, id=id))
+        return jsonify(form=[p.to_json() for p in panels])
 
     else:
 
-        # record = Metadata.objects.get_or_404(_oid)
-        record = Metadata.objects.find_one()
-        print record
+        record = Metadata.objects.get_or_404(pk=_oid)
 
         return jsonify(record=record)
 
@@ -123,13 +90,13 @@ def get_single_xml_metadata(_oid):
 
 
 @api.route('/api/metadata/form')
-@cross_origin(origin='*', methods=['GET', 'POST', 'PUT'],
+@cross_origin(origin='*', methods=['GET'],
               headers=['X-Requested-With', 'Content-Type', 'Origin'])
 def get_form():
 
     record = Metadata.objects[0]
 
-    panels = record.to_web_form()
+    panels = record.to_web_form(include_id=False)
 
     return jsonify(form=[p.to_json() for p in panels])
 

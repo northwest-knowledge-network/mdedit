@@ -38,4 +38,4 @@ print "that the server emits, visit http://localhost:4000/api/metadata/" +\
     str(id) + "/xml.  Remove '/xml' to see the original json.\n\n\n"
 
 while True:
-    time.sleep(10)
+    time.sleep(1)

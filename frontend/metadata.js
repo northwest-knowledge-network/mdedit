@@ -52,6 +52,7 @@ var firstAppend = true;
 var append = true;
 var mdListIdxLen = 0;
 
+/** FIXME: REFACTORME **/
 var refreshMdList = function() {
 
   console.log("in refreshMdList");
@@ -65,8 +66,8 @@ var refreshMdList = function() {
   {
     var argsObj = arguments[0];
     append = argsObj.append; 
-    fields = argsObj.fields;
-    id = fields.id;
+    fields = argsObj.fields.record;  // FIXME
+    id = fields._id['$oid'];
   }
 
   // get list of all metadata from server
@@ -97,40 +98,44 @@ var refreshMdList = function() {
           console.log(el);
           idx += mdListIdxLen + 1;
           oid = el._id['$oid']
-          domMdlist.append(
-            
+          domMdlist.append( 
             // metadata numbering header
-            '<div class="row"><div class="col-sm-6"><h4>Metadata #' + idx + '</h4></div>' +
-            // Edit link
-            '<div class="col-sm-3"><a onclick="editRecord(this.id)" id="' + 
-              METADATA_URL + '/' + oid + '/form">Edit</a></div>' +
-            // "generic" xml link
-            '<div class="col-sm-3"><a href="' + 
-              METADATA_URL + '/' + oid + '/xml' + '">XML</a></div></div>');
+            '<div class="row"><div class="col-sm-6"><h4>Metadata #' + idx + '</h4></div>'
+          );
 
           // append build each div.mdrow from domMdList element 
           var displayRow = '';
           $.each(el, function(key, val) {
               // create the row
+              if (key === 'title' || key === 'summary')
               displayRow += 
-                '<div class="col-xs-3 mdrow">' + key + ': ' + val + '</div>';
+                '<div class="col-xs-5 mdrow">' + key + ': ' + val + '</div>';
               });
+          
+            // Edit link
+            displayRow += '<div class="col-xs-1"><a onclick="editRecord(this.id)" id="' + 
+                            METADATA_URL + '/' + oid + '/form">Edit</a></div>' +
+            // "generic" xml link
+            '<div class="col-xs-1"><a href="' + 
+              METADATA_URL + '/' + oid + '/xml' + '">XML</a></div>'
 
             // append the row to div#mdlist
-            domMdlist.append('<div class="row" id="mdrow-' + idx + '">' + displayRow + '</div>');
+            domMdlist.append('<div class="row" id="mdrow-' + oid + '">' + displayRow + '</div>');
         });
       }
       else
       {
+
         // TODO why does this use form route? That shouldn't be there, right?
         var byId = "http://localhost:4000/api/metadata/" + id + "/form";
         var displayRow = '';
         $.each(fields, function(key, val) {
           // display list 
-          if (key !== 'id')
+            // create the row
+            if (key === 'title' || key === 'summary')
             displayRow += 
-              '<div class="col-xs-3 mdrow">' + key + ': ' + val + '</div>';
-        });
+              '<div class="col-xs-5 mdrow">' + key + ': ' + val + '</div>';
+            });
 
         var el_id = '#mdrow-' + id;
         $(el_id).html(displayRow);
@@ -158,14 +163,14 @@ $('#mdform').submit( function(event) {
   console.log(serializedForm);
 
   var idVal = serializedForm.filter(function(el){ return el.name == "id"; });
-  if (! typeof idVal === 'undefined')
+  if (typeof idVal === 'object')
   {
     idVal = idVal.pop().value; 
-  }
+  //}
 
-  // if idVal is a str-rep of an integer, then we have a PUT: editing existing
-  if (/^\+?[1-9]\d*$/.test(idVal))
-  {
+  //// if idVal is a str-rep of an integer, then we have a PUT: editing existing
+  //if (/^\+?[1-9]\d*$/.test(idVal))
+  //{
     var put = $.ajax({
 
       url: METADATA_URL + '/' + idVal, 
