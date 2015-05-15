@@ -5,6 +5,8 @@
   "summary": "DEM of Dry Creek Watershed northeast of Boise, ID",
   "theme_keywords": ["lidar", "dem", "hydrology"],
   "title": "Dry Creek DEM",
+  "topic_category": "Geoscientific Information",
+  "status": "Completed",
 
     "access": [
       {

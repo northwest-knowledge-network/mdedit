@@ -6,6 +6,7 @@
 <!-- Optional theme -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
 <link rel="stylesheet" type="text/css" href="metadata.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.5/css/bootstrap-select.css">
 
     <title>
         NKN Metadata Editor
@@ -82,23 +83,27 @@
       <input type="hidden" class="form-control" id="id" name="id" value={{value}} />
     {{else}}
 
-        <div class="form-group">
-            <label for="{{label}}" class="control-label col-sm-3">{{label}}</label>
-            <div class="col-sm-9">
-                
-                        <input type='{{type}}' class="form-control" 
-                          placeholder='{{value}}' value='{{value}}'
-                          id="{{label}}" name="{{name}}"/>
-            </div>
-        </div>
-    
-        <div class="row">
-            <div class="col-sm-3"></div>
-            <!--<div class="col-sm-9">-->
-                <!--{{longDescription}}-->
-            <!--</div>-->
-        </div>
-        <br />
+      <div class="form-group">
+      {{#if select}}
+        <label for="status-select" class="control-label col-sm-3">{{label}}</label>
+        <select id="{{name}}" class="selectpicker dropper" data-width="auto" name="{{name}}" form="mdform">
+          {{#options}}
+              <option value="{{value}}">{{value}}</option>
+          {{/options}}
+        </select>
+
+        {{else}}
+              <label for="{{label}}" class="control-label col-sm-3">{{label}}</label>
+              <div class="col-sm-9">
+                  
+                          <input type='{{type}}' class="form-control" 
+                            placeholder='{{value}}' value='{{value}}'
+                            id="{{label}}" name="{{name}}"/>
+              </div>
+      
+          <br />
+      {{/if}}
+      </div>
     {{/if}}
 
     {{/form_fields}}
@@ -114,7 +119,19 @@
         <input type="submit" value='Submit' id="md-submit" class="btn btn-primary btn-lg"/>
 </div>
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.5/js/bootstrap-select.min.js"></script>
 
+<script>$('.selectpicker').selectpicker();</script>
+<script>
+$('#mdform').submit( function(event) {
+  event.preventDefault();
+
+  // `this` is form data
+  var serializedForm = $(this).serializeArray();
+
+  console.log(serializedForm);
+});
+</script>
 <script src="metadata.js" type="text/javascript"></script>
 
 </body>

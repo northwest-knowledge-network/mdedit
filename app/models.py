@@ -24,11 +24,15 @@ class Contact(db.EmbeddedDocument):
 class Metadata(db.Document):
     """MongoDB Document representation of metadata"""
     title = db.StringField(max_length=255, required=True)
-    summary = db.StringField(max_length=255, required=True)
-    first_pub_date = db.DateTimeField(required=True)
     last_mod_date = db.DateTimeField(required=True)
+    first_pub_date = db.DateTimeField(required=True)
+
+
+    summary = db.StringField(max_length=255, required=True)
+    topic_category = db.StringField(max_length=255, required=True)
     theme_keywords = db.ListField(db.StringField(max_length=255))
     place_keywords = db.ListField(db.StringField(max_length=255))
+    status = db.StringField(max_length=255, required=True)
 
     citation = db.ListField(db.EmbeddedDocumentField('Contact'))
     access = db.ListField(db.EmbeddedDocumentField('Contact'))
@@ -84,6 +88,12 @@ class Metadata(db.Document):
 
         if not IsValidFormData(form_data):
             pass  # TODO raise 400-ish
+
+        assert form_data['status'] in STATUS_OPTIONS, "Invalid status!"
+
+        assert form_data['topic_category'] in TOPIC_CATEGORY_OPTIONS, \
+            "Invalid Topic Category!"
+
 
         # these are the lengths of the contact lists passed from the server
         access_len = _get_contact_len('access', form_data)
@@ -160,7 +170,9 @@ class Panel(object):
 
         if form_fields:
 
-            if type(form_fields[0]) is FormField:
+            if (type(form_fields[0]) is FormField
+                or type(form_fields[0]) is SelectField):
+
                 self.form_fields = form_fields
 
             elif type(form_fields[0]) is tuple:
@@ -190,17 +202,57 @@ class FormField(object):
     """Container for an element that populates a single form field"""
     def __init__(self, label='default-label', name='default name',
                  type_='text', value='default-val',
-                 longDescription='a new metadata entry!'):
+                 long_description='a new metadata entry!'):
         self.label = label
         self.name = name
         self.type = type_
         self.value = value
 
+class SelectField(object):
+    """
+    Represents a <select><option ..>Option 1</option></select> field
+    """
+    def __init__(self, label='default-label', name='default name',
+                 value='default-val', options=["option-1", "option-2"],
+                 selected_option="option-1"):
 
-# use this to populate FormFields within Panels. FormField.name can be used to
-# access the value from the database. The first DB entry has the default form.
+        self.label = label
+        self.name = name
+
+        assert selected_option in options, "Default option not in given options"
+
+        self.options = [{"value": op} for op in options]
+
+        self.selected_option = selected_option
+
+        # use this for explicit check on front end that this is in fact <select>
+        self.select = True
+
+
+STATUS_OPTIONS = ["Completed", "Continually Updated", "In Process",
+                  "Planned", "Needs to be Generated or Updated",
+                  "Stored in an Online Facility", "No Longer Valid"]
+
+
+TOPIC_CATEGORY_OPTIONS = \
+    ["Biota", "Boundaries", "Climatology/Meterology/Atmosphere",
+     "Economy", "Elevation", "Environment", "Farming",
+     "Geoscientific Information", "Health", "Imagery/Base Maps/Earth Cover",
+     "Inland Waters", "Location", "Military Intelligence", "Oceans", "Planning/Cadastre",
+     "Society", "Structure", "Transportation", "Utilities/Communication"]
+
+
 def _web_form_layout(mongo_record):
+    """
+    Build a dict representing the web form to be serialized to JSON in
+    Metadata.to_web_form
 
+    Arguments:
+        (mongoengine.Document) Metadata instance to be represented by web form
+
+    Returns:
+        (dict) Representation of Metadata instance as a web form
+    """
     metadata_form_layout = {
         'Basic Information': [
             FormField(label='Title', name='title',
@@ -211,12 +263,18 @@ def _web_form_layout(mongo_record):
             FormField(label='id', name='id', type_='hidden', value=str(mongo_record.id))
             ],
         'Data Information': [
+            SelectField(label='Topic Category', name='topic_category',
+                        options=TOPIC_CATEGORY_OPTIONS,
+                        selected_option=mongo_record['topic_category']),
             FormField(label='Summary', name='summary',
                       type_='text', value=mongo_record['summary']),
             FormField(label='Thematic Keywords', name='theme_keywords',
                       type_='text', value=mongo_record['theme_keywords']),
             FormField(label='Place Keywords', name='place_keywords',
-                      type_='text', value=mongo_record['place_keywords'])
+                      type_='text', value=mongo_record['place_keywords']),
+            SelectField(label='Status', name='status',
+                        options=STATUS_OPTIONS,
+                        selected_option=mongo_record['status'])
             ],
 
         'Citation Contact': [FormField(label=f.capitalize(),
