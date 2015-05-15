@@ -2,6 +2,8 @@ from datetime import datetime, date
 from flask import jsonify
 from werkzeug import ImmutableMultiDict
 
+from collections import OrderedDict
+
 import json
 
 from . import db
@@ -253,16 +255,17 @@ def _web_form_layout(mongo_record):
     Returns:
         (dict) Representation of Metadata instance as a web form
     """
-    metadata_form_layout = {
-        'Basic Information': [
+    # this is our metadata form Python model. feels like it should be elsewhere
+    metadata_form_layout = OrderedDict([
+        ('Basic Information', [
             FormField(label='Title', name='title',
                       type_='text', value=mongo_record['title']),
             FormField(label='First Published', name='first_pub_date',
                       type_='date', value=mongo_record['first_pub_date']),
             # this is a hidden field
             FormField(label='id', name='id', type_='hidden', value=str(mongo_record.id))
-            ],
-        'Data Information': [
+            ]),
+        ('Data Information', [
             SelectField(label='Topic Category', name='topic_category',
                         options=TOPIC_CATEGORY_OPTIONS,
                         selected_option=mongo_record['topic_category']),
@@ -275,24 +278,25 @@ def _web_form_layout(mongo_record):
             SelectField(label='Status', name='status',
                         options=STATUS_OPTIONS,
                         selected_option=mongo_record['status'])
-            ],
+            ]),
 
-        'Citation Contact': [FormField(label=f.capitalize(),
+        ('Citation Contact', [FormField(label=f.capitalize(),
                                         name='citation-{}-{}'.format(f, i),
                                         type_='text',
                                         value=mongo_record['citation'][i][f])
 
                               for f in Contact.__dict__['_fields'].keys()
-                             for i in range(len(mongo_record['citation']))],
+                             for i in range(len(mongo_record['citation']))]),
 
-        'Access Contact': [FormField(label=f.capitalize(),
+        ('Access Contact', [FormField(label=f.capitalize(),
                                      name='access-{}-{}'.format(f, i),
                                      type_='text',
                                      value=mongo_record['access'][i][f])
 
                              for f in Contact.__dict__['_fields'].keys()
-                            for i in range(len(mongo_record['access']))],
-    }
+                            for i in range(len(mongo_record['access']))])
+        ])
+
 
     metadata_form_layout['Basic Information'][-1].is_id = True
 
