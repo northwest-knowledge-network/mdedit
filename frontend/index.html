@@ -86,7 +86,7 @@
       <div class="form-group">
       {{#if select}}
         <label for="status-select" class="control-label col-sm-3">{{label}}</label>
-        <select id="{{name}}" class="selectpicker dropper" data-width="auto" name="{{name}}" form="mdform">
+        <select id="{{name}}" class="selectpicker" data-width="auto" name="{{name}}" form="mdform">
           {{#options}}
               <option value="{{value}}">{{value}}</option>
           {{/options}}
@@ -116,23 +116,13 @@
     <br/>
     {{/each}}
 </div>
-        <input type="submit" value='Submit' id="md-submit" class="btn btn-primary btn-lg"/>
+        <input type="submit" value='Submit' id="md-submit" class="btn btn-primary btn-lg md-button"/>
 </div>
-</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.5/js/bootstrap-select.min.js"></script>
-
-<script>$('.selectpicker').selectpicker();</script>
-<script>
-$('#mdform').submit( function(event) {
-  event.preventDefault();
-
-  // `this` is form data
-  var serializedForm = $(this).serializeArray();
-
-  console.log(serializedForm);
-});
 </script>
 <script src="metadata.js" type="text/javascript"></script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.5/js/bootstrap-select.min.js"></script>
+
+<script>$('.selectpicker').selectpicker();</script>
 </body>
 </html>

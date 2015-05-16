@@ -106,7 +106,7 @@ class Metadata(db.Document):
                           if k.split('-')[0] not in ['citation', 'access']}
 
         # make a list out of comma-separated keywords
-        listify = lambda s: s.replace(' ', '').split(',')
+        listify = lambda s: map(lambda el: el.strip(), s.split(','))
 
         formatted_dict['place_keywords'] = \
             listify(formatted_dict['place_keywords'])
@@ -269,9 +269,9 @@ def _web_form_layout(mongo_record, include_id=True):
             FormField(label='Summary', name='summary',
                       type_='text', value=mongo_record['summary']),
             FormField(label='Thematic Keywords', name='theme_keywords',
-                      type_='text', value=mongo_record['theme_keywords']),
+                      type_='text', value=', '.join(mongo_record['theme_keywords'])),
             FormField(label='Place Keywords', name='place_keywords',
-                      type_='text', value=mongo_record['place_keywords']),
+                      type_='text', value=', '.join(mongo_record['place_keywords'])),
             SelectField(label='Status', name='status',
                         options=STATUS_OPTIONS,
                         selected_option=mongo_record['status'])
@@ -311,7 +311,7 @@ def _web_form_layout(mongo_record, include_id=True):
             datetime.strftime(metadata_form_layout['Basic Information'][1].value,
                               '%Y-%m-%d')
 
-    panels = [Panel(k, k.lower(), form_fields=v) for
+    panels = [Panel(k, k.lower().replace(' ', '-'), form_fields=v) for
               k, v in metadata_form_layout.iteritems()]
 
     return panels

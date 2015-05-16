@@ -9,6 +9,9 @@ var METADATA_URL = "http://localhost:4000/api/metadata";
 var TEMPLATE_SOURCE = $("#entry-template").html();
 var TEMPLATE = Handlebars.compile(TEMPLATE_SOURCE); 
 
+var contactNames;
+var numAccessContacts = 0;
+var numCitationContacts = 0;
 /// Page load: refresh list of metadata
 $(function() { 
   
@@ -17,8 +20,93 @@ $(function() {
   
   // reset (initialize) metadata form
   resetForm();
-  
+
+  // use the metadata form to read what the contact fields are and 
+  // build the "genericContact" from that, to be re-used when the user
+  // wants to add another contact for either the access or citation contacts
+  //
+  // Also this block initializes num(Access/Citation)Contacts
+  $.get(METADATA_URL + '/form' , function(metadata) {
+      // could use either citation or access
+      var citationList = metadata.form
+                                 .filter(function(a) { 
+                                   return a.label === 'citation-contact'; 
+                                 }).pop().form_fields;
+
+      var citationNames = citationList.map(function(a) { return a.name; });
+
+      contactNames = citationNames;
+
+      var accessList = metadata.form
+                                 .filter(function(a) { 
+                                   return a.label === 'access-contact'; 
+                                 }).pop().form_fields;
+
+      var accessNames = accessList.map(function(a) { return a.name; });
+
+      numCitationContacts = 1 +  // indexing starts at zero
+        Math.max.apply(Math, citationNames.map(
+            function(n){ return parseInt(n.split('-')[2]); 
+            })
+        );
+
+      numAccessContacts = 1 + 
+        Math.max.apply(Math, accessNames.map(
+            function(n){ return parseInt(n.split('-')[2]); 
+            })
+        );
+  });
 });
+
+/**
+ * Build a new contact element to be appended to the existing contact panels
+ * This could be called when  
+ */
+var insertNewContact = function(citationOrAccess)
+{
+  if (citationOrAccess == 'citation')
+  {
+    var contactIdx = numCitationContacts;
+    numCitationContacts += 1;
+  }
+  else if (citationOrAccess == 'access')
+  {
+    var contactIdx = numCitationContacts;
+    numAccessContacts += 1;
+  } 
+  else
+  {
+    throw "Contact type must be 'citation' or 'access'."; 
+  }
+};
+  
+
+var newContactButton = function(citationOrAccess)
+{
+  ret = 
+  '<div class="row"><div class="col-sm-3"></div><div class="col-sm-9">' 
+  + '<button id=add-contact-' + citationOrAccess
+          + ' class="btn btn-primary btn-lg md-button new-contact-button" type="button"'
+          + 'onClick="addContact(this.id)">Add New Contact</button>'
+  + '</div></div>';
+
+  return ret;
+};
+
+
+var addButtons = function()
+{
+  $('.selectpicker').selectpicker();
+  $("#body-citation-contact .panel-body").append(newContactButton('citation'));
+  $("#body-access-contact .panel-body").append(newContactButton('access'));
+};
+
+var addContact = function(clicked_id) {
+  alert("hey! this is a " + clicked_id);
+  contact_type = clicked_id.split("-")[2];
+
+
+};
 
 /**
  * Reset form to default values
@@ -35,6 +123,7 @@ var resetForm = function()
 
     $("#form-main").html(html);
 
+    addButtons();
   });
 };
 
@@ -122,11 +211,13 @@ var refreshMdList = function() {
             // append the row to div#mdlist
             domMdlist.append('<div class="row" id="mdrow-' + oid + '">' + displayRow + '</div>');
         });
+        
+        $('.selectpicker').selectpicker();
       }
       else
       {
 
-        // TODO why does this use form route? That shouldn't be there, right?
+        // we get the form so that the updated version is now loaded into the form
         var byId = "http://localhost:4000/api/metadata/" + id + "/form";
         var displayRow = '';
         $.each(fields, function(key, val) {
@@ -136,11 +227,21 @@ var refreshMdList = function() {
             displayRow += 
               '<div class="col-xs-5 mdrow">' + key + ': ' + val + '</div>';
             });
+      
+        // Edit link
+        displayRow += '<div class="col-xs-1"><a onclick="editRecord(this.id)" id="' + 
+                        METADATA_URL + '/' + oid + '/form">Edit</a></div>' +
+        // "generic" xml link
+        '<div class="col-xs-1"><a href="' + 
+          METADATA_URL + '/' + oid + '/xml' + '">XML</a></div>'
+
 
         var el_id = '#mdrow-' + id;
         $(el_id).html(displayRow);
 
         append = true;
+
+        $('.selectpicker').selectpicker();
       }
       
   });
@@ -163,14 +264,10 @@ $('#mdform').submit( function(event) {
   console.log(serializedForm);
 
   var idVal = serializedForm.filter(function(el){ return el.name == "id"; });
-  if (typeof idVal === 'object')
+  if (idVal.length > 0)
   {
     idVal = idVal.pop().value; 
-  //}
 
-  //// if idVal is a str-rep of an integer, then we have a PUT: editing existing
-  //if (/^\+?[1-9]\d*$/.test(idVal))
-  //{
     var put = $.ajax({
 
       url: METADATA_URL + '/' + idVal, 
@@ -191,6 +288,8 @@ $('#mdform').submit( function(event) {
             });
 
             displayEditModeHeader(viewData.id);
+            
+            addButtons();
           }
     });
   }
@@ -208,10 +307,13 @@ $('#mdform').submit( function(event) {
 
       var html = TEMPLATE(viewData.form);
       $("#form-main").html(html);
+      $(".selectpicker").selectpicker()
 
       refreshMdList();
 
       displayEditModeHeader(viewData.id);
+
+      addButtons();
     });
   }
 });
@@ -239,6 +341,14 @@ var editRecord = function(clickedHrefId)
       //var html =  + TEMPLATE(viewData);
       var html = TEMPLATE(viewData.form);
       $("#form-main").html(html);
+      $(".selectpicker").selectpicker()
       displayEditModeHeader(viewData.id);
+      addButtons();
     });
 };
+$('#add-contact-citation').click( function(event)
+  {
+    event.preventDefault();
+    alert('hey!');
+  }
+);
