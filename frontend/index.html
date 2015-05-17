@@ -83,7 +83,7 @@
       <input type="hidden" class="form-control" id="id" name="id" value={{value}} />
     {{else}}
 
-      <div class="form-group">
+      <div class="form-group" id="form-group-{{name}}">
       {{#if select}}
         <label for="status-select" class="control-label col-sm-3">{{label}}</label>
         <select id="{{name}}" class="selectpicker" data-width="auto" name="{{name}}" form="mdform">

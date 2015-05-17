@@ -239,8 +239,12 @@ TOPIC_CATEGORY_OPTIONS = \
     ["Biota", "Boundaries", "Climatology/Meterology/Atmosphere",
      "Economy", "Elevation", "Environment", "Farming",
      "Geoscientific Information", "Health", "Imagery/Base Maps/Earth Cover",
-     "Inland Waters", "Location", "Military Intelligence", "Oceans", "Planning/Cadastre",
-     "Society", "Structure", "Transportation", "Utilities/Communication"]
+     "Inland Waters", "Location", "Military Intelligence", "Oceans",
+     "Planning/Cadastre", "Society", "Structure", "Transportation",
+     "Utilities/Communication"]
+
+ORDERED_CONTACT_FIELDS = ["name", "email", "org", "address", "city", "state",
+                          "country", "zipcode", "phone"]
 
 
 def _web_form_layout(mongo_record, include_id=True):
@@ -277,21 +281,21 @@ def _web_form_layout(mongo_record, include_id=True):
                         selected_option=mongo_record['status'])
             ]),
 
-        ('Citation Contact', [FormField(label=f.capitalize(),
+        ('Citation Contact', [FormField(label=' '.join((f.capitalize(), str(i+1))),
                                         name='citation-{}-{}'.format(f, i),
                                         type_='text',
                                         value=mongo_record['citation'][i][f])
 
-                              for f in Contact.__dict__['_fields'].keys()
-                             for i in range(len(mongo_record['citation']))]),
+                              for i in range(len(mongo_record['citation']))
+                              for f in ORDERED_CONTACT_FIELDS]),
 
-        ('Access Contact', [FormField(label=f.capitalize(),
-                                     name='access-{}-{}'.format(f, i),
-                                     type_='text',
-                                     value=mongo_record['access'][i][f])
+        ('Access Contact', [FormField(label=' '.join((f.capitalize(), str(i+1))),
+                                      name='access-{}-{}'.format(f, i),
+                                      type_='text',
+                                      value=mongo_record['access'][i][f])
 
-                             for f in Contact.__dict__['_fields'].keys()
-                            for i in range(len(mongo_record['access']))])
+                            for i in range(len(mongo_record['access']))
+                            for f in ORDERED_CONTACT_FIELDS])
         ])
 
     # give the API developer the ability to hide the id if requested for a new
