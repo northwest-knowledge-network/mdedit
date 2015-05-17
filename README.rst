@@ -15,7 +15,7 @@ Clone the repository using git
 
 .. code-block:: bash
 
-    git clone https://github.com/northwest-knowledge-network/mdFullstack.git
+    $ git clone https://github.com/northwest-knowledge-network/mdFullstack.git
 
 Or you might try using the nice `OS X GUI client provided by GitHub <https://mac.github.com/>`_.
 
@@ -28,14 +28,14 @@ this at the command line
 
 .. code-block:: bash
 
-    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    $ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
 
 Then use homebrew to install MongoDB
 
 .. code-block:: bash
     
-    brew install mongo
+    $ brew install mongo
 
 
 When this finishes, it gives us two instructions to follow to start using MongoDB, 
@@ -60,7 +60,7 @@ you should already have pip. To check if you have pip installed,
 
 .. code-block:: bash
 
-    which pip
+    $ which pip
 
 
 If you see a path to pip, something like `/usr/local/bin/pip`, then you do have pip installed. If you don't, 
@@ -68,7 +68,7 @@ run
 
 .. code-block:: bash
 
-    sudo easy_install pip
+    $ sudo easy_install pip
 
 
 Now install virtualenv and set up your environment with all the Python packages used by `mdedit`
@@ -85,7 +85,7 @@ Finally, we will start the two web servers, front and back end, needed for our m
 
 .. code-block:: bash
 
-    ./startup.py 
+    $ ./startup.py 
 
 If all is well, you can navigate to http://localhost:8000 in your browser and see the colorful front end of the
 metadata editor: 
