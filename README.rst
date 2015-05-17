@@ -2,33 +2,76 @@ mdedit: Optimize the whole metadata workflow
 ================================================= 
 
 This is a project to build a user-friendly metadata editor for use primarily by
-scientists and data managers who create and share geospatial data. That is
-because the editor is based on the ISO 19115 standard for metadata and is built
-to emit, among other formats, ISO 19139 XML metadata (the XML implementation of
-19115). Metadata submission and creation is a sticky subject which has purists
-on one side saying "every field is important as the next, a partial record makes
-no sense" and some on the other side of the spectrum who, even though they are
-technically required to as a condition of grant funding, do not publish their
-data publically with the metadata required for the public to find it. We are
-aiming to be user- and developer-friendly while still delivering compliant
-metadata in a variety of standards.
+scientists and data managers who create and share geospatial data. 
 
 
+Steps to Run it Locally
+-----------------------
 
-Run it Locally
---------------
+1. Get NKN's `mdedit` code
+``````````````````````````
 
-The first step of course is to clone this repository:
+Clone the repository using git
 
 .. code-block:: bash
 
-    git clone https://github.com/northwest-knowledge-network/mdFullstack.git
+    $ git clone https://github.com/northwest-knowledge-network/mdFullstack.git
 
-Then you need to `install and start MongoDB 
-<http://docs.mongodb.org/manual/installation/>`_. 
-You also need `pip <https://pip.pypa.io/en/stable/installing.html>`_.
+Or you might try using the nice `OS X GUI client provided by GitHub <https://mac.github.com/>`_.
 
-Next, create a new virualenv and install dependencies:
+2.1 Install dependency MongoDB
+``````````````````````````````
+
+Then you need to install and start MongoDB, the database we use for a canonical representation of editor-created metadata.
+The easiest way is to use `homebrew, the missing package manager for OS X <http://brew.sh/>`_, which can be installed by entering 
+this at the command line
+
+.. code-block:: bash
+
+    $ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+
+Then use homebrew to install MongoDB
+
+.. code-block:: bash
+    
+    $ brew install mongo
+
+
+When this finishes, it gives us two instructions to follow to start using MongoDB, 
+
+.. code-block::
+    
+    To have launchd start mongodb at login:
+        ln -sfv /usr/local/opt/mongodb/*.plist ~/Library/LaunchAgents
+    Then to load mongodb now:
+        launchctl load ~/Library/LaunchAgents/homebrew.mxcl.mongodb.plist
+
+
+Follow these instructions, then type `mongo` at the command line. If you see a new prompt ending with ``>`` 
+then MongoDB is installed and ready.
+
+
+2.2 Set up a Python virtual environment and install Python dependencies
+```````````````````````````````````````````````````````````````````````
+
+Make sure you have pip installed, a command-line package management tool for Python.  If you have Python 2.7.9 or higher,
+you should already have pip. To check if you have pip installed, 
+
+.. code-block:: bash
+
+    $ which pip
+
+
+If you see a path to pip, something like `/usr/local/bin/pip`, then you do have pip installed. If you don't, 
+run 
+
+.. code-block:: bash
+
+    $ sudo easy_install pip
+
+
+Now install virtualenv and set up your environment with all the Python packages used by `mdedit`
 
 .. code-block:: bash
     
@@ -37,20 +80,17 @@ Next, create a new virualenv and install dependencies:
     $ source venv/bin/activate
     $ pip install -r requirements.txt
      
-This will initiate and activate a virtual environment and then install all
-required dependencies stored in the file ``requirements.txt``. 
 
-Finally, run ``startup.py``
+Finally, we will start the two web servers, front and back end, needed for our mdedit package. To do this, run ``startup.py``
 
 .. code-block:: bash
 
-    ./startup.py 
+    $ ./startup.py 
 
-If all is well, you can go to http://localhost:8000 and see the colorful front end of the
+If all is well, you can navigate to http://localhost:8000 in your browser and see the colorful front end of the
 metadata editor: 
 
 .. image:: editor_thumbnail.png
-
 
 There is no explicit connection between the front end and the
 back end server. To see the back end emit metadata, try these routes:
@@ -75,34 +115,9 @@ More info
 ---------
 
 The back end is written in `Flask <http://flask.pocoo.org/>`_. The front end is
-written in JQuery/javascript with `Handlebars templating <http://handlebarsjs.com/>`_. 
+written in JQuery/javascript with `Handlebars templating <http://handlebarsjs.com/>`_,
+though Angular may be in our near future.
 These two are totally separate, which is why they are hosted on two separate
 servers. At NKN, we need this because we want to deploy our front end app to
 many of our clients' content management systems with a single metadata server
 handling requests from all of them.
-
-
-TODO
-----
-
-This tool is getting shared in a state of transition as we move from a
-relational database backend to MongoDB. Some things are rather broken if they
-aren't altogether missing, including
-
-- Basic authorization (set up basic auth routes and new account creation page)
-- Other user functionality, like user view to edit, browse, socialize in a
-  user-specific way
-- Metadata API documentation
-- Form submission
-- Individual record editing
-- Starting the web interface with all but one panel closed
-- Create new/Edit existing record
-
-This tool will explore the use of developer tools devleoped by the 
-`Alaska Data Integration Working Group <http://www.adiwg.org>`_, especially:
-
-- `mdTranslator <https://github.com/adiwg/mdTranslator>`_, what we can use for
-  translating JSON metadata from web form to some different XML formats
-- `mdTools <https://github.com/adiwg/mdTools>`_ has a schema viewer which could
-  be used for creating editing forms that can handle arbitrary existing metadata
-- `mdCodes <https://github.com/adiwg/mdCodes>`_, "CodeLists for ADIwg mdJSON"
