@@ -109,13 +109,6 @@
             <gmd:metadataStandardVersion>
                 <gco:CharacterString>2003</gco:CharacterString>
             </gmd:metadataStandardVersion>
-    <!-- Selects the UUID for the dataset from the mdedit generic xml. May just be for records that are stored in NKN's Datastore. 
-        Need to work with Ed to figure out how best to do this -->
-            <gmd:dataSetURI> 
-                <!--
-                <xsl:value-of select=""/>
-                 -->
-            </gmd:dataSetURI>   
 <!--Identification Info -->
             <gmd:identificationInfo>
                 <gmd:MD_DataIdentification>
