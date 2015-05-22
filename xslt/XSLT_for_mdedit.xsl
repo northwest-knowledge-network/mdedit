@@ -179,7 +179,7 @@
                                                     </gmd:administrativeArea>
                                                     <gmd:postalCode>
                                                         <gco:CharacterString>
-                                                            <xsl:value-of select="zip"/>
+                                                            <xsl:value-of select="zipcode"/>
                                                         </gco:CharacterString>
                                                     </gmd:postalCode>
                                                     <gmd:country>
@@ -187,13 +187,11 @@
                                                             <xsl:value-of select="country"/>
                                                         </gco:CharacterString>
                                                     </gmd:country>
-                                                    <!--
                                                     <gmd:electronicMailAddres>
                                                         <gco:CharacterString>
                                                             <xsl:value-of select="email"/>
                                                         </gco:CharacterString>
                                                     </gmd:electronicMailAddres>
-                                                    -->
                                                 </gmd:CI_Address>
                                             </gmd:address>
                                         </gmd:CI_Contact>
@@ -212,43 +210,42 @@
                         <xsl:value-of select="root/record/summary"/>
                     </gmd:abstract>
     <!-- Selects status of the dataset from the mdedit generic xml. This is selected from the dropdown list in mdedit. --> 
-                    <!--
-                    <xsl:if test="root/record/progress = 'completed'>
-                    <gmd:status>
-                        <gmd:MD_ProgressCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ProgressCode" codeListValue="completed">completed</gmd:MD_ProgressCode>
-                    </gmd:status>
+                    <xsl:if 
+                        test="/root/record/status = 'completed'">
+                        <gmd:status>
+                            <gmd:MD_ProgressCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ProgressCode" codeListValue="completed">completed</gmd:MD_ProgressCode>
+                        </gmd:status>
                     </xsl:if>
-                    <xsl:if test="root/record/progress = 'continually updated'>
+                    <xsl:if test="/root/record/status = 'continually updated'">
                         <gmd:status>
                             <gmd:MD_ProgressCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ProgressCode" codeListValue="onGoing">onGoing</gmd:MD_ProgressCode>
                         </gmd:status>
                     </xsl:if>
-                    <xsl:if test="root/record/progress = 'in process'>
+                    <xsl:if test="/root/record/status = 'in process'">
                         <gmd:status>
                             <gmd:MD_ProgressCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ProgressCode" codeListValue="underDevelopment">underDevelopment</gmd:MD_ProgressCode>
                         </gmd:status>
                     </xsl:if>
-                    <xsl:if test="root/record/progress = 'planned'>
+                    <xsl:if test="/root/record/status = 'planned'">
                         <gmd:status>
                             <gmd:MD_ProgressCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ProgressCode" codeListValue="planned">planned</gmd:MD_ProgressCode>
                         </gmd:status>
                     </xsl:if>
-                    <xsl:if test="root/record/progress = 'needs to be generated or updated'>
+                    <xsl:if test="/root/record/status = 'needs to be generated or updated'">
                         <gmd:status>
                             <gmd:MD_ProgressCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ProgressCode" codeListValue="required">required</gmd:MD_ProgressCode>
                         </gmd:status>
                     </xsl:if>
-                    <xsl:if test="root/record/progress = 'stored in an offline facility'>
+                    <xsl:if test="/root/record/status = 'stored in an offline facility'">
                         <gmd:status>
                             <gmd:MD_ProgressCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ProgressCode" codeListValue="historicalArchive">historicalArchive</gmd:MD_ProgressCode>
                         </gmd:status>
                     </xsl:if>
-                    <xsl:if test="root/record/progress = 'no longer valid'>
+                    <xsl:if test="/root/record/status = 'no longer valid'">
                         <gmd:status>
                             <gmd:MD_ProgressCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ProgressCode" codeListValue="obsolete">obsolete</gmd:MD_ProgressCode>
                         </gmd:status>
                     </xsl:if>
-                    -->
     <!-- Selects expected update frequency of the data itself from the mdedit generic xml. This is selected from the dropdown list in mdedit. 
         It is for the expected frequency with which the data will be updated. 
         For now we will use the default code for "As Needed".-->
@@ -361,13 +358,14 @@
         frontend in html, at least for now-->
                     <gmd:descriptiveKeywords>
                         <gmd:MD_Keywords>
-    <!-- Enables entry for multiple keywords and parses each 'item' in the keyword list in the mdedit generic xml as a separate keyword 
-                            <xsl:for-each select="/root/record/them_keywords/item"> -->
+    <!-- Enables entry for multiple keywords and parses each 'item' in the keyword list in the mdedit generic xml as a separate keyword -->
+                            <xsl:for-each select="/root/record/theme_keywords">
                             <gmd:keyword>
                                 <gco:CharacterString>
-                                    <xsl:value-of select="/root/record/theme_keywords"/>
+                                    <xsl:value-of select="/root/record/theme_keywords/item"/>
                                 </gco:CharacterString>
                             </gmd:keyword>
+                            </xsl:for-each>
     <!-- Sets the type of keyword for all above as theme keywords. -->
                             <gmd:type>
                                 <gmd:MD_KeywordTypeCode codeSpace="ISOTC211/19115" codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode" codeListValue="theme">theme</gmd:MD_KeywordTypeCode>
@@ -378,13 +376,14 @@
         frontend in html, at least for now-->
                     <gmd:descriptiveKeywords>
                         <gmd:MD_Keywords>
-    <!-- Enables entry for multiple keywords and parses each 'item' in the keyword list in the mdedit generic xml as a separate keyword 
-                            <xsl:for-each select="/root/record/them_keywords/item"> -->
+    <!-- Enables entry for multiple keywords and parses each 'item' in the keyword list in the mdedit generic xml as a separate keyword -->
+                            <xsl:for-each select="/root/record/place_keywords/item">
                             <gmd:keyword>
                                 <gco:CharacterString>
-                                    <xsl:value-of select="/root/record/place_keywords"/>
+                                    <xsl:value-of select="item"/>
                                 </gco:CharacterString>
                             </gmd:keyword>
+                            </xsl:for-each>
     <!-- Sets the type of keyword for all above as place keywords. -->
                             <gmd:type>
                                 <gmd:MD_KeywordTypeCode codeSpace="ISOTC211/19115" codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode" codeListValue="place">place</gmd:MD_KeywordTypeCode>
@@ -431,9 +430,7 @@
     <!-- Selects the topic category from the mdedit generic xml. This is selected from a dropdown list in mdedit. -->
                     <gmd:topicCategory>
                         <gmd:MD_TopicCategoryCode>
-                            <!--
-                            <xsl:value-of select="/root/record/"/>
-                            -->
+                            <xsl:value-of select="/root/record/topic_category"/>
                         </gmd:MD_TopicCategoryCode>
                     </gmd:topicCategory>
     <!-- Selects the decicmal degree coordinates entered for the 4 geographic bounds (rectangular) of the dataset from the mdedit generic xml. 
@@ -672,8 +669,7 @@
                     </gmd:distributor>
                     </xsl:for-each>
                 </gmd:MD_Distribution>
-            </gmd:distributionInfo>
-            
+            </gmd:distributionInfo>       
 <!-- Metadata background maintenance info, mostly hidden from mdedit web front end  -->
             <gmd:metadataConstraints>
     <!-- Sets the license use constraints according to NKN's terms of service and default use of a Creative Commons license. 
