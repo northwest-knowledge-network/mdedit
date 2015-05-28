@@ -33,7 +33,7 @@
                 codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_CharacterSetCode"
                 codeListValue="utf8">utf8</gmd:MD_CharacterSetCode>
             </gmd:characterSet>
-    <!-- NEEDED---Selects hierarchy level, either dataset or collection, from the generic mdedit xml. This is selected from the dropdown list in mdedit. -->        
+    <!-- NEEDED Selects hierarchy level, either dataset or collection, from the generic mdedit xml. This is selected from the dropdown list in mdedit -->
             <gmd:hierarchyLevel>
                 <!--    
                 <xsl:value-of select=""/> 
@@ -249,7 +249,7 @@
                             <gmd:MD_ProgressCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ProgressCode" codeListValue="obsolete">obsolete</gmd:MD_ProgressCode>
                         </gmd:status>
                     </xsl:if>
-    <!-- NEEDED------Selects expected update frequency of the data itself from the mdedit generic xml. This is selected from the dropdown list in mdedit. Using as needed as default value.
+    <!-- NEEDED  Selects expected update frequency of the data itself from the mdedit generic xml. This is selected from the dropdown list in mdedit. Using as needed as default value.
     Once field is addded for updates, delete code block.-->
                     <gmd:resourceMaintenance> 
                         <gmd:MD_MaintenanceInformation>
@@ -418,7 +418,7 @@
                             <gmd:useConstraints>
                                 <gmd:MD_RestrictionCode codeList="http:http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode" codeListValue="license">license</gmd:MD_RestrictionCode>
                             </gmd:useConstraints>
-    <!--NEEDED---- Selects text for general use/access restrictions and license from the mdedit generic xml. 
+    <!--NEEDED   Selects text for general use/access restrictions and license from the mdedit generic xml. 
         Defaults for projects will be built into the front-end, for now -->
                             <gmd:otherConstraints>
                                 <!--
@@ -446,7 +446,7 @@
                             <xsl:value-of select="/root/record/topic_category"/>
                         </gmd:MD_TopicCategoryCode>
                     </gmd:topicCategory>
-    <!--NEEDED--- Selects the decicmal degree coordinates entered for the 4 geographic bounds (rectangular) of the dataset from the mdedit generic xml. 
+    <!--NEEDED  Selects the decicmal degree coordinates entered for the 4 geographic bounds (rectangular) of the dataset from the mdedit generic xml. 
         These values need to constrained to prevent entries that don't meet the criteria of geographic bounding coordinates.-->
                     <gmd:extent>
                         <gmd:EX_Extent>
@@ -509,7 +509,7 @@
             <gmd:distributionInfo>
                 <gmd:MD_Distribution>
     <!-- Selects distribution information from the mdedit generic xml, including contact info and associated online resources for 
-        data distributors (NEEDED---enabled for multiple entries). -->
+        data distributors (NEEDED   enabled for multiple entries). -->
     <!-- Sets the contact block for NKN as the distributor of the data.
         This will be enabled as an 'if' statement based on if the user selects Yes to a field asking Yes/No are these data stored with NKN?
                     <xsl:if test="/root/record/DataStore ='Yes'">
