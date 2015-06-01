@@ -436,6 +436,37 @@
                             </gmd:otherConstraints>
                         </gmd:MD_LegalConstraints>
                     </gmd:resourceConstraints>
+    <!--NEEDED   Selects text for spatial data type. Will be from dropdown -->
+                    <xsl:if test="/root/record/data_type ='vector'">
+                    <gmd:spatialRepresentationType>
+                        <gmd:MD_SpatialRepresentationTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_SpatialRepresentationTypeCode" codeListValue="vector">vector</gmd:MD_SpatialRepresentationTypeCode>
+                    </gmd:spatialRepresentationType>
+                    </xsl:if> 
+                    <xsl:if test="/root/record/data_type ='grid'">
+                        <gmd:spatialRepresentationType>
+                            <gmd:MD_SpatialRepresentationTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_SpatialRepresentationTypeCode" codeListValue="grid">grid</gmd:MD_SpatialRepresentationTypeCode>
+                        </gmd:spatialRepresentationType>
+                    </xsl:if> 
+                    <xsl:if test="/root/record/data_type ='table or text'">
+                        <gmd:spatialRepresentationType>
+                            <gmd:MD_SpatialRepresentationTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_SpatialRepresentationTypeCode" codeListValue="textTable">textTable</gmd:MD_SpatialRepresentationTypeCode>
+                        </gmd:spatialRepresentationType>
+                    </xsl:if> 
+                    <xsl:if test="/root/record/data_type ='triangulated irregular network'">
+                        <gmd:spatialRepresentationType>
+                            <gmd:MD_SpatialRepresentationTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_SpatialRepresentationTypeCode" codeListValue="tin">tin</gmd:MD_SpatialRepresentationTypeCode>
+                        </gmd:spatialRepresentationType>
+                    </xsl:if> 
+                    <xsl:if test="/root/record/data_type ='stereographic imaging'">
+                        <gmd:spatialRepresentationType>
+                            <gmd:MD_SpatialRepresentationTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_SpatialRepresentationTypeCode" codeListValue="stereoModel">stereoModel</gmd:MD_SpatialRepresentationTypeCode>
+                        </gmd:spatialRepresentationType>
+                    </xsl:if> 
+                    <xsl:if test="/root/record/data_type ='video recording of a scene'">
+                        <gmd:spatialRepresentationType>
+                            <gmd:MD_SpatialRepresentationTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_SpatialRepresentationTypeCode" codeListValue="video">video</gmd:MD_SpatialRepresentationTypeCode>
+                        </gmd:spatialRepresentationType>
+                    </xsl:if> 
     <!-- Sets language as English and character set as utf-8 as default for the data. We do not anticipate non-English entries. -->
                     <gmd:language>
                         <gmd:LanguageCode codeList="http://www.loc.gov/standards/iso639-2/php/code_list.php" codeListValue="eng">eng</gmd:LanguageCode>
@@ -501,6 +532,25 @@
                                     </gmd:extent>
                                 </gmd:EX_TemporalExtent>
                             </gmd:temporalElement>
+    <!-- Selects the inputs for the vertical minimum and maximum the dataset iteself from the mdedit generic xml. -->
+                            <gmd:verticalElement>
+                                <gmd:EX_VerticalExtent>
+                                    <gmd:minimumValue>
+                                        <gco:Real>
+                                            <!-- 
+                                            <xsl:value-of select=""/>
+                                            -->
+                                        </gco:Real>
+                                    </gmd:minimumValue>
+                                    <gmd:maximumValue>
+                                        <gco:Real>
+                                            <!-- 
+                                            <xsl:value-of select=""/>
+                                            -->
+                                        </gco:Real>
+                                    </gmd:maximumValue>
+                                </gmd:EX_VerticalExtent>
+                            </gmd:verticalElement>
                         </gmd:EX_Extent>
                     </gmd:extent>     
                 </gmd:MD_DataIdentification>
@@ -650,13 +700,11 @@
                                                             <xsl:value-of select="country"/>
                                                         </gco:CharacterString>
                                                     </gmd:country>
-                                                    <!--
                                                 <gmd:electronicMailAddres>
                                                     <gco:CharacterString>
                                                         <xsl:value-of select="email"/>
                                                     </gco:CharacterString>
                                                 </gmd:electronicMailAddres>
-                                                -->
                                                 </gmd:CI_Address>
                                             </gmd:address>
                                         </gmd:CI_Contact>
@@ -666,6 +714,16 @@
                                     </gmd:role>
                                 </gmd:CI_ResponsibleParty>
                             </gmd:distributorContact>
+                            <gmd:distributorFormat>
+                                <gmd:MD_Format>
+                         <!-- May need to set this up as a list with multiples -->
+                                    <gmd:name>
+                                        <gco:CharacterString>
+                                            <xsl:value-of select="/root/record/data_format"/>
+                                        </gco:CharacterString>   
+                                    </gmd:name>
+                                </gmd:MD_Format>
+                            </gmd:distributorFormat>
                             <gmd:distributorTransferOptions>
                                 <!-- May need to set this up as a list with multiples -->
                                 <gmd:MD_DigitalTransferOptions>
