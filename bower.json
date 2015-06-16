@@ -1,0 +1,14 @@
+{
+  "name": "mdedit frontent",
+  "description": "Northwest Knowledge Network's Metadata editor front end",
+  "version": "0.0.0",
+  "homepage": "https://github.com/northwest-knowledge-network/mdedit",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "angular": "1.3.x",
+    "angular-mocks": "1.3.x",
+    "jquery": "~2.1.1",
+    "bootstrap": "~3.1.1"
+  }
+}
