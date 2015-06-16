@@ -55,4 +55,8 @@ button.navbar-toggle.collapsed:focus {
 }
 .sr-only {
   border: 2px solid white;
+} 
+
+.attribute-label {
+  color:lightgreen;
 }

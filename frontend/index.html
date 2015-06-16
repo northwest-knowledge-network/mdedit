@@ -5,6 +5,7 @@
   <title ng-bind-template="The query: {{query}}"></title>
   <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
   <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="metadata.css">
   <script src="bower_components/angular/angular.js"></script>
   <script src="js/controllers.js"></script>
 </head>
@@ -54,14 +55,27 @@
 
   <h1>there won't be phones, but METADATA!!!</h1>
   <h2 style="color:red">This is the best stuff so far:</h2>
-  <br>
-  <h1 style="color:red">{{ basicForm.title }}</h1>
-  <p style="font-size:18px;color:dodgerblue">{{ basicForm.description }}</p>
   <form name="metadataForm">
-    <!-- this is wrong, but fix it when you go to the controller -->
-    <div ng-repeat="(key, value) in basicForm.fields">
-      <h4 style="color:pink">attribute: {{ key }}</h4>
-      <p style="color:red">value: {{ value }}</p>
+    <div class="row">
+
+      <div class="col-xs-6 col-sm-6 col-md-6">
+        <h2 style="color:dodgerblue">{{ basicForm.title }}</h2>
+       <h4 style="color:dodgerblue">{{ basicForm.description }}</h4>
+        <div ng-repeat="(key, value) in basicForm.fields">
+          <h4 style="color:pink">attribute: {{ key }}</h4>
+          <p style="color:red">value: {{ value }}</p>
+        </div>
+      </div>
+
+      <div class="col-xs-6 col-sm-6 col-md-6">
+       <h2 style="color:dodgerblue">{{ detailsForm.title }}</h2>
+       <h4 style="color:dodgerblue">{{ detailsForm.description }}</h4>
+       <div ng-repeat="key in ['topic_category', 'place_keywords']">
+          <h4 class="attribute-label">attribute: {{ key }}</h4>
+          <p style="color:red">value: {{ detailsForm.fields[key] }}</p>
+        </div>
+      </div>
+
     </div>
   </form>
 

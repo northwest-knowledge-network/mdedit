@@ -28,5 +28,14 @@ function($scope, $http) {
          summary: rec.summary
        }
       };
+
+     $scope.detailsForm = 
+      { title: 'Detailed Information',
+        description: 'and the secrets of your soul-a',
+       fields: { 
+         topic_category: rec.topic_category,
+         place_keywords: rec.place_keywords.join(', ')
+       }
+      };
    });
 }]);
