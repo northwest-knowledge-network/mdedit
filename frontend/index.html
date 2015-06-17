@@ -55,7 +55,7 @@
 
   <h1>there won't be phones, but METADATA!!!</h1>
   <h2 style="color:red">This is the best stuff so far:</h2>
-  <form name="metadataForm">
+  <form ng-submit="updateMetadata({'yo':'mama'})"="metadataForm">
     <div class="row">
 
       <div class="col-xs-6 col-sm-6 col-md-6">
@@ -66,15 +66,15 @@
           <p style="color:red">value: {{ basicForm.fields[key] }}</p>
         </div>
 
-       <h2 style="color:dodgerblue">{{ geoForm.title }}</h2>
-       <h4 style="color:dodgerblue">{{ geoForm.description }}</h4>
+       <h2 style="color:dodgerblue">{{ spatioTemporalForm.title }}</h2>
+       <h4 style="color:dodgerblue">{{ spatioTemporalForm.description }}</h4>
        
        <div class="row">
          <div class="col-xs-4 col-sm-4 col-md-4">
            <h4>Temporal Extent</h4>
            <div ng-repeat="key in ['start_date', 'end_date']"> 
               <h4 class="attribute-label">attribute: {{ key }}</h4>
-              <p style="color:red">value: {{ geoForm.fields[key] }}</p>
+              <p style="color:red">value: {{ spatioTemporalForm.fields[key] }}</p>
             </div>
           </div>
          
@@ -82,7 +82,7 @@
             <h4>Longitudinal Extent</h4>
             <div ng-repeat="key in ['west_lon', 'east_lon']">
               <h4 class="attribute-label">attribute: {{ key }}</h4>
-              <p style="color:red">value: {{ geoForm.fields[key] }}</p>
+              <p style="color:red">value: {{ spatioTemporalForm.fields[key] }}</p>
             </div>
           </div>
 
@@ -90,7 +90,7 @@
             <h4>Latitudinal Extent</h4>
             <div ng-repeat="key in ['north_lat', 'south_lat']">
               <h4 class="attribute-label">attribute: {{ key }}</h4>
-              <p style="color:red">value: {{ geoForm.fields[key] }}</p>
+              <p style="color:red">value: {{ spatioTemporalForm.fields[key] }}</p>
             </div>
           </div>
 
@@ -108,6 +108,7 @@
         </div>
       </div>
     </div>
+    <input class="btn-primary" type="submit" value="add" style="width:100%">
   </form>
 
     <p ng-show="oldMetadataForm.$invalid" style="color:red">INVALID</p>

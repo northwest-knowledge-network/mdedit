@@ -49,8 +49,11 @@ def get_single_metadata(_oid):
 
         existing_record = Metadata.objects.get_or_404(pk=_oid)
 
+        print "HERE FIRST"
+        print request.data
+
         for f in existing_record._fields:
-            existing_record[f] = Metadata.from_web_form(request.form)[f]
+            existing_record[f] = Metadata.from_web_form(request.data)[f]
 
         existing_record.save()
 
