@@ -15,7 +15,7 @@ Clone the repository using git
 
 .. code-block:: bash
 
-    $ git clone https://github.com/northwest-knowledge-network/mdFullstack.git
+    $ git clone https://github.com/northwest-knowledge-network/mdedit.git
 
 Or you might try using the nice `OS X GUI client provided by GitHub <https://mac.github.com/>`_.
 
