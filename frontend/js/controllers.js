@@ -78,10 +78,10 @@ function($scope, $http) {
           fields: {
             west_lon: -117.531786,
             east_lon: -110.655421,
-            north_lat: 41.946097,
-            south_lat: 49.039542,
-            start_date: "2010-10-01",
-            end_date: "2011-09-31"
+            south_lat: 41.946097,
+            north_lat: 49.039542,
+            start_date: new Date(2010, 10, 1),
+            end_date: new Date(2011, 9, 31)
           }
         };
 

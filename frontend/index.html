@@ -7,6 +7,15 @@
   <link rel="stylesheet" href="css/app.css">
   <link rel="stylesheet" href="metadata.css">
   <script src="bower_components/angular/angular.js"></script>
+<script src="http://cdn.jsdelivr.net/webshim/1.12.4/extras/modernizr-custom.js">
+</script>
+<!-- polyfiller file to detect and load polyfills -->
+<script src="http://cdn.jsdelivr.net/webshim/1.12.4/polyfiller.js"></script>
+<script>
+  webshims.setOptions('waitReady', false);
+  webshims.setOptions('forms-ext', {types: 'date'});
+  webshims.polyfill('forms forms-ext');
+</script>
   <script src="js/controllers.js"></script>
 </head>
 
@@ -72,9 +81,9 @@
        <div class="row">
          <div class="col-xs-4 col-sm-4 col-md-4">
            <h4>Temporal Extent</h4>
-           <div ng-repeat="key in ['start_date', 'end_date']"> 
+             <div ng-repeat="key in ['start_date', 'end_date']"> 
               <h4 class="attribute-label">attribute: {{ key }}</h4>
-              <p style="color:red">value: {{ spatioTemporalForm.fields[key] }}</p>
+              <input type="date" ng-pattern="[1,2][0-9]{3}-[0-9]{1,2}-[0-3][0-9]" ng-model="spatioTemporalForm.fields[key]">
             </div>
           </div>
          
@@ -82,15 +91,18 @@
             <h4>Longitudinal Extent</h4>
             <div ng-repeat="key in ['west_lon', 'east_lon']">
               <h4 class="attribute-label">attribute: {{ key }}</h4>
-              <p style="color:red">value: {{ spatioTemporalForm.fields[key] }}</p>
+              <input type="number" step="0.000001"
+                     ng-model="spatioTemporalForm.fields[key]">
             </div>
           </div>
+
 
           <div class="col-xs-4 col-sm-4 col-md-4">
             <h4>Latitudinal Extent</h4>
             <div ng-repeat="key in ['north_lat', 'south_lat']">
               <h4 class="attribute-label">attribute: {{ key }}</h4>
-              <p style="color:red">value: {{ spatioTemporalForm.fields[key] }}</p>
+              <input type="number" step="0.000001"
+                     ng-model="spatioTemporalForm.fields[key]">
             </div>
           </div>
 
@@ -111,7 +123,10 @@
     <input class="btn-primary" type="submit" value="add" style="width:100%">
   </form>
 
-    <p ng-show="oldMetadataForm.$invalid" style="color:red">INVALID</p>
+  <p>west_lon: {{ spatioTemporalForm.fields.west_lon }}</p>
+  <p>east_lon: {{ spatioTemporalForm.fields.east_lon }}</p>
+  <p>north_lat: {{ spatioTemporalForm.fields.north_lat }}</p>
+  <p>south_lat: {{ spatioTemporalForm.fields.south_lat }}</p>
 
   <h2>Table Experiment from Tutorial 2</h2>
   <table>
