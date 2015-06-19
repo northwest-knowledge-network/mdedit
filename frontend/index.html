@@ -9,6 +9,8 @@
   <script src="bower_components/angular/angular.js"></script>
 <script src="http://cdn.jsdelivr.net/webshim/1.12.4/extras/modernizr-custom.js">
 </script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js">
+    </script>
 <!-- polyfiller file to detect and load polyfills -->
 <script src="http://cdn.jsdelivr.net/webshim/1.12.4/polyfiller.js"></script>
 <script>
@@ -24,85 +26,48 @@
 
 <div class="container">
 
-  <h1 class="baller">Searching on: {{query}} ordered by {{orderProp}}</h1>
-
-  <div class="row">
-    <div class="col-sm-6">
-      Search: <input type="text" class="col-sm-3" ng-model="query" 
-               placeholder="Filter Phones">
-    </div>
-    <div class="col-sm-6">
-      Sort by:
-      <select ng-model="orderProp">
-        <option value="name">Alphabetical</option>
-        <option value="age">Newest</option>
-        <option value="-age">Oldest</option>
-      </select>
-    </div>
-  </div>
-  <ul class="phones">
-
-    <li ng-repeat="phone in phones | filter:query | orderBy:orderProp">
-
-      <a class="thumb" href="#/phones/{{phone.id}}"><img height="80px" alt="" ng-src="{{phone.imageUrl}}"></a>
-      <a href="#/phones/{{phone.id}}">{{phone.name}}</a>
-      <p>{{phone.snippet}}</p>
-    </li>
-
-  </ul>
-  
-</div>
-<div class="container">
-
-    <h2>JSON of {{(phones | filter:query).length}} phones filtered by search "{{query}}"</h2>
-    <h3>ordered by {{orderProp}}</h3>
-
-  <pre>{{phones | filter:query | orderBy:orderProp | json}}</pre>
-  
-</div>
-</div>
-
-  <h1>there won't be phones, but METADATA!!!</h1>
-  <h2 style="color:red">This is the best stuff so far:</h2>
-  <form ng-submit="updateMetadata({'yo':'mama'})"="metadataForm">
+  <h1>Editing Metadata Record: {{basicForm.fields.title}}</h1>
+  <form id="metadataForm" ng-submit="updateMetadata()">
     <div class="row">
 
       <div class="col-xs-6 col-sm-6 col-md-6">
-       <h2 style="color:dodgerblue">{{ basicForm.title }}</h2>
-       <h4 style="color:dodgerblue">{{ basicForm.description }}</h4>
-        <div ng-repeat="key in ['title', 'summary']">
-          <h4 class="attribute-label">attribute: {{ key }}</h4>
-          <p style="color:red">value: {{ basicForm.fields[key] }}</p>
+       <h2 style="color:dodgerblue">Basic Information</h2>
+        <div ng-repeat="key_title in [['title', 'Title'], ['summary', 'Summary']]">
+          <h4 class="attribute-label">{{ key_title[1] }}</h4>
+          <!--<p style="color:red">{{ basicForm.fields[key_title[0]] }}</p>-->
+          <input style="width:100%" type="text" ng-model="basicForm.fields[key_title[0]]">
         </div>
 
-       <h2 style="color:dodgerblue">{{ spatioTemporalForm.title }}</h2>
-       <h4 style="color:dodgerblue">{{ spatioTemporalForm.description }}</h4>
+       <h2 style="color:dodgerblue">Spatiotemporal Extents</h2>
        
        <div class="row">
-         <div class="col-xs-4 col-sm-4 col-md-4">
+         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
            <h4>Temporal Extent</h4>
-             <div ng-repeat="key in ['start_date', 'end_date']"> 
-              <h4 class="attribute-label">attribute: {{ key }}</h4>
-              <input type="date" ng-pattern="[1,2][0-9]{3}-[0-9]{1,2}-[0-3][0-9]" ng-model="spatioTemporalForm.fields[key]">
+             <div ng-repeat="key_title in [['start_date','Start Date'], 
+                                     ['end_date', 'End Date']]"> 
+              <h4 class="attribute-label">{{ key_title[1] }}</h4>
+              <input type="date" ng-model="spatioTemporalForm.fields[key_title[0]]">
             </div>
           </div>
          
-          <div class="col-xs-4 col-sm-4 col-md-4">
+          <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
             <h4>Longitudinal Extent</h4>
-            <div ng-repeat="key in ['west_lon', 'east_lon']">
-              <h4 class="attribute-label">attribute: {{ key }}</h4>
+            <div ng-repeat="key_title in [['west_lon', 'West Longitude'], 
+                                    ['east_lon', 'East Longitude']]">
+              <h4 class="attribute-label">{{ key_title[1] }}</h4>
               <input type="number" step="0.000001"
-                     ng-model="spatioTemporalForm.fields[key]">
+                     ng-model="spatioTemporalForm.fields[key_title[0]]">
             </div>
           </div>
 
 
-          <div class="col-xs-4 col-sm-4 col-md-4">
+          <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
             <h4>Latitudinal Extent</h4>
-            <div ng-repeat="key in ['north_lat', 'south_lat']">
-              <h4 class="attribute-label">attribute: {{ key }}</h4>
+            <div ng-repeat="key_title in [['north_lat', 'North Latitude'],
+                                          ['south_lat', 'South Latitude']]">
+              <h4 class="attribute-label">{{ key_title[1] }}</h4>
               <input type="number" step="0.000001"
-                     ng-model="spatioTemporalForm.fields[key]">
+                     ng-model="spatioTemporalForm.fields[key_title[0]]">
             </div>
           </div>
 
@@ -111,33 +76,26 @@
       </div>
 
       <div class="col-xs-6 col-sm-6 col-md-6">
-       <h2 style="color:dodgerblue">{{ detailsForm.title }}</h2>
-       <h4 style="color:dodgerblue">{{ detailsForm.description }}</h4>
-       <div ng-repeat="key in ['topic_category', 'place_keywords', 'status',
-                               'theme_keywords']">
-          <h4 class="attribute-label">attribute: {{ key }}</h4>
-          <p style="color:red">value: {{ detailsForm.fields[key] }}</p>
+       <h2 style="color:dodgerblue">Detailed Information</h2>
+       <div ng-repeat="key_title in [['topic_category', 'Topic'], 
+                                     ['place_keywords', 'Place Keywords'], 
+                                     ['status', 'Update Status'],
+                                     ['theme_keywords', 'Thematic Keywords']]">
+          <h4 class="attribute-label">{{ key_title[1] }}</h4>
+          <input style="width:100%" type="text" ng-model="detailsForm.fields[key_title[0]]">
         </div>
       </div>
     </div>
+    <br>
     <input class="btn-primary" type="submit" value="add" style="width:100%">
   </form>
+  <div class="row" ng-repeat="mdRecord in allRecords">
+    <div class="col-md-3 col-sm-3 col-xs-3">{{ mdRecord.title }}</div>
+    <div class="col-md-3 col-sm-3 col-xs-3">{{ mdRecord.start_date }}</div>
+    <div class="col-md-3 col-sm-3 col-xs-3">{{ mdRecord.end_date }}</div>
+    <div class="col-md-3 col-sm-3 col-xs-3"></div>
+  </div>
 
-  <p>west_lon: {{ spatioTemporalForm.fields.west_lon }}</p>
-  <p>east_lon: {{ spatioTemporalForm.fields.east_lon }}</p>
-  <p>north_lat: {{ spatioTemporalForm.fields.north_lat }}</p>
-  <p>south_lat: {{ spatioTemporalForm.fields.south_lat }}</p>
-
-  <h2>Table Experiment from Tutorial 2</h2>
-  <table>
-    <tr><th>row number</th></tr>
-    <tr ng-repeat="i in [0, 1, 2, 3, 4, 5, 6, 7]">
-      <td>{{i+1}}</td>
-      <td ng-repeat="j in [0, 1, 2, 3, 4, 5, 6, 7]">
-        ({{i+1}}, {{j+1}}) 
-      </td> 
-    </tr>
-  </table>
-
+</div>
 </body>
 </html>

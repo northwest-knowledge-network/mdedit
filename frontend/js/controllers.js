@@ -9,14 +9,17 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http',
 function($scope, $http) {
 
     $http.get('http://localhost:4000/api/metadata')
-         .success(function(data) { updateForms(data); });
+         .success(function(data) { 
+           updateForms(data); 
+
+           $scope.allRecords = data.results;
+         });
 
     /**
      * On submit of metadata form, updateMetadata. This both updates the server
      * and makes sure the form is current. Not sure how it wouldn't be, todo?
      */ 
     $scope.updateMetadata = function(data) {
-      console.log('trying put here');
       $http.put('http://localhost:4000/api/metadata/' + 
                 $scope.firstRecord._id.$oid, $scope.firstRecord)
            .success(function(data){ updateForms(data); })
@@ -32,10 +35,6 @@ function($scope, $http) {
        $scope.firstRecord = currentRec;
 
        // the way to post back to update a metadata record
-       console.log(currentRec);
-       console.log('http://localhost:4000/api/metadata/' + 
-                   $scope.firstRecord._id.$oid);
-
        $scope.basicForm = 
         { title: 'Basic Information',
           description: 'Just some get to know ya',
