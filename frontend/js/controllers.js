@@ -90,6 +90,7 @@ function($scope, $http) {
          */
         //
         // our more human-readable status choices need trans to ISO 19115
+        console.log(currentRec.status);
         $scope.status_choices_iso_map = {
           'completed': 'completed',
           'contiually updated': 'onGoing',
