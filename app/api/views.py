@@ -24,18 +24,30 @@ def metadata():
         recs = Metadata.objects()
         return jsonify(dict(results=recs))
 
-
-    # create a new metadata record
     if request.method == 'POST':
 
-        new_md = Metadata.from_web_form(request.form)
+        # import ipdb; ipdb.set_trace()
+        new_md = Metadata.from_json(request.data)
+
+        new_md.id = None
+        new_md.placeholder = False
 
         new_md.save()
 
-        panels = new_md.to_web_form()
+        # import ipdb; ipdb.set_trace()
 
         # return a JSON record of new metadata to load into the page
-        return jsonify(form=[p.to_json() for p in panels])
+        return jsonify(record=new_md)
+
+
+@api.route('/api/metadata/placeholder', methods=['GET'])
+@cross_origin(origin='*', methods=['GET'],
+              headers=['X-Requested-With', 'Content-Type', 'Origin'])
+def placeholder_metadata():
+
+    record = Metadata.objects.get(placeholder=True)
+
+    return jsonify(record=record)
 
 
 @api.route('/api/metadata/<string:_oid>', methods=['GET', 'PUT'])
@@ -49,21 +61,18 @@ def get_single_metadata(_oid):
 
         existing_record = Metadata.objects.get_or_404(pk=_oid)
 
-        print "HERE FIRST"
-        print request.data
-
         for f in existing_record._fields:
-            existing_record[f] = Metadata.from_web_form(request.data)[f]
+            existing_record[f] = Metadata.from_json(request.data)[f]
 
         existing_record.save()
 
-        panels = existing_record.to_web_form()
-
-        return jsonify(form=[p.to_json() for p in panels])
+        return jsonify(record=existing_record)
 
     else:
 
         record = Metadata.objects.get_or_404(pk=_oid)
+
+        record.format_dates()
 
         return jsonify(record=record)
 
@@ -90,27 +99,3 @@ def get_single_xml_metadata(_oid):
     xml_str = dicttoxml(dict(record=json.loads(record.to_json())))
 
     return Response(xml_str, 200, mimetype='application/xml')
-
-
-@api.route('/api/metadata/form')
-@cross_origin(origin='*', methods=['GET'],
-              headers=['X-Requested-With', 'Content-Type', 'Origin'])
-def get_form():
-
-    record = Metadata.objects[0]
-
-    panels = record.to_web_form(include_id=False)
-
-    return jsonify(form=[p.to_json() for p in panels])
-
-
-@api.route('/api/metadata/<string:_oid>/form')
-@cross_origin(origin='*', methods=['GET'])
-def get_form_metadata(_oid):
-    """Get form data for a given id for display on frontend"""
-
-    record = Metadata.objects.get_or_404(pk=_oid)
-
-    panels = record.to_web_form()
-
-    return jsonify(form=[p.to_json() for p in panels])
