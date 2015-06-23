@@ -32,10 +32,14 @@
             style="background-color:green;color:white;float:center;width:50%">
       Create New
     </button>
-    <form id="metadataForm"> <!--ng-submit="submitRecord()">-->
+    <form id="metadataForm" ng-submit="submitRecord()">
     <div class="row">
 
       <div class="col-xs-6 col-sm-6 col-md-6">
+
+
+      <!--Basic Information: Title and Summary-->
+
        <h2 style="color:dodgerblue">Basic Information</h2>
         <div ng-repeat="key_title in [['title', 'Title']]">
           <h4 class="attribute-label">{{ key_title[1] }}</h4>
@@ -46,6 +50,9 @@
 
       <textarea style="width:100%" type="text" ng-model="currentRecord.summary">
       </textarea>
+
+
+      <!--Spatial and Temporal Extents (Bounding Box, Start/End dates)-->
 
        <h2 style="color:dodgerblue">Spatiotemporal Extents</h2>
        
@@ -84,6 +91,10 @@
 
       </div>
 
+
+      <!--Detailed Information: Place Keywords, Thematic Keywords, Topic, Update status/freq-->
+
+
       <div class="col-xs-6 col-sm-6 col-md-6">
        <h2 style="color:dodgerblue">Detailed Information</h2>
        <div ng-repeat="key_title in [['place_keywords', 'Place Keywords'], 
@@ -109,14 +120,24 @@
         </select>
       </div>
     </div>
+
+
+    <!--Submit Button-->
+
     <br>
-    <input class="btn-primary" ng-click="submitRecord()" type="submit" value="add" style="width:100%">
+    <input class="btn-primary" type="submit" value="add" style="width:100%">
   </form>
+
+  <div class="row">
+    <div class="col-md-3 col-sm-3 col-xs-3"><b>Metadata Title</b></div>
+    <div class="col-md-6 col-sm-6 col-xs-6"><b>Description</b></div>
+  </div>
+
   <div class="row" ng-repeat="mdRecord in allRecords">
     <div class="col-md-3 col-sm-3 col-xs-3">{{ mdRecord.title }}</div>
     <div class="col-md-6 col-sm-6 col-xs-6">{{ mdRecord.summary }}</div>
     <div class="col-md-3 col-sm-3 col-xs-3">
-      <a ng-click="editRecord(currentRecord.$oid._id)">
+      <a ng-click="editRecord(mdRecord._id.$oid)">
         Edit 
       </a>
     </div>

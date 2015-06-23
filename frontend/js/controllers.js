@@ -10,9 +10,6 @@ var metadataEditorApp = angular.module('metadataEditor', []);
 metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', 
 function($scope, $http) {
 
-  // initialize form with placeholder data for creating a new record
-  createNewRecord();
-
   // initialize list of existing metadata records
   displayCurrentRecords();
 
@@ -21,16 +18,17 @@ function($scope, $http) {
    *
    * Intended for use in conjunction with the Edit buttons in the records list
    */
-  function editRecord(recordId)
+  $scope.editRecord = function(recordId)
   {
     $scope.newRecord = false;
 
-    updateForms(
-      $http.get('http://localhost:4000/api/metadata/' + recordId).record
-    );
-  }
+    $http.get('http://localhost:4000/api/metadata/' + recordId)
+         .success(function(data) {
+            updateForms(data.record);
+         });
+  };
 
-  function createNewRecord()
+  $scope.createNewRecord = function()
   {
     $scope.newRecord = true;
 
@@ -38,7 +36,11 @@ function($scope, $http) {
          .success(function(data) {
            updateForms(data.record);
          });
-  }
+  };
+
+  // initialize form with placeholder data for creating a new record
+  $scope.createNewRecord();
+
 
   /**
    * On submit of metadata form, submitRecord. This both updates the server
