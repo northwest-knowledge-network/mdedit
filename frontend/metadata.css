@@ -71,6 +71,7 @@ button.navbar-toggle.collapsed:focus {
   /*border-color: lightgrey;*/
   padding: 2px;
   background-color: #D3D3D3;
+  margin-top: 10px;
 }
 
 #access-contacts {

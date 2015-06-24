@@ -106,8 +106,8 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http',
 
        $scope.currentRecord.first_pub_date = 
          new Date($scope.currentRecord.first_pub_date.$date);
-    }
 
+    }
     /*
      * Use these maps in the view: key gets displayed, value is actually the
      * object value
@@ -163,6 +163,34 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http',
         'zipcode': 'Zip Code',
         'country': 'Country',
         'phone': 'Phone'
+    };
+
+    var addedContacts = 
+    {
+      'access': 0,
+      'citation': 0
+    };
+
+    $scope.addContact = function(accessOrCitation)
+    {
+      var emptyContact = 
+      {
+        'name': '', 'email': '', 'org': '', 'address': '',
+        'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': ''     
+      };
+
+      $scope.currentRecord[accessOrCitation].push(emptyContact);
+
+      addedContacts[accessOrCitation] += 1;
+    };
+
+    $scope.cancelAddContact = function(accessOrCitation)
+    {
+      if (addedContacts[accessOrCitation] > 0)
+      {
+        $scope.currentRecord[accessOrCitation].pop();
+        addedContacts[accessOrCitation] -= 1;
+      }
     };
 
   } // end of callback for controller initialization
