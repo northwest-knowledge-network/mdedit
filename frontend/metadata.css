@@ -58,7 +58,7 @@ button.navbar-toggle.collapsed:focus {
 } 
 
 .attribute-label {
-  color:pink;
+  color:red;
 }
 
 .section-header {
@@ -70,6 +70,7 @@ button.navbar-toggle.collapsed:focus {
   /*border-width:1px;*/
   /*border-color: lightgrey;*/
   padding: 2px;
+  background-color: #D3D3D3;
 }
 
 #access-contacts {

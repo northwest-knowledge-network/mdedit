@@ -92,12 +92,20 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http',
     {
        $scope.currentRecord = record;
 
-       $scope.currentRecord.place_keywords = $scope.currentRecord.place_keywords.join(', ');
-       $scope.currentRecord.thematic_keywords = $scope.currentRecord.thematic_keywords.join(', ');
+       $scope.currentRecord.place_keywords = 
+         $scope.currentRecord.place_keywords.join(', ');
 
-       $scope.currentRecord.start_date = new Date($scope.currentRecord.start_date.$date);
-       $scope.currentRecord.end_date = new Date($scope.currentRecord.end_date.$date);
-       $scope.currentRecord.first_pub_date = new Date($scope.currentRecord.first_pub_date.$date);
+       $scope.currentRecord.thematic_keywords = 
+         $scope.currentRecord.thematic_keywords.join(', ');
+
+       $scope.currentRecord.start_date = 
+         new Date($scope.currentRecord.start_date.$date);
+
+       $scope.currentRecord.end_date = 
+         new Date($scope.currentRecord.end_date.$date);
+
+       $scope.currentRecord.first_pub_date = 
+         new Date($scope.currentRecord.first_pub_date.$date);
     }
 
     /*
@@ -143,6 +151,19 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http',
     $scope.orderedContactFields = 
       ['name', 'email', 'org', 'address', 'city', 
        'state', 'zipcode', 'country', 'phone'];
+
+    $scope.cfieldsMap = 
+    {
+        'name': 'Name',
+        'email': 'Email',
+        'org': 'Organization',
+        'address': 'Address',
+        'city': 'City',
+        'state': 'State',
+        'zipcode': 'Zip Code',
+        'country': 'Country',
+        'phone': 'Phone'
+    };
 
   } // end of callback for controller initialization
 ]);

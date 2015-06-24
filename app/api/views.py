@@ -21,7 +21,7 @@ def metadata():
 
     if request.method == 'GET':
 
-        recs = Metadata.objects()
+        recs = Metadata.objects(placeholder=False)
         return jsonify(dict(results=recs))
 
     if request.method == 'POST':
@@ -96,6 +96,15 @@ def get_single_xml_metadata(_oid):
     """
     record = Metadata.objects.get_or_404(pk=_oid)
 
-    xml_str = dicttoxml(dict(record=json.loads(record.to_json())))
+    json_rec = json.loads(record.to_json())
+
+    time_fmt = '%Y-%m-%d'
+
+    json_rec['start_date'] = record.start_date.strftime(time_fmt)
+    json_rec['end_date'] = record.end_date.strftime(time_fmt)
+    json_rec['last_mod_date'] = record.last_mod_date.strftime(time_fmt)
+    json_rec['first_pub_date'] = record.first_pub_date.strftime(time_fmt)
+
+    xml_str = dicttoxml(dict(record=json_rec))
 
     return Response(xml_str, 200, mimetype='application/xml')

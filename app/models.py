@@ -57,6 +57,4 @@ class Metadata(db.Document):
         for el in [self.start_date, self.end_date, self.first_pub_date]:
             el = el.strftime("%Y-%m-%d")
 
-        print self.start_date
         self.start_date = self.start_date.strftime("%Y-%m-%d")
-        print self.start_date
