@@ -83,9 +83,7 @@
   <gmd:metadataStandardVersion>
     <gco:CharacterString>2003</gco:CharacterString>
   </gmd:metadataStandardVersion>
-  <gmd:dataSetURI>
-    <gco:CharacterString>uuid linked to NKN Portal data record</gco:CharacterString>
-  </gmd:dataSetURI>
+  
   <gmd:identificationInfo>
     <gmd:MD_DataIdentification>
       <gmd:citation>
