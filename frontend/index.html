@@ -240,9 +240,14 @@
   <div class="row" ng-repeat="mdRecord in allRecords">
     <div class="col-md-3 col-sm-3 col-xs-3">{{ mdRecord.title }}</div>
     <div class="col-md-6 col-sm-6 col-xs-6">{{ mdRecord.summary }}</div>
-    <div class="col-md-3 col-sm-3 col-xs-3">
+    <div class="col-md-2 col-sm-2 col-xs-2">
       <a ng-click="editRecord(mdRecord._id.$oid)">
         Edit 
+      </a>
+    </div>
+    <div class="col-md-1 col-sm-1 col-xs-1">
+      <a href="http://localhost:4000/api/metadata/{{mdRecord._id.$oid}}/xml">
+        XML
       </a>
     </div>
   </div>
