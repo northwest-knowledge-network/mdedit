@@ -5,18 +5,11 @@
   <title ng-bind-template="The query: {{query}}"></title>
   <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
   <link rel="stylesheet" href="metadata.css">
-  <script src="bower_components/angular/angular.js"></script>
-<script src="http://cdn.jsdelivr.net/webshim/1.12.4/extras/modernizr-custom.js">
-</script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js">
-    </script>
-<!-- polyfiller file to detect and load polyfills -->
-<script src="http://cdn.jsdelivr.net/webshim/1.12.4/polyfiller.js"></script>
-<script>
-  webshims.setOptions('waitReady', false);
-  webshims.setOptions('forms-ext', {types: 'date'});
-  webshims.polyfill('forms forms-ext');
-</script>
+  <link rel="stylesheet" href="bower_components/jquery-ui/themes/smoothness/jquery-ui.css"/>
+<script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="bower_components/jquery-ui/jquery-ui.min.js"></script>
+<script type="text/javascript" src="bower_components/angular/angular.js"></script>
+<script type="text/javascript" src="bower_components/angular-ui-date/src/date.js"></script>
   <script src="js/controllers.js"></script>
 </head>
 
@@ -31,7 +24,7 @@
             style="background-color:green;color:white;float:center;width:50%">
       Create New
     </button>
-    <form name="metadataForm" id="metadataForm" >
+    <form name="metadataForm" id="metadataForm" autocomplete="on">
       <br>
     <div class="row">
 
@@ -44,16 +37,31 @@
 
          <h2 class="section-header">Basic Information</h2>
          <div class="subform">
-          <div ng-repeat="key_title in [['title', 'Title']]">
-            <h4 class="attribute-label">{{ key_title[1] }}</h4>
-            <!--<p style="color:red">{{ currentRecord.fields[key_title[0]] }}</p>-->
-            <input style="width:95%" type="text" ng-model="currentRecord[key_title[0]]" required>
-          </div>
-         <h4 class="attribute-label">Summary</h4>
-         
-         <textarea style="width:95%" type="text" 
-                   ng-model="currentRecord.summary" required>
-         </textarea>
+           <h4 class="attribute-label">Title</h4>
+           <h6>A brief description of your data; include 'what','where,' and 'when'.</h6>
+            <p class=field-description>
+             Examples: 
+              <ul>
+                <li>
+                  LiDAR data for Clear Creek Watershed, Idaho (2009); 
+                </li>
+                <li>
+                  Water clarity for Lake Coeur d'Alene from IDEQ source data, Idaho, (2005-2014)
+                </li>
+              </ul>
+           </p>
+           <input style="width:95%" type="text" ng-model="currentRecord.title" required>
+
+           <h4 class="attribute-label">Summary</h4>
+           
+           <textarea style="width:95%" type="text" 
+                     ng-model="currentRecord.summary" required>
+           </textarea>
+
+           <h4 class="attribute-label">Date First Published</h4>
+           <input ui-date="dateOptions" 
+                  ng-model="currentRecord.first_pub_date.$date">
+           
        </div>
        <br>
 
@@ -64,17 +72,27 @@
        <div class="subform">
          
          <div class="row">
-           <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+           <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
              <h4>Temporal Extent</h4>
                <div ng-repeat="key_title in [['start_date','Start Date'], 
                                        ['end_date', 'End Date']]"> 
                 <h4 class="attribute-label">{{ key_title[1] }}</h4>
-                <input type="date" 
-                ng-model="currentRecord[key_title[0]]">
+                <input ui-date="dateOptions" 
+                       ng-model="currentRecord[key_title[0]].$date">
+              </div>
+            </div>
+
+           <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+             <h4>Temporal Extent</h4>
+               <div ng-repeat="key_title in [['start_date','Start Date'], 
+                                       ['end_date', 'End Date']]"> 
+                <h4 class="attribute-label">{{ key_title[1] }}</h4>
+                <input ui-date="dateOptions" 
+                       ng-model="currentRecord[key_title[0]].$date">
               </div>
             </div>
            
-            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+            <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
               <h4>Longitudinal Extent</h4>
               <div ng-repeat="key_title in [['west_lon', 'West Longitude'], 
                                       ['east_lon', 'East Longitude']]">
@@ -85,7 +103,7 @@
             </div>
          
          
-            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+            <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
               <h4>Latitudinal Extent</h4>
               <div ng-repeat="key_title in [['north_lat', 'North Latitude'],
                                             ['south_lat', 'South Latitude']]">

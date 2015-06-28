@@ -2,16 +2,23 @@
 
 /* Controllers */
 
-var metadataEditorApp = angular.module('metadataEditor', []);
+var metadataEditorApp = angular.module('metadataEditor', ['ui.date']);
 
 // track whether an existing record
 
 // for minification, explicitly declare dependencies $scope and $http
-metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', 
-  function($scope, $http) {
+metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log', 
+  function($scope, $http, $log) {
 
     // initialize list of existing metadata records
     displayCurrentRecords();
+
+    // set date options
+    $scope.dateOptions = {
+        changeYear: true,
+        changeMonth: true,
+        yearRange: '1700:+10'
+    };
 
     /**
      * Fetch the record with recordId and update the form to display it.
@@ -24,9 +31,17 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http',
 
       $http.get('http://localhost:4000/api/metadata/' + recordId)
            .success(function(data) {
+              $log.log(data.record);
               updateForms(data.record);
            });
     };
+
+    var EMPTY_CONTACT = 
+    {
+      'name': '', 'email': '', 'org': '', 'address': '',
+      'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': ''     
+    };
+
 
     $scope.createNewRecord = function()
     {
@@ -34,7 +49,34 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http',
 
       $http.get('http://localhost:4000/api/metadata/placeholder')
            .success(function(data) {
-             updateForms(data.record);
+             //updateForms(data.record);
+             var placeholderRec = data.record;
+             var emptyRec = JSON.parse(JSON.stringify(placeholderRec));
+             for (var field in emptyRec)
+             {
+               if (['citation', 'access'].indexOf(field) > -1)
+               {
+                 emptyRec[field] = [JSON.parse(JSON.stringify(EMPTY_CONTACT))];    
+               }
+               else if (
+                 ['place_keywords', 'thematic_keywords'].indexOf(field) > -1)
+               {
+                 emptyRec[field] = [];    
+               }
+               else if (['_cls', '_id', 'west_lon', 'east_lon', 'north_lat', 
+                         'south_lat', 'start_date', 'end_date', 'last_mod_date',
+                         'first_pub_date'].indexOf(field) == -1)
+               {
+                 emptyRec[field] = "";    
+               }
+             }
+             emptyRec.start_date.$date = new Date(2010, 1, 1);
+             emptyRec.end_date.$date = new Date();
+             emptyRec.last_mod_date.$date = new Date();
+             emptyRec.first_pub_date.$date = new Date();
+             $log.log(emptyRec);
+             $scope.currentRecord = emptyRec;
+             updateForms($scope.currentRecord);
            });
     };
 
@@ -48,20 +90,37 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http',
      */ 
     $scope.submitRecord = function()
     {
-      var current = $scope.currentRecord;
+      //var current = $scope.currentRecord;
+      var current = JSON.parse(JSON.stringify($scope.currentRecord));
 
       current.place_keywords = current.place_keywords.split(', ');
       current.thematic_keywords = current.thematic_keywords.split(', ');
 
+      //var dates = 
+      //{
+          //'start': current.start_date.$date.getTime(),
+          //'end': current.end_date.$date.getTime(),
+          //'last_mod': current.last_mod_date.$date.getTime(),
+          //'first_pub': current.first_pub_date.$date.getTime()
+      //};
+
+      current.start_date.$date = $scope.currentRecord.start_date.$date.getTime();
+      current.end_date.$date = $scope.currentRecord.end_date.$date.getTime();
+      current.last_mod_date.$date = $scope.currentRecord.last_mod_date.$date.getTime();
+      current.first_pub_date.$date = $scope.currentRecord.first_pub_date.$date.getTime();
+
+      $log.log(current);
+
       if ($scope.newRecord)
       {
+        
         $http.post('http://localhost:4000/api/metadata', current)
              .success(function(data) {
                  updateForms(data.record);
                  $scope.newRecord = false;
                  displayCurrentRecords();
              })
-             .error(console.log(data.record));
+             .error(function(data) { console.log(data.record); });
       }
       else
       {
@@ -90,23 +149,25 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http',
      */
     function updateForms(record) 
     {
-       $scope.currentRecord = record;
+       record.place_keywords = 
+         record.place_keywords.join(', ');
 
-       $scope.currentRecord.place_keywords = 
-         $scope.currentRecord.place_keywords.join(', ');
+       record.thematic_keywords = 
+         record.thematic_keywords.join(', ');
 
-       $scope.currentRecord.thematic_keywords = 
-         $scope.currentRecord.thematic_keywords.join(', ');
+       record.start_date.$date = 
+         new Date(record.start_date.$date);
 
-       $scope.currentRecord.start_date = 
-         new Date($scope.currentRecord.start_date.$date);
+       record.end_date.$date = 
+         new Date(record.end_date.$date);
 
-       $scope.currentRecord.end_date = 
-         new Date($scope.currentRecord.end_date.$date);
+       record.last_mod_date.$date = 
+         new Date(record.last_mod_date.$date);
 
-       $scope.currentRecord.first_pub_date = 
-         new Date($scope.currentRecord.first_pub_date.$date);
+       record.first_pub_date.$date = 
+         new Date(record.first_pub_date.$date);
 
+       $scope.currentRecord = record; 
     }
     /*
      * Use these maps in the view: key gets displayed, value is actually the
@@ -173,13 +234,7 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http',
 
     $scope.addContact = function(accessOrCitation)
     {
-      var emptyContact = 
-      {
-        'name': '', 'email': '', 'org': '', 'address': '',
-        'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': ''     
-      };
-
-      $scope.currentRecord[accessOrCitation].push(emptyContact);
+      $scope.currentRecord[accessOrCitation].push(EMPTY_CONTACT);
 
       addedContacts[accessOrCitation] += 1;
     };

@@ -26,7 +26,7 @@ def metadata():
 
     if request.method == 'POST':
 
-        # import ipdb; ipdb.set_trace()
+        import ipdb; ipdb.set_trace()
         new_md = Metadata.from_json(request.data)
 
         new_md.id = None
