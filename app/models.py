@@ -25,20 +25,26 @@ class Contact(db.EmbeddedDocument):
 
 class Metadata(db.Document):
     """MongoDB Document representation of metadata"""
+    # basic info
     title = db.StringField(max_length=255, required=True)
     last_mod_date = db.DateTimeField(required=True)
     first_pub_date = db.DateTimeField(required=True)
-
     summary = db.StringField(max_length=255, required=True)
+
+    # detailed info
     topic_category = db.StringField(max_length=255, required=True)
     thematic_keywords = db.ListField(db.StringField(max_length=255))
     place_keywords = db.ListField(db.StringField(max_length=255))
     update_frequency = db.StringField(max_length=255, required=True)
     status = db.StringField(max_length=255, required=True)
 
+    # contacts
     citation = db.ListField(db.EmbeddedDocumentField('Contact'))
     access = db.ListField(db.EmbeddedDocumentField('Contact'))
 
+    # extents
+    vertical_max = db.FloatField(required=False)
+    vertical_min = db.FloatField(required=False)
     west_lon = db.FloatField(required=True)
     east_lon = db.FloatField(required=True)
     south_lat = db.FloatField(required=True)

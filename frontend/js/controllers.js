@@ -96,18 +96,17 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
       current.place_keywords = current.place_keywords.split(', ');
       current.thematic_keywords = current.thematic_keywords.split(', ');
 
-      //var dates = 
-      //{
-          //'start': current.start_date.$date.getTime(),
-          //'end': current.end_date.$date.getTime(),
-          //'last_mod': current.last_mod_date.$date.getTime(),
-          //'first_pub': current.first_pub_date.$date.getTime()
-      //};
+      current.start_date.$date = 
+        $scope.currentRecord.start_date.$date.getTime();
 
-      current.start_date.$date = $scope.currentRecord.start_date.$date.getTime();
-      current.end_date.$date = $scope.currentRecord.end_date.$date.getTime();
-      current.last_mod_date.$date = $scope.currentRecord.last_mod_date.$date.getTime();
-      current.first_pub_date.$date = $scope.currentRecord.first_pub_date.$date.getTime();
+      current.end_date.$date = 
+        $scope.currentRecord.end_date.$date.getTime();
+
+      current.last_mod_date.$date = 
+        $scope.currentRecord.last_mod_date.$date.getTime();
+
+      current.first_pub_date.$date = 
+        $scope.currentRecord.first_pub_date.$date.getTime();
 
       $log.log(current);
 
@@ -118,6 +117,11 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
              .success(function(data) {
                  updateForms(data.record);
                  $scope.newRecord = false;
+                 addedContacts = 
+                 {
+                  'access': 0,
+                  'citation': 0
+                 };            
                  displayCurrentRecords();
              })
              .error(function(data) { console.log(data.record); });
@@ -128,6 +132,11 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
                   current)
              .success(function(data) {
                  updateForms(data.record);
+                 addedContacts = 
+                 {
+                  'access': 0,
+                  'citation': 0
+                 };            
                  displayCurrentRecords();
              });
       }
@@ -234,7 +243,8 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
 
     $scope.addContact = function(accessOrCitation)
     {
-      $scope.currentRecord[accessOrCitation].push(EMPTY_CONTACT);
+      $scope.currentRecord[accessOrCitation]
+            .push(JSON.parse(JSON.stringify(EMPTY_CONTACT)));
 
       addedContacts[accessOrCitation] += 1;
     };
