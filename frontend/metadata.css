@@ -85,4 +85,7 @@ button.navbar-toggle.collapsed:focus {
 .field-description {
   font-size: 12px;  
 }
+.contacts-subheader {
+  width: 80%;
+} 
 
