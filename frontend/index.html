@@ -2,12 +2,16 @@
 <html lang="en" ng-app="metadataEditor" ng-controller="MetadataCtrl">
 <head>
   <meta charset="utf-8">
-  <title ng-bind-template="The query: {{query}}"></title>
+  <!--<title ng-bind-template="The query: {{query}}"></title>-->
+  <title>NKN Metadata Editor</title>
   <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
   <link rel="stylesheet" href="metadata.css">
+  <link rel="stylesheet" href="bower_components/octicons/octicons/octicons.css">
   <link rel="stylesheet" href="bower_components/jquery-ui/themes/smoothness/jquery-ui.css"/>
 <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript" src="bower_components/jquery-ui/jquery-ui.min.js"></script>
+<script type="text/javascript" 
+        src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="bower_components/angular/angular.js"></script>
 <script type="text/javascript" src="bower_components/angular-ui-date/src/date.js"></script>
   <script src="js/controllers.js"></script>
@@ -16,17 +20,80 @@
 <body>
 <!--<body ng-controller="PhoneListCtrl">-->
 
-<div class="container">
+  <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">NKN Metadata Editor</a>
+          <a href="#list" 
+             class="btn btn-default navbar-btn">
+            Edit Existing
+          </a>
+          <button ng-click="createNewRecord()" 
+                  class="btn btn-primary navbar-btn">
+            Create New
+          </button>
+          <button ng-show="newRecord && metadataForm.$valid" 
+                  class="btn btn-primary navbar-btn" 
+                  type="submit" style="width:95%" ng-click="submitRecord()">
+                  Submit New Record
+          </button>
+          
+          <button ng-show="!newRecord && metadataForm.$valid" 
+                  class="btn btn-primary navbar-btn" 
+                  type="submit" 
+                  ng-click="submitRecord()">Submit Changes
+          </button>
+          
+                 <button class="btn btn-danger navbar-btn"
+                   ng-hide="metadataForm.$valid">
+                  Please fix errors before submitting
+                </button>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+          <li class="dropdown">
+            <a id="nav-button" class="dropdown-toggle" aria-expanded="false" 
+               aria-haspopup="true" role="button" data-toggle="dropdown" href="#">
+              Go to Section <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+              <li>
+                <a href="#basic">
+                  <span class="glyphicon glyphicon-check"></span>
+                  Basic & Detailed Info
+                </a>
+              </li>
+              <li>
+                <a href="#spatiotemporal">
+                  <span class="glyphicon glyphicon-globe"></span>/<span class="glyphicon glyphicon-time"></span>
+                  Spatiotemporal Extents
+                </a>
+              </li>
+              <li><a href="#contacts">
+                <span class="octicon octicon-repo"></span> Contacts</a>
+              </li>
+            </ul>
+          </li>
+            <li><a href="/#go-to-modal-info">Info</a></li>
+            <li>
+              <a href="https://github.com/northwest-knowledge-network/mdedit">
+                <span class="octicon octicon-mark-github" id="mdedit"></span>
+              </a>
+            </li>
+          
+          </ul>
+        
+      </div>
+    </nav>
 
-  <h1 ng-show="newRecord">New Metadata Record: {{currentRecord.title}}</h1>
-  <h1 ng-show="!newRecord">Editing Existing: {{currentRecord.title}}</h1>
-    <button ng-click="createNewRecord()" 
-            style="background-color:green;color:white;float:center;width:50%">
-      Create New
-    </button>
-    
+<div id="main-container" class="container">
+
+      <h1 ng-show="newRecord">New Metadata Record: {{currentRecord.title}}</h1>
+      <h1 ng-show="!newRecord">Editing Existing: {{currentRecord.title}}</h1>
+  
+
+    <br>
+
     <form name="metadataForm" id="metadataForm" autocomplete="on">
-      <br>
 
     <div class="row">
       <!---------------Left Divider-------------->
@@ -34,7 +101,12 @@
 
       <!--Basic Information: Title and Summary-->
 
-         <h2 class="section-header">Basic Information</h2>
+         <a class="anchor" name="basic">
+           <h2 class="section-header">
+             <span class="glyphicon glyphicon-check"></span> 
+             Basic Information
+           </h2>
+         </a>
          <div class="subform">
            <h4 class="attribute-label">Title</h4>
            <h6>A brief description of your data; include 'what','where,' and 'when'.</h6>
@@ -46,7 +118,7 @@
                   LiDAR data for Clear Creek Watershed, Idaho (2009) 
                 </li>
                 <li>
-                  Water clarity for Lake Coeur d'Alene from IDEQ source data, Idaho, (2005-2014)
+                  Water clarity for Lake Coeur d'Alene from IDEQ source data, Idaho (2005-2014)
                 </li>
               </ul>
            <input style="width:95%" type="text" ng-model="currentRecord.title" required>
@@ -73,12 +145,13 @@
 
       <div class="col-xs-6 col-sm-6 col-md-6">
 
-       <h2 class="section-header">Detailed Information</h2>
+       <h2 class="section-header">
+         <span class="glyphicon glyphicon-list-alt"></span> Detailed Information</h2>
        <div class="subform">
          <div ng-repeat="key_title in 
-           [['place_keywords', 'Place Keywords', 'List keywords related to the geographic area covered by your data. Example: Idaho, Clear Creek Watershed, USA.'], 
+           [['place_keywords', 'Place Keywords', 'List comma-separated keywords related to the geographic area covered by your data. Example: Idaho, Clear Creek Watershed, USA.'], 
                                        
-           ['thematic_keywords', 'Thematic Keywords', 'List keywords that will help others discover your data through an intuitive search. In addition to subject-based keywords, you may also want to include the grant numbers and funding sources associated with creation of the data.']]">
+           ['thematic_keywords', 'Thematic Keywords', 'List comma-separated keywords that will help others discover your data through an intuitive search. In addition to subject-based keywords, you may also want to include the grant numbers and funding sources associated with creation of the data.']]">
             <h4 class="attribute-label">{{ key_title[1] }}</h4>
             <h6>{{ key_title[2] }}</h6>
             <input style="width:95%" type="text" 
@@ -111,12 +184,20 @@
 
       <!--Spatial and Temporal Extents (Bounding Box, Start/End dates)-->
     <div class="row">
-       <h2 class="section-header">Spatiotemporal Extents</h2>
+       <a class="anchor" name="spatiotemporal">
+         <h2 class="section-header">
+         <span class="glyphicon glyphicon-time"></span> 
+         <span class="glyphicon glyphicon-resize-vertical"></span> 
+         <span class="glyphicon glyphicon-globe"></span> 
+           Spatiotemporal Extents
+         </h2>
+       </a>
        <div class="subform">
          
          <div class="row" style="vertical-align:middle">
            <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
-             <h4>Temporal Extent</h4>
+             <h4><span class="glyphicon glyphicon-time"></span> 
+               Temporal Extent</h4>
              <h6>What is the time period represented by the data</h6>
                <div ng-repeat="key_title in [['start_date','Start Date'], 
                                        ['end_date', 'End Date']]"> 
@@ -127,11 +208,13 @@
             </div>
 
            <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
-             <h4>Vertical Extents</h4>
-             <h6>What is the minimum and maximum vertical heights covered by the data? (if applicable)</h6>
+             <h4><span class="glyphicon glyphicon-resize-vertical"></span> 
+               Vertical Extents</h4>
+             <h6>What is the minimum and maximum vertical heights
+                 covered by the data? (if applicable)</h6>
             <p class=field-description>
-               <div ng-repeat="key_title in [['vertical_max','Vertical Maximum'], 
-                                       ['vertical_min', 'Vertical Minimum']]"> 
+               <div ng-repeat="key_title in [['vertical_min', 'Vertical Minimum (m)'], 
+                                       ['vertical_max','Vertical Maximum (m)']]"> 
                 <h4 class="attribute-label">{{ key_title[1] }}</h4>
                 <input type="number" step="1"
                        ng-model="currentRecord[key_title[0]]">
@@ -139,7 +222,7 @@
             </div>
            
             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-              <h4>Longitudinal and Latitudinal Extent</h4>
+              <h4>Longitudinal and Latitudinal Extent   <span style="text-align:right" class="glyphicon glyphicon-globe" aria-hidden="true"></span></h4>
               <h6>What is the geographic area covered by the data? (For the MILES project, the defaults here are for the entire state of Idaho).</h6>
               
               <div class="row">
@@ -173,7 +256,10 @@
 
     <div class="row">
       <div class="col-xs-6 col-sm-6 col-md-6" id="citation-contacts">
-        <h2 class="section-header">Citation Contacts</h2>
+        <a class="anchor" name="contacts">
+          <h2 class="section-header">
+            <span class="glyphicon glyphicon-user"></span> Citation Contacts</h2>
+        </a>
         <h6 class="contacts-subheader">Who are the author(s) of this dataset? Consider who might be the author of a manuscript describing the data (likely PI, post-doc, or graduate student). Start with the first author and add additional authors as needed.</h6>
         <div ng-repeat="contact in currentRecord.citation">
           <div class="subform">
@@ -192,26 +278,33 @@
         </div>
         </div>
         <br>
-        <span>
-          <button class="btn" ng-click="cancelAddContact('citation')">
-            Cancel
-          </button>
-        </span>
 
-        <!-- Only allowed to add a new contact if all current contact fields 
-            are valid -->
-        <span>
-          <button class="btn" ng-show="metadataForm.$valid" 
-                              ng-click="addContact('citation')">
-            Add a Contact
-          </button>
-        </span>
+        <div class="row">
+          <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4">
+            <button class="btn btn-default btn-contact" 
+              ng-click="cancelAddContact('citation')">
+              Cancel
+            </button>
+          </div>
+  
+          <!-- Only allowed to add a new contact if all current contact fields 
+              are valid -->
+          <div class="col-xs-6 col-sm-6 col-md-8 col-lg-8">
+            <button class="btn btn-primary btn-contact" 
+                    ng-show="metadataForm.$valid" 
+                    ng-click="addContact('citation')">
+              <span class="glyphicon glyphicon-plus" aria-hide="true"></span> 
+              Add a Contact 
+            </button>
+          </div>
+        </div>
 
       </div>
 
       <div class="col-xs-6 col-sm-6 col-md-6" id="access-contacts">
 
-        <h2 class="section-header">Data Access Contacts</h2>
+        <h2 class="section-header">
+          <span class="glyphicon glyphicon-cloud"></span>  Data Access Contacts</h2>
         <h6 class="contacts-subheader">Identify the organization and, where appropriate, the point of contact (name or position, e.g., Data Manager) responsible for providing physical access to the data. NKN's information is provided as a default.</h6>
         <div ng-repeat="contact in currentRecord.access">
           <div class="subform">
@@ -231,20 +324,25 @@
         </div>
         <br>
 
-        <span>
-          <button ng-hide="originalContactLenghts.access==currentRecord.access.length" 
-                  class="btn" ng-click="cancelAddContact('access')">
-            Cancel
-          </button>
-        </span>
-
-        <!-- Only allowed to add a new contact if all current contact fields are valid -->
-        <span>
-          <button class="btn" ng-show="metadataForm.$valid" 
-                              ng-click="addContact('access')">
-            Add a Contact
-          </button>
-        </span>
+        <div class="row">
+          <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4">
+            <button class="btn btn-default btn-contact" 
+              ng-click="cancelAddContact('citation')">
+              Cancel
+            </button>
+          </div>
+  
+          <!-- Only allowed to add a new contact if all current contact fields 
+              are valid -->
+          <div class="col-xs-6 col-sm-6 col-md-8 col-lg-8">
+            <button class="btn btn-primary btn-contact" 
+                    ng-show="metadataForm.$valid" 
+                    ng-click="addContact('citation')">
+              <span class="glyphicon glyphicon-plus" aria-hide="true"></span> 
+              Add a Contact 
+            </button>
+          </div>
+        </div>
 
         <br>
 
@@ -254,39 +352,41 @@
     <!--Submit Button-->
 
     <br>
-    <input ng-show="newRecord && metadataForm.$valid" class="btn-primary" type="submit" 
-           value="Submit New Record" style="width:95%" ng-click="submitRecord()">
-
-    <input ng-show="!newRecord && metadataForm.$valid" class="btn-primary" type="submit" 
-           value="Submit Changes" style="width:95%" ng-click="submitRecord()">
-
-           <p ng-hide="metadataForm.$valid" style="color:red">
-            Please fix errors before submitting
-          </p>
   </form>
 </div>
 
   <!-- View of current metadata records -->
+<a class="anchor" name="list"><h1 name="list">Listing of Current Metadata Records</h1></a>  
 
-  <div class="row">
-    <div class="col-md-3 col-sm-3 col-xs-3"><b>Metadata Title</b></div>
-    <div class="col-md-6 col-sm-6 col-xs-6"><b>Description</b></div>
-  </div>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <td><b>Dataset Title</b></td>   
+        <td><b>Summary</b></td>   
+        <td><b>First Citation Contact</b></td> 
+        <td><b>Edit and formats</b></td>
+      </tr>
+    </thead>
+    <tr ng-repeat="mdRecord in allRecords">
+      <td>{{mdRecord.title}}</td>
+      <td>{{mdRecord.summary}}</td>
+      <td>{{mdRecord.citation[0].name}}</td>
+      <td>
+        <div class="btn-group btn-group-xs">
+          <span class="btn btn-default"
+                ng-click="editRecord(mdRecord._id.$oid)">
+              Edit 
+          </span>
+          <span
+            class="btn btn-default"
+              href="http://localhost:4000/api/metadata/{{mdRecord._id.$oid}}/xml">
+            XML
+          </span>
+        </div>
+      </td>
+    </tr>
+  </table>
 
-  <div class="row" ng-repeat="mdRecord in allRecords">
-    <div class="col-md-3 col-sm-3 col-xs-3">{{ mdRecord.title }}</div>
-    <div class="col-md-6 col-sm-6 col-xs-6">{{ mdRecord.summary }}</div>
-    <div class="col-md-2 col-sm-2 col-xs-2">
-      <a ng-click="editRecord(mdRecord._id.$oid)">
-        Edit 
-      </a>
-    </div>
-    <div class="col-md-1 col-sm-1 col-xs-1">
-      <a href="http://localhost:4000/api/metadata/{{mdRecord._id.$oid}}/xml">
-        XML
-      </a>
-    </div>
-  </div>
 
 </div>
 </body>

@@ -49,7 +49,6 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
 
       $http.get('http://localhost:4000/api/metadata/placeholder')
            .success(function(data) {
-             //updateForms(data.record);
              var placeholderRec = data.record;
              var emptyRec = JSON.parse(JSON.stringify(placeholderRec));
              for (var field in emptyRec)
