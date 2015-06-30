@@ -727,18 +727,22 @@
                                         </gmd:role>
                                     </gmd:CI_ResponsibleParty>
                                 </gmd:distributorContact>
+                                <xsl:for-each select="/root/record/access/item/link">
                                 <gmd:distributorTransferOptions>
                                     <!-- May need to set this up as a list with multiples -->
                                     <gmd:MD_DigitalTransferOptions>
                                         <gmd:onLine>
                                             <gmd:CI_OnlineResource>
                                                 <gmd:linkage>
-                                                  <gmd:URL/>
+                                                  <gmd:URL>
+                                                    <xsl:value-of select="link"/>
+                                                  </gmd:URL>
                                                 </gmd:linkage>
                                             </gmd:CI_OnlineResource>
                                         </gmd:onLine>
                                     </gmd:MD_DigitalTransferOptions>
                                 </gmd:distributorTransferOptions>
+                                </xsl:for-each>
                             </gmd:MD_Distributor>
                         </gmd:distributor>
                     </xsl:for-each>
