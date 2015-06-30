@@ -172,7 +172,7 @@
                   ng-model="currentRecord.status">
           </select>
           <h4 class="attribute-label">Update Frequency</h4>
-          <h6>Please select the frequency with which changes (any modifications and deletions) are or will be made to your data after it is produced? Please select a value from below. Options are availabel if you do not plan to update your data or do not know the specific frequency of updates.</h6>
+          <h6>Please select the frequency with which changes (any modifications and deletions) are or will be made to your data after it is produced. Please select a value from below. Options are available if you do not plan to update your data or do not know the specific frequency of updates.</h6>
           <select id="" name=""
                   ng-options="f for (f, iso) in updateFrequencyChoicesMap" 
                   ng-model="currentRecord.update_frequency">
@@ -198,7 +198,7 @@
            <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
              <h4><span class="glyphicon glyphicon-time"></span> 
                Temporal Extent</h4>
-             <h6>What is the time period represented by the data</h6>
+             <h6>What is the time period represented by the data?</h6>
                <div ng-repeat="key_title in [['start_date','Start Date'], 
                                        ['end_date', 'End Date']]"> 
                 <h4 class="attribute-label">{{ key_title[1] }}</h4>
@@ -210,11 +210,11 @@
            <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
              <h4><span class="glyphicon glyphicon-resize-vertical"></span> 
                Vertical Extents</h4>
-             <h6>What is the minimum and maximum vertical heights
-                 covered by the data? (if applicable)</h6>
+             <h6>What are the minimum and maximum vertical heights
+                 covered by the data? (if applicable) Note: the units should be the same as those in the geographic coordinate system of your data.</h6>
             <p class=field-description>
-               <div ng-repeat="key_title in [['vertical_min', 'Vertical Minimum (m)'], 
-                                       ['vertical_max','Vertical Maximum (m)']]"> 
+               <div ng-repeat="key_title in [['vertical_min', 'Vertical Minimum'], 
+                                       ['vertical_max','Vertical Maximum']]"> 
                 <h4 class="attribute-label">{{ key_title[1] }}</h4>
                 <input type="number" step="1"
                        ng-model="currentRecord[key_title[0]]">
