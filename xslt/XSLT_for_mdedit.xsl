@@ -423,7 +423,7 @@
                             <xsl:for-each select="/root/record/thematic_keywords/item">
                                 <gmd:keyword>
                                     <gco:CharacterString>
-                                        <xsl:value-of select="item"/>
+                                        <xsl:value-of select="word"/>
                                     </gco:CharacterString>
                                 </gmd:keyword>
                             </xsl:for-each>
@@ -439,13 +439,14 @@
         frontend in html, at least for now-->
                     <gmd:descriptiveKeywords>
                         <gmd:MD_Keywords>
-                            <!-- Enables entry for multiple keywords and parses each 'item' in the keyword list in the mdedit generic xml as a separate keyword 
-                            <xsl:for-each select="/root/record/them_keywords/item"> -->
+                            <!-- Enables entry for multiple keywords and parses each 'item' in the keyword list in the mdedit generic xml as a separate keyword--> 
+                            <xsl:for-each select="/root/record/place_keywords/item">
                             <gmd:keyword>
                                 <gco:CharacterString>
-                                    <xsl:value-of select="/root/record/place_keywords"/>
+                                    <xsl:value-of select="word"/>
                                 </gco:CharacterString>
                             </gmd:keyword>
+                            </xsl:for-each>
                             <!-- Sets the type of keyword for all above as place keywords. -->
                             <gmd:type>
                                 <gmd:MD_KeywordTypeCode codeSpace="ISOTC211/19115"
@@ -727,15 +728,15 @@
                                         </gmd:role>
                                     </gmd:CI_ResponsibleParty>
                                 </gmd:distributorContact>
-                                <xsl:for-each select="/root/record/access/item/link">
+                                <xsl:for-each select="/root/record/access/item">
                                 <gmd:distributorTransferOptions>
-                                    <!-- May need to set this up as a list with multiples -->
+                                    <!-- May need to set this up as a list with multiples, in same style as keywords-->
                                     <gmd:MD_DigitalTransferOptions>
                                         <gmd:onLine>
                                             <gmd:CI_OnlineResource>
                                                 <gmd:linkage>
                                                   <gmd:URL>
-                                                    <xsl:value-of select="link"/>
+                                                    <xsl:value-of select="url"/>
                                                   </gmd:URL>
                                                 </gmd:linkage>
                                             </gmd:CI_OnlineResource>
