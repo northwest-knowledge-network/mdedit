@@ -118,17 +118,15 @@ Finally, we will start the two web servers, front and back end, needed for our m
 
     ./startup.py 
 
-If all is well, you can navigate to http://localhost:8000 in your browser and see the colorful front end of the
+If all is well, you can navigate to http://localhost:8000 in your browser to try out the
 metadata editor: 
 
-.. image:: editor_thumbnail.png
+.. image:: editor_screenshot.png
 
 There is no explicit connection between the front end and the
 back end server. To see the back end emit metadata, try these routes:
 
 - http://localhost:4000/api/metadata: list of all Mongo records
-- http://localhost:4000/api/metadata/form: construct used to build front end web
-  form
 - ``http://localhost:4000/api/metadata/{_oid}/xml``: Emit a generic XML record to be
   used by developers as a base for running XSLTs. Get ``_oid`` by inspecting
   a record from http://localhost:4000/api/metadata
@@ -145,9 +143,9 @@ quotes should be dropped.
 More info
 ---------
 
-The back end is written in `Flask <http://flask.pocoo.org/>`_. The front end is
-written in JQuery/javascript with `Handlebars templating <http://handlebarsjs.com/>`_,
-though Angular may be in our near future.
+The back end is written in `Flask <http://flask.pocoo.org/>`_. The front end is Bootstrap
+and Angular.
+
 These two are totally separate, which is why they are hosted on two separate
 servers. At NKN, we need this because we want to deploy our front end app to
 many of our clients' content management systems with a single metadata server
