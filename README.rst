@@ -121,7 +121,7 @@ Finally, we will start the two web servers, front and back end, needed for our m
 If all is well, you can navigate to http://localhost:8000 in your browser and see the colorful front end of the
 metadata editor: 
 
-.. image:: editor_thumbnail.png
+.. image:: editor_screenshot.png
 
 There is no explicit connection between the front end and the
 back end server. To see the back end emit metadata, try these routes:
