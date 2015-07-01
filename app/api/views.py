@@ -105,6 +105,15 @@ def get_single_xml_metadata(_oid):
     json_rec['last_mod_date'] = record.last_mod_date.strftime(time_fmt)
     json_rec['first_pub_date'] = record.first_pub_date.strftime(time_fmt)
 
-    xml_str = dicttoxml(dict(record=json_rec))
+    # for XSLT, need something inside of each <item> in this generic XML
+    _enclose_word = lambda k: {'word': k}
+
+    json_rec['thematic_keywords'] = map(_enclose_word,
+                                        json_rec['thematic_keywords'])
+
+    json_rec['place_keywords'] = map(_enclose_word,
+                                     json_rec['place_keywords'])
+
+    xml_str = dicttoxml(dict(record=json_rec))  # , attr_type=False)
 
     return Response(xml_str, 200, mimetype='application/xml')
