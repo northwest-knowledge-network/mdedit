@@ -1,19 +1,21 @@
 {
   "first_pub_date": "2015-01-01", 
   "last_mod_date": "2015-01-01",
-  "place_keywords": ["Dry Creek", "Idaho", "Boise", "Forest Service"],
+  "place_keywords": ["Comma-separated Keywords", "For", "The Place Of Interest"],
   "summary": "DEM of Dry Creek Watershed northeast of Boise, ID",
-  "theme_keywords": ["lidar", "dem", "hydrology"],
-  "title": "Dry Creek DEM",
+  "thematic_keywords": ["Comma-separated Keywords", "of thematic elements", 
+                        "such as 'lidar'"],
+  "title": "Title for the dataset this metadata represents",
   "topic_category": "Geoscientific Information",
-  "status": "Completed",
+  "status": "completed",
+  "update_frequency": "irregular",
 
     "access": [
       {
-        "address": "850 Rayburn St",
-        "city": "Moscow",
+        "address": "Street address of your data manager",
+        "city": "City",
         "country": "United States",
-        "name": "NKN",
+        "name": "Northwest Knowledge Network",
         "email": "info@northwestknowledge.net",
         "org": "UI",
         "phone": "555-5555",
@@ -23,15 +25,22 @@
     ],
    "citation": [
       {
-        "address": "875 Bronco Drive",
-        "city": "Moscow",
-        "country": "USA",
-        "name": "Janet Reno",
-        "email": "renogotiate@bsu.edu",
+        "address": "Your Street Address",
+        "city": "Your city",
+        "country": "United States",
+        "name": "Your Name",
+        "email": "your email",
         "org": "Boise State University",
         "phone": "555-5555",
         "state": "Idaho",
         "zipcode": "83844"
       }
-    ]
+    ],
+  "placeholder": "true",
+  "west_lon": "-117.531786",
+  "east_lon": "-110.655421",
+  "south_lat":" 41.946097",
+  "north_lat": "49.039542",
+  "start_date": "2010-10-01",
+  "end_date": "2011-09-30"
 }

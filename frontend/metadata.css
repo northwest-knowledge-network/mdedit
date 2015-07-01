@@ -1,58 +1,62 @@
-.md-button {
-    width: 100%;
-  background-image: -webkit-linear-gradient(top,dodgerblue 35%,#206da4 100%);
-  background-image: -webkit-gradient(top,dodgerblue 35%,#206da4 100%);
-  background-image: -moz-linear-gradient(top,dodgerblue 35%,#206da4 100%);
-  background-image: linear-gradient(top,dodgerblue 35%,#206da4 100%);
-} 
-body {
-    padding-top: 70px;
-} 
-.mdrow {
-  border: 1px solid #fff; 
-  background-color: #aaa;
-  padding: 0 2px;
+.attribute-label {
+  color:red;
 }
-.navbar {
-  background-image: -webkit-linear-gradient(right,#FFA6C9 5%, dodgerblue 100%);
-  background-image: -moz-linear-gradient(right,#FFA6C9 5%, dodgerblue 100%);
-  background-image: -webkit-gradient(right,#FFA6C9 5%, dodgerblue 100%);
-  background-image: linear-gradient(right,#FFA6C9 5%, dodgerblue 100%);
-} 
-.navbar-fixed-top {
-  border-width: 0; 
-} 
-.navbar-inverse .navbar-brand {
-    color: #fff;
-    text-shadow: 0;
-    /*color: #000;*/
-} 
-.navbar-inverse .navbar-toggle  {
-  border: 2px solid white; 
+
+.section-header {
+  color: dodgerblue;
 }
-button.navbar-toggle.collapsed:hover {
+  
+.subform {
+  /*border-style: solid;*/
+  /*border-width:1px;*/
+  /*border-color: lightgrey;*/
+  padding: 5px 15px 10px;
+  background-color: #D3D3D3;
+  margin-top: 10px;
+}
+
+.btn-primary {
   background-color: dodgerblue;
 }
-button.navbar-toggle.collapsed:focus {
-  background-color: dodgerblue;
+
+.btn-primary:hover {
+  background-color: #eaeaea;
+  color: dodgerblue;
 }
-.panel-heading.md-block {
-  background-image: -webkit-linear-gradient(top,dodgerblue 35%,#206da4 100%);
-  background-image: -webkit-gradient(top,dodgerblue 35%,#206da4 100%);
-  background-image: -moz-linear-gradient(top,dodgerblue 35%,#206da4 100%);
-  background-image: linear-gradient(top,dodgerblue 35%,#206da4 100%);
-} 
-.panel-primary>.panel-heading {
-    background-color: rgba(0, 117, 254, 0.2);
-} 
-.panel-primary {
-  background-image: -webkit-linear-gradient(top,#EBC17F 65%, #FFA6C9 100%);
-  background-image: -moz-linear-gradient(top,#EBC17F 65%, #FFA6C9 100%);
-  background-image: -webkit-gradient(top,#EBC17F 65%, #FFA6C9 100%);
-  background-image: linear-gradient(top,#EBC17F 66%, #FFA6C9 100%);
-  border-width: 1px;
-  border-color: lightgrey;
+
+#access-contacts {
+  margin: 0 -8px 0 8px;  
 }
-.sr-only {
-  border: 2px solid white;
+
+#citation-contacts {
+  margin: 0 8px 0 -8px;  
+}
+
+.field-description {
+  font-size: 12px;  
+}
+.contacts-subheader {
+  width: 80%;
+} 
+
+.btn-contact {
+  width:100%;
+}
+
+/* To make anchors used as headings the same style */
+.anchor, .anchor:hover {
+  color: #333;
+  text-decoration: none;
+}
+
+/*
+ * to accomodate the navbar
+ * see http://getbootstrap.com/components/#navbar-fixed-top 
+ */
+body { 
+    padding-top: 65px; 
+}
+
+#nav-button {
+  font-weight: bold;  
 }

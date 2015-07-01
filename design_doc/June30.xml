@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <record type="dict">
+        <south_lat type="float">41.946097</south_lat>
+        <citation type="list">
+            <item type="dict">
+                <city type="str">Moscow</city>
+                <name type="str">Marisa Guarinello</name>
+                <country type="str">USA</country>
+                <zipcode type="str">88384</zipcode>
+                <phone type="str">509-345-9877</phone>
+                <state type="str">ID</state>
+                <address type="str">875 Perimeter Dr</address>
+                <org type="str">UI</org>
+                <email type="str">mguarinello@uidaho.edu</email>
+            </item>
+            <item type="dict">
+                <city type="str">Boise</city>
+                <name type="str">Matt Turner</name>
+                <country type="str">USA</country>
+                <zipcode type="str">76915</zipcode>
+                <phone type="str">807-098-0987</phone>
+                <state type="str">ID</state>
+                <address type="str">blah blah st</address>
+                <org type="str">UI</org>
+                <email type="str">matt@uidaho.edu</email>
+            </item>
+        </citation>
+        <update_frequency type="str">daily</update_frequency>
+        <topic_category type="str">Oceans</topic_category>
+        <north_lat type="float">49.039542</north_lat>
+        <title type="str">Test MG June 30</title>
+        <west_lon type="float">-117.531786</west_lon>
+        <access type="list">
+            <item type="dict">
+                <city type="str">Pullman</city>
+                <name type="str">IT</name>
+                <country type="str">USA</country>
+                <zipcode type="str">99163</zipcode>
+                <phone type="str">509-885-8765</phone>
+                <state type="str">WA</state>
+                <address type="str">XYZ St.</address>
+                <org type="str">UI</org>
+                <email type="str">it@hit</email>
+            </item>
+        </access>
+        <thematic_keywords type="list">
+            <item type="str">IIA-1301792</item>
+            <item type="str">EPSCoR</item>
+            <item type="str">awesome</item>
+            <item type="str">creek</item>
+            <item type="str">adventure</item>
+        </thematic_keywords>
+        <first_pub_date type="str">2015-06-10</first_pub_date>
+        <start_date type="str">2010-02-01</start_date>
+        <_cls type="str">Metadata</_cls>
+        <status type="str">underDevelopment</status>
+        <end_date type="str">2015-06-30</end_date>
+        <vertical_max type="float">10.0</vertical_max>
+        <placeholder type="number">False</placeholder>
+        <vertical_min type="float">-2.0</vertical_min>
+        <last_mod_date type="str">2015-06-30</last_mod_date>
+        <summary type="str">This is a test of the latest on angular branch.</summary>
+        <place_keywords type="list">
+            <item type="str">Idaho</item>
+            <item type="str">USA</item>
+            <item type="str">Moscow</item>
+        </place_keywords>
+        <east_lon type="float">-110.655421</east_lon>
+        <_id type="dict">
+            <key type="str" name="$oid">5592cdbbe21031123d25ad73</key>
+        </_id>
+    </record>
+</root>

@@ -43,12 +43,13 @@ When this finishes, it gives us two instructions to follow to start using MongoD
 .. code-block::
     
     To have launchd start mongodb at login:
-        ln -sfv /usr/local/opt/mongodb/*.plist ~/Library/LaunchAgents
+        ln -sfv /usr/local/opt/mongodb/\*.plist ~/Library/LaunchAgents
     Then to load mongodb now:
         launchctl load ~/Library/LaunchAgents/homebrew.mxcl.mongodb.plist
 
 
-Follow these instructions, then type `mongo` at the command line. If you see a new prompt ending with ``>`` 
+Follow these instructions, then type `mongo` at the command line. 
+If you see a new prompt ending with ``>`` 
 then MongoDB is installed and ready.
 
 
@@ -79,7 +80,37 @@ Now install virtualenv and set up your environment with all the Python packages 
     virtualenv -p /usr/bin/python2.7 venv
     source venv/bin/activate
     pip install -r requirements.txt
+
+2.3 Use Bower to install Javascript dependencies
+````````````````````````````````````````````````
+
+First, install Node.js and the node package manager, ``npm``. If running on
+Linux, use your package manager to install node. The rest of this will be for
+OS X. To install npm and Node on OS X, use homebrew
+
+.. code-block:: bash
+    
+    brew install node
+
+Then install Bower, another sort of package manager, globally like so using
+your newly-installed node package manager.
+
+.. code-block:: bash
+
+    npm install -g bower
+
+Now bower should be installed. From the root mdedit directory, run
+
+.. code-block:: bash
+
+    bower install
+
+``bower`` will check ``bower.json`` for where to install packages including
+Angular.js, Twitter Bootstrap, and JQuery.
+
      
+3. Run the development web servers
+``````````````````````````````````
 
 Finally, we will start the two web servers, front and back end, needed for our mdedit package. To do this, run ``startup.py``
 
