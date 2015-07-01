@@ -227,7 +227,7 @@
                <div ng-repeat="key_title in [['vertical_min', 'Vertical Minimum'], 
                                        ['vertical_max','Vertical Maximum']]"> 
                 <h4 class="attribute-label">{{ key_title[1] }}</h4>
-                <input type="number" step="1"
+                <input type="number" step=".0000001"
                        ng-model="currentRecord[key_title[0]]">
               </div>
             </div>
