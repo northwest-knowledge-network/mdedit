@@ -22,7 +22,7 @@
             xsi:schemaLocation="http://www.isotc211.org/2005/gmd http://www.northwestknowledge.net/iso/xsd/schema.xsd">
             <!-- Selects unique file identifier from the mdedit generic xml; this id is created by the mongo db for the metadata record -->
             <gmd:fileIdentifier>
-                <xsl:value-of select="/root/record/_id/key"/>
+                nkn:<xsl:value-of select="/root/record/_id/key"/>
             </gmd:fileIdentifier>
             <!-- Sets language as English and character set as utf-8 as default for metadata record. We do not anticipate non-English entries. -->
             <gmd:language>
