@@ -14,10 +14,7 @@
         src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="bower_components/angular/angular.js"></script>
 <script type="text/javascript" src="bower_components/angular-ui-date/src/date.js"></script>
-<script type="text/javascript" src="bower_components/bootstrap-multiselect/dist/js/bootstrap-multiselect.js"></script>
-<script type="text/javascript" src="bower_components/bootstrap-multiselect/dist/css/bootstrap-multiselect.css"></script>
   <script src="js/controllers.js"></script>
-  <script src="bower_components/angularjs-dropdown-multiselect/dist/angularjs-dropdown-multiselect.min.js"></script>
 </head>
 
 <body>
@@ -45,7 +42,7 @@
           </button>
           <button ng-show="newRecord && metadataForm.$valid" 
                   class="btn btn-primary navbar-btn" 
-                  type="submit" style="" ng-click="submitRecord()">
+                  type="submit" style="width:95%" ng-click="submitRecord()">
                   Submit New Record
           </button>
           
@@ -174,7 +171,7 @@
          
           <h4 class="attribute-label">Topic</h4>                           
           <h6>Select as many of these high level categories as apply to your dataset. This is a set list of categories established by international standards.</h6>
-          <select style="width:80%;height:100px;" multiple ng-multiple="true" class="multiselect" 
+          <select id="" name=""
                   ng-options="c for c in topicCategoryChoices" 
                   ng-model="currentRecord.topic_category">
           </select>

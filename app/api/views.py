@@ -111,9 +111,8 @@ def get_single_xml_metadata(_oid):
     json_rec['thematic_keywords'] = map(_enclose_word,
                                         json_rec['thematic_keywords'])
 
-    json_rec['place_keywords'] = map(_enclose_word, json_rec['place_keywords'])
-
-    json_rec['topic_category'] = map(_enclose_word, json_rec['topic_category'])
+    json_rec['place_keywords'] = map(_enclose_word,
+                                     json_rec['place_keywords'])
 
     xml_str = dicttoxml(dict(record=json_rec))  # , attr_type=False)
 
