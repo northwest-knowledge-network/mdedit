@@ -58,7 +58,7 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
                  emptyRec[field] = [JSON.parse(JSON.stringify(EMPTY_CONTACT))];    
                }
                else if (
-                 ['place_keywords', 'thematic_keywords'].indexOf(field) > -1)
+                 ['topic_category', 'place_keywords', 'thematic_keywords'].indexOf(field) > -1)
                {
                  emptyRec[field] = [];    
                }

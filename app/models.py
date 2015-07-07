@@ -32,7 +32,8 @@ class Metadata(db.Document):
     summary = db.StringField(max_length=255, required=True)
 
     # detailed info
-    topic_category = db.StringField(max_length=255, required=True)
+    topic_category = db.ListField(db.StringField(max_length=255,
+                                                 required=True))
     thematic_keywords = db.ListField(db.StringField(max_length=255))
     place_keywords = db.ListField(db.StringField(max_length=255))
     update_frequency = db.StringField(max_length=255, required=True)

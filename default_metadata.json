@@ -6,7 +6,7 @@
   "thematic_keywords": ["Comma-separated Keywords", "of thematic elements", 
                         "such as 'lidar'"],
   "title": "Title for the dataset this metadata represents",
-  "topic_category": "Geoscientific Information",
+  "topic_category": ["Biota", "Geoscientific Information"],
   "status": "completed",
   "update_frequency": "irregular",
 
