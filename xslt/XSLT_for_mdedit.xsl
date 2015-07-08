@@ -567,6 +567,7 @@
                                             <xsl:value-of select="root/record/vertical_max"/>
                                         </gco:Real>
                                     </gmd:maximumValue>
+                                    <gmd:verticalCRS gco:nilReason="unknown"/>
                                 </gmd:EX_VerticalExtent>
                             </gmd:verticalElement>
                         </gmd:EX_Extent>
