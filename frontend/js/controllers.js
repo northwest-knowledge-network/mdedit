@@ -22,7 +22,7 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
 
     // create time picker vars
     $scope.hours = _.range(24);
-    $scope.minutes = _.range(60);
+    $scope.minute_seconds = _.range(60);
 
     /**
      * Fetch the record with recordId and update the form to display it.
@@ -75,10 +75,12 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
              }
              emptyRec.start_date.$date = new Date(2010, 1, 1);
              emptyRec.end_date.$date = new Date();
-             emptyRec.start_date.hour = 0;
-             emptyRec.end_date.hour = 0;
-             emptyRec.start_date.minute = 0;
-             emptyRec.end_date.minute = 0;
+             emptyRec.start_date.hours = 0;
+             emptyRec.end_date.hours = 0;
+             emptyRec.start_date.minutes = 0;
+             emptyRec.end_date.minutes = 0;
+             emptyRec.start_date.seconds = 0;
+             emptyRec.end_date.seconds = 0;
 
              emptyRec.last_mod_date.$date = new Date();
              emptyRec.first_pub_date.$date = new Date();
@@ -102,12 +104,20 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
       // grab the hours and minutes and append them. Confusingly JS 
       // uses setHours to set minutes and seconds as well
       $scope.currentRecord.start_date.$date.setHours(
-        $scope.currentRecord.start_date.hours, $scope.currentRecord.start_date.minutes);
+        $scope.currentRecord.start_date.hours, 
+        $scope.currentRecord.start_date.minutes,
+        $scope.currentRecord.start_date.seconds
+      );
 
       $scope.currentRecord.end_date.$date.setHours(
-        $scope.currentRecord.end_date.hours, $scope.currentRecord.end_date.minutes);
+        $scope.currentRecord.end_date.hours, 
+        $scope.currentRecord.end_date.minutes,
+        $scope.currentRecord.end_date.seconds
+      );
 
-      //var current = $scope.currentRecord;
+      $log.log($scope.currentRecord.start_date.$date);
+      $log.log($scope.currentRecord.start_date.$date.getTime());
+
       var current = JSON.parse(JSON.stringify($scope.currentRecord));
 
       current.place_keywords = current.place_keywords.split(', ');
@@ -193,7 +203,16 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
        record.first_pub_date.$date = 
          new Date(record.first_pub_date.$date);
 
-       $scope.currentRecord = record; 
+       record.start_date.hours = record.start_date.$date.getHours();
+       record.end_date.hours = record.end_date.$date.getHours();
+
+       record.start_date.minutes = record.start_date.$date.getMinutes();
+       record.end_date.minutes = record.end_date.$date.getMinutes();
+
+       record.start_date.seconds = record.start_date.$date.getSeconds();
+       record.end_date.seconds = record.end_date.$date.getSeconds();
+
+       $scope.currentRecord = record;
     }
     /*
      * Use these maps in the view: key gets displayed, value is actually the
