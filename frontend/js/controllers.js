@@ -20,6 +20,10 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
         yearRange: '1700:+10'
     };
 
+    // create time picker vars
+    $scope.hours = _.range(24);
+    $scope.minutes = _.range(60);
+
     /**
      * Fetch the record with recordId and update the form to display it.
      *
@@ -71,6 +75,11 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
              }
              emptyRec.start_date.$date = new Date(2010, 1, 1);
              emptyRec.end_date.$date = new Date();
+             emptyRec.start_date.hour = 0;
+             emptyRec.end_date.hour = 0;
+             emptyRec.start_date.minute = 0;
+             emptyRec.end_date.minute = 0;
+
              emptyRec.last_mod_date.$date = new Date();
              emptyRec.first_pub_date.$date = new Date();
              $log.log(emptyRec);
@@ -89,20 +98,29 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
      */ 
     $scope.submitRecord = function()
     {
+      // the start and end dates currently have hours and minutes zero;
+      // grab the hours and minutes and append them. Confusingly JS 
+      // uses setHours to set minutes and seconds as well
+      $scope.currentRecord.start_date.$date.setHours(
+        $scope.currentRecord.start_date.hours, $scope.currentRecord.start_date.minutes);
+
+      $scope.currentRecord.end_date.$date.setHours(
+        $scope.currentRecord.end_date.hours, $scope.currentRecord.end_date.minutes);
+
       //var current = $scope.currentRecord;
       var current = JSON.parse(JSON.stringify($scope.currentRecord));
 
       current.place_keywords = current.place_keywords.split(', ');
       current.thematic_keywords = current.thematic_keywords.split(', ');
 
+
+      current.last_mod_date.$date = 
+        $scope.currentRecord.last_mod_date.$date.getTime();
       current.start_date.$date = 
         $scope.currentRecord.start_date.$date.getTime();
 
       current.end_date.$date = 
         $scope.currentRecord.end_date.$date.getTime();
-
-      current.last_mod_date.$date = 
-        $scope.currentRecord.last_mod_date.$date.getTime();
 
       current.first_pub_date.$date = 
         $scope.currentRecord.first_pub_date.$date.getTime();
