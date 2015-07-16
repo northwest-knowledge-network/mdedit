@@ -32,28 +32,28 @@
             
           </button>
 
-          <a class="navbar-brand" href="#">NKN Metadata Editor</a>
+          <!--<a class="navbar-brand" href="#">NKN Metadata Editor</a>-->
           <a href="#list" 
              class="btn btn-default navbar-btn">
             Edit Existing
           </a>
           <button ng-click="createNewRecord()" 
-                  class="btn btn-primary navbar-btn">
+                  class="btn btn-small btn-primary navbar-btn">
             Create New
           </button>
           <button ng-show="newRecord && metadataForm.$valid" 
-                  class="btn btn-primary navbar-btn" 
+                  class="btn btn-small btn-primary navbar-btn" 
                   type="submit" style="width:95%" ng-click="submitRecord()">
                   Submit New Record
           </button>
           
           <button ng-show="!newRecord && metadataForm.$valid" 
-                  class="btn btn-primary navbar-btn" 
+                  class="btn btn-small btn-primary navbar-btn" 
                   type="submit" 
                   ng-click="submitRecord()">Submit Changes
           </button>
           
-          <button class="btn btn-danger navbar-btn"
+          <button class="btn btn-small btn-danger navbar-btn"
             ng-hide="metadataForm.$valid">
            Please fix errors before submitting
           </button>
@@ -97,10 +97,12 @@
       </div>
     </nav>
 
+    <h3 id="brand">NKN Metadata Editor</h3>
+
 <div id="main-container" class="container">
 
-      <h1 ng-show="newRecord">New Metadata Record: {{currentRecord.title}}</h1>
-      <h1 ng-show="!newRecord">Editing Existing: {{currentRecord.title}}</h1>
+      <h1 id="record-title" ng-show="newRecord">New Metadata Record: {{currentRecord.title}}</h1>
+      <h1 id="record-title" ng-show="!newRecord">Editing Existing: {{currentRecord.title}}</h1>
   
 
     <br>

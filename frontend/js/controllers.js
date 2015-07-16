@@ -75,6 +75,10 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
              }
              emptyRec.start_date.$date = new Date(2010, 1, 1);
              emptyRec.end_date.$date = new Date();
+             emptyRec.end_date.$date.setHours(0);
+             emptyRec.end_date.$date.setMinutes(0);
+             emptyRec.end_date.$date.setSeconds(0);
+
              emptyRec.start_date.hours = 0;
              emptyRec.end_date.hours = 0;
              emptyRec.start_date.minutes = 0;
