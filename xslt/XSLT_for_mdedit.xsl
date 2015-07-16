@@ -506,9 +506,11 @@
                     </gmd:language>
                     <!-- Selects the topic category from the mdedit generic xml. This is selected from a dropdown list in mdedit. -->
                     <gmd:topicCategory>
+                        <xsl:for-each select="/root/record/topic_category/item">
                         <gmd:MD_TopicCategoryCode>
-                            <xsl:value-of select="/root/record/topic_category"/>
+                            <xsl:value-of select="word"/>
                         </gmd:MD_TopicCategoryCode>
+                        </xsl:for-each>
                     </gmd:topicCategory>
                     <!-- Selects the decicmal degree coordinates entered for the 4 geographic bounds (rectangular) of the dataset from the mdedit generic xml. 
         These values need to constrained to prevent entries that don't meet the criteria of geographic bounding coordinates.-->
@@ -565,6 +567,7 @@
                                             <xsl:value-of select="root/record/vertical_max"/>
                                         </gco:Real>
                                     </gmd:maximumValue>
+                                    <gmd:verticalCRS gco:nilReason="unknown"/>
                                 </gmd:EX_VerticalExtent>
                             </gmd:verticalElement>
                         </gmd:EX_Extent>

@@ -201,7 +201,7 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
      */
     $scope.statusChoicesIsoMap = {
       'completed': 'completed',
-      'contiually updated': 'onGoing',
+      'continually updated': 'onGoing',
       'in process': 'underDevelopment',
       'planned': 'planned',
       'needs to be generated or updated': 'required',
