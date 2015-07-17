@@ -155,16 +155,24 @@
              Data Format Details
            </h2>
            <div class="subform">
-             <h4 class="attribute-label">Available formats</h4>
+             <h4 class="attribute-label">Data Format</h4>
+             <h6>
+              What is the format of your data that is available for distribution?
+             </h6>
              <select tabindex=20 id="format-selector" class="multiselect" 
                  style="width:80%;height:120px"
                      ng-options="fmt for fmt in knownDataFormats" 
                      ng-model="dataFormats" multiple ng-multiple="true"
                      required>
              </select>
-             <h6>Other formats not listed (comma-separate for multiple)</h6>
+             <h6>Write in formats not listed (comma-separate for multiple)</h6>
              <input tabindex=20 type="text" ng-model="auxDataFormats" style="width:95%">
-             <h4 class="attribute-label">Compression technique (if applicable)</h4>
+             <h4 class="attribute-label">Compression Technique</h4>
+             <h6>
+              Is your data offered in a compressed format? If so, please type a 
+              short description here. For example, "The LAS files are compressed 
+              in standard ZIP format"
+             </h6>
              <input tabindex=20 type="text" ng-model="currentRecord.compression_technique" style="width:95%">
            </div>
      </div>
