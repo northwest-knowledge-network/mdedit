@@ -24,6 +24,15 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
     $scope.hours = _.range(24);
     $scope.minute_seconds = _.range(60);
 
+    $scope.knownDataFormats = ["ASCII", "csv", "DLG", "docx", "DRG", "DWG", "eps", 
+      "ERDAS", "Esri grid", "Esri TIN", "FASTA", "FASTQ", "GenBank", 
+      "GeoJSON", "GeoTIFF", "GML", "HDF", "jpeg", "KML", "LAS", "mp3", 
+      "MrSID", "netCDF", "pdf", "php", "png", "py", "R", "SDXF", "Shapefile", 
+      "SPSS", "Stata", "Tab", "tiff", "txt", "VBS", "wav", "xls", "xlsx", 
+      "xml"];
+
+    $scope.dataFormats = [];
+
     /**
      * Fetch the record with recordId and update the form to display it.
      *
@@ -35,7 +44,6 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
 
       $http.get('http://localhost:4000/api/metadata/' + recordId)
            .success(function(data) {
-              $log.log(data.record);
               updateForms(data.record);
            });
     };
@@ -62,7 +70,8 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
                  emptyRec[field] = [JSON.parse(JSON.stringify(EMPTY_CONTACT))];    
                }
                else if (
-                 ['place_keywords', 'thematic_keywords'].indexOf(field) > -1)
+                 ['place_keywords', 'thematic_keywords',
+                  'data_format'].indexOf(field) > -1)
                {
                  emptyRec[field] = [];    
                }
@@ -88,7 +97,8 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
 
              emptyRec.last_mod_date.$date = new Date();
              emptyRec.first_pub_date.$date = new Date();
-             $log.log(emptyRec);
+
+             $scope.auxDataFormats = "";
              $scope.currentRecord = emptyRec;
              updateForms($scope.currentRecord);
            });
@@ -119,14 +129,17 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
         $scope.currentRecord.end_date.seconds
       );
 
-      $log.log($scope.currentRecord.start_date.$date);
-      $log.log($scope.currentRecord.start_date.$date.getTime());
-
       var current = JSON.parse(JSON.stringify($scope.currentRecord));
 
       current.place_keywords = current.place_keywords.split(', ');
       current.thematic_keywords = current.thematic_keywords.split(', ');
 
+      if ($scope.auxDataFormats)
+      {
+        var auxList = $scope.auxDataFormats.split(',')
+                            .map(function(el){ return el.trim(); });
+        current.data_format = $scope.dataFormats.concat(auxList);
+      }
 
       current.last_mod_date.$date = 
         $scope.currentRecord.last_mod_date.$date.getTime();
@@ -138,8 +151,6 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
 
       current.first_pub_date.$date = 
         $scope.currentRecord.first_pub_date.$date.getTime();
-
-      $log.log(current);
 
       if ($scope.newRecord)
       {
@@ -217,6 +228,18 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
        record.end_date.seconds = record.end_date.$date.getSeconds();
 
        $scope.currentRecord = record;
+       $log.log(record);
+       $scope.auxDataFormats = 
+         record.data_format.filter(function (f) {
+           return $scope.knownDataFormats.indexOf(f) === -1;
+         }).join(', ');
+
+       $scope.dataFormats = 
+         record.data_format.filter(function (f) {
+           return $scope.knownDataFormats.indexOf(f) > -1;
+         });
+
+      $log.log($scope.dataFormats);
     }
     /*
      * Use these maps in the view: key gets displayed, value is actually the

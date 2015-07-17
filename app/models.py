@@ -39,6 +39,10 @@ class Metadata(db.Document):
     update_frequency = db.StringField(max_length=255, required=True)
     status = db.StringField(max_length=255, required=True)
 
+    # data format details
+    data_format = db.ListField(db.StringField(max_length=255), required=True)
+    compression_technique = db.StringField(max_length=255)
+
     # contacts
     citation = db.ListField(db.EmbeddedDocumentField('Contact'))
     access = db.ListField(db.EmbeddedDocumentField('Contact'))

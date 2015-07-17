@@ -5,6 +5,8 @@
   "summary": "DEM of Dry Creek Watershed northeast of Boise, ID",
   "thematic_keywords": ["Comma-separated Keywords", "of thematic elements", 
                         "such as 'lidar'"],
+  "data_format": ["ASCII", "eps", "Shapefile"],
+  "compression_technique": "zip",
   "title": "Title for the dataset this metadata represents",
   "topic_category": ["Geoscientific Information"],
   "status": "completed",

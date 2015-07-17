@@ -19,7 +19,6 @@ class Config:
     VWPLATFORM_MAIL_SENDER = 'Matthew Turner <maturner@uidaho.edu>'
     VWPLATFORM_ADMIN = os.environ.get('VWPLATFORM_ADMIN') or 'Admin'
 
-    print MONGODB_SETTINGS
 
     @staticmethod
     def init_app(app):
@@ -27,7 +26,6 @@ class Config:
 
 
 class DevelopmentConfig(Config):
-    print "YO YO YO!!!8****:"
     DEBUG = True
 
 
