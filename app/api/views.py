@@ -98,12 +98,12 @@ def get_single_xml_metadata(_oid):
 
     json_rec = json.loads(record.to_json())
 
-    time_fmt = '%Y-%m-%d'
+    d_fmt = '%Y-%m-%d'
 
-    json_rec['start_date'] = record.start_date.strftime(time_fmt)
-    json_rec['end_date'] = record.end_date.strftime(time_fmt)
-    json_rec['last_mod_date'] = record.last_mod_date.strftime(time_fmt)
-    json_rec['first_pub_date'] = record.first_pub_date.strftime(time_fmt)
+    json_rec['start_date'] = record.start_date.isoformat() + '.000Z'
+    json_rec['end_date'] = record.end_date.isoformat() + '.000Z'
+    json_rec['last_mod_date'] = record.last_mod_date.strftime(d_fmt)
+    json_rec['first_pub_date'] = record.first_pub_date.strftime(d_fmt)
 
     # for XSLT, need something inside of each <item> in this generic XML
     _enclose_word = lambda k: {'word': k}
@@ -111,9 +111,8 @@ def get_single_xml_metadata(_oid):
     json_rec['thematic_keywords'] = map(_enclose_word,
                                         json_rec['thematic_keywords'])
 
-    json_rec['place_keywords'] = map(_enclose_word, json_rec['place_keywords'])
-
-    json_rec['topic_category'] = map(_enclose_word, json_rec['topic_category'])
+    json_rec['place_keywords'] = map(_enclose_word,
+                                     json_rec['place_keywords'])
 
     xml_str = dicttoxml(dict(record=json_rec))  # , attr_type=False)
 

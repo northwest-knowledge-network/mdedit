@@ -8,16 +8,14 @@
   <link rel="stylesheet" href="metadata.css">
   <link rel="stylesheet" href="bower_components/octicons/octicons/octicons.css">
   <link rel="stylesheet" href="bower_components/jquery-ui/themes/smoothness/jquery-ui.css"/>
-<script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
-<script type="text/javascript" src="bower_components/jquery-ui/jquery-ui.min.js"></script>
-<script type="text/javascript" 
-        src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="bower_components/angular/angular.js"></script>
-<script type="text/javascript" src="bower_components/angular-ui-date/src/date.js"></script>
-<script type="text/javascript" src="bower_components/bootstrap-multiselect/dist/js/bootstrap-multiselect.js"></script>
-<script type="text/javascript" src="bower_components/bootstrap-multiselect/dist/css/bootstrap-multiselect.css"></script>
+  <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+  <script type="text/javascript" src="bower_components/jquery-ui/jquery-ui.min.js"></script>
+  <script type="text/javascript" 
+          src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="bower_components/angular/angular.js"></script>
+  <script type="text/javascript" src="bower_components/angular-ui-date/src/date.js"></script>
+  <script type="text/javascript" src="bower_components/underscore/underscore-min.js"></script>
   <script src="js/controllers.js"></script>
-  <script src="bower_components/angularjs-dropdown-multiselect/dist/angularjs-dropdown-multiselect.min.js"></script>
 </head>
 
 <body>
@@ -34,28 +32,28 @@
             
           </button>
 
-          <a class="navbar-brand" href="#">NKN Metadata Editor</a>
+          <!--<a class="navbar-brand" href="#">NKN Metadata Editor</a>-->
           <a href="#list" 
              class="btn btn-default navbar-btn">
             Edit Existing
           </a>
           <button ng-click="createNewRecord()" 
-                  class="btn btn-primary navbar-btn">
+                  class="btn btn-small btn-primary navbar-btn">
             Create New
           </button>
           <button ng-show="newRecord && metadataForm.$valid" 
-                  class="btn btn-primary navbar-btn" 
-                  type="submit" style="" ng-click="submitRecord()">
+                  class="btn btn-small btn-primary navbar-btn" 
+                  type="submit" style="width:95%" ng-click="submitRecord()">
                   Submit New Record
           </button>
           
           <button ng-show="!newRecord && metadataForm.$valid" 
-                  class="btn btn-primary navbar-btn" 
+                  class="btn btn-small btn-primary navbar-btn" 
                   type="submit" 
                   ng-click="submitRecord()">Submit Changes
           </button>
           
-          <button class="btn btn-danger navbar-btn"
+          <button class="btn btn-small btn-danger navbar-btn"
             ng-hide="metadataForm.$valid">
            Please fix errors before submitting
           </button>
@@ -99,10 +97,12 @@
       </div>
     </nav>
 
+    <h3 id="brand">NKN Metadata Editor</h3>
+
 <div id="main-container" class="container">
 
-      <h1 ng-show="newRecord">New Metadata Record: {{currentRecord.title}}</h1>
-      <h1 ng-show="!newRecord">Editing Existing: {{currentRecord.title}}</h1>
+      <h1 id="record-title" ng-show="newRecord">New Metadata Record: {{currentRecord.title}}</h1>
+      <h1 id="record-title" ng-show="!newRecord">Editing Existing: {{currentRecord.title}}</h1>
   
 
     <br>
@@ -216,8 +216,26 @@
                <div ng-repeat="key_title in [['start_date','Start Date'], 
                                        ['end_date', 'End Date']]"> 
                 <h4 class="attribute-label">{{ key_title[1] }}</h4>
-                <input ui-date="dateOptions" 
-                       ng-model="currentRecord[key_title[0]].$date">
+                
+                <!--<div class="row">-->
+                    <input ui-date="dateOptions" 
+                        ng-model="currentRecord[key_title[0]].$date"> <br>
+                <!--</div>-->
+                <!--<div class="row">-->
+                    H:
+                    <select id="" name="" ng-model="currentRecord[key_title[0]].hours"
+                        ng-options="hour for hour in hours">
+                    </select>
+                    M:
+                    <select id="" name="" ng-model="currentRecord[key_title[0]].minutes"
+                        ng-options="min for min in minute_seconds">
+                    </select>
+                    S:
+                    <select id="" name="" ng-model="currentRecord[key_title[0]].seconds"
+                        ng-options="sec for sec in minute_seconds">
+                    </select>
+                <!--</div>-->
+
               </div>
             </div>
 

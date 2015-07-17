@@ -62,6 +62,4 @@ class Metadata(db.Document):
         Our web form needs the date to be in YYYY-MM-DD (ISO 8601)
         """
         for el in [self.start_date, self.end_date, self.first_pub_date]:
-            el = el.strftime("%Y-%m-%d")
-
-        self.start_date = self.start_date.strftime("%Y-%m-%d")
+            el = el.isoformat()

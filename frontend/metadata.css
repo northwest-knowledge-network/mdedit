@@ -54,8 +54,19 @@
  * see http://getbootstrap.com/components/#navbar-fixed-top 
  */
 body { 
-    padding-top: 65px; 
+    padding-top: 45px; 
 }
+
+h1#record-title {
+  margin-top: -10px; 
+}
+
+h3#brand {
+  color:#aaa;
+  margin-right:15px;
+  text-align:right
+}
+
 
 #nav-button {
   font-weight: bold;  
