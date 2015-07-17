@@ -415,9 +415,9 @@
           URL for each online resource.
         </h6>
         <div class="subform">
-          <div ng-repeat="url in currentRecord.online">
+          <div ng-repeat="el in currentRecord.online track by $index">
             <h3 class="section-header">Resource {{ $index + 1 }}</h3>
-            <input type="url" tabindex="20" style="width:100%"
+            <input type="url" tabindex="21" style="width:100%"
                    ng-model="currentRecord.online[$index]">
          </div>
         </div>

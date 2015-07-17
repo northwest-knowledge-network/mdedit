@@ -105,6 +105,10 @@ def get_single_xml_metadata(_oid):
 
     json_rec['data_format'] = _enclose_words(json_rec['data_format'])
 
+    _enclose_url = lambda url: {'url': url}
+
+    json_rec['online'] = map(_enclose_url, json_rec['online'])
+
     xml_str = dicttoxml(dict(record=json_rec))  # , attr_type=False)
 
     return Response(xml_str, 200, mimetype='application/xml')

@@ -242,7 +242,7 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
            return $scope.knownDataFormats.indexOf(f) > -1;
          });
 
-       if (!$scope.online) {
+       if (!$scope.currentRecord.online) {
          record.online = [""];
        }
     }

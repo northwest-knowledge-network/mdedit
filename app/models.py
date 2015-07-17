@@ -43,6 +43,9 @@ class Metadata(db.Document):
     data_format = db.ListField(db.StringField(max_length=255), required=True)
     compression_technique = db.StringField(max_length=255)
 
+    # online resources; these are URLs, but opting to be more permissive
+    online = db.ListField(db.StringField(max_length=255))
+
     # contacts
     citation = db.ListField(db.EmbeddedDocumentField('Contact'))
     access = db.ListField(db.EmbeddedDocumentField('Contact'))
