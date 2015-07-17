@@ -4,6 +4,7 @@
 
 .section-header {
   color: dodgerblue;
+  margin: 15px 10px;
 }
   
 .subform {
@@ -12,7 +13,11 @@
   /*border-color: lightgrey;*/
   padding: 5px 15px 10px;
   background-color: #D3D3D3;
-  margin-top: 10px;
+  margin: 10px;
+}
+
+h6 {
+  margin-left: 4px;
 }
 
 .btn-primary {
@@ -71,3 +76,9 @@ h3#brand {
 #nav-button {
   font-weight: bold;  
 }
+
+#online-buttons {
+  margin: 10px auto;
+  width: 80%;
+}  
+

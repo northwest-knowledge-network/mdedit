@@ -326,5 +326,22 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
       }
     };
 
+    $scope.removeOnlineResource = function(resourceIndex)
+    {
+      if ($scope.currentRecord.online.length === 1)
+      {
+        $scope.currentRecord.online[0] = "";
+      }
+      else
+      {
+        $scope.currentRecord.online.splice(resourceIndex, 1);
+      }
+    };
+
+    $scope.addOnlineResource = function()
+    {
+      $scope.currentRecord.online.push("");    
+    };
+
   } // end of callback for controller initialization
 ]);

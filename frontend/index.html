@@ -81,6 +81,9 @@
                 <li><a href="#contacts">
                   <span class="octicon octicon-repo"></span> Contacts</a>
                 </li>
+                <li>
+                  <a href="#online"><span class="octicon octicon-device-desktop"></span> Online Resources</a>
+                </li>
               </ul>
             </li>
               <li><a href="/#go-to-modal-info">Info</a></li>
@@ -404,30 +407,49 @@
 
 
 
+
       </div>
+    </form>
+    
+          <div class="row">
 
-      <div class="row">
-        <h2 class="section-header">Online Resources</h2>
-        <h6>
-          Is your data or any additional information specific to the data available
-          online or is your data provided as a web service (e.g., Web Mapping
-          Services, Catalog Services for the Web, REST services)? Provide the
-          URL for each online resource.
-        </h6>
-        <div class="subform">
-          <div ng-repeat="el in currentRecord.online track by $index">
-            <h3 class="section-header">Resource {{ $index + 1 }}</h3>
-            <input type="url" tabindex="21" style="width:100%"
-                   ng-model="currentRecord.online[$index]">
-         </div>
-        </div>
-      </div>
-
-
-    <!--Submit Button-->
-
-    <br>
-  </form>
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+            <a class="anchor" name="online">
+              <h2 class="section-header"><span class="mega-octicon octicon-device-desktop"></span>  Online Resources</h2>
+              <h6>
+                Is your data or any additional information specific to the data available
+                online or is your data provided as a web service (e.g., Web Mapping
+                Services, Catalog Services for the Web, REST services)? Provide the
+                URL for each online resource.
+              </h6>
+              <form name="onlineSubform" id="onlineSubform">
+                <div class="subform">
+                  <div class="row">
+                    <div ng-repeat="el in currentRecord.online track by $index">
+                      <h3 style="margin-left:10px" class="section-header">URL {{ $index + 1 }}</h3>
+                      <div class="row">
+                        <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+                          <input type="url" tabindex="21" style="margin-left:10px;width:100%"
+                                 ng-model="currentRecord.online[$index]">
+                        </div>
+                        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                          <button tabindex=20 class="btn btn-default btn-xs" 
+                              ng-click="removeOnlineResource($index)">Remove </button>
+                        </div>
+                      </div>
+                   </div>
+                  </div>
+                </div>
+                <div id="online-buttons">
+                  <button tabindex=21 class="btn btn-primary btn-contact" 
+                          ng-show="onlineSubform.$valid" 
+                          ng-click="addOnlineResource()">
+                      <span class="glyphicon glyphicon-plus" aria-hide="true"></span>   Add a resource
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
 </div>
 
   <!-- View of current metadata records -->
