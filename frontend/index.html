@@ -402,6 +402,25 @@
 
         <br>
 
+
+
+      </div>
+
+      <div class="row">
+        <h2 class="section-header">Online Resources</h2>
+        <h6>
+          Is your data or any additional information specific to the data available
+          online or is your data provided as a web service (e.g., Web Mapping
+          Services, Catalog Services for the Web, REST services)? Provide the
+          URL for each online resource.
+        </h6>
+        <div class="subform">
+          <div ng-repeat="url in currentRecord.online">
+            <h3 class="section-header">Resource {{ $index + 1 }}</h3>
+            <input type="url" tabindex="20" style="width:100%"
+                   ng-model="currentRecord.online[$index]">
+         </div>
+        </div>
       </div>
 
 

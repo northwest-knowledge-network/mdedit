@@ -71,7 +71,7 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
                }
                else if (
                  ['place_keywords', 'thematic_keywords',
-                  'data_format'].indexOf(field) > -1)
+                  'data_format', 'online'].indexOf(field) > -1)
                {
                  emptyRec[field] = [];    
                }
@@ -97,9 +97,13 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
 
              emptyRec.last_mod_date.$date = new Date();
              emptyRec.first_pub_date.$date = new Date();
-
+            
              $scope.auxDataFormats = "";
+
+             emptyRec.online = [""];
+
              $scope.currentRecord = emptyRec;
+
              updateForms($scope.currentRecord);
            });
     };
@@ -166,7 +170,7 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
                  };            
                  displayCurrentRecords();
              })
-             .error(function(data) { console.log(data.record); });
+             .error(function(data) { $log.log(data.record); });
       }
       else
       {
@@ -228,7 +232,6 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
        record.end_date.seconds = record.end_date.$date.getSeconds();
 
        $scope.currentRecord = record;
-       $log.log(record);
        $scope.auxDataFormats = 
          record.data_format.filter(function (f) {
            return $scope.knownDataFormats.indexOf(f) === -1;
@@ -239,7 +242,9 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
            return $scope.knownDataFormats.indexOf(f) > -1;
          });
 
-      $log.log($scope.dataFormats);
+       if (!$scope.online) {
+         record.online = [""];
+       }
     }
     /*
      * Use these maps in the view: key gets displayed, value is actually the
