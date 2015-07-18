@@ -342,6 +342,5 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
     {
       $scope.currentRecord.online.push("");    
     };
-
   } // end of callback for controller initialization
 ]);
