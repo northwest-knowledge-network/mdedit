@@ -33,6 +33,10 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
 
     $scope.dataFormats = [];
 
+    $scope.spatialDataOptions = ["vector", "grid", "table or text", 
+      "triangulated irregular network", "stereographic imaging", 
+      "video recording of a scene"];
+
     /**
      * Fetch the record with recordId and update the form to display it.
      *

@@ -218,6 +218,18 @@
                   ng-options="f for (f, iso) in updateFrequencyChoicesMap" 
                   ng-model="currentRecord.update_frequency">
           </select>
+
+          <h4 class="attribute-label">Spatial Data Type</h4>
+          <h6>
+            How are your data represented in space? Through a vector spatial 
+            representation, a spatial grid of values, a table, a 
+            video of a scene, etc.?
+          </h6>
+          <select tabindex=8 id="" name=""
+                  ng-options="f for f in spatialDataOptions" 
+                  ng-model="currentRecord.spatial_dtype">
+          </select>
+
          </div>
        </div>
      </div>
@@ -228,7 +240,6 @@
        <a class="anchor" name="spatiotemporal">
          <h2 class="section-header">
          <span class="glyphicon glyphicon-time"></span> 
-         <span class="glyphicon glyphicon-resize-vertical"></span> 
          <span class="glyphicon glyphicon-globe"></span> 
            Spatiotemporal Extents
          </h2>

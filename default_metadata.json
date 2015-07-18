@@ -7,6 +7,7 @@
                         "such as 'lidar'"],
   "data_format": ["ASCII", "eps", "Shapefile"],
   "compression_technique": "zip",
+  "spatial_dtype": "vector",
   "title": "Title for the dataset this metadata represents",
   "topic_category": ["Geoscientific Information"],
   "status": "completed",
