@@ -457,9 +457,28 @@
                       <span class="glyphicon glyphicon-plus" aria-hide="true"></span>   Add a resource
                   </button>
                 </div>
-              </div>
-            </form>
-          </div>
+              </form>
+            </div>
+          <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+            <a class="anchor" name="online">
+            <h2 class="section-header">
+              <span class="mega-octicon octicon-issue-opened"></span>  Use Restrictions
+            </h2>
+            <div class="subform">
+              <h6>
+                List any use restrictions for how others should use your data. 
+                For example, you might want to stipulate that "This 
+                dataset should be cited in any publications for which it is 
+                used." If there are no restrictions for how your dataset is 
+                used, please state so here.
+              </h6>
+              <form>
+                      <textarea style="width:100%" tabindex=21 rows=4 
+                                ng-model="currentRecord.use_restrictions">
+                      </textarea>
+                  </div>
+                </form>
+            </div>
 </div>
 
   <!-- View of current metadata records -->

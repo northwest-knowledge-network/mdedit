@@ -29,7 +29,7 @@ class Metadata(db.Document):
     title = db.StringField(max_length=255, required=True)
     last_mod_date = db.DateTimeField(required=True)
     first_pub_date = db.DateTimeField(required=True)
-    summary = db.StringField(max_length=255, required=True)
+    summary = db.StringField(max_length=3000, required=True)
 
     # detailed info
     topic_category = db.ListField(db.StringField(max_length=255,
@@ -47,6 +47,9 @@ class Metadata(db.Document):
 
     # online resources; these are URLs, but opting to be more permissive
     online = db.ListField(db.StringField(max_length=255))
+
+    # use restrictions
+    use_restrictions = db.StringField(max_length=1000)
 
     # contacts
     citation = db.ListField(db.EmbeddedDocumentField('Contact'))
