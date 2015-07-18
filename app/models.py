@@ -38,7 +38,8 @@ class Metadata(db.Document):
     place_keywords = db.ListField(db.StringField(max_length=255))
     update_frequency = db.StringField(max_length=255, required=True)
     status = db.StringField(max_length=255, required=True)
-    spatial_dtype = db.StringField(max_length=255)
+    spatial_dtype = db.StringField(max_length=100)
+    hierarchy_level = db.StringField(max_length=100)
 
     # data format details
     data_format = db.ListField(db.StringField(max_length=255), required=True)

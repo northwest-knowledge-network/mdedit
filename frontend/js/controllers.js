@@ -36,6 +36,7 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
     $scope.spatialDataOptions = ["vector", "grid", "table or text", 
       "triangulated irregular network", "stereographic imaging", 
       "video recording of a scene"];
+    $scope.hierarchyLevels = ["dataset", "series"];
 
     /**
      * Fetch the record with recordId and update the form to display it.
