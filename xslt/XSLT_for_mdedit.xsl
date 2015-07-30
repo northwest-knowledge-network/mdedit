@@ -36,9 +36,7 @@
             </gmd:characterSet>
             <!-- Selects hierarchy level, either dataset or collection, from the generic mdedit xml. This is selected from the dropdown list in mdedit. -->
             <gmd:hierarchyLevel>
-                <!--    
-                <xsl:value-of select=""/> 
-                -->
+                <xsl:value-of select="/root/record/hierarchy_level"/> 
             </gmd:hierarchyLevel>
             <!-- Sets the contact for the metadata file to be NKN because NKN is the distributor of the metadata record itself, given that it was created
         on our mdedit application. This should be true for all records created with the NKN metadata editor -->
@@ -455,7 +453,7 @@
                             </gmd:type>
                         </gmd:MD_Keywords>
                     </gmd:descriptiveKeywords>
-                    <!-- Sets codes for constraints and for license-type constraints as acceess and use constraints. These apply to the text provided in the next section. -->
+                    <!-- Sets codes for other constraints as acceess and use constraints. These apply to the text provided in the next section. -->
                     <gmd:resourceConstraints>
                         <gmd:MD_LegalConstraints>
                             <gmd:accessConstraints>
@@ -464,17 +462,6 @@
                                     codeListValue="otherRestrictions"
                                     >otherRestrictions</gmd:MD_RestrictionCode>
                             </gmd:accessConstraints>
-                            <gmd:accessConstraints>
-                                <gmd:MD_RestrictionCode
-                                    codeList="http:http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode"
-                                    codeListValue="license">license</gmd:MD_RestrictionCode>
-                            </gmd:accessConstraints>
-                            <gmd:useConstraints>
-                                <gmd:MD_RestrictionCode
-                                    codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode"
-                                    codeListValue="otherRestrictions"
-                                    >otherRestrictions</gmd:MD_RestrictionCode>
-                            </gmd:useConstraints>
                             <gmd:useConstraints>
                                 <gmd:MD_RestrictionCode
                                     codeList="http:http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode"
@@ -483,21 +470,43 @@
                             <!-- Selects text for general use/access restrictions and license from the mdedit generic xml. 
         Defaults for projects will be built into the front-end, for now -->
                             <gmd:otherConstraints>
-                                <!--
-                                <xsl:if test="root/record/restrictions != ''">
-                                    <xsl:value-of select="root/record/restrictions/use"/>
-                                </xsl:if>  
-                                -->
-                            </gmd:otherConstraints>
-                            <gmd:otherConstraints>
-                                <!--
-                                <xsl:if test="root/record/restrictions != ''">
-                                    <xsl:value-of select="root/record/restrictions/license"/>
-                                </xsl:if>  
-                                -->
+                                <xsl:if test="root/record/use_restrictions != ''">
+                                    <xsl:value-of select="root/record/use_restrictions"/>
+                                </xsl:if>
                             </gmd:otherConstraints>
                         </gmd:MD_LegalConstraints>
                     </gmd:resourceConstraints>
+                    <!-- Uses an IF statement to select spatial representation type -->
+                <xsl:if test="root/record/spatial_dtype = 'vector'">
+                    <gmd:spatialRepresentationType>
+                        <gmd:MD_SpatialRepresentationTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_SpatialRepresentationTypeCode" codeListValue="vector">vector</gmd:MD_SpatialRepresentationTypeCode>
+                    </gmd:spatialRepresentationType>
+                </xsl:if>
+                <xsl:if test="root/record/spatial_dtype = 'grid'">
+                    <gmd:spatialRepresentationType>
+                            <gmd:MD_SpatialRepresentationTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_SpatialRepresentationTypeCode" codeListValue="grid">grid</gmd:MD_SpatialRepresentationTypeCode>
+                    </gmd:spatialRepresentationType>
+                </xsl:if>
+                <xsl:if test="root/record/spatial_dtype = 'table or text'">
+                    <gmd:spatialRepresentationType>
+                        <gmd:MD_SpatialRepresentationTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_SpatialRepresentationTypeCode" codeListValue="textTable">textTable</gmd:MD_SpatialRepresentationTypeCode>
+                    </gmd:spatialRepresentationType>
+                </xsl:if>
+                <xsl:if test="root/record/spatial_dtype = 'triangulated irregular network'">
+                    <gmd:spatialRepresentationType>
+                        <gmd:MD_SpatialRepresentationTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_SpatialRepresentationTypeCode" codeListValue="tin">tin</gmd:MD_SpatialRepresentationTypeCode>
+                    </gmd:spatialRepresentationType>
+                </xsl:if>
+                <xsl:if test="root/record/spatial_dtype = 'stereographic imaging'">
+                    <gmd:spatialRepresentationType>
+                        <gmd:MD_SpatialRepresentationTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_SpatialRepresentationTypeCode" codeListValue="stereoModel">stereoModel</gmd:MD_SpatialRepresentationTypeCode>
+                    </gmd:spatialRepresentationType>
+                </xsl:if>
+                <xsl:if test="root/record/spatial_dtype = 'video recording of a scene'">
+                    <gmd:spatialRepresentationType>
+                        <gmd:MD_SpatialRepresentationTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_SpatialRepresentationTypeCode" codeListValue="video">video</gmd:MD_SpatialRepresentationTypeCode>
+                    </gmd:spatialRepresentationType>
+                </xsl:if>
                     <!-- Sets language as English and character set as utf-8 as default for the data. We do not anticipate non-English entries. -->
                     <gmd:language>
                         <gmd:LanguageCode
@@ -555,21 +564,6 @@
                                     </gmd:extent>
                                 </gmd:EX_TemporalExtent>
                             </gmd:temporalElement>
-                            <gmd:verticalElement>
-                                <gmd:EX_VerticalExtent>
-                                    <gmd:minimumValue>
-                                        <gco:Real>
-                                            <xsl:value-of select="root/record/vertical_min"/>
-                                        </gco:Real>
-                                    </gmd:minimumValue>
-                                    <gmd:maximumValue>
-                                        <gco:Real>
-                                            <xsl:value-of select="root/record/vertical_max"/>
-                                        </gco:Real>
-                                    </gmd:maximumValue>
-                                    <gmd:verticalCRS gco:nilReason="unknown"/>
-                                </gmd:EX_VerticalExtent>
-                            </gmd:verticalElement>
                         </gmd:EX_Extent>
                     </gmd:extent>
                 </gmd:MD_DataIdentification>
@@ -731,7 +725,24 @@
                                         </gmd:role>
                                     </gmd:CI_ResponsibleParty>
                                 </gmd:distributorContact>
-                                <xsl:for-each select="/root/record/access/item">
+                                <gmd:distributorFormat>
+                                    <gmd:MD_Format>
+                                        <xsl:for-each select="/root/record/data_format/item">
+                                        <gmd:name>
+                                            <gco:CharacterString>
+                                                <xsl:value-of select="word"/>
+                                            </gco:CharacterString>
+                                        </gmd:name>
+                                            <gmd:version gco:nilReason="unknown"/>
+                                        </xsl:for-each>
+                                        <gmd:fileDecompressionTechnique>
+                                            <gco:CharacterString>
+                                                <xsl:value-of select="/root/record/compression_technique"/>
+                                            </gco:CharacterString>
+                                        </gmd:fileDecompressionTechnique>
+                                    </gmd:MD_Format>
+                                </gmd:distributorFormat>
+                                <xsl:for-each select="/root/record/online/item">
                                 <gmd:distributorTransferOptions>
                                     <!-- May need to set this up as a list with multiples, in same style as keywords-->
                                     <gmd:MD_DigitalTransferOptions>
