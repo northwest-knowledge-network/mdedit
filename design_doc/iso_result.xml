@@ -1,13 +1,13 @@
 <gmi:MI_Metadata xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:gts="http://www.isotc211.org/2005/gts" xmlns:gmi="http://www.isotc211.org/2005/gmi" xmlns:gmx="http://www.isotc211.org/2005/gmx" xmlns:gss="http://www.isotc211.org/2005/gss" xmlns:gsr="http://www.isotc211.org/2005/gsr" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.isotc211.org/2005/gmd http://www.northwestknowledge.net/iso/xsd/schema.xsd">
   <gmd:fileIdentifier>
-                nkn:55c4ac12c26c28286e75e6bb</gmd:fileIdentifier>
+                nkn:55c4ba2bc26c2830e0b58c29</gmd:fileIdentifier>
   <gmd:language>
     <gmd:LanguageCode codeList="http://www.loc.gov/standards/iso639-2/php/code_list.php" codeListValue="eng">eng</gmd:LanguageCode>
   </gmd:language>
   <gmd:characterSet>
     <gmd:MD_CharacterSetCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_CharacterSetCode" codeListValue="utf8">utf8</gmd:MD_CharacterSetCode>
   </gmd:characterSet>
-  <gmd:hierarchyLevel/>
+  <gmd:hierarchyLevel>dataset</gmd:hierarchyLevel>
   <gmd:contact xlink:title="NKN">
     <gmd:CI_ResponsibleParty uuid="390bb26a-184d-4c30-8b3e-d74fe0783e28">
       <gmd:organisationName>
@@ -79,7 +79,7 @@
       <gmd:citation>
         <gmd:CI_Citation>
           <gmd:title>
-            <gco:CharacterString>New record from MA</gco:CharacterString>
+            <gco:CharacterString>New test on master now updated</gco:CharacterString>
           </gmd:title>
           <gmd:date>
             <gmd:CI_Date>
@@ -91,42 +91,42 @@
           <gmd:citedResponsibleParty>
             <gmd:CI_ResponsibleParty>
               <gmd:individualName>
-                <gco:CharacterString>Marisa Guarinello</gco:CharacterString>
+                <gco:CharacterString>Marisa</gco:CharacterString>
               </gmd:individualName>
               <gmd:contactInfo>
                 <gmd:CI_Contact>
                   <gmd:phone>
                     <gmd:CI_Telephone>
                       <gmd:voice>
-                        <gco:CharacterString>765-456-3354</gco:CharacterString>
+                        <gco:CharacterString>666-666-8976</gco:CharacterString>
                       </gmd:voice>
                     </gmd:CI_Telephone>
                   </gmd:phone>
                   <gmd:address>
                     <gmd:CI_Address>
                       <gmd:deliveryPoint>
-                        <gco:CharacterString>Marisa Guarinello</gco:CharacterString>
+                        <gco:CharacterString>Marisa</gco:CharacterString>
                       </gmd:deliveryPoint>
                       <gmd:deliveryPoint>
                         <gco:CharacterString>NKN</gco:CharacterString>
                       </gmd:deliveryPoint>
                       <gmd:deliveryPoint>
-                        <gco:CharacterString>This Street</gco:CharacterString>
+                        <gco:CharacterString>here</gco:CharacterString>
                       </gmd:deliveryPoint>
                       <gmd:city>
-                        <gco:CharacterString>Here</gco:CharacterString>
+                        <gco:CharacterString>there</gco:CharacterString>
                       </gmd:city>
                       <gmd:administrativeArea>
-                        <gco:CharacterString>WA</gco:CharacterString>
+                        <gco:CharacterString>ID</gco:CharacterString>
                       </gmd:administrativeArea>
                       <gmd:postalCode>
-                        <gco:CharacterString>99163</gco:CharacterString>
+                        <gco:CharacterString>87689</gco:CharacterString>
                       </gmd:postalCode>
                       <gmd:country>
                         <gco:CharacterString>USA</gco:CharacterString>
                       </gmd:country>
                       <gmd:electronicMailAddres>
-                        <gco:CharacterString>mguarinello@gmail.com</gco:CharacterString>
+                        <gco:CharacterString>mg@nkn</gco:CharacterString>
                       </gmd:electronicMailAddres>
                     </gmd:CI_Address>
                   </gmd:address>
@@ -139,27 +139,27 @@
           </gmd:citedResponsibleParty>
         </gmd:CI_Citation>
       </gmd:citation>
-      <gmd:abstract>This is a test to use for pull request and for python transform</gmd:abstract>
+      <gmd:abstract>test</gmd:abstract>
       <gmd:status>
         <gmd:MD_ProgressCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ProgressCode" codeListValue="completed">completed</gmd:MD_ProgressCode>
       </gmd:status>
       <gmd:resourceMaintenance>
         <gmd:MD_MaintenanceInformation>
           <gmd:maintenanceAndUpdateFrequency>
-            <gmd:MD_MaintenanceFrequencyCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_MaintenanceFrequencyCode" codeListValue="biannually">biannually</gmd:MD_MaintenanceFrequencyCode>
+            <gmd:MD_MaintenanceFrequencyCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_MaintenanceFrequencyCode" codeListValue="unknown">unknown</gmd:MD_MaintenanceFrequencyCode>
           </gmd:maintenanceAndUpdateFrequency>
         </gmd:MD_MaintenanceInformation>
       </gmd:resourceMaintenance>
       <gmd:descriptiveKeywords>
         <gmd:MD_Keywords>
           <gmd:keyword>
-            <gco:CharacterString>today</gco:CharacterString>
+            <gco:CharacterString>beach</gco:CharacterString>
           </gmd:keyword>
           <gmd:keyword>
-            <gco:CharacterString>wow</gco:CharacterString>
+            <gco:CharacterString>forest</gco:CharacterString>
           </gmd:keyword>
           <gmd:keyword>
-            <gco:CharacterString>awesome</gco:CharacterString>
+            <gco:CharacterString>birds</gco:CharacterString>
           </gmd:keyword>
           <gmd:type>
             <gmd:MD_KeywordTypeCode codeSpace="ISOTC211/19115" codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode" codeListValue="theme">theme</gmd:MD_KeywordTypeCode>
@@ -169,7 +169,10 @@
       <gmd:descriptiveKeywords>
         <gmd:MD_Keywords>
           <gmd:keyword>
-            <gco:CharacterString>Cape Cod</gco:CharacterString>
+            <gco:CharacterString>here</gco:CharacterString>
+          </gmd:keyword>
+          <gmd:keyword>
+            <gco:CharacterString>there</gco:CharacterString>
           </gmd:keyword>
           <gmd:keyword>
             <gco:CharacterString>MA</gco:CharacterString>
@@ -184,26 +187,23 @@
           <gmd:accessConstraints>
             <gmd:MD_RestrictionCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode" codeListValue="otherRestrictions">otherRestrictions</gmd:MD_RestrictionCode>
           </gmd:accessConstraints>
-          <gmd:accessConstraints>
-            <gmd:MD_RestrictionCode codeList="http:http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode" codeListValue="license">license</gmd:MD_RestrictionCode>
-          </gmd:accessConstraints>
-          <gmd:useConstraints>
-            <gmd:MD_RestrictionCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode" codeListValue="otherRestrictions">otherRestrictions</gmd:MD_RestrictionCode>
-          </gmd:useConstraints>
           <gmd:useConstraints>
             <gmd:MD_RestrictionCode codeList="http:http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode" codeListValue="license">license</gmd:MD_RestrictionCode>
           </gmd:useConstraints>
-          <gmd:otherConstraints/>
-          <gmd:otherConstraints/>
+          <gmd:otherConstraints>This dataset must be cited as awesome if you use it</gmd:otherConstraints>
         </gmd:MD_LegalConstraints>
       </gmd:resourceConstraints>
+      <gmd:spatialRepresentationType>
+        <gmd:MD_SpatialRepresentationTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_SpatialRepresentationTypeCode" codeListValue="vector">vector</gmd:MD_SpatialRepresentationTypeCode>
+      </gmd:spatialRepresentationType>
       <gmd:language>
         <gmd:LanguageCode codeList="http://www.loc.gov/standards/iso639-2/php/code_list.php" codeListValue="eng">eng</gmd:LanguageCode>
       </gmd:language>
       <gmd:topicCategory>
+        <gmd:MD_TopicCategoryCode>Elevation</gmd:MD_TopicCategoryCode>
+        <gmd:MD_TopicCategoryCode>Environment</gmd:MD_TopicCategoryCode>
         <gmd:MD_TopicCategoryCode>Farming</gmd:MD_TopicCategoryCode>
-        <gmd:MD_TopicCategoryCode>Inland Waters</gmd:MD_TopicCategoryCode>
-        <gmd:MD_TopicCategoryCode>Oceans</gmd:MD_TopicCategoryCode>
+        <gmd:MD_TopicCategoryCode>Health</gmd:MD_TopicCategoryCode>
       </gmd:topicCategory>
       <gmd:extent>
         <gmd:EX_Extent>
@@ -227,23 +227,12 @@
             <gmd:EX_TemporalExtent>
               <gmd:extent>
                 <gml:TimePeriod gml:id="boundingTimePeriodExtent">
-                  <gml:beginPosition>2010-02-01</gml:beginPosition>
-                  <gml:endPosition>2015-08-07</gml:endPosition>
+                  <gml:beginPosition>2009-04-05T17:08:49.000Z</gml:beginPosition>
+                  <gml:endPosition>2015-08-08T01:00:00.000Z</gml:endPosition>
                 </gml:TimePeriod>
               </gmd:extent>
             </gmd:EX_TemporalExtent>
           </gmd:temporalElement>
-          <gmd:verticalElement>
-            <gmd:EX_VerticalExtent>
-              <gmd:minimumValue>
-                <gco:Real>0.5</gco:Real>
-              </gmd:minimumValue>
-              <gmd:maximumValue>
-                <gco:Real>2.7</gco:Real>
-              </gmd:maximumValue>
-              <gmd:verticalCRS gco:nilReason="unknown"/>
-            </gmd:EX_VerticalExtent>
-          </gmd:verticalElement>
         </gmd:EX_Extent>
       </gmd:extent>
     </gmd:MD_DataIdentification>
@@ -262,7 +251,7 @@
                   <gmd:phone>
                     <gmd:CI_Telephone>
                       <gmd:voice>
-                        <gco:CharacterString>876-664-8765</gco:CharacterString>
+                        <gco:CharacterString>789-998-97654</gco:CharacterString>
                       </gmd:voice>
                     </gmd:CI_Telephone>
                   </gmd:phone>
@@ -272,22 +261,22 @@
                         <gco:CharacterString>Matt</gco:CharacterString>
                       </gmd:deliveryPoint>
                       <gmd:deliveryPoint>
-                        <gco:CharacterString>Perimeter</gco:CharacterString>
+                        <gco:CharacterString>there</gco:CharacterString>
                       </gmd:deliveryPoint>
                       <gmd:city>
-                        <gco:CharacterString>Moscow</gco:CharacterString>
+                        <gco:CharacterString>here</gco:CharacterString>
                       </gmd:city>
                       <gmd:administrativeArea>
-                        <gco:CharacterString>ID</gco:CharacterString>
+                        <gco:CharacterString>WA</gco:CharacterString>
                       </gmd:administrativeArea>
                       <gmd:postalCode>
-                        <gco:CharacterString>88768</gco:CharacterString>
+                        <gco:CharacterString>878088</gco:CharacterString>
                       </gmd:postalCode>
                       <gmd:country>
                         <gco:CharacterString>USA</gco:CharacterString>
                       </gmd:country>
                       <gmd:electronicMailAddres>
-                        <gco:CharacterString>mt@pain.org</gco:CharacterString>
+                        <gco:CharacterString>mt@pain</gco:CharacterString>
                       </gmd:electronicMailAddres>
                     </gmd:CI_Address>
                   </gmd:address>
@@ -300,11 +289,41 @@
           </gmd:distributorContact>
           <gmd:distributorFormat>
             <gmd:MD_Format>
+              <gmd:name>
+                <gco:CharacterString>Shapefile</gco:CharacterString>
+              </gmd:name>
+              <gmd:version gco:nilReason="unknown"/>
+              <gmd:name>
+                <gco:CharacterString>word</gco:CharacterString>
+              </gmd:name>
+              <gmd:version gco:nilReason="unknown"/>
               <gmd:fileDecompressionTechnique>
-                <gco:CharacterString/>
+                <gco:CharacterString>Shapefile is compressed in standard ZIP format</gco:CharacterString>
               </gmd:fileDecompressionTechnique>
             </gmd:MD_Format>
           </gmd:distributorFormat>
+          <gmd:distributorTransferOptions>
+            <gmd:MD_DigitalTransferOptions>
+              <gmd:onLine>
+                <gmd:CI_OnlineResource>
+                  <gmd:linkage>
+                    <gmd:URL>http://palousemindfulness.com/</gmd:URL>
+                  </gmd:linkage>
+                </gmd:CI_OnlineResource>
+              </gmd:onLine>
+            </gmd:MD_DigitalTransferOptions>
+          </gmd:distributorTransferOptions>
+          <gmd:distributorTransferOptions>
+            <gmd:MD_DigitalTransferOptions>
+              <gmd:onLine>
+                <gmd:CI_OnlineResource>
+                  <gmd:linkage>
+                    <gmd:URL>http://www.capecodchamber.org/</gmd:URL>
+                  </gmd:linkage>
+                </gmd:CI_OnlineResource>
+              </gmd:onLine>
+            </gmd:MD_DigitalTransferOptions>
+          </gmd:distributorTransferOptions>
         </gmd:MD_Distributor>
       </gmd:distributor>
     </gmd:MD_Distribution>
