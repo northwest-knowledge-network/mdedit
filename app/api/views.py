@@ -105,7 +105,7 @@ def get_single_xml_metadata(_oid):
 
     json_rec['data_format'] = _enclose_words(json_rec['data_format'])
 
-    json_rec['topic_category'] = _enclose_words(json_rec['data_format'])
+    json_rec['topic_category'] = _enclose_words(json_rec['topic_category'])
 
     _enclose_url = lambda url: {'url': url}
 
