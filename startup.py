@@ -32,10 +32,12 @@ print "\n*** starting front end server at localhost:8000 ***\n"
 md_p = Popen("cd frontend && python -m SimpleHTTPServer",  # > /dev/null 2>&1",
              shell=True)
 
-print "\n\n\nBoth servers have successfully started. Visit http://localhost:8000"
+print "\n----------------------------------------------------------------------"
+print "Both servers have successfully started. Visit http://localhost:8000"
 print "to see the front end and to see some sample xml of default_form.json "
 print "that the server emits, visit http://localhost:4000/api/metadata/" +\
-    str(id) + "/xml.  Remove '/xml' to see the original json.\n\n\n"
+    str(id) + "/xml.  Remove '/xml' to see the original json."
+print "----------------------------------------------------------------------"
 
 while True:
     time.sleep(1)

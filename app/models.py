@@ -29,7 +29,7 @@ class Metadata(db.Document):
     title = db.StringField(max_length=255, required=True)
     last_mod_date = db.DateTimeField(required=True)
     first_pub_date = db.DateTimeField(required=True)
-    summary = db.StringField(max_length=255, required=True)
+    summary = db.StringField(max_length=3000, required=True)
 
     # detailed info
     topic_category = db.ListField(db.StringField(max_length=255,
@@ -38,6 +38,18 @@ class Metadata(db.Document):
     place_keywords = db.ListField(db.StringField(max_length=255))
     update_frequency = db.StringField(max_length=255, required=True)
     status = db.StringField(max_length=255, required=True)
+    spatial_dtype = db.StringField(max_length=100)
+    hierarchy_level = db.StringField(max_length=100)
+
+    # data format details
+    data_format = db.ListField(db.StringField(max_length=255), required=True)
+    compression_technique = db.StringField(max_length=255)
+
+    # online resources; these are URLs, but opting to be more permissive
+    online = db.ListField(db.StringField(max_length=255))
+
+    # use restrictions
+    use_restrictions = db.StringField(max_length=1000)
 
     # contacts
     citation = db.ListField(db.EmbeddedDocumentField('Contact'))
@@ -62,6 +74,4 @@ class Metadata(db.Document):
         Our web form needs the date to be in YYYY-MM-DD (ISO 8601)
         """
         for el in [self.start_date, self.end_date, self.first_pub_date]:
-            el = el.strftime("%Y-%m-%d")
-
-        self.start_date = self.start_date.strftime("%Y-%m-%d")
+            el = el.isoformat()

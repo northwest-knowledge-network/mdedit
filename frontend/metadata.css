@@ -4,6 +4,7 @@
 
 .section-header {
   color: dodgerblue;
+  margin: 15px 10px;
 }
   
 .subform {
@@ -12,7 +13,11 @@
   /*border-color: lightgrey;*/
   padding: 5px 15px 10px;
   background-color: #D3D3D3;
-  margin-top: 10px;
+  margin: 10px;
+}
+
+h6 {
+  margin-left: 4px;
 }
 
 .btn-primary {
@@ -54,9 +59,31 @@
  * see http://getbootstrap.com/components/#navbar-fixed-top 
  */
 body { 
-    padding-top: 65px; 
+    padding-top: 45px; 
 }
+
+h1#record-title {
+  margin-top: -10px; 
+}
+
+h3#brand {
+  color:#aaa;
+  margin-right:15px;
+  text-align:right
+}
+
 
 #nav-button {
   font-weight: bold;  
 }
+
+#online-buttons {
+  margin: 10px auto;
+  width: 80%;
+}  
+
+.extent-block {
+  margin: 10px auto;
+  width: 80%;
+}  
+

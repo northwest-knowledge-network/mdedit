@@ -77,17 +77,6 @@ def get_single_metadata(_oid):
         return jsonify(record=record)
 
 
-@api.route('/api/metadata/xml')
-@cross_origin(origin='*', methods=['GET'])
-def get_xml_metadata():
-
-    recs = Metadata.objects()
-
-    xml_str = dicttoxml(dict(recs=json.loads(recs.to_json())))
-
-    return Response(xml_str, 200, mimetype='application/xml')
-
-
 @api.route('/api/metadata/<string:_oid>/xml')
 @cross_origin(origin='*', methods=['GET'])
 def get_single_xml_metadata(_oid):
@@ -98,21 +87,29 @@ def get_single_xml_metadata(_oid):
 
     json_rec = json.loads(record.to_json())
 
-    time_fmt = '%Y-%m-%d'
+    d_fmt = '%Y-%m-%d'
 
-    json_rec['start_date'] = record.start_date.strftime(time_fmt)
-    json_rec['end_date'] = record.end_date.strftime(time_fmt)
-    json_rec['last_mod_date'] = record.last_mod_date.strftime(time_fmt)
-    json_rec['first_pub_date'] = record.first_pub_date.strftime(time_fmt)
+    json_rec['start_date'] = record.start_date.isoformat() + '.000Z'
+    json_rec['end_date'] = record.end_date.isoformat() + '.000Z'
+    json_rec['last_mod_date'] = record.last_mod_date.strftime(d_fmt)
+    json_rec['first_pub_date'] = record.first_pub_date.strftime(d_fmt)
 
     # for XSLT, need something inside of each <item> in this generic XML
     _enclose_word = lambda k: {'word': k}
+    _enclose_words = lambda words: map(_enclose_word, words)
 
-    json_rec['thematic_keywords'] = map(_enclose_word,
+    json_rec['thematic_keywords'] = _enclose_words(
                                         json_rec['thematic_keywords'])
 
-    json_rec['place_keywords'] = map(_enclose_word,
-                                     json_rec['place_keywords'])
+    json_rec['place_keywords'] = _enclose_words(json_rec['place_keywords'])
+
+    json_rec['data_format'] = _enclose_words(json_rec['data_format'])
+
+    json_rec['topic_category'] = _enclose_words(json_rec['data_format'])
+
+    _enclose_url = lambda url: {'url': url}
+
+    json_rec['online'] = map(_enclose_url, json_rec['online'])
 
     xml_str = dicttoxml(dict(record=json_rec))  # , attr_type=False)
 

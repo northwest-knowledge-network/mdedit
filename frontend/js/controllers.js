@@ -20,6 +20,24 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
         yearRange: '1700:+10'
     };
 
+    // create time picker vars
+    $scope.hours = _.range(24);
+    $scope.minute_seconds = _.range(60);
+
+    $scope.knownDataFormats = ["ASCII", "csv", "DLG", "docx", "DRG", "DWG", "eps", 
+      "ERDAS", "Esri grid", "Esri TIN", "FASTA", "FASTQ", "GenBank", 
+      "GeoJSON", "GeoTIFF", "GML", "HDF", "jpeg", "KML", "LAS", "mp3", 
+      "MrSID", "netCDF", "pdf", "php", "png", "py", "R", "SDXF", "Shapefile", 
+      "SPSS", "Stata", "Tab", "tiff", "txt", "VBS", "wav", "xls", "xlsx", 
+      "xml"];
+
+    $scope.dataFormats = [];
+
+    $scope.spatialDataOptions = ["vector", "grid", "table or text", 
+      "triangulated irregular network", "stereographic imaging", 
+      "video recording of a scene"];
+    $scope.hierarchyLevels = ["dataset", "series"];
+
     /**
      * Fetch the record with recordId and update the form to display it.
      *
@@ -31,7 +49,6 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
 
       $http.get('http://localhost:4000/api/metadata/' + recordId)
            .success(function(data) {
-              $log.log(data.record);
               updateForms(data.record);
            });
     };
@@ -58,7 +75,8 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
                  emptyRec[field] = [JSON.parse(JSON.stringify(EMPTY_CONTACT))];    
                }
                else if (
-                 ['place_keywords', 'thematic_keywords'].indexOf(field) > -1)
+                 ['place_keywords', 'thematic_keywords',
+                  'data_format', 'online'].indexOf(field) > -1)
                {
                  emptyRec[field] = [];    
                }
@@ -71,10 +89,26 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
              }
              emptyRec.start_date.$date = new Date(2010, 1, 1);
              emptyRec.end_date.$date = new Date();
+             emptyRec.end_date.$date.setHours(0);
+             emptyRec.end_date.$date.setMinutes(0);
+             emptyRec.end_date.$date.setSeconds(0);
+
+             emptyRec.start_date.hours = 0;
+             emptyRec.end_date.hours = 0;
+             emptyRec.start_date.minutes = 0;
+             emptyRec.end_date.minutes = 0;
+             emptyRec.start_date.seconds = 0;
+             emptyRec.end_date.seconds = 0;
+
              emptyRec.last_mod_date.$date = new Date();
              emptyRec.first_pub_date.$date = new Date();
-             $log.log(emptyRec);
+            
+             $scope.auxDataFormats = "";
+
+             emptyRec.online = [""];
+
              $scope.currentRecord = emptyRec;
+
              updateForms($scope.currentRecord);
            });
     };
@@ -89,25 +123,43 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
      */ 
     $scope.submitRecord = function()
     {
-      //var current = $scope.currentRecord;
+      // the start and end dates currently have hours and minutes zero;
+      // grab the hours and minutes and append them. Confusingly JS 
+      // uses setHours to set minutes and seconds as well
+      $scope.currentRecord.start_date.$date.setHours(
+        $scope.currentRecord.start_date.hours, 
+        $scope.currentRecord.start_date.minutes,
+        $scope.currentRecord.start_date.seconds
+      );
+
+      $scope.currentRecord.end_date.$date.setHours(
+        $scope.currentRecord.end_date.hours, 
+        $scope.currentRecord.end_date.minutes,
+        $scope.currentRecord.end_date.seconds
+      );
+
       var current = JSON.parse(JSON.stringify($scope.currentRecord));
 
       current.place_keywords = current.place_keywords.split(', ');
       current.thematic_keywords = current.thematic_keywords.split(', ');
 
+      if ($scope.auxDataFormats)
+      {
+        var auxList = $scope.auxDataFormats.split(',')
+                            .map(function(el){ return el.trim(); });
+        current.data_format = $scope.dataFormats.concat(auxList);
+      }
+
+      current.last_mod_date.$date = 
+        $scope.currentRecord.last_mod_date.$date.getTime();
       current.start_date.$date = 
         $scope.currentRecord.start_date.$date.getTime();
 
       current.end_date.$date = 
         $scope.currentRecord.end_date.$date.getTime();
 
-      current.last_mod_date.$date = 
-        $scope.currentRecord.last_mod_date.$date.getTime();
-
       current.first_pub_date.$date = 
         $scope.currentRecord.first_pub_date.$date.getTime();
-
-      $log.log(current);
 
       if ($scope.newRecord)
       {
@@ -123,7 +175,7 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
                  };            
                  displayCurrentRecords();
              })
-             .error(function(data) { console.log(data.record); });
+             .error(function(data) { $log.log(data.record); });
       }
       else
       {
@@ -175,7 +227,29 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
        record.first_pub_date.$date = 
          new Date(record.first_pub_date.$date);
 
-       $scope.currentRecord = record; 
+       record.start_date.hours = record.start_date.$date.getHours();
+       record.end_date.hours = record.end_date.$date.getHours();
+
+       record.start_date.minutes = record.start_date.$date.getMinutes();
+       record.end_date.minutes = record.end_date.$date.getMinutes();
+
+       record.start_date.seconds = record.start_date.$date.getSeconds();
+       record.end_date.seconds = record.end_date.$date.getSeconds();
+
+       $scope.currentRecord = record;
+       $scope.auxDataFormats = 
+         record.data_format.filter(function (f) {
+           return $scope.knownDataFormats.indexOf(f) === -1;
+         }).join(', ');
+
+       $scope.dataFormats = 
+         record.data_format.filter(function (f) {
+           return $scope.knownDataFormats.indexOf(f) > -1;
+         });
+
+       if (!$scope.currentRecord.online) {
+         record.online = [""];
+       }
     }
     /*
      * Use these maps in the view: key gets displayed, value is actually the
@@ -257,5 +331,21 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
       }
     };
 
+    $scope.removeOnlineResource = function(resourceIndex)
+    {
+      if ($scope.currentRecord.online.length === 1)
+      {
+        $scope.currentRecord.online[0] = "";
+      }
+      else
+      {
+        $scope.currentRecord.online.splice(resourceIndex, 1);
+      }
+    };
+
+    $scope.addOnlineResource = function()
+    {
+      $scope.currentRecord.online.push("");    
+    };
   } // end of callback for controller initialization
 ]);
