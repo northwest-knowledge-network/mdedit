@@ -1,13 +1,16 @@
 <gmi:MI_Metadata xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:gts="http://www.isotc211.org/2005/gts" xmlns:gmi="http://www.isotc211.org/2005/gmi" xmlns:gmx="http://www.isotc211.org/2005/gmx" xmlns:gss="http://www.isotc211.org/2005/gss" xmlns:gsr="http://www.isotc211.org/2005/gsr" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.isotc211.org/2005/gmd http://www.northwestknowledge.net/iso/xsd/schema.xsd">
   <gmd:fileIdentifier>
-                nkn:55c4ba2bc26c2830e0b58c29</gmd:fileIdentifier>
+    <gco:CharacterString>nkn:55c4ba2bc26c2830e0b58c29</gco:CharacterString>
+  </gmd:fileIdentifier>
   <gmd:language>
     <gmd:LanguageCode codeList="http://www.loc.gov/standards/iso639-2/php/code_list.php" codeListValue="eng">eng</gmd:LanguageCode>
   </gmd:language>
   <gmd:characterSet>
     <gmd:MD_CharacterSetCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_CharacterSetCode" codeListValue="utf8">utf8</gmd:MD_CharacterSetCode>
   </gmd:characterSet>
-  <gmd:hierarchyLevel>dataset</gmd:hierarchyLevel>
+  <gmd:hierarchyLevel>
+    <gmd:MD_ScopeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ScopeCode" codeListValue="dataset">dataset</gmd:MD_ScopeCode>
+  </gmd:hierarchyLevel>
   <gmd:contact xlink:title="NKN">
     <gmd:CI_ResponsibleParty uuid="390bb26a-184d-4c30-8b3e-d74fe0783e28">
       <gmd:organisationName>
@@ -25,12 +28,10 @@
           <gmd:address>
             <gmd:CI_Address>
               <gmd:deliveryPoint>
-                <gco:CharacterString>University of Idaho
-                                            Library</gco:CharacterString>
+                <gco:CharacterString>University of Idaho Library</gco:CharacterString>
               </gmd:deliveryPoint>
               <gmd:deliveryPoint>
-                <gco:CharacterString>875 Perimeter Drive, MS
-                                            2358</gco:CharacterString>
+                <gco:CharacterString>875 Perimeter Drive, MS 2358</gco:CharacterString>
               </gmd:deliveryPoint>
               <gmd:city>
                 <gco:CharacterString>Moscow</gco:CharacterString>
@@ -55,8 +56,7 @@
                 <gmd:URL>http://www.northwestknowledge.net</gmd:URL>
               </gmd:linkage>
               <gmd:name>
-                <gco:CharacterString>The home page for the Northwest
-                                            Knowledge Network</gco:CharacterString>
+                <gco:CharacterString>The home page for the Northwest Knowledge Network</gco:CharacterString>
               </gmd:name>
             </gmd:CI_OnlineResource>
           </gmd:onlineResource>
@@ -67,7 +67,9 @@
       </gmd:role>
     </gmd:CI_ResponsibleParty>
   </gmd:contact>
-  <gmd:dateStamp>2015-08-07</gmd:dateStamp>
+  <gmd:dateStamp>
+    <gco:Date>2015-08-07</gco:Date>
+  </gmd:dateStamp>
   <gmd:metadataStandardName>
     <gco:CharacterString>ISO 19139/19115 Metadata for Datasets</gco:CharacterString>
   </gmd:metadataStandardName>
@@ -79,13 +81,16 @@
       <gmd:citation>
         <gmd:CI_Citation>
           <gmd:title>
-            <gco:CharacterString>New test on master now updated</gco:CharacterString>
+            <gco:CharacterString>Aug 11</gco:CharacterString>
           </gmd:title>
           <gmd:date>
             <gmd:CI_Date>
               <gmd:date>
                 <gco:Date>2015-08-07</gco:Date>
               </gmd:date>
+              <gmd:dateType>
+                <gmd:CI_DateTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" codeListValue="publication">publication</gmd:CI_DateTypeCode>
+              </gmd:dateType>
             </gmd:CI_Date>
           </gmd:date>
           <gmd:citedResponsibleParty>
@@ -125,9 +130,9 @@
                       <gmd:country>
                         <gco:CharacterString>USA</gco:CharacterString>
                       </gmd:country>
-                      <gmd:electronicMailAddres>
+                      <gmd:electronicMailAddress>
                         <gco:CharacterString>mg@nkn</gco:CharacterString>
-                      </gmd:electronicMailAddres>
+                      </gmd:electronicMailAddress>
                     </gmd:CI_Address>
                   </gmd:address>
                 </gmd:CI_Contact>
@@ -139,10 +144,9 @@
           </gmd:citedResponsibleParty>
         </gmd:CI_Citation>
       </gmd:citation>
-      <gmd:abstract>test</gmd:abstract>
-      <gmd:status>
-        <gmd:MD_ProgressCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ProgressCode" codeListValue="completed">completed</gmd:MD_ProgressCode>
-      </gmd:status>
+      <gmd:abstract>
+        <gco:CharacterString>test, new test Aug 11</gco:CharacterString>
+      </gmd:abstract>
       <gmd:resourceMaintenance>
         <gmd:MD_MaintenanceInformation>
           <gmd:maintenanceAndUpdateFrequency>
@@ -190,7 +194,9 @@
           <gmd:useConstraints>
             <gmd:MD_RestrictionCode codeList="http:http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode" codeListValue="license">license</gmd:MD_RestrictionCode>
           </gmd:useConstraints>
-          <gmd:otherConstraints>This dataset must be cited as awesome if you use it</gmd:otherConstraints>
+          <gmd:otherConstraints>
+            <gco:CharacterString>This dataset must be cited as awesome if you use it</gco:CharacterString>
+          </gmd:otherConstraints>
         </gmd:MD_LegalConstraints>
       </gmd:resourceConstraints>
       <gmd:spatialRepresentationType>
@@ -200,10 +206,61 @@
         <gmd:LanguageCode codeList="http://www.loc.gov/standards/iso639-2/php/code_list.php" codeListValue="eng">eng</gmd:LanguageCode>
       </gmd:language>
       <gmd:topicCategory>
-        <gmd:MD_TopicCategoryCode>Elevation</gmd:MD_TopicCategoryCode>
-        <gmd:MD_TopicCategoryCode>Environment</gmd:MD_TopicCategoryCode>
-        <gmd:MD_TopicCategoryCode>Farming</gmd:MD_TopicCategoryCode>
-        <gmd:MD_TopicCategoryCode>Health</gmd:MD_TopicCategoryCode>
+        <gmd:MD_TopicCategoryCode>biota</gmd:MD_TopicCategoryCode>
+      </gmd:topicCategory>
+      <gmd:topicCategory>
+        <gmd:MD_TopicCategoryCode>boundaries</gmd:MD_TopicCategoryCode>
+      </gmd:topicCategory>
+      <gmd:topicCategory>
+        <gmd:MD_TopicCategoryCode>climatologyMeteorologyAtmosphere</gmd:MD_TopicCategoryCode>
+      </gmd:topicCategory>
+      <gmd:topicCategory>
+        <gmd:MD_TopicCategoryCode>economy</gmd:MD_TopicCategoryCode>
+      </gmd:topicCategory>
+      <gmd:topicCategory>
+        <gmd:MD_TopicCategoryCode>elevation</gmd:MD_TopicCategoryCode>
+      </gmd:topicCategory>
+      <gmd:topicCategory>
+        <gmd:MD_TopicCategoryCode>environment</gmd:MD_TopicCategoryCode>
+      </gmd:topicCategory>
+      <gmd:topicCategory>
+        <gmd:MD_TopicCategoryCode>farming</gmd:MD_TopicCategoryCode>
+      </gmd:topicCategory>
+      <gmd:topicCategory>
+        <gmd:MD_TopicCategoryCode>geoscientificInformation</gmd:MD_TopicCategoryCode>
+      </gmd:topicCategory>
+      <gmd:topicCategory>
+        <gmd:MD_TopicCategoryCode>health</gmd:MD_TopicCategoryCode>
+      </gmd:topicCategory>
+      <gmd:topicCategory>
+        <gmd:MD_TopicCategoryCode>imageryBaseMapsEarthCover</gmd:MD_TopicCategoryCode>
+      </gmd:topicCategory>
+      <gmd:topicCategory>
+        <gmd:MD_TopicCategoryCode>inlandWaters</gmd:MD_TopicCategoryCode>
+      </gmd:topicCategory>
+      <gmd:topicCategory>
+        <gmd:MD_TopicCategoryCode>location</gmd:MD_TopicCategoryCode>
+      </gmd:topicCategory>
+      <gmd:topicCategory>
+        <gmd:MD_TopicCategoryCode>intelligenceMilitary</gmd:MD_TopicCategoryCode>
+      </gmd:topicCategory>
+      <gmd:topicCategory>
+        <gmd:MD_TopicCategoryCode>oceans</gmd:MD_TopicCategoryCode>
+      </gmd:topicCategory>
+      <gmd:topicCategory>
+        <gmd:MD_TopicCategoryCode>planningCadastre</gmd:MD_TopicCategoryCode>
+      </gmd:topicCategory>
+      <gmd:topicCategory>
+        <gmd:MD_TopicCategoryCode>society</gmd:MD_TopicCategoryCode>
+      </gmd:topicCategory>
+      <gmd:topicCategory>
+        <gmd:MD_TopicCategoryCode>structure</gmd:MD_TopicCategoryCode>
+      </gmd:topicCategory>
+      <gmd:topicCategory>
+        <gmd:MD_TopicCategoryCode>transportation</gmd:MD_TopicCategoryCode>
+      </gmd:topicCategory>
+      <gmd:topicCategory>
+        <gmd:MD_TopicCategoryCode>utilitiesCommunication</gmd:MD_TopicCategoryCode>
       </gmd:topicCategory>
       <gmd:extent>
         <gmd:EX_Extent>
@@ -275,9 +332,9 @@
                       <gmd:country>
                         <gco:CharacterString>USA</gco:CharacterString>
                       </gmd:country>
-                      <gmd:electronicMailAddres>
+                      <gmd:electronicMailAddress>
                         <gco:CharacterString>mt@pain</gco:CharacterString>
-                      </gmd:electronicMailAddres>
+                      </gmd:electronicMailAddress>
                     </gmd:CI_Address>
                   </gmd:address>
                 </gmd:CI_Contact>
@@ -293,10 +350,19 @@
                 <gco:CharacterString>Shapefile</gco:CharacterString>
               </gmd:name>
               <gmd:version gco:nilReason="unknown"/>
+              <gmd:specification gco:nilReason="unknown"/>
+              <gmd:fileDecompressionTechnique>
+                <gco:CharacterString>Shapefile is compressed in standard ZIP format</gco:CharacterString>
+              </gmd:fileDecompressionTechnique>
+            </gmd:MD_Format>
+          </gmd:distributorFormat>
+          <gmd:distributorFormat>
+            <gmd:MD_Format>
               <gmd:name>
-                <gco:CharacterString>word</gco:CharacterString>
+                <gco:CharacterString>RAW</gco:CharacterString>
               </gmd:name>
               <gmd:version gco:nilReason="unknown"/>
+              <gmd:specification gco:nilReason="unknown"/>
               <gmd:fileDecompressionTechnique>
                 <gco:CharacterString>Shapefile is compressed in standard ZIP format</gco:CharacterString>
               </gmd:fileDecompressionTechnique>

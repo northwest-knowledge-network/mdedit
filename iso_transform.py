@@ -19,7 +19,7 @@ import lxml.etree as ET
 # create xml result for transform of indicated xml
 
 
-md_xml = ET.parse("/Users/Marisa/Documents/GitHub/mdedit/design_doc/Aug7_use.xml")
+md_xml = ET.parse("/Users/Marisa/Documents/GitHub/mdedit/design_doc/Aug11.xml")
 ## this points to server instance url, is still for one particular xml record
 #md_xml = ET.parse("http://localhost:4000/api/metadata/55c4ba2bc26c2830e0b58c29/xml")
 iso_xslt = ET.parse("/Users/Marisa/Documents/GitHub/mdedit/xslt/XSLT_for_mdedit.xsl")

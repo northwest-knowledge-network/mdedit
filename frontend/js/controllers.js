@@ -266,13 +266,13 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
     };
 
     $scope.topicCategoryChoices = 
-      ['Biota', 'Boundaries', 
-       'Climatology/Meterology/Atmosphere', 'Economy', 'Elevation', 
-       'Environment', 'Farming', 'Geoscientific Information', 'Health', 
-       'Imagery/Base Maps/Earth Cover', 'Inland Waters', 'Location', 
-       'Military Intelligence', 'Oceans', 'Planning/Cadastre', 'Society', 
-       'Structure', 'Transportation',
-       'Utilities/Communication'];
+      ['biota', 'boundaries', 
+       'climatologyMeteorologyAtmosphere', 'economy', 'elevation', 
+       'environment', 'farming', 'geoscientificInformation', 'health', 
+       'imageryBaseMapsEarthCover', 'inlandWaters', 'location', 
+       'intelligenceMilitary', 'oceans', 'planningCadastre', 'society', 
+       'structure', 'transportation',
+       'utilitiesCommunication'];
 
     // our more human-readable update frequency choices need trans to ISO 19115
     $scope.updateFrequencyChoicesMap = {
