@@ -1,12 +1,14 @@
 """API"""
+import json
+import os
+import lxml.etree as ET
+
 from copy import copy
 from datetime import datetime
 from dicttoxml import dicttoxml
 from flask import request, jsonify, Response, render_template
 from flask_cors import cross_origin
 from mongoengine import ObjectIdField
-
-import json
 
 from . import api
 from .. import db
@@ -50,6 +52,7 @@ def placeholder_metadata():
     return jsonify(record=record)
 
 
+
 @api.route('/api/metadata/<string:_oid>', methods=['GET', 'PUT'])
 @cross_origin(origin='*', methods=['GET', 'PUT'],
               headers=['X-Requested-With', 'Content-Type', 'Origin'])
@@ -77,10 +80,29 @@ def get_single_metadata(_oid):
         return jsonify(record=record)
 
 
+@api.route('/api/metadata/<string:_oid>/iso')
+@cross_origin(origin="*", methods=['GET'])
+def get_single_iso_metadata(_oid):
+    """
+    Produce the ISO 19115 representation of the metadata by 
+    using an XSLT transform operated on the generic xml found at /xml
+    """
+    xml_str = get_single_xml_metadata(_oid).data
+    md_xml = ET.fromstring(xml_str)
+    iso_xslt = ET.parse(os.path.join(os.path.dirname(__file__), '..', '..', 
+                        'xslt', 'XSLT_for_mdedit.xsl'))
+    iso_transform = ET.XSLT(iso_xslt)
+    iso_str = str(iso_transform(md_xml))
+    #iso_str = '<record>' + str(iso_str) + '</record>'
+
+    return Response(iso_str, 200, mimetype='application/xml')
+
+
 @api.route('/api/metadata/<string:_oid>/xml')
 @cross_origin(origin='*', methods=['GET'])
 def get_single_xml_metadata(_oid):
-    """Get the common XML representation of the metadata record with
+    """
+    Get the common XML representation of the metadata record with
        given id.
     """
     record = Metadata.objects.get_or_404(pk=_oid)
