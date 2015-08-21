@@ -1,5 +1,6 @@
 <!doctype html>
-<html lang="en" ng-app="metadataEditor" ng-controller="MetadataCtrl">
+<!--<html lang="en" ng-app="metadataEditor" ng-controller="MetadataCtrl">-->
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <!--<title ng-bind-template="The query: {{query}}"></title>-->
@@ -19,8 +20,7 @@
 </head>
 
 <body>
-<!--<body ng-controller="PhoneListCtrl">-->
-
+<div ng-app="metadataEditor" ng-controller="MetadataCtrl">
   <nav class="navbar navbar-default navbar-fixed-top">
       <div class="container-fluid">
         <div class="navbar-header">
@@ -36,25 +36,38 @@
              class="btn btn-small btn-default navbar-btn">
             Edit Existing
           </a>
+
           <button tabindex=24 ng-click="createNewRecord()" 
                   class="btn btn-small btn-primary navbar-btn">
             Create New
           </button>
-          <button tabindex=25 ng-show="newRecord && metadataForm.$valid" 
+
+          <button tabindex=25 ng-show="newRecord" 
                   class="btn btn-small btn-primary navbar-btn" 
-                  type="submit" ng-click="submitRecord()">
+                  type="submit" ng-click="submitDraftRecord()">
                   Submit New Record
           </button>
           
-          <button tabindex=25 ng-show="!newRecord && metadataForm.$valid" 
+          <button tabindex=25 ng-show="!newRecord" 
                   class="btn btn-small btn-primary navbar-btn" 
                   type="submit" 
-                  ng-click="submitRecord()">Submit Changes
+                  ng-click="submitDraftRecord()">Submit Changes as Draft
           </button>
+
+          <!-- 
+          Controller will handle case where form is valid, but a draft has
+          not yet been submitted.
+          -->
+          <button tabindex=25 ng-show="metadataForm.$valid" 
+                  class="btn btn-small btn-primary navbar-btn" 
+                  type="submit" ng-click="publishRecord()">
+                  Publish Record to NKN Portal
+          </button>
+
           
           <button tabindex=25 class="btn btn-small btn-danger navbar-btn"
             ng-hide="metadataForm.$valid">
-           Please fix errors before submitting
+           Please fix errors before publishing to NKN Portal
           </button>
       </div>
 
@@ -514,6 +527,7 @@
   </table>
 
 
+</div>
 </div>
 </body>
 </html>

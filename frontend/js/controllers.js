@@ -107,6 +107,10 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
 
              emptyRec.online = [""];
 
+             emptyRec.topic_category = [""];
+             emptyRec.thematic_keywords = [""];
+             emptyRec.place_keywords = [""];
+
              $scope.currentRecord = emptyRec;
 
              updateForms($scope.currentRecord);
@@ -121,7 +125,7 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
      * On submit of metadata form, submitRecord. This both updates the server
      * and makes sure the form is current. Not sure how it wouldn't be, todo?
      */ 
-    $scope.submitRecord = function()
+    $scope.submitDraftRecord = function()
     {
       // the start and end dates currently have hours and minutes zero;
       // grab the hours and minutes and append them. Confusingly JS 
@@ -147,6 +151,7 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
       {
         var auxList = $scope.auxDataFormats.split(',')
                             .map(function(el){ return el.trim(); });
+
         current.data_format = $scope.dataFormats.concat(auxList);
       }
 
@@ -163,7 +168,6 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
 
       if ($scope.newRecord)
       {
-        
         $http.post('http://localhost:4000/api/metadata', current)
              .success(function(data) {
                  updateForms(data.record);
