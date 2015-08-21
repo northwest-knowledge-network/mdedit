@@ -70,7 +70,8 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
              var emptyRec = JSON.parse(JSON.stringify(placeholderRec));
              for (var field in emptyRec)
              {
-               if (['citation', 'access'].indexOf(field) > -1)
+               if (['citation', 'access','west_lon','east_lon', 'north_lat', 
+                         'south_lat'].indexOf(field) > -1)
                {
                  emptyRec[field] = [JSON.parse(JSON.stringify(EMPTY_CONTACT))];    
                }
@@ -80,8 +81,7 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
                {
                  emptyRec[field] = [];    
                }
-               else if (['_cls', '_id', 'west_lon', 'east_lon', 'north_lat', 
-                         'south_lat', 'start_date', 'end_date', 'last_mod_date',
+               else if (['_cls', '_id', 'start_date', 'end_date', 'last_mod_date',
                          'first_pub_date'].indexOf(field) == -1)
                {
                  emptyRec[field] = "";    
