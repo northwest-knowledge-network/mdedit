@@ -116,6 +116,10 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
     // initialize form with placeholder data for creating a new record
     $scope.createNewRecord();
 
+    /**On click of Load MILES Defaults button, load the defaults in MILES defaults 
+    json file
+    */
+   /* $scope.defaultMILES = function()
 
     /**
      * On submit of metadata form, submitRecord. This both updates the server
@@ -314,20 +318,38 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
       'citation': 0
     };
 
-    $scope.addContact = function(accessOrCitation)
+    $scope.addContactCitation = function()
     {
-      $scope.currentRecord[accessOrCitation]
+      $scope.currentRecord[Citation]
             .push(JSON.parse(JSON.stringify(EMPTY_CONTACT)));
 
-      addedContacts[accessOrCitation] += 1;
+      addedContacts[Citation] += 1;
     };
 
-    $scope.cancelAddContact = function(accessOrCitation)
+    $scope.addContactAccess = function()
     {
-      if (addedContacts[accessOrCitation] > 0)
+      $scope.currentRecord[access]
+            .push(JSON.parse(JSON.stringify(EMPTY_CONTACT)));
+
+      addedContacts[access] += 1;
+    };
+
+
+    $scope.cancelAddContactCitation = function()
+    {
+      if (addedContacts[Citation] > 0)
       {
-        $scope.currentRecord[accessOrCitation].pop();
-        addedContacts[accessOrCitation] -= 1;
+        $scope.currentRecord[Citation].pop();
+        addedContacts[Citation] -= 1;
+      }
+    };
+
+    $scope.cancelAddContactAccess = function()
+    {
+      if (addedContacts[access] > 0)
+      {
+        $scope.currentRecord[access].pop();
+        addedContacts[access] -= 1;
       }
     };
 

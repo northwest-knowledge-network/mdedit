@@ -66,6 +66,7 @@ class Metadata(db.Document):
     end_date = db.DateTimeField(required=True)
 
     placeholder = db.BooleanField(default=False, required=False)
+    defaultMILES = db.BooleanField(default=False, required=False)
 
     meta = {'allow_inheritance': True}
 

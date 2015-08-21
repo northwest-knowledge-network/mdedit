@@ -51,6 +51,14 @@ def placeholder_metadata():
 
     return jsonify(record=record)
 
+@api.route('/api/metadata/defaultMILES', methods=['GET'])
+@cross_origin(origin='*', methods=['GET'],
+              headers=['X-Requested-With', 'Content-Type', 'Origin'])
+def defaultMILES_metadata():
+
+    record = Metadata.objects.get(defaultMILES=True)
+
+    return jsonify(record=record)
 
 
 @api.route('/api/metadata/<string:_oid>', methods=['GET', 'PUT'])

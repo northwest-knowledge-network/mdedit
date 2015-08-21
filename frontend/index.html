@@ -40,16 +40,26 @@
                   class="btn btn-small btn-primary navbar-btn">
             Create New
           </button>
-          <button tabindex=25 ng-show="newRecord && metadataForm.$valid" 
+          <button tabindex=24 ng-click="defaultsMILES()" 
+                  class="btn btn-small btn-primary navbar-btn">
+            Load MILES Defaults
+          </button>
+          <button tabindex=25 ng-show="newRecord" 
                   class="btn btn-small btn-primary navbar-btn" 
                   type="submit" ng-click="submitRecord()">
-                  Submit New Record
+            Save as Draft
           </button>
-          
           <button tabindex=25 ng-show="!newRecord && metadataForm.$valid" 
                   class="btn btn-small btn-primary navbar-btn" 
+                  type="submit" ng-click="submitRecord()">
+            Submit Record
+          </button>
+          
+          <button tabindex=25 ng-show="!newRecord" 
+                  class="btn btn-small btn-primary navbar-btn" 
                   type="submit" 
-                  ng-click="submitRecord()">Submit Changes
+                  ng-click="submitRecord()">
+            Save Changes
           </button>
           
           <button tabindex=25 class="btn btn-small btn-danger navbar-btn"
@@ -351,17 +361,17 @@
         <div class="row">
           <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4">
             <button tabindex=20 class="btn btn-default btn-contact" 
-              ng-click="cancelAddContact('citation')">
+              ng-click="cancelAddContactCitation()">
               Cancel
             </button>
           </div>
   
-          <!-- Only allowed to add a new contact if all current contact fields 
+          <!-- Only allowed to add a new contact if all current citation contact fields 
               are valid -->
           <div class="col-xs-6 col-sm-6 col-md-8 col-lg-8">
             <button tabindex=20 class="btn btn-primary btn-contact" 
                     ng-show="metadataForm.$valid" 
-                    ng-click="addContact('citation')">
+                    ng-click="addContactCitation()">
               <span class="glyphicon glyphicon-plus" aria-hide="true"></span> 
               Add a Contact 
             </button>
@@ -396,7 +406,7 @@
         <div class="row">
           <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4">
             <button tabindex=20 class="btn btn-default btn-contact" 
-              ng-click="cancelAddContact('access')">
+              ng-click="cancelAddContactAccess()">
               Cancel
             </button>
           </div>
@@ -406,7 +416,7 @@
           <div class="col-xs-6 col-sm-6 col-md-8 col-lg-8">
             <button tabindex=20 class="btn btn-primary btn-contact" 
                     ng-show="metadataForm.$valid" 
-                    ng-click="addContact('access')">
+                    ng-click="addContactAccess()">
               <span class="glyphicon glyphicon-plus" aria-hide="true"></span> 
               Add a Contact 
             </button>

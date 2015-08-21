@@ -26,7 +26,7 @@
     "online": [
         "https://www.idahoecosystems.org//",
     ],
-    "placeholder": "true",
+    "defaultMILES": "true",
     "west_lon": "-117.531786",
     "east_lon": "-110.655421",
     "south_lat": " 41.946097",
