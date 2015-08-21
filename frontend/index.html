@@ -46,22 +46,21 @@
           </button>
           <button tabindex=25 ng-show="newRecord" 
                   class="btn btn-small btn-primary navbar-btn" 
-                  type="submit" ng-click="submitRecord()">
+                  type="submit" ng-click="submitDraftRecord()">
             Save as Draft
           </button>
           <button tabindex=25 ng-show="!newRecord && metadataForm.$valid" 
                   class="btn btn-small btn-primary navbar-btn" 
-                  type="submit" ng-click="submitRecord()">
-            Submit Record
+                  type="submit" ng-click="publishRecord()">
+            Publish Record
           </button>
           
           <button tabindex=25 ng-show="!newRecord" 
                   class="btn btn-small btn-primary navbar-btn" 
                   type="submit" 
-                  ng-click="submitRecord()">
+                  ng-click="submitDraftRecord()">
             Save Changes
           </button>
-          
           <button tabindex=25 class="btn btn-small btn-danger navbar-btn"
             ng-hide="metadataForm.$valid">
            Please fix errors before submitting

@@ -70,8 +70,7 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
              var emptyRec = JSON.parse(JSON.stringify(placeholderRec));
              for (var field in emptyRec)
              {
-               if (['citation', 'access','west_lon','east_lon', 'north_lat', 
-                         'south_lat'].indexOf(field) > -1)
+               if (['citation', 'access'].indexOf(field) > -1)
                {
                  emptyRec[field] = [JSON.parse(JSON.stringify(EMPTY_CONTACT))];    
                }
@@ -119,7 +118,42 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
     /**On click of Load MILES Defaults button, load the defaults in MILES defaults 
     json file
     */
-   /* $scope.defaultMILES = function()
+      $scope.defaultMILES = function()
+    {
+      $scope.newRecord = true;
+
+      $http.get('http://localhost:4000/api/metadata/defaultMILES')
+           .success(function(data) {
+             var milesRec = data.record;
+             milesRec.start_date = {};
+             milesRec.end_date = {};
+             milesRec.start_date.$date = new Date(2010, 1, 1);
+             milesRec.end_date.$date = new Date();
+             milesRec.end_date.$date.setHours(0);
+             milesRec.end_date.$date.setMinutes(0);
+             milesRec.end_date.$date.setSeconds(0);
+
+             milesRec.start_date.hours = 0;
+             milesRec.end_date.hours = 0;
+             milesRec.start_date.minutes = 0;
+             milesRec.end_date.minutes = 0;
+             milesRec.start_date.seconds = 0;
+             milesRec.end_date.seconds = 0;
+
+             milesRec.last_mod_date = {};
+             milesRec.first_pub_date = {};
+             milesRec.last_mod_date.$date = new Date();
+             milesRec.first_pub_date.$date = new Date();
+            
+             $scope.auxDataFormats = "";
+
+             $scope.currentRecord = milesRec;
+
+             updateForms($scope.currentRecord);
+           });
+    };
+    // initialize form with placeholder data for creating a new record
+    $scope.defaultMILES();
 
     /**
      * On submit of metadata form, submitRecord. This both updates the server
