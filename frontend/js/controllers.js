@@ -70,8 +70,7 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
              var emptyRec = JSON.parse(JSON.stringify(placeholderRec));
              for (var field in emptyRec)
              {
-               if (['citation', 'access','west_lon','east_lon', 'north_lat', 
-                         'south_lat'].indexOf(field) > -1)
+               if (['citation', 'access'].indexOf(field) > -1)
                {
                  emptyRec[field] = [JSON.parse(JSON.stringify(EMPTY_CONTACT))];    
                }
@@ -120,7 +119,6 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
     // initialize form with placeholder data for creating a new record
     $scope.createNewRecord();
 
-
     /**
      * On submit of metadata form, submitRecord. This both updates the server
      * and makes sure the form is current. Not sure how it wouldn't be, todo?
@@ -130,6 +128,95 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
       // the start and end dates currently have hours and minutes zero;
       // grab the hours and minutes and append them. Confusingly JS 
       // uses setHours to set minutes and seconds as well
+      var current = prepareCurrentScopedRecord();
+      if ($scope.newRecord)
+      {
+        $http.post('http://localhost:4000/api/metadata', current)
+             .success(function(data) {
+                 updateForms(data.record);
+                 $scope.newRecord = false;
+                 addedContacts = 
+                 {
+                  'access': 0,
+                  'citation': 0
+                 };            
+                 displayCurrentRecords();
+             })
+             .error(function(data) { $log.log(data.record); });
+      }
+      else
+      {
+        $log.log(current.data_format);
+        $http.put('http://localhost:4000/api/metadata/' + current._id.$oid, 
+                  current)
+             .success(function(data) {
+                 updateForms(data.record);
+                 addedContacts = 
+                 {
+                  'access': 0,
+                  'citation': 0
+                 };            
+                 displayCurrentRecords();
+             });
+      }
+    };
+
+    /**
+     * Publish a record to the portal. Requires all fields to be valid
+     */
+    $scope.publishRecord = function()
+    {
+      var current = prepareCurrentScopedRecord();
+      if ($scope.newRecord)
+      {
+        $http.post('http://localhost:4000/api/metadata', current)
+             .success(function(data) {
+                 updateForms(data.record);
+                 $scope.newRecord = false;
+                 addedContacts = 
+                 {
+                  'access': 0,
+                  'citation': 0
+                 };            
+                 displayCurrentRecords();
+             })
+             .error(function(data) { $log.log(data.record); });
+      }
+      else
+      {
+        $log.log(current.data_format);
+        $http.put('http://localhost:4000/api/metadata/' + current._id.$oid, 
+                  current)
+             .success(function(data) {
+                 updateForms(data.record);
+                 addedContacts = 
+                 {
+                  'access': 0,
+                  'citation': 0
+                 };            
+                 displayCurrentRecords();
+             });
+      }
+
+      var currentId = $scope.currentRecord._id.$oid;
+
+      $http.post('http://localhost:4000/api/metadata/' + 
+                 currentId + '/publish', 
+                 current)
+            .success(function(data) {
+              updateForms(data.record);
+              addedContacts = 
+              {
+                'access': 0,
+                'citation': 0    
+              };
+
+              displayCurrentRecords();
+            });
+    }
+    
+    function prepareCurrentScopedRecord() 
+    {
       $scope.currentRecord.start_date.$date.setHours(
         $scope.currentRecord.start_date.hours, 
         $scope.currentRecord.start_date.minutes,
@@ -146,6 +233,8 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
 
       current.place_keywords = current.place_keywords.split(', ');
       current.thematic_keywords = current.thematic_keywords.split(', ');
+
+      current.data_format = $scope.dataFormats;
 
       if ($scope.auxDataFormats)
       {
@@ -166,36 +255,9 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
       current.first_pub_date.$date = 
         $scope.currentRecord.first_pub_date.$date.getTime();
 
-      if ($scope.newRecord)
-      {
-        $http.post('http://localhost:4000/api/metadata', current)
-             .success(function(data) {
-                 updateForms(data.record);
-                 $scope.newRecord = false;
-                 addedContacts = 
-                 {
-                  'access': 0,
-                  'citation': 0
-                 };            
-                 displayCurrentRecords();
-             })
-             .error(function(data) { $log.log(data.record); });
-      }
-      else
-      {
-        $http.put('http://localhost:4000/api/metadata/' + current._id.$oid, 
-                  current)
-             .success(function(data) {
-                 updateForms(data.record);
-                 addedContacts = 
-                 {
-                  'access': 0,
-                  'citation': 0
-                 };            
-                 displayCurrentRecords();
-             });
-      }
-    };
+      return current;
+    }
+
 
     function displayCurrentRecords()
     {

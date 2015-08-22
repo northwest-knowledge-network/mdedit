@@ -7,18 +7,12 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config:
-    SECRET_KEY = os.environ.get('VW_SECRET_KEY') or 'hard to guess string'
+
     MONGODB_SETTINGS = {'db': "metadata"}
-    MAIL_SERVER = 'smtp.googlemail.com'
-    MAIL_PORT = 587
-    MAIL_USE_TLS = True
-    MAIL_USERNAME = os.environ.get('VW_MAIL_USERNAME')
-    MAIL_PASSWORD = os.environ.get('VW_MAIL_PASSWORD')
-
-    VWPLATFORM_MAIL_SUBJECT_PREFIX = '[VWPLATFORM]'
-    VWPLATFORM_MAIL_SENDER = 'Matthew Turner <maturner@uidaho.edu>'
-    VWPLATFORM_ADMIN = os.environ.get('VWPLATFORM_ADMIN') or 'Admin'
-
+    PREPROD_DIRECTORY = (os.environ.get('MDEDIT_PREPROD_DIRECTORY') or
+                         'mdedit_preprod')
+    if not os.path.exists(PREPROD_DIRECTORY):
+        os.makedirs(PREPROD_DIRECTORY)
 
     @staticmethod
     def init_app(app):

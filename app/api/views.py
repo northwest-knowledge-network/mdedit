@@ -3,15 +3,13 @@ import json
 import os
 import lxml.etree as ET
 
-from copy import copy
-from datetime import datetime
+from config import config
 from dicttoxml import dicttoxml
-from flask import request, jsonify, Response, render_template
+from flask import request, jsonify, Response
 from flask_cors import cross_origin
-from mongoengine import ObjectIdField
+from mongoengine import ValidationError
 
 from . import api
-from .. import db
 from ..models import Metadata
 
 
@@ -33,10 +31,7 @@ def metadata():
         new_md.id = None
         new_md.placeholder = False
 
-
         new_md.save()
-
-        # import ipdb; ipdb.set_trace()
 
         # return a JSON record of new metadata to load into the page
         return jsonify(record=new_md)
@@ -52,7 +47,6 @@ def placeholder_metadata():
     return jsonify(record=record)
 
 
-
 @api.route('/api/metadata/<string:_oid>', methods=['GET', 'PUT'])
 @cross_origin(origin='*', methods=['GET', 'PUT'],
               headers=['X-Requested-With', 'Content-Type', 'Origin'])
@@ -63,9 +57,10 @@ def get_single_metadata(_oid):
     if request.method == 'PUT':
 
         existing_record = Metadata.objects.get_or_404(pk=_oid)
+        updater = Metadata.from_json(request.data)
 
         for f in existing_record._fields:
-            existing_record[f] = Metadata.from_json(request.data)[f]
+            existing_record[f] = updater[f]
 
         existing_record.save()
 
@@ -80,16 +75,51 @@ def get_single_metadata(_oid):
         return jsonify(record=record)
 
 
+@api.route('/api/metadata/<string:_oid>/publish', methods=['POST'])
+@cross_origin(origin='*', methods=['POST'],
+              headers=['X-Requested-With', 'Content-Type', 'Origin'])
+def publish_metadata_record(_oid):
+    # update or create record in database
+    try:
+        record = Metadata.objects.get_or_404(pk=_oid)
+        updater = Metadata.from_json(request.data)
+        for f in record._fields:
+            record[f] = updater[f]
+
+    except ValidationError:
+        record = Metadata.from_json(request.data)
+        record.id = None
+        record.placeholder = False
+        record.save()
+
+    # generate iso string
+    str_id = str(record.id)
+    iso = get_single_iso_metadata(str_id).data
+
+    # save iso string to {_oid}/{_oid}.xml
+    save_path = os.path.join(config['default'].PREPROD_DIRECTORY,
+                             str_id,
+                             str_id + '.xml')
+
+    if not os.path.exists(os.path.dirname(save_path)):
+        os.mkdir(os.path.dirname(save_path))
+
+    with open(save_path, 'w+') as f:
+        f.write(iso)
+
+    return jsonify(record=record)
+
+
 @api.route('/api/metadata/<string:_oid>/iso')
 @cross_origin(origin="*", methods=['GET'])
 def get_single_iso_metadata(_oid):
     """
-    Produce the ISO 19115 representation of the metadata by 
+    Produce the ISO 19115 representation of the metadata by
     using an XSLT transform operated on the generic xml found at /xml
     """
     xml_str = get_single_xml_metadata(_oid).data
     md_xml = ET.fromstring(xml_str)
-    iso_xslt = ET.parse(os.path.join(os.path.dirname(__file__), '..', '..', 
+    iso_xslt = ET.parse(os.path.join(os.path.dirname(__file__), '..', '..',
                         'xslt', 'XSLT_for_mdedit.xsl'))
     iso_transform = ET.XSLT(iso_xslt)
     iso_str = str(iso_transform(md_xml))
