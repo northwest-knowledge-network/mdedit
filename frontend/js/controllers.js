@@ -49,7 +49,20 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
 
       $http.get('http://localhost:4000/api/metadata/' + recordId)
            .success(function(data) {
-              updateForms(data.record);
+             var record = data.record;
+             if (typeof record.start_date == "undefined") {
+               record.start_date = {$date: new Date(2010, 1, 1)};
+             }
+             if (typeof record.end_date == "undefined") {
+               record.end_date = {$date: new Date()};
+             }
+             if (typeof record.last_mod_date == "undefined") {
+               record.last_mod_date = {$date: new Date()};
+             }
+             if (typeof record.first_pub_date == "undefined") {
+               record.first_pub_date = {$date: new Date()};
+             }
+             updateForms(record);
            });
     };
 
@@ -78,7 +91,7 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
                  ['place_keywords', 'thematic_keywords',
                   'data_format', 'online'].indexOf(field) > -1)
                {
-                 emptyRec[field] = [];    
+                 emptyRec[field] = [""];    
                }
                else if (['_cls', '_id', 'start_date', 'end_date', 'last_mod_date',
                          'first_pub_date'].indexOf(field) == -1)
@@ -86,8 +99,8 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
                  emptyRec[field] = "";    
                }
              }
-             emptyRec.start_date.$date = new Date(2010, 1, 1);
-             emptyRec.end_date.$date = new Date();
+             emptyRec.start_date = {$date: new Date(2010, 1, 1)};
+             emptyRec.end_date = {$date: new Date()};
              emptyRec.end_date.$date.setHours(0);
              emptyRec.end_date.$date.setMinutes(0);
              emptyRec.end_date.$date.setSeconds(0);
@@ -99,8 +112,8 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
              emptyRec.start_date.seconds = 0;
              emptyRec.end_date.seconds = 0;
 
-             emptyRec.last_mod_date.$date = new Date();
-             emptyRec.first_pub_date.$date = new Date();
+             emptyRec.last_mod_date = {$date: new Date()};
+             emptyRec.first_pub_date = {$date: new Date()};
             
              $scope.auxDataFormats = "";
 
@@ -109,6 +122,7 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
              emptyRec.topic_category = [""];
              emptyRec.thematic_keywords = [""];
              emptyRec.place_keywords = [""];
+             emptyRec.data_format = [""];
 
              $scope.currentRecord = emptyRec;
 
@@ -118,6 +132,44 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
 
     // initialize form with placeholder data for creating a new record
     $scope.createNewRecord();
+
+    /**On click of Load MILES Defaults button, load the defaults in MILES defaults 
+    json file
+    */
+    $scope.defaultMILES = function()
+    {
+      $scope.newRecord = true;
+
+      $http.get('http://localhost:4000/api/metadata/defaultMILES')
+           .success(function(data) {
+             var milesRec = data.record;
+             milesRec.start_date = {};
+             milesRec.end_date = {};
+             milesRec.start_date.$date = new Date(2010, 1, 1);
+             milesRec.end_date.$date = new Date();
+             milesRec.end_date.$date.setHours(0);
+             milesRec.end_date.$date.setMinutes(0);
+             milesRec.end_date.$date.setSeconds(0);
+
+             milesRec.start_date.hours = 0;
+             milesRec.end_date.hours = 0;
+             milesRec.start_date.minutes = 0;
+             milesRec.end_date.minutes = 0;
+             milesRec.start_date.seconds = 0;
+             milesRec.end_date.seconds = 0;
+
+             milesRec.last_mod_date = {};
+             milesRec.first_pub_date = {};
+             milesRec.last_mod_date.$date = new Date();
+             milesRec.first_pub_date.$date = new Date();
+            
+             $scope.auxDataFormats = "";
+
+             $scope.currentRecord = milesRec;
+
+             updateForms($scope.currentRecord);
+           });
+    };
 
     /**
      * On submit of metadata form, submitRecord. This both updates the server
@@ -184,7 +236,6 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
       }
       else
       {
-        $log.log(current.data_format);
         $http.put('http://localhost:4000/api/metadata/' + current._id.$oid, 
                   current)
              .success(function(data) {
@@ -231,8 +282,8 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
 
       var current = JSON.parse(JSON.stringify($scope.currentRecord));
 
-      current.place_keywords = current.place_keywords.split(', ');
-      current.thematic_keywords = current.thematic_keywords.split(', ');
+      current.place_keywords = $scope.currentRecord.place_keywords.split(', ');
+      current.thematic_keywords = $scope.currentRecord.thematic_keywords.split(', ');
 
       current.data_format = $scope.dataFormats;
 
@@ -244,16 +295,15 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
         current.data_format = $scope.dataFormats.concat(auxList);
       }
 
-      current.last_mod_date.$date = 
-        $scope.currentRecord.last_mod_date.$date.getTime();
-      current.start_date.$date = 
-        $scope.currentRecord.start_date.$date.getTime();
+      current.last_mod_date = 
+        {$date: $scope.currentRecord.last_mod_date.$date.getTime()};
+      current.start_date = 
+        {$date: $scope.currentRecord.start_date.$date.getTime()};
+      current.end_date = 
+        {$date: $scope.currentRecord.end_date.$date.getTime()};
 
-      current.end_date.$date = 
-        $scope.currentRecord.end_date.$date.getTime();
-
-      current.first_pub_date.$date = 
-        $scope.currentRecord.first_pub_date.$date.getTime();
+      current.first_pub_date = 
+        {$date: $scope.currentRecord.first_pub_date.$date.getTime()};
 
       return current;
     }
@@ -380,20 +430,38 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
       'citation': 0
     };
 
-    $scope.addContact = function(accessOrCitation)
+    $scope.addContactCitation = function()
     {
-      $scope.currentRecord[accessOrCitation]
+      $scope.currentRecord[Citation]
             .push(JSON.parse(JSON.stringify(EMPTY_CONTACT)));
 
-      addedContacts[accessOrCitation] += 1;
+      addedContacts[Citation] += 1;
     };
 
-    $scope.cancelAddContact = function(accessOrCitation)
+    $scope.addContactAccess = function()
     {
-      if (addedContacts[accessOrCitation] > 0)
+      $scope.currentRecord[access]
+            .push(JSON.parse(JSON.stringify(EMPTY_CONTACT)));
+
+      addedContacts[access] += 1;
+    };
+
+
+    $scope.cancelAddContactCitation = function()
+    {
+      if (addedContacts[Citation] > 0)
       {
-        $scope.currentRecord[accessOrCitation].pop();
-        addedContacts[accessOrCitation] -= 1;
+        $scope.currentRecord[Citation].pop();
+        addedContacts[Citation] -= 1;
+      }
+    };
+
+    $scope.cancelAddContactAccess = function()
+    {
+      if (addedContacts[access] > 0)
+      {
+        $scope.currentRecord[access].pop();
+        addedContacts[access] -= 1;
       }
     };
 

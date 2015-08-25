@@ -21,15 +21,22 @@ def metadata():
 
     if request.method == 'GET':
 
-        recs = Metadata.objects(placeholder=False)
+        recs = Metadata.objects(
+                __raw__={'placeholder': False, 'default': None}
+                # '$or': [{'placeholder': 'false'}, {']
+                # }
+            )
+
         return jsonify(dict(results=recs))
 
     if request.method == 'POST':
 
+        import ipdb; ipdb.set_trace()
         new_md = Metadata.from_json(request.data)
 
         new_md.id = None
         new_md.placeholder = False
+        new_md.default = None
 
         new_md.save()
 
@@ -42,10 +49,18 @@ def metadata():
               headers=['X-Requested-With', 'Content-Type', 'Origin'])
 def placeholder_metadata():
 
-    record = Metadata.objects.get(placeholder=True)
+    record = Metadata.objects(placeholder=True)
 
     return jsonify(record=record)
 
+@api.route('/api/metadata/defaultMILES', methods=['GET'])
+@cross_origin(origin='*', methods=['GET'],
+              headers=['X-Requested-With', 'Content-Type', 'Origin'])
+def defaultMILES_metadata():
+
+    record = Metadata.objects.get(default='miles')
+
+    return jsonify(record=record)
 
 @api.route('/api/metadata/<string:_oid>', methods=['GET', 'PUT'])
 @cross_origin(origin='*', methods=['GET', 'PUT'],

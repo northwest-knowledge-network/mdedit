@@ -19,6 +19,8 @@ if not md_objs.count():
     md = Metadata.from_json(open('default_metadata.json', 'r').read())
     md.save()
     id = md.pk
+    md = Metadata.from_json(open('project_defaults/MILES_default_metadata.json','r').read())
+    md.save()
 
 else:
 

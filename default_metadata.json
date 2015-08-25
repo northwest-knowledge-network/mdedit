@@ -14,6 +14,7 @@
   "topic_category": ["Geoscientific Information"],
   "status": "completed",
   "update_frequency": "irregular",
+  "online": [""],
 
     "access": [
       {
@@ -23,7 +24,7 @@
         "name": "Northwest Knowledge Network",
         "email": "info@northwestknowledge.net",
         "org": "UI",
-        "phone": "555-5555",
+        "phone": "208-555-5555",
         "state": "Idaho",
         "zipcode": "83844"
       }
@@ -36,17 +37,10 @@
         "name": "Your Name",
         "email": "your email",
         "org": "Boise State University",
-        "phone": "555-5555",
+        "phone": "208-555-5555",
         "state": "Idaho",
         "zipcode": "83844"
       }
     ],
-  "placeholder": "true",
-  "west_lon": "-117.531786",
-  "east_lon": "-110.655421",
-  "south_lat":" 41.946097",
-  "north_lat": "49.039542",
-  "start_date": "2010-10-01",
-  "end_date": "2011-09-30",
-  "use_restrictions": "http://www.wtfpl.net/"
+    "placeholder": "true"
 }
