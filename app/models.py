@@ -1,16 +1,11 @@
-from datetime import datetime, date
-from flask import jsonify
-from werkzeug import ImmutableMultiDict
-
-from collections import OrderedDict
-
-import json
+from datetime import datetime
 
 from . import db
 
 
 class Contact(db.EmbeddedDocument):
     """Sub-document for use in list of citation and data access contacts"""
+
     name = db.StringField(max_length=255)
     # TODO make this a mongoengine.fields.EmailField
     email = db.StringField(max_length=255)
@@ -50,7 +45,7 @@ class Metadata(db.Document):
     online = db.ListField(db.StringField(max_length=255))
 
     # use restrictions
-    use_restrictions = db.StringField(max_length=1000)
+    use_restrictions = db.StringField()
 
     # contacts
     citation = db.ListField(db.EmbeddedDocumentField('Contact'))
@@ -68,6 +63,10 @@ class Metadata(db.Document):
 
     placeholder = db.BooleanField(default=False)
 
+    # used if the record is a default for a particular group,
+    # e.g. 'miles' or 'nkn'
+    default = db.StringField(max_length=20)
+
     meta = {'allow_inheritance': True}
 
     def format_dates(self):
@@ -75,4 +74,5 @@ class Metadata(db.Document):
         Our web form needs the date to be in YYYY-MM-DD (ISO 8601)
         """
         for el in [self.start_date, self.end_date, self.first_pub_date]:
-            el = el.isoformat()
+            if type(el) is datetime:
+                el = el.isoformat()

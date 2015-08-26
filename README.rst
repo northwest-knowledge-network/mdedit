@@ -140,6 +140,15 @@ http://localhost:4000/api/metadata, find a metadata record of interest, copy the
 quotes should be dropped.
 
 
+4. Try filling out and publishing a record
+``````````````````````````````````````````
+
+Publishing to the NKN portal is currently enabled. In development, new
+"published" records will be saved to a local directory "mdedit_preprod". This
+can be changed by setting an environment variable `PREPROD_DIRECTORY`. See 
+`config.py` to see how this works.
+
+
 More info
 ---------
 

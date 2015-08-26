@@ -8,3 +8,4 @@ doc/build/*
 venv
 frontend/bower_components
 node_modules
+mdedit_preprod/*
