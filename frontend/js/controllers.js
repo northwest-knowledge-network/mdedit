@@ -81,6 +81,7 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
            .success(function(data) {
              var placeholderRec = data.record;
              var emptyRec = JSON.parse(JSON.stringify(placeholderRec));
+             $log.log(emptyRec);
              for (var field in emptyRec)
              {
                if (['citation', 'access'].indexOf(field) > -1)
@@ -180,9 +181,12 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
       // the start and end dates currently have hours and minutes zero;
       // grab the hours and minutes and append them. Confusingly JS 
       // uses setHours to set minutes and seconds as well
+      $log.log($scope.currentRecord);
       var current = prepareCurrentScopedRecord();
       if ($scope.newRecord)
       {
+        $log.log($scope.currentRecord);
+        $log.log(current);
         $http.post('http://localhost:4000/api/metadata', current)
              .success(function(data) {
                  updateForms(data.record);
@@ -264,10 +268,11 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
 
               displayCurrentRecords();
             });
-    }
+    };
     
     function prepareCurrentScopedRecord() 
     {
+      $log.log($scope.currentRecord);
       $scope.currentRecord.start_date.$date.setHours(
         $scope.currentRecord.start_date.hours, 
         $scope.currentRecord.start_date.minutes,
