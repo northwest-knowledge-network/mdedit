@@ -139,7 +139,6 @@ def get_single_iso_metadata(_oid):
                         'xslt', 'XSLT_for_mdedit.xsl'))
     iso_transform = ET.XSLT(iso_xslt)
     iso_str = str(iso_transform(md_xml))
-    #iso_str = '<record>' + str(iso_str) + '</record>'
 
     return Response(iso_str, 200, mimetype='application/xml')
 
