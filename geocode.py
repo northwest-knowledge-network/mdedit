@@ -1,12 +1,9 @@
 #uses geocoder (https://geocoder.readthedocs.org/en/stable/api.html#forward-geocoding)
 # to write a function that outputs coordinates of a bounding box around the input location
-#the setup.py from the folder hosting geocoder and this script has to be installed first
 
 import geocoder
 
-def bbox(input):
-    g = geocoder.google(input)
-    print g.north
-    print g.south
-    print g.east
-    print g.west
+def bbox(place):
+    g = geocoder.google(place)
+    bbox_str = "North = " + str(g.north) + ", South = " +  str(g.south)  + ", East = " + str(g.east) + ", West = " + str(g.west)
+    print bbox_str

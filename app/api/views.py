@@ -2,6 +2,7 @@
 import json
 import os
 import lxml.etree as ET
+import geocoder
 
 from config import config
 from dicttoxml import dicttoxml
@@ -127,7 +128,7 @@ def publish_metadata_record(_oid):
 
 
 @api.route('/api/metadata/<string:_oid>/iso')
-@cross_origin(origin="*", methods=['GET'])
+@cross_origin(origin="*", methods=['GET',])
 def get_single_iso_metadata(_oid):
     """
     Produce the ISO 19115 representation of the metadata by
@@ -142,6 +143,15 @@ def get_single_iso_metadata(_oid):
     #iso_str = '<record>' + str(iso_str) + '</record>'
 
     return Response(iso_str, 200, mimetype='application/xml')
+
+
+@api_route('/api/geocode/<string:place>', method-['GET','POST'])
+@cross_origin(origin='*', methods=['GET','POST'],
+              headers=['X-Requested-With', 'Content-Type', 'Origin'])
+def get_bbox(place):
+    g = geocoder.google(place)
+    bbox_str = "North = " + str(g.north) + ", South = " +  str(g.south)  + ", East = " + str(g.east) + ", West = " + str(g.west)
+    return Response(bbox_str, 200)
 
 
 @api.route('/api/metadata/<string:_oid>/xml')
