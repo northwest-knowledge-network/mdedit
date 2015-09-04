@@ -18,15 +18,15 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 from manage import app
 
 
-@api.route('/api/metadata', methods=['GET', 'POST', 'PUT'])
-@cross_origin(origin='*', methods=['GET', 'POST', 'PUT'],
+@api.route('/api/metadata', methods=['POST', 'PUT'])
+@cross_origin(origin='*', methods=['POST', 'PUT'],
               headers=['X-Requested-With', 'Content-Type', 'Origin'])
 def metadata():
     """Handle get and push requests coming to metadata server"""
     username = _authenticate_user_from_session(request)
 
     if username:
-        if request.method == 'GET':
+        if request.method == 'POST':
 
             recs = Metadata.objects(
                 __raw__={'placeholder': False,
@@ -36,9 +36,9 @@ def metadata():
 
             return jsonify(dict(results=recs))
 
-        if request.method == 'POST':
+        if request.method == 'PUT':
 
-            new_md = Metadata.from_json(request.data)
+            new_md = Metadata.from_json(json.dumps(request.json['record']))
 
             new_md.id = None
             new_md.placeholder = False
@@ -75,11 +75,15 @@ def defaultMILES_metadata():
     return jsonify(record=record)
 
 
-@api.route('/api/metadata/<string:_oid>', methods=['GET', 'PUT'])
-@cross_origin(origin='*', methods=['GET', 'PUT'],
+
+@api.route('/api/metadata/<string:_oid>', methods=['POST', 'PUT'])
+@cross_origin(origin='*', methods=['POST', 'PUT'],
               headers=['X-Requested-With', 'Content-Type', 'Origin'])
 def get_single_metadata(_oid):
-    """Get the JSON representation of the metadata record with given id.
+    """
+    Retrieve or update the metadata record with given _oid. Retrieval is done
+    via POST because we must pass a session id so that the user is
+    authenticated.
     """
     username = _authenticate_user_from_session(request)
 
@@ -89,7 +93,7 @@ def get_single_metadata(_oid):
 
             existing_record = Metadata.objects.get_or_404(pk=_oid,
                                                           username=username)
-            updater = Metadata.from_json(request.data)
+            updater = Metadata.from_json(json.dumps(request.json['record']))
 
             for f in existing_record._fields:
                 existing_record[f] = updater[f]
@@ -209,13 +213,13 @@ def _authenticate_user_from_session(request):
     Returns:
         (str): username
     """
-    if app.config['DEBUG']:
+    username_url = (os.getenv('GETUSER_URL') or
+                    'http://nknportal-dev.nkn.uidaho.edu/getUsername')
+
+    if request.json['session_id'] == 'local':
         return 'local_user'
 
-    elif app.config['PRODUCTION']:
-        username_url = (os.getenv('GETUSER_URL') or
-                        'http://nknportal-dev.nkn.uidaho.edu/getUsername')
-
+    else:
         data = {
             'session_id': request.data.session_id,
             'config_kw': 'miles'
@@ -226,6 +230,6 @@ def _authenticate_user_from_session(request):
         username = res.json()['username']
         if username:
             return username
-        # username will be u'' if the session id was not valid
+        # username will be u'' if the session id was not valid; make explicit
         else:
             return None

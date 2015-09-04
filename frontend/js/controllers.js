@@ -10,6 +10,12 @@ var metadataEditorApp = angular.module('metadataEditor', ['ui.date']);
 metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log', 
   function($scope, $http, $log) {
 
+    // first see if we have any user information given to us (from Drupal)
+    if (typeof(session_id) === 'undefined')
+    {
+      var session_id = 'local';
+    }
+
     // initialize list of existing metadata records
     displayCurrentRecords();
 
@@ -47,7 +53,8 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
     {
       $scope.newRecord = false;
 
-      $http.get('http://localhost:4000/api/metadata/' + recordId)
+      $http.post('http://localhost:4000/api/metadata/' + recordId,
+                 {'session_id': session_id})
            .success(function(data) {
              var record = data.record;
              if (typeof record.start_date == "undefined") {
@@ -181,13 +188,11 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
       // the start and end dates currently have hours and minutes zero;
       // grab the hours and minutes and append them. Confusingly JS 
       // uses setHours to set minutes and seconds as well
-      $log.log($scope.currentRecord);
       var current = prepareCurrentScopedRecord();
       if ($scope.newRecord)
       {
-        $log.log($scope.currentRecord);
-        $log.log(current);
-        $http.post('http://localhost:4000/api/metadata', current)
+        $http.put('http://localhost:4000/api/metadata', 
+                  {'record': current, 'session_id': session_id})
              .success(function(data) {
                  updateForms(data.record);
                  $scope.newRecord = false;
@@ -202,9 +207,8 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
       }
       else
       {
-        $log.log(current.data_format);
         $http.put('http://localhost:4000/api/metadata/' + current._id.$oid, 
-                  current)
+                  {'record': current, 'session_id': session_id})
              .success(function(data) {
                  updateForms(data.record);
                  addedContacts = 
@@ -316,7 +320,8 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
 
     function displayCurrentRecords()
     {
-      $http.get('http://localhost:4000/api/metadata')
+      $http.post('http://localhost:4000/api/metadata', 
+                 {'session_id': session_id})
            .success(function(data){ 
              $scope.allRecords = data.results; 
            });
