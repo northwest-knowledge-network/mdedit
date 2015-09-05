@@ -10,11 +10,13 @@ var metadataEditorApp = angular.module('metadataEditor', ['ui.date']);
 metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log', 
   function($scope, $http, $log) {
 
+    $log.log('yo 2');
     // first see if we have any user information given to us (from Drupal)
     if (typeof(session_id) === 'undefined')
     {
       var session_id = 'local';
     }
+    $log.log('session_id: ' + session_id);
 
     // initialize list of existing metadata records
     displayCurrentRecords();
@@ -88,7 +90,6 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
            .success(function(data) {
              var placeholderRec = data.record;
              var emptyRec = JSON.parse(JSON.stringify(placeholderRec));
-             $log.log(emptyRec);
              for (var field in emptyRec)
              {
                if (['citation', 'access'].indexOf(field) > -1)
@@ -276,7 +277,6 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
     
     function prepareCurrentScopedRecord() 
     {
-      $log.log($scope.currentRecord);
       $scope.currentRecord.start_date.$date.setHours(
         $scope.currentRecord.start_date.hours, 
         $scope.currentRecord.start_date.minutes,
