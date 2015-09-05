@@ -20,6 +20,16 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
       var session_id = window.session_id;
     }
 
+    // next see if there is a hostname defined
+    if (typeof(window.hostname) === 'undefined')
+    {
+      var hostname = 'localhost:4000';
+    }
+    else
+    {
+      var hostname = window.hostname;
+    }
+
     // initialize list of existing metadata records
     displayCurrentRecords();
 
@@ -57,7 +67,7 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
     {
       $scope.newRecord = false;
 
-      $http.post('http://nknportal-dev.nkn.uidaho.edu/mdedit/api/metadata/' + recordId,
+      $http.post('http://' + hostname + '/api/metadata/' + recordId,
                  {'session_id': session_id})
            .success(function(data) {
              var record = data.record;
@@ -88,7 +98,7 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
     {
       $scope.newRecord = true;
 
-      $http.get('http://nknportal-dev.nkn.uidaho.edu/mdedit/api/metadata/placeholder')
+      $http.get('http://' + hostname + '/api/metadata/placeholder')
            .success(function(data) {
              var placeholderRec = data.record;
              var emptyRec = JSON.parse(JSON.stringify(placeholderRec));
@@ -151,7 +161,7 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
     {
       $scope.newRecord = true;
 
-      $http.get('http://nknportal-dev.nkn.uidaho.edu/mdedit/api/metadata/defaultMILES')
+      $http.get('http://' + hostname + '/api/metadata/defaultMILES')
            .success(function(data) {
              var milesRec = data.record;
              milesRec.start_date = {};
@@ -194,7 +204,7 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
       var current = prepareCurrentScopedRecord();
       if ($scope.newRecord)
       {
-        $http.put('http://nknportal-dev.nkn.uidaho.edu/mdedit/api/metadata', 
+        $http.put('http://' + hostname + '/api/metadata', 
                   {'record': current, 'session_id': session_id})
              .success(function(data) {
                  updateForms(data.record);
@@ -210,7 +220,7 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
       }
       else
       {
-        $http.put('http://nknportal-dev.nkn.uidaho.edu/mdedit/api/metadata/' + current._id.$oid, 
+        $http.put('http://' + hostname + '/api/metadata/' + current._id.$oid, 
                   {'record': current, 'session_id': session_id})
              .success(function(data) {
                  updateForms(data.record);
@@ -232,7 +242,7 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
       var current = prepareCurrentScopedRecord();
       if ($scope.newRecord)
       {
-        $http.post('http://nknportal-dev.nkn.uidaho.edu/mdedit/api/metadata', current)
+        $http.post('http://' + hostname + '/api/metadata', current)
              .success(function(data) {
                  updateForms(data.record);
                  $scope.newRecord = false;
@@ -247,7 +257,7 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
       }
       else
       {
-        $http.put('http://nknportal-dev.nkn.uidaho.edu/mdedit/api/metadata/' + current._id.$oid, 
+        $http.put('http://' + hostname + '/api/metadata/' + current._id.$oid, 
                   current)
              .success(function(data) {
                  updateForms(data.record);
@@ -262,7 +272,7 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
 
       var currentId = $scope.currentRecord._id.$oid;
 
-      $http.post('http://nknportal-dev.nkn.uidaho.edu/mdedit/api/metadata/' + 
+      $http.post('http://' + hostname + '/api/metadata/' + 
                  currentId + '/publish', 
                  current)
             .success(function(data) {
@@ -322,7 +332,7 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
 
     function displayCurrentRecords()
     {
-      $http.post('http://nknportal-dev.nkn.uidaho.edu/mdedit/api/metadata', 
+      $http.post('http://' + hostname + '/api/metadata', 
                  {'session_id': session_id})
            .success(function(data){ 
              $scope.allRecords = data.results; 

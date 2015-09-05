@@ -309,27 +309,36 @@
               <div class="extent-block">
                 <h4>Longitudinal and Latitudinal Extent   <span style="text-align:right" class="glyphicon glyphicon-globe" aria-hidden="true"></span></h4>
                 <h6>What is the geographic area covered by the data? Please enter units in decimal degrees.</h6>
-                
+
                 <div class="row">
-                  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                    <div ng-repeat="key_title in [['west_lon', 'West Longitude'], 
-                                            ['east_lon', 'East Longitude']]">
-                      <h4 class="attribute-label">{{ key_title[1] }}</h4>
-                      <input tabindex=20 type="number" step="0.000001"
-                             ng-model="currentRecord[key_title[0]]">
-                    </div>
+                  <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4  col-xs-offset-4 col-sm-offset-4 col-lg-offset-4 col-md-offset-4">
+                    <h4 class="attribute-label" id="north">North Latitude</h4>
+                    <input tabindex=20 type="number" step="0.000001"
+                             ng-model="currentRecord.north_lat">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4 col-sm-4 col-md-5 col-lg-5">
+                    <h4 class="attribute-label" id="north">West Longitude</h4>
+                    <input tabindex=20 type="number" step="0.000001"
+                             ng-model="currentRecord.west_lon">
+                  </div>
+                  <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xs-offset-4 col-sm-offset-4 col-md-offset-3 col-lg-offset-3">
+                    <h4 class="attribute-label" id="north">East Longitude</h4>
+                    <input tabindex=20 type="number" step="0.000001"
+                             ng-model="currentRecord.east_lon">
                   </div>
                   
-                  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                    <div ng-repeat="key_title in [['north_lat', 'North Latitude'],
-                                                  ['south_lat', 'South Latitude']]">
-                      <h4 class="attribute-label">{{ key_title[1] }}</h4>
+                </div>
+                  <div class="row">
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-xs-offset-4 col-sm-offset-4 col-md-offset-4 col-lg-offset-4">
+                      <h4 class="attribute-label" id="north">South Latitude</h4>
                       <input tabindex=20 type="number" step="0.000001"
-                             ng-model="currentRecord[key_title[0]]">
+                               ng-model="currentRecord.south_lat">
                     </div>
                   </div>
                 </div>
-              </div>
+
             </div>
          
          </div>
@@ -531,7 +540,6 @@
   </table>
 
 
-</div>
 </div>
 </div>
 </body>
