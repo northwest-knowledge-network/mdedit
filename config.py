@@ -10,8 +10,7 @@ class Config:
 
     MONGODB_SETTINGS = {'db': "metadata"}
     PREPROD_DIRECTORY = (os.environ.get('MDEDIT_PREPROD_DIRECTORY') or
-                         'mdedit_preprod')
-
+                         '/local-datastore')
     if not os.path.exists(PREPROD_DIRECTORY):
         os.makedirs(PREPROD_DIRECTORY)
 

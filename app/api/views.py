@@ -14,8 +14,6 @@ from . import api
 from ..models import Metadata
 
 import sys
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
-from manage import app
 
 
 @api.route('/api/metadata', methods=['POST', 'PUT'])
@@ -214,14 +212,16 @@ def _authenticate_user_from_session(request):
         (str): username
     """
     username_url = (os.getenv('GETUSER_URL') or
-                    'http://nknportal-dev.nkn.uidaho.edu/getUsername')
+                    'http://nknportal-dev.nkn.uidaho.edu/getUsername/')
+    
+    session_id = request.json['session_id']    
 
-    if request.json['session_id'] == 'local':
+    if session_id == 'local':
         return 'local_user'
 
     else:
         data = {
-            'session_id': request.data.session_id,
+            'session_id': session_id,
             'config_kw': 'miles'
         }
 
