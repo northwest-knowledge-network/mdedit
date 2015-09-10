@@ -1,8 +1,10 @@
 """API"""
 import json
-import os
 import lxml.etree as ET
 import geocoder
+import os
+import requests
+
 
 from config import config
 from dicttoxml import dicttoxml
@@ -13,35 +15,44 @@ from mongoengine import ValidationError
 from . import api
 from ..models import Metadata
 
+import sys
 
-@api.route('/api/metadata', methods=['GET', 'POST', 'PUT'])
-@cross_origin(origin='*', methods=['GET', 'POST', 'PUT'],
+
+@api.route('/api/metadata', methods=['POST', 'PUT'])
+@cross_origin(origin='*', methods=['POST', 'PUT'],
               headers=['X-Requested-With', 'Content-Type', 'Origin'])
 def metadata():
     """Handle get and push requests coming to metadata server"""
+    username = _authenticate_user_from_session(request)
 
-    if request.method == 'GET':
+    if username:
+        if request.method == 'POST':
 
-        recs = Metadata.objects(
-                __raw__={'placeholder': False, 'default': None}
-                # '$or': [{'placeholder': 'false'}, {']
-                # }
+            recs = Metadata.objects(
+                __raw__={'placeholder': False,
+                         'default': None,
+                         'username': username}
             )
 
-        return jsonify(dict(results=recs))
+            return jsonify(dict(results=recs))
 
-    if request.method == 'POST':
+        if request.method == 'PUT':
 
-        new_md = Metadata.from_json(request.data)
+            new_md = Metadata.from_json(json.dumps(request.json['record']))
 
-        new_md.id = None
-        new_md.placeholder = False
-        new_md.default = None
+            new_md.id = None
+            new_md.placeholder = False
+            new_md.default = None
+            new_md.username = username
 
-        new_md.save()
+            new_md.save()
 
-        # return a JSON record of new metadata to load into the page
-        return jsonify(record=new_md)
+            # return a JSON record of new metadata to load into the page
+            return jsonify(record=new_md)
+
+    else:
+        return Response('Bad or missing session id', 400)
+
 
 
 @api.route('/api/metadata/placeholder', methods=['GET'])
@@ -64,32 +75,43 @@ def defaultMILES_metadata():
     return jsonify(record=record)
 
 
-@api.route('/api/metadata/<string:_oid>', methods=['GET', 'PUT'])
-@cross_origin(origin='*', methods=['GET', 'PUT'],
+
+@api.route('/api/metadata/<string:_oid>', methods=['GET', 'POST', 'PUT'])
+@cross_origin(origin='*', methods=['GET', 'POST', 'PUT'],
               headers=['X-Requested-With', 'Content-Type', 'Origin'])
 def get_single_metadata(_oid):
-    """Get the JSON representation of the metadata record with given id.
     """
+    Retrieve or update the metadata record with given _oid. Retrieval is done
+    via POST because we must pass a session id so that the user is
+    authenticated.
+    """
+    username = _authenticate_user_from_session(request)
 
-    if request.method == 'PUT':
+    if username:
 
-        existing_record = Metadata.objects.get_or_404(pk=_oid)
-        updater = Metadata.from_json(request.data)
+        if request.method == 'PUT':
 
-        for f in existing_record._fields:
-            existing_record[f] = updater[f]
+            existing_record = Metadata.objects.get_or_404(pk=_oid,
+                                                          username=username)
+            updater = Metadata.from_json(json.dumps(request.json['record']))
 
-        existing_record.save()
+            for f in existing_record._fields:
+                existing_record[f] = updater[f]
 
-        return jsonify(record=existing_record)
+            existing_record.save()
+
+            return jsonify(record=existing_record)
+
+        else:
+
+            record = Metadata.objects.get_or_404(pk=_oid, username=username)
+
+            record.format_dates()
+
+            return jsonify(record=record)
 
     else:
-
-        record = Metadata.objects.get_or_404(pk=_oid)
-
-        record.format_dates()
-
-        return jsonify(record=record)
+        return Response('Bad or missing session id', 400)
 
 
 @api.route('/api/metadata/<string:_oid>/publish', methods=['POST'])
@@ -128,7 +150,7 @@ def publish_metadata_record(_oid):
 
 
 @api.route('/api/metadata/<string:_oid>/iso')
-@cross_origin(origin="*", methods=['GET',])
+@cross_origin(origin="*", methods=['GET'])
 def get_single_iso_metadata(_oid):
     """
     Produce the ISO 19115 representation of the metadata by
@@ -140,18 +162,17 @@ def get_single_iso_metadata(_oid):
                         'xslt', 'XSLT_for_mdedit.xsl'))
     iso_transform = ET.XSLT(iso_xslt)
     iso_str = str(iso_transform(md_xml))
-    #iso_str = '<record>' + str(iso_str) + '</record>'
 
     return Response(iso_str, 200, mimetype='application/xml')
 
 
-@api_route('/api/geocode/<string:place>', method-['GET','POST'])
-@cross_origin(origin='*', methods=['GET','POST'],
+@api.route('/api/geocode/<string:place>', methods=['GET'])
+@cross_origin(origin='*', methods=['GET'],
               headers=['X-Requested-With', 'Content-Type', 'Origin'])
 def get_bbox(place):
     g = geocoder.google(place)
-    bbox_str = "North = " + str(g.north) + ", South = " +  str(g.south)  + ", East = " + str(g.east) + ", West = " + str(g.west)
-    return Response(bbox_str, 200)
+    bbox_dict = dict(north=g.north, south=g.south, east=g.east, west=g.west)
+    return jsonify(bbox_dict)
 
 
 @api.route('/api/metadata/<string:_oid>/xml')
@@ -192,3 +213,34 @@ def get_single_xml_metadata(_oid):
     xml_str = dicttoxml(dict(record=json_rec))  # , attr_type=False)
 
     return Response(xml_str, 200, mimetype='application/xml')
+
+
+def _authenticate_user_from_session(request):
+    """
+    Arguments:
+        (flask.Request) Incoming API request
+    Returns:
+        (str): username
+    """
+    username_url = (os.getenv('GETUSER_URL') or
+                    'http://nknportal-dev.nkn.uidaho.edu/getUsername/')
+    
+    session_id = request.json['session_id']    
+
+    if session_id == 'local':
+        return 'local_user'
+
+    else:
+        data = {
+            'session_id': session_id,
+            'config_kw': 'miles'
+        }
+
+        res = requests.post(username_url, data=data)
+
+        username = res.json()['username']
+        if username:
+            return username
+        # username will be u'' if the session id was not valid; make explicit
+        else:
+            return None

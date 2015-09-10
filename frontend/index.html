@@ -2,24 +2,24 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <!--<title ng-bind-template="The query: {{query}}"></title>-->
   <title>NKN Metadata Editor</title>
-  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
-  <link rel="stylesheet" href="metadata.css">
-  <link rel="stylesheet" href="bower_components/octicons/octicons/octicons.css">
-  <link rel="stylesheet" href="bower_components/jquery-ui/themes/smoothness/jquery-ui.css"/>
-  <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
-  <script type="text/javascript" src="bower_components/jquery-ui/jquery-ui.min.js"></script>
-  <script type="text/javascript" 
-          src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-  <script type="text/javascript" src="bower_components/angular/angular.js"></script>
-  <script type="text/javascript" src="bower_components/angular-ui-date/src/date.js"></script>
-  <script type="text/javascript" src="bower_components/underscore/underscore-min.js"></script>
-  <script src="js/controllers.js"></script>
 </head>
 
 <body>
+<div  id="bodyDiv">
 <div ng-app="metadataEditor" ng-controller="MetadataCtrl">
+  <link rel="stylesheet" href="/frontend/bower_components/bootstrap/dist/css/bootstrap.css">
+  <link rel="stylesheet" href="/frontend/metadata.css">
+  <link rel="stylesheet" href="/frontend/bower_components/octicons/octicons/octicons.css">
+  <link rel="stylesheet" href="/frontend/bower_components/jquery-ui/themes/smoothness/jquery-ui.css"/>
+  <script type="text/javascript" src="/frontend/bower_components/jquery/dist/jquery.min.js"></script>
+  <script type="text/javascript" src="/frontend/bower_components/jquery-ui/jquery-ui.min.js"></script>
+  <script type="text/javascript" 
+          src="/frontend/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="/frontend/bower_components/angular/angular.js"></script>
+  <script type="text/javascript" src="/frontend/bower_components/angular-ui-date/src/date.js"></script>
+  <script type="text/javascript" src="/frontend/bower_components/underscore/underscore-min.js"></script>
+  <script src="/frontend/js/controllers.js"></script>
   <nav class="navbar navbar-default navbar-fixed-top">
       <div class="container-fluid">
         <div class="navbar-header">
@@ -236,10 +236,9 @@
                   ng-model="currentRecord.update_frequency">
           </select>
 
-          <h4 class="attribute-label">Spatial Data Type</h4>
+          <h4 class="attribute-label">Data Type</h4>
           <h6>
-            How are your data represented in space? Through a vector spatial 
-            representation, a spatial grid of values, a table, a 
+            How are your data represented? Through a text file, vector spatial representation, a spatial grid of values, a table, a 
             video of a scene, etc.?
           </h6>
           <select tabindex=8 id="" name=""
@@ -309,39 +308,54 @@
               <div class="extent-block">
                 <h4>Longitudinal and Latitudinal Extent   <span style="text-align:right" class="glyphicon glyphicon-globe" aria-hidden="true"></span></h4>
                 <h6>What is the geographic area covered by the data? Please enter units in decimal degrees.</h6>
-                
+
                 <div class="row">
-                  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                    <div ng-repeat="key_title in [['west_lon', 'West Longitude'], 
-                                            ['east_lon', 'East Longitude']]">
-                      <h4 class="attribute-label">{{ key_title[1] }}</h4>
-                      <input tabindex=20 type="number" step="0.000001"
-                             ng-model="currentRecord[key_title[0]]">
-                    </div>
-                  </div>
-                  
-                  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                    <div ng-repeat="key_title in [['north_lat', 'North Latitude'],
-                                                  ['south_lat', 'South Latitude']]">
-                      <h4 class="attribute-label">{{ key_title[1] }}</h4>
-                      <input tabindex=20 type="number" step="0.000001"
-                             ng-model="currentRecord[key_title[0]]">
-                    </div>
+                  <div class="col-xs-4 col-sm-4 col-md-5 col-lg-5  col-xs-offset-4 col-sm-offset-4 col-lg-offset-3 col-md-offset-3">
+                    <h4 class="attribute-label" id="north">North Latitude</h4>
+                    <input tabindex=20 type="number" step="0.0000000000000001"
+                             ng-model="currentRecord.north_lat">
                   </div>
                 </div>
+                <div class="row">
+                  <div class="col-xs-4 col-sm-4 col-md-5 col-lg-5">
+                    <h4 class="attribute-label" id="north">West Longitude</h4>
+                    <input tabindex=20 type="number" step="0.0000000000000001"
+                             ng-model="currentRecord.west_lon">
+                  </div>
+                  <div class="col-xs-4 col-sm-4 col-md-5 col-lg-5 col-xs-offset-4 col-sm-offset-4 col-md-offset-2 col-lg-offset-2">
+                    <h4 class="attribute-label" id="north">East Longitude</h4>
+                    <input tabindex=20 type="number" step="0.0000000000000001"
+                             ng-model="currentRecord.east_lon">
+                  </div>
+                  
+                </div>
+                  <div class="row">
+                    <div class="col-xs-4 col-sm-4 col-md-5 col-lg-5 col-xs-offset-4 col-sm-offset-4 col-md-offset-3 col-lg-offset-3">
+                      <h4 class="attribute-label" id="north">South Latitude</h4>
+                      <input tabindex=20 type="number" 
+                             step="0.0000000000000001"
+                               ng-model="currentRecord.south_lat">
+                    </div>
+                  </div>
+                
+
                 <h6>Don't know your bounding coordinates? Enter a location name here (e.g., Idaho, Ada County, Coeur d'Alene, 83209). The system will not recognize watersheds by name. Click the button below to have the system calculate bounding coordinates and fill in the entries above.</h6>
                 <div class="row">
                   <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                  <input tabindex=20 type="text" ng-model="currentRecord[key_title[0]]">
+                  <input style="width:100%" tabindex=20 type="text" 
+                         ng-model="bboxInput">
                  </div>
-                </div>
-                <div id="place-button">
-                  <button class="btn btn-small btn-primary btn-contact" 
-                          ng-click="get_bbox()">
+                 <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                  <div id="place-button">
+                  <button class="btn btn-small btn-primary" 
+                          ng-click="getBbox()">
                       <span class="glyphicon" aria-hide="true"></span>   Calculate Bounding Coordinates
                   </button>
                 </div>
+               </div>
               </div>
+              </div>
+
             </div>
          
          </div>
@@ -481,7 +495,6 @@
                 </div>
                 <div id="online-buttons">
                   <button tabindex=21 class="btn btn-primary btn-contact" 
-                          ng-show="onlineSubform.$valid" 
                           ng-click="addOnlineResource()">
                       <span class="glyphicon glyphicon-plus" aria-hide="true"></span>   Add a resource
                   </button>
@@ -534,7 +547,7 @@
           </span>
           <a
             class="btn btn-default"
-              href="http://localhost:4000/api/metadata/{{mdRecord._id.$oid}}/iso">
+              href="http://nknportal-dev.nkn.uidaho.edu/mdedit/api/metadata/{{mdRecord._id.$oid}}/iso">
             ISO
           </a>
         </div>

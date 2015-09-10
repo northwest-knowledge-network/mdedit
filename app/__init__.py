@@ -2,18 +2,13 @@
 VW Platform Application Package Constructor
 """
 from flask import Flask
-# from flask_mail import Mail
 from flask_moment import Moment
-# from flask_sqlalchemy import SQLAlchemy
 from flask_mongoengine import MongoEngine
 from flask_cors import CORS
 from config import config
 
-# from app.models import Metadata, Contact
 
-# mail = Mail()
 moment = Moment()
-# db = SQLAlchemy()
 db = MongoEngine()
 cors = CORS(resources={r'/app/metadata': {"origins": '*'}})
 
@@ -24,7 +19,6 @@ def create_app(config_name):
     app.config['CORS_HEADERS'] = 'Content-Type'
     config[config_name].init_app(app)
 
-    # mail.init_app(app)
     moment.init_app(app)
     db.init_app(app)
     cors.init_app(app)

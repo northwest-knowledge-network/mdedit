@@ -25,6 +25,7 @@ class Metadata(db.Document):
     last_mod_date = db.DateTimeField()
     first_pub_date = db.DateTimeField()
     summary = db.StringField(max_length=3000)
+    username = db.StringField(max_length=255, default="anonymous")
 
     ## detailed info
     # detailed info lists
