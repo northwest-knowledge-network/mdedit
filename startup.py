@@ -31,11 +31,11 @@ md_p = Popen("python manage.py runserver --port=4000",  # > /dev/null 2>&1",
              shell=True)
 
 print "\n*** starting front end server at localhost:8000 ***\n"
-md_p = Popen("cd frontend && python -m SimpleHTTPServer",  # > /dev/null 2>&1",
+md_p = Popen("python -m SimpleHTTPServer",  # > /dev/null 2>&1",
              shell=True)
 
 print "\n----------------------------------------------------------------------"
-print "Both servers have successfully started. Visit http://localhost:8000"
+print "Both servers have successfully started. Visit http://localhost:8000/frontend"
 print "to see the front end and to see some sample xml of default_form.json "
 print "that the server emits, visit http://localhost:4000/api/metadata/" +\
     str(id) + "/xml.  Remove '/xml' to see the original json."

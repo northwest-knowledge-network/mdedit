@@ -10,6 +10,26 @@ var metadataEditorApp = angular.module('metadataEditor', ['ui.date']);
 metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log', 
   function($scope, $http, $log) {
 
+    // first see if we have any user information given to us (from Drupal)
+    if (typeof(window.session_id) === 'undefined')
+    {
+      var session_id = 'local';
+    }
+    else
+    {
+      var session_id = window.session_id;
+    }
+
+    // next see if there is a hostname defined
+    if (typeof(window.hostname) === 'undefined')
+    {
+      var hostname = 'localhost:4000';
+    }
+    else
+    {
+      var hostname = window.hostname;
+    }
+
     // initialize list of existing metadata records
     displayCurrentRecords();
 
@@ -47,7 +67,8 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
     {
       $scope.newRecord = false;
 
-      $http.get('http://localhost:4000/api/metadata/' + recordId)
+      $http.post('http://' + hostname + '/api/metadata/' + recordId,
+                 {'session_id': session_id})
            .success(function(data) {
              var record = data.record;
              if (typeof record.start_date == "undefined") {
@@ -77,11 +98,10 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
     {
       $scope.newRecord = true;
 
-      $http.get('http://localhost:4000/api/metadata/placeholder')
+      $http.get('http://' + hostname + '/api/metadata/placeholder')
            .success(function(data) {
              var placeholderRec = data.record;
              var emptyRec = JSON.parse(JSON.stringify(placeholderRec));
-             $log.log(emptyRec);
              for (var field in emptyRec)
              {
                if (['citation', 'access'].indexOf(field) > -1)
@@ -141,7 +161,7 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
     {
       $scope.newRecord = true;
 
-      $http.get('http://localhost:4000/api/metadata/defaultMILES')
+      $http.get('http://' + hostname + '/api/metadata/defaultMILES')
            .success(function(data) {
              var milesRec = data.record;
              milesRec.start_date = {};
@@ -181,13 +201,11 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
       // the start and end dates currently have hours and minutes zero;
       // grab the hours and minutes and append them. Confusingly JS 
       // uses setHours to set minutes and seconds as well
-      $log.log($scope.currentRecord);
       var current = prepareCurrentScopedRecord();
       if ($scope.newRecord)
       {
-        $log.log($scope.currentRecord);
-        $log.log(current);
-        $http.post('http://localhost:4000/api/metadata', current)
+        $http.put('http://' + hostname + '/api/metadata', 
+                  {'record': current, 'session_id': session_id})
              .success(function(data) {
                  updateForms(data.record);
                  $scope.newRecord = false;
@@ -202,9 +220,8 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
       }
       else
       {
-        $log.log(current.data_format);
-        $http.put('http://localhost:4000/api/metadata/' + current._id.$oid, 
-                  current)
+        $http.put('http://' + hostname + '/api/metadata/' + current._id.$oid, 
+                  {'record': current, 'session_id': session_id})
              .success(function(data) {
                  updateForms(data.record);
                  addedContacts = 
@@ -225,7 +242,7 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
       var current = prepareCurrentScopedRecord();
       if ($scope.newRecord)
       {
-        $http.post('http://localhost:4000/api/metadata', current)
+        $http.post('http://' + hostname + '/api/metadata', current)
              .success(function(data) {
                  updateForms(data.record);
                  $scope.newRecord = false;
@@ -240,7 +257,7 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
       }
       else
       {
-        $http.put('http://localhost:4000/api/metadata/' + current._id.$oid, 
+        $http.put('http://' + hostname + '/api/metadata/' + current._id.$oid, 
                   current)
              .success(function(data) {
                  updateForms(data.record);
@@ -255,7 +272,7 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
 
       var currentId = $scope.currentRecord._id.$oid;
 
-      $http.post('http://localhost:4000/api/metadata/' + 
+      $http.post('http://' + hostname + '/api/metadata/' + 
                  currentId + '/publish', 
                  current)
             .success(function(data) {
@@ -272,7 +289,6 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
     
     function prepareCurrentScopedRecord() 
     {
-      $log.log($scope.currentRecord);
       $scope.currentRecord.start_date.$date.setHours(
         $scope.currentRecord.start_date.hours, 
         $scope.currentRecord.start_date.minutes,
@@ -316,7 +332,8 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
 
     function displayCurrentRecords()
     {
-      $http.get('http://localhost:4000/api/metadata')
+      $http.post('http://' + hostname + '/api/metadata', 
+                 {'session_id': session_id})
            .success(function(data){ 
              $scope.allRecords = data.results; 
            });
@@ -486,5 +503,22 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
     {
       $scope.currentRecord.online.push("");    
     };
+
+    $scope.bboxInput = "";
+    $scope.getBbox = function()
+    {
+      var baseUrl = 'http://' + hostname + '/api/geocode/';
+      var fullUrl = baseUrl + $scope.bboxInput;
+      $log.log("FULL URL: " + fullUrl)
+      $http.get(fullUrl)
+           .success(function(data)
+           {
+             $log.log(data);
+             $scope.currentRecord.north_lat = data.north;
+             $scope.currentRecord.south_lat = data.south;
+             $scope.currentRecord.east_lon = data.east;
+             $scope.currentRecord.west_lon = data.west;
+           });
+    }
   } // end of callback for controller initialization
 ]);
