@@ -478,7 +478,6 @@
                 </div>
                 <div id="online-buttons">
                   <button tabindex=21 class="btn btn-primary btn-contact" 
-                          ng-show="onlineSubform.$valid" 
                           ng-click="addOnlineResource()">
                       <span class="glyphicon glyphicon-plus" aria-hide="true"></span>   Add a resource
                   </button>
@@ -531,7 +530,7 @@
           </span>
           <a
             class="btn btn-default"
-              href="http://localhost:4000/api/metadata/{{mdRecord._id.$oid}}/iso">
+              href="http://nknportal-dev.nkn.uidaho.edu/mdedit/api/metadata/{{mdRecord._id.$oid}}/iso">
             ISO
           </a>
         </div>
