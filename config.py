@@ -1,5 +1,5 @@
 """
-Configuration for Flask Application 'Virtual Watershed Platform'
+Configuration for Flask Application 'NKN Metadata Editor'
 """
 
 import os
@@ -10,7 +10,7 @@ class Config:
 
     MONGODB_SETTINGS = {'db': "metadata"}
     PREPROD_DIRECTORY = (os.environ.get('MDEDIT_PREPROD_DIRECTORY') or
-                         '/local-datastore')
+                         'local-preprod-directory')
     if not os.path.exists(PREPROD_DIRECTORY):
         os.makedirs(PREPROD_DIRECTORY)
 
