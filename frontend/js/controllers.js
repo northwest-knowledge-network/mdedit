@@ -387,6 +387,8 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
            return $scope.knownDataFormats.indexOf(f) > -1;
          });
 
+       $scope.bboxInput = "";
+
        if (!$scope.currentRecord.online) {
          record.online = [""];
        }
@@ -511,16 +513,15 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
     {
       var baseUrl = 'http://' + hostname + '/api/geocode/';
       var fullUrl = baseUrl + $scope.bboxInput;
-      $log.log("FULL URL: " + fullUrl)
+
       $http.get(fullUrl)
            .success(function(data)
            {
-             $log.log(data);
              $scope.currentRecord.north_lat = data.north;
              $scope.currentRecord.south_lat = data.south;
              $scope.currentRecord.east_lon = data.east;
              $scope.currentRecord.west_lon = data.west;
            });
-    }
+    };
   } // end of callback for controller initialization
 ]);
