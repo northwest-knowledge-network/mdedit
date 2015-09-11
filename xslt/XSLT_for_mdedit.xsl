@@ -474,7 +474,8 @@
                             <gmd:useConstraints>
                                 <gmd:MD_RestrictionCode
                                     codeList="http:http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode"
-                                    codeListValue="license">license</gmd:MD_RestrictionCode>
+                                    codeListValue="otherRestrictions"
+                                    >otherRestrictions</gmd:MD_RestrictionCode>
                             </gmd:useConstraints>
                             <!-- Selects text for general use/access restrictions and license from the mdedit generic xml. 
         Defaults for projects will be built into the front-end, for now -->
