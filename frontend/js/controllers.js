@@ -21,14 +21,16 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
     }
 
     // next see if there is a hostname defined
+    var hostname = '';
     if (typeof(window.hostname) === 'undefined')
     {
-      var hostname = 'localhost:4000';
+      hostname = 'localhost:4000';
     }
     else
     {
-      var hostname = window.hostname;
+      hostname = window.hostname;
     }
+    $scope.hostname = hostname;
 
     // initialize list of existing metadata records
     displayCurrentRecords();
