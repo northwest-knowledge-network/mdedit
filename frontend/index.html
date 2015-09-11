@@ -157,7 +157,7 @@
            <input tabindex=1 style="width:95%" type="text" ng-model="currentRecord.title" required>
 
            <h4 class="attribute-label">Summary</h4>
-           <h6>Describe your data for someone who knows very little about your field of study. Be sure to include what the data set is, what variables it describes over what spatial extent, why it was created, and if there are any major use restrictions. Remember many people may not read past this description.</h6>
+           <h6>Describe your data for someone who knows very little about your field of study. Be sure to include what the data set is, what variables it describes over what spatial extent, why it was created, and if there are any major use restrictions. <i>Remember many people may not read past this description.</i></h6>
            <textarea tabindex=2 style="width:95%" type="text" 
                      ng-model="currentRecord.summary" required>
            </textarea>
@@ -177,7 +177,7 @@
            <div class="subform">
              <h4 class="attribute-label">Data Format</h4>
              <h6>
-              What is the format of your data that is available for distribution?
+              In what formats are your data available for distribution? Use the command key (on a Mac) or the control key (on a PC) to select multiple categories.
              </h6>
              <select tabindex=20 id="format-selector" class="multiselect" 
                  style="width:80%;height:120px"
@@ -217,7 +217,7 @@
           </div>
          
           <h4 class="attribute-label">Topic</h4>                           
-          <h6>Select as many of these high level categories as apply to your dataset. This is a set list of categories established by international standards. Use the command key to select multiple categories.</h6>
+          <h6>Select as many of these high level categories as apply to your dataset. This is a set list of categories established by international standards. Use the command key (on a Mac) or the control key (on a PC) to select multiple categories.</h6>
           <select tabindex=5 style="width:80%;height:100px;" multiple ng-multiple="true" class="multiselect" 
                   ng-options="c for c in topicCategoryChoices" 
                   ng-model="currentRecord.topic_category">
