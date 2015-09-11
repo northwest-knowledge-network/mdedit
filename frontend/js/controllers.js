@@ -456,36 +456,36 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
 
     $scope.addContactCitation = function()
     {
-      $scope.currentRecord[Citation]
+      $scope.currentRecord.citation
             .push(JSON.parse(JSON.stringify(EMPTY_CONTACT)));
 
-      addedContacts[Citation] += 1;
+      addedContacts.citation += 1;
     };
 
     $scope.addContactAccess = function()
     {
-      $scope.currentRecord[access]
+      $scope.currentRecord.access
             .push(JSON.parse(JSON.stringify(EMPTY_CONTACT)));
 
-      addedContacts[access] += 1;
+      addedContacts.access += 1;
     };
 
 
     $scope.cancelAddContactCitation = function()
     {
-      if (addedContacts[Citation] > 0)
+      if (addedContacts.citation > 0)
       {
-        $scope.currentRecord[Citation].pop();
-        addedContacts[Citation] -= 1;
+        $scope.currentRecord.citation.pop();
+        addedContacts.citation -= 1;
       }
     };
 
     $scope.cancelAddContactAccess = function()
     {
-      if (addedContacts[access] > 0)
+      if (addedContacts.access > 0)
       {
-        $scope.currentRecord[access].pop();
-        addedContacts[access] -= 1;
+        $scope.currentRecord.access.pop();
+        addedContacts.access -= 1;
       }
     };
 
