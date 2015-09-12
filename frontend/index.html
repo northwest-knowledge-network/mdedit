@@ -116,12 +116,31 @@
       </div>
     </nav>
 
-    <h3 id="brand">NKN Metadata Editor</h3>
-
 <div id="main-container" class="container">
 
-      <h1 id="record-title" ng-show="newRecord">New Metadata Record: {{currentRecord.title}}</h1>
-      <h1 id="record-title" ng-show="!newRecord">Editing Existing: {{currentRecord.title}}</h1>
+      <h4> Get started using NKN's Metadata Editor: </h4>
+      <div style="margin-left: 2em;"> 
+        You can use this form to create a valid ISO 19115 metadata record for your dataset or dataset series. <li>
+        Text here to help people understand how to use.
+        Save Draft.
+        Publish Record to NKN Portal
+        At the bottom of this webpage you will find...List at bottom - with Edit and ISO tabs
+
+      </div>
+    
+      <br>
+    
+      <h4>Special Instructions for MILES users:</h4>
+       <div style="margin-left: 2em;">
+        Use the <strong>'Load MILES Default'</strong> button above to pre-load some of the fields with MILES-related content. Please add to these fields as appropriate: for example, you will likely want to add <i>place and thematic keywords</i> related to your specific dataset. The <i>bounding coordinates</i> provided here are for the entire state of Idaho; modify to fit the location of your dataset if appropriate. NKN has been listed as the <i>data access contact</i> and will need to be changed if your data files themselves will be stored in an alternative data repository (please refer to the official MILES Data Management Plan for a list of approved repositories). Please provide the first author's name and university affiliation toward the end of the <i>use restrictions</i> text where it currently reads "(Name, University Affiliation)". Please contact the <a href="mailto:mguarinello@uidaho.edu"> MILES data manager</a> if you have additional questions or if you have data associated with this metadata record that you would like to store in NKN's repository.
+      </div>
+    
+      <br>
+
+      <hr>
+
+      <h2 id="record-title" ng-show="newRecord">New Metadata Record: {{currentRecord.title}}</h2>
+      <h2 id="record-title" ng-show="!newRecord">Editing Existing: {{currentRecord.title}}</h2>
   
 
     <br>
@@ -157,7 +176,8 @@
            <input tabindex=1 style="width:95%" type="text" ng-model="currentRecord.title" required>
 
            <h4 class="attribute-label">Summary</h4>
-           <h6>Describe your data for someone who knows very little about your field of study. Be sure to include what the data set is, what variables it describes over what spatial extent, why it was created, and if there are any major use restrictions. <i>Remember many people may not read past this description.</i></h6>
+           <h6>Describe your data for someone who knows very little about your field of study. Be sure to include what the data set is, what variables it describes over what spatial extent, why it was created, and if there are any major use restrictions.
+            <p><span style="text-transform: uppercase"><strong><i> Remember many people may not read past this description.</span style></strong></i></h6>
            <textarea tabindex=2 style="width:95%" type="text" 
                      ng-model="currentRecord.summary" required>
            </textarea>
@@ -370,12 +390,12 @@
       <div class="col-xs-6 col-sm-6 col-md-6" id="citation-contacts">
         <a class="anchor" name="contacts">
           <h2 class="section-header">
-            <span class="glyphicon glyphicon-user"></span> Citation Contacts</h2>
+            <span class="glyphicon glyphicon-user"></span> Data Contacts (i.e., Authors)</h2>
         </a>
         <h6 class="contacts-subheader">Who are the author(s) of this dataset? Consider who might be the author of a manuscript describing the data (likely PI, post-doc, or graduate student). Start with the first author and add additional authors as needed.</h6>
         <div ng-repeat="contact in currentRecord.citation">
           <div class="subform">
-            <h3 class="section-header">Citation Contact {{ $index + 1 }}</h3>
+            <h3 class="section-header">Data Contact {{ $index + 1 }}</h3>
             <div class="row" ng-repeat="n in [0,1,2]">
               <div ng-repeat="cfield in orderedContactFields.slice(n*3 , (n+1)*3)">
                 <div class="col-xs-12 col-sm-12 col-md-4 col-md-4">
