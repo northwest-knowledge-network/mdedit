@@ -387,6 +387,8 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
            return $scope.knownDataFormats.indexOf(f) > -1;
          });
 
+       $scope.bboxInput = "";
+
        if (!$scope.currentRecord.online) {
          record.online = [""];
        }
@@ -456,36 +458,36 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
 
     $scope.addContactCitation = function()
     {
-      $scope.currentRecord[Citation]
+      $scope.currentRecord.citation
             .push(JSON.parse(JSON.stringify(EMPTY_CONTACT)));
 
-      addedContacts[Citation] += 1;
+      addedContacts.citation += 1;
     };
 
     $scope.addContactAccess = function()
     {
-      $scope.currentRecord[access]
+      $scope.currentRecord.access
             .push(JSON.parse(JSON.stringify(EMPTY_CONTACT)));
 
-      addedContacts[access] += 1;
+      addedContacts.access += 1;
     };
 
 
     $scope.cancelAddContactCitation = function()
     {
-      if (addedContacts[Citation] > 0)
+      if (addedContacts.citation > 0)
       {
-        $scope.currentRecord[Citation].pop();
-        addedContacts[Citation] -= 1;
+        $scope.currentRecord.citation.pop();
+        addedContacts.citation -= 1;
       }
     };
 
     $scope.cancelAddContactAccess = function()
     {
-      if (addedContacts[access] > 0)
+      if (addedContacts.access > 0)
       {
-        $scope.currentRecord[access].pop();
-        addedContacts[access] -= 1;
+        $scope.currentRecord.access.pop();
+        addedContacts.access -= 1;
       }
     };
 
@@ -511,16 +513,15 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
     {
       var baseUrl = 'http://' + hostname + '/api/geocode/';
       var fullUrl = baseUrl + $scope.bboxInput;
-      $log.log("FULL URL: " + fullUrl)
+
       $http.get(fullUrl)
            .success(function(data)
            {
-             $log.log(data);
              $scope.currentRecord.north_lat = data.north;
              $scope.currentRecord.south_lat = data.south;
              $scope.currentRecord.east_lon = data.east;
              $scope.currentRecord.west_lon = data.west;
            });
-    }
+    };
   } // end of callback for controller initialization
 ]);
