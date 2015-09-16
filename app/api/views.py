@@ -132,13 +132,23 @@ def publish_metadata_record(_oid):
         record.save()
 
     # generate iso string
-    str_id = str(record.id)
+    str_dc = str(record.dc)
     iso = get_single_iso_metadata(str_id).data
 
     # save iso string to {_oid}/{_oid}.xml
     save_path = os.path.join(config['default'].PREPROD_DIRECTORY,
                              str_id,
                              str_id + '.xml')
+
+    # generate dublin core string
+    str_dc = str(record.dc)
+    dc = get_single_dc_metadata(str_dc).data
+
+    # save dublin core string to {_oid}/{_oid}.xml
+    save_path = os.path.join(config['default'].PREPROD_DIRECTORY,
+                             str_dc,
+                             str_dc + '.xml')
+
 
     if not os.path.exists(os.path.dirname(save_path)):
         os.mkdir(os.path.dirname(save_path))
