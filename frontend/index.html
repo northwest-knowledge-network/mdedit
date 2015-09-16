@@ -71,7 +71,7 @@
 
           <button tabindex=25 class="btn btn-small btn-danger navbar-btn"
             ng-hide="metadataForm.$valid">
-           Please fix errors before publishing to NKN Portal
+           Please fix errors to publish to NKN Portal
           </button>
       </div>
 
@@ -363,10 +363,9 @@
                  </div>
                  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
                   <div id="place-button">
-                  <button class="btn btn-small btn-primary" 
-                          ng-click="getBbox()">
-                      <span class="glyphicon" aria-hide="true"></span>   Calculate Bounding Coordinates
-                  </button>
+                  <input type="button" class="btn btn-small btn-primary" 
+                         ng-click="getBbox()"
+                         value="Calculate Bounding Coordinates" />
                 </div>
                </div>
               </div>
@@ -409,21 +408,15 @@
 
         <div class="row">
           <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4">
-            <button tabindex=20 class="btn btn-default btn-contact" 
-              ng-click="cancelAddContactCitation()">
-              Cancel
-            </button>
+            <input type="button" tabindex=20 class="btn btn-default btn-contact" 
+                   ng-click="cancelAddContactCitation()"
+                   value="Cancel"/>
           </div>
   
-          <!-- Only allowed to add a new contact if all current citation contact fields 
-              are valid -->
           <div class="col-xs-6 col-sm-6 col-md-8 col-lg-8">
-            <button tabindex=20 class="btn btn-primary btn-contact" 
-                    ng-show="metadataForm.$valid" 
-                    ng-click="addContactCitation()">
-              <span class="glyphicon glyphicon-plus" aria-hide="true"></span> 
-              Add a Contact 
-            </button>
+            <input type="button" tabindex=20 class="btn btn-primary btn-contact" 
+                   ng-click="addContactCitation()"
+                   value="Add a Contact" />
           </div>
         </div>
 
@@ -454,21 +447,17 @@
 
         <div class="row">
           <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4">
-            <button tabindex=20 class="btn btn-default btn-contact" 
-              ng-click="cancelAddContactAccess()">
-              Cancel
-            </button>
+            <input type="button" tabindex=20 class="btn btn-default btn-contact" 
+                   ng-click="cancelAddContactAccess()"
+                   value="Cancel" />
           </div>
   
           <!-- Only allowed to add a new contact if all current contact fields 
               are valid -->
           <div class="col-xs-6 col-sm-6 col-md-8 col-lg-8">
-            <button tabindex=20 class="btn btn-primary btn-contact" 
-                    ng-show="metadataForm.$valid" 
-                    ng-click="addContactAccess()">
-              <span class="glyphicon glyphicon-plus" aria-hide="true"></span> 
-              Add a Contact 
-            </button>
+            <input type="button" tabindex=20 class="btn btn-primary btn-contact" 
+                    ng-click="addContactAccess()"
+                    value="Add a Contact" />
           </div>
         </div>
 
@@ -502,18 +491,18 @@
                                  ng-model="currentRecord.online[$index]">
                         </div>
                         <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                          <button tabindex=20 class="btn btn-default btn-xs" 
-                              ng-click="removeOnlineResource($index)">Remove </button>
+                          <input type="button" tabindex=20 class="btn btn-default btn-xs" 
+                              ng-click="removeOnlineResource($index)" 
+                              value="Remove">
                         </div>
                       </div>
                    </div>
                   </div>
                 </div>
                 <div id="online-buttons">
-                  <button tabindex=21 class="btn btn-primary btn-contact" 
-                          ng-click="addOnlineResource()">
-                      <span class="glyphicon glyphicon-plus" aria-hide="true"></span>   Add a resource
-                  </button>
+                  <input type="button" tabindex=21 class="btn btn-primary btn-contact" 
+                          ng-click="addOnlineResource()"
+                          value="Add a Resource" />
                 </div>
               </form>
             </div>
