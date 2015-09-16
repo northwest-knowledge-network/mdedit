@@ -132,7 +132,7 @@ def publish_metadata_record(_oid):
         record.save()
 
     # generate iso string
-    str_dc = str(record.dc)
+    str_id = str(record.id)
     iso = get_single_iso_metadata(str_id).data
 
     # save iso string to {_oid}/{_oid}.xml
@@ -154,7 +154,7 @@ def publish_metadata_record(_oid):
         os.mkdir(os.path.dirname(save_path))
 
     with open(save_path, 'w+') as f:
-        f.write(iso)
+        f.write(iso), f.write(dc)
 
     return jsonify(record=record)
 
