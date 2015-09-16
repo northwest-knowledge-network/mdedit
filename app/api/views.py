@@ -169,7 +169,7 @@ def get_single_iso_metadata(_oid):
 
 @api.route('/api/metadata/<string:_oid>/dc')
 @cross_origin(origin="*", methods=['GET'])
-def get_single_iso_metadata(_oid):
+def get_single_dc_metadata(_oid):
     """
     Produce the Dublin Core representation of the metadata by
     using an XSLT transform operated on the generic xml found at /xml
