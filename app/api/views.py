@@ -140,21 +140,12 @@ def publish_metadata_record(_oid):
                              str_id,
                              str_id + '.xml')
 
-    # generate dublin core string
-    str_dc = str(record.dc)
-    dc = get_single_dc_metadata(str_dc).data
-
-    # save dublin core string to {_oid}/{_oid}.xml
-    save_path = os.path.join(config['default'].PREPROD_DIRECTORY,
-                             str_dc,
-                             str_dc + '.xml')
-
 
     if not os.path.exists(os.path.dirname(save_path)):
         os.mkdir(os.path.dirname(save_path))
 
     with open(save_path, 'w+') as f:
-        f.write(iso), f.write(dc)
+        f.write(iso)
 
     return jsonify(record=record)
 
