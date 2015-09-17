@@ -64,7 +64,7 @@
             Publish Record to NKN Portal
           </button>
 
-          <button tabindex=24 ng-click="createDublin()" 
+          <button tabindex=24 ng-click="checkDublin()"
                   class="btn btn-small btn-primary navbar-btn">
             Create Dublin Core Record
           </button>
@@ -208,6 +208,7 @@
              </select>
              <h6>Write in formats not listed (comma-separate for multiple)</h6>
              <input tabindex=20 type="text" ng-model="auxDataFormats" style="width:95%">
+             <div ng-hide="isDublin">
              <h4 class="attribute-label">Compression Technique</h4>
              <h6>
               Is your data offered in a compressed format? If so, please type a 
@@ -215,6 +216,7 @@
               in standard ZIP format"
              </h6>
              <input tabindex=20 type="text" ng-model="currentRecord.compression_technique" style="width:95%">
+           </div>
            </div>
      </div>
       <!---------------Right Divider-------------->
@@ -243,6 +245,7 @@
                   ng-options="c for c in topicCategoryChoices" 
                   ng-model="currentRecord.topic_category">
           </select>
+          <div ng-hide="isDublin">
           <h4 class="attribute-label">Update Status</h4>
           <h6>What is the status of your dataset? For example, is it complete (you anticipate no further work and consider it final) or is it ongoing (continually being updated)?</h6>
 
@@ -275,6 +278,7 @@
                   ng-options="f for f in hierarchyLevels" 
                   ng-model="currentRecord.hierarchy_level">
           </select>
+          </div>
 
          </div>
        </div>
@@ -294,6 +298,7 @@
          
          <div class="row" style="vertical-align:middle">
            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+             <div ng-hide="isDublin">
              <div class="extent-block">
                <h4><span class="glyphicon glyphicon-time"></span> 
                  Temporal Extent</h4>
@@ -319,6 +324,7 @@
                       <select tabindex=20 id="" name="" ng-model="currentRecord[key_title[0]].seconds"
                           ng-options="sec for sec in minute_seconds">
                       </select>
+                    </div>
              </div>
                 <!--</div>-->
 
