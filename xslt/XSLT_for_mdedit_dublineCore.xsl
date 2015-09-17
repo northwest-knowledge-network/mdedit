@@ -17,7 +17,7 @@
             <dc:title><xsl:value-of select="/root/record/title"/></dc:title>
             <dc:description><xsl:value-of select="root/record/summary"/></dc:description>
             <xsl:for-each select="/root/record/online/item"><dct:references><xsl:value-of select="url"/></dct:references></xsl:for-each>
-            <xsl:for-each select="/root/record/citation/item"><dc:creator><xsl:value-of select="name"/>, <xsl:value-of select="org"/>, <xsl:value-of select="email"/></dc:creator></xsl:for-each>
+            <xsl:for-each select="/root/record/citation/item"><dc:creator><xsl:value-of select="name"/>, <xsl:value-of select="org"/>, <xsl:value-of select="email"/>, <xsl:value-of select="address"/>, <xsl:value-of select="city"/>, <xsl:value-of select="state"/>, <xsl:value-of select="zipcode"/>, <xsl:value-of select="country"/></dc:creator></xsl:for-each>
             <dc:date><xsl:value-of select="/root/record/first_pub_date"/></dc:date>
             <dc:language>eng</dc:language>
             <xsl:for-each select="/root/record/topic_category/item"><dc:subject><xsl:value-of select="word"/></dc:subject></xsl:for-each>
@@ -28,7 +28,7 @@
                 <ows:UpperCorner><xsl:value-of select="/root/record/north_lat"/> <xsl:value-of select="/root/record/east_lon"/></ows:UpperCorner>
             </ows:WGS84BoundingBox>
             <dc:rights><xsl:value-of select="/root/record/use_restrictions"/></dc:rights>
-            <xsl:for-each select="/root/record/access/item"><dc:publisher><xsl:value-of select="name"/>, <xsl:value-of select="org"/>, <xsl:value-of select="email"/></dc:publisher></xsl:for-each>
+            <xsl:for-each select="/root/record/access/item"><dc:publisher><xsl:value-of select="name"/>, <xsl:value-of select="org"/>, <xsl:value-of select="email"/>, <xsl:value-of select="address"/>, <xsl:value-of select="city"/>, <xsl:value-of select="state"/>, <xsl:value-of select="zipcode"/>, <xsl:value-of select="country"/></dc:publisher></xsl:for-each>
         </rdf:Description>
     </rdf:RDF>
     </xsl:template>
