@@ -21,10 +21,13 @@
             <dc:date><xsl:value-of select="/root/record/first_pub_date"/></dc:date>
             <dc:language>eng</dc:language>
             <xsl:for-each select="/root/record/topic_category/item"><dc:subject><xsl:value-of select="word"/></dc:subject></xsl:for-each>
+            <xsl:for-each select="/root/record/thematic_keywords/item"><dc:subject><xsl:value-of select="word"/></dc:subject></xsl:for-each>
             <ows:WGS84BoundingBox>
                 <ows:LowerCorner><xsl:value-of select="/root/record/south_lat"/> <xsl:value-of select="/root/record/west_lon"/></ows:LowerCorner>
                 <ows:UpperCorner><xsl:value-of select="/root/record/north_lat"/> <xsl:value-of select="/root/record/east_lon"/></ows:UpperCorner>
             </ows:WGS84BoundingBox>
+            <dc:rights><xsl:value-of select="/root/record/use_restrictions"/></dc:rights>
+            <xsl:for-each select="/root/record/access/item"><dc:publisher><xsl:value-of select="name"/>, <xsl:value-of select="org"/>, <xsl:value-of select="email"/></dc:publisher></xsl:for-each>
         </rdf:Description>
     </rdf:RDF>
     </xsl:template>
