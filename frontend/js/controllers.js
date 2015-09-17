@@ -156,6 +156,52 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
     // initialize form with placeholder data for creating a new record
     $scope.createNewRecord();
 
+    /** On click only load fields that apply to Dublin Core metadata form
+    */
+    $scope.createDublin = function()
+    {
+      $scope.newRecord = true;
+
+      $http.get('http://' + hostname + '/api/metadata/placeholder')
+           .success(function(data) {
+              var dublinRec = data.record;
+              var dcRec = JSON.parse(JSON.stringify(dublinRec));
+              /**need to figure out for loop here to turn off visibility of fields in Metadata db document*/
+              for (var field in dcRec)
+              {
+                if (['citation', 'access'].indexOf(field) > -1)
+                {
+                dcRec[field] = [JSON.parse(JSON.stringify(EMPTY_CONTACT))];    
+                }
+                else if (
+                  ['place_keywords', 'thematic_keywords',
+                  'data_format', 'online'].indexOf(field) > -1)
+                {
+                  dcRec[field] = [""];    
+                }
+                else if (['_cls', '_id', 'last_mod_date',
+                          'first_pub_date'].indexOf(field) == -1)
+                {
+                 dcRec[field] = "";    
+                }
+              }
+             dublinRec.last_mod_date = {$date: new Date()};
+             dublinRec.first_pub_date = {$date: new Date()};
+            
+             $scope.auxDataFormats = "";
+
+             dublinRec.online = [""];
+
+             dublinRec.topic_category = [""];
+             dublinRec.thematic_keywords = [""];
+             dublinRec.data_format = [""];
+
+             $scope.currentRecord = dublinRec;
+
+             updateForms($scope.currentRecord);
+           });
+    };
+
     /**On click of Load MILES Defaults button, load the defaults in MILES defaults 
     json file
     */
