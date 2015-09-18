@@ -17,6 +17,8 @@ from ..models import Metadata
 
 import sys
 
+import gptInsert
+
 
 @api.route('/api/metadata', methods=['POST', 'PUT'])
 @cross_origin(origin='*', methods=['POST', 'PUT'],
@@ -146,6 +148,8 @@ def publish_metadata_record(_oid):
     with open(save_path, 'w+') as f:
         f.write(iso)
 
+    gptInsert.gptInsertRecord(save_path)
+
     return jsonify(record=record)
 
 
@@ -224,8 +228,8 @@ def _authenticate_user_from_session(request):
     """
     username_url = (os.getenv('GETUSER_URL') or
                     'http://nknportal-dev.nkn.uidaho.edu/getUsername/')
-    
-    session_id = request.json['session_id']    
+
+    session_id = request.json['session_id']
 
     if session_id == 'local':
         return 'local_user'
