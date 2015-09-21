@@ -57,7 +57,7 @@ def gptInsertRecord(xml, title):
   # Generate a UUID and format it in geoportal style
   docuuid = '{' + str(uuid.uuid4()) + '}'
 
-  print >> sys.stderr, 'Inserting geoportal record uuid=' + docuuid + ' id=' + gpt_sequence_num
+  print >> sys.stderr, 'Inserting geoportal record uuid=' + docuuid + ' id=' + str(gpt_sequence_num)
 
 
   # Insert the xml data into the first table
