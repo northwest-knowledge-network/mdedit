@@ -227,7 +227,7 @@ def _authenticate_user_from_session(request):
         (str): username
     """
     username_url = (os.getenv('GETUSER_URL') or
-                    'http://nknportal-dev.nkn.uidaho.edu/getUsername/')
+                    'https://nkn-dev.nkn.uidaho.edu/getUsername/')
 
     session_id = request.json['session_id']
 
