@@ -148,7 +148,7 @@ def publish_metadata_record(_oid):
     with open(save_path, 'w+') as f:
         f.write(iso)
 
-    gptInsert.gptInsertRecord(save_path)
+    gptInsert.gptInsertRecord(iso, title)
 
     return jsonify(record=record)
 
