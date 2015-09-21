@@ -237,7 +237,7 @@ def _authenticate_user_from_session(request):
     else:
         data = {
             'session_id': session_id,
-            'config_kw': 'miles'
+            'config_kw': 'nkn-dev'
         }
 
         res = requests.post(username_url, data=data)
