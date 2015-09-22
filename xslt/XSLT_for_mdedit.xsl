@@ -749,10 +749,9 @@
                                     </gmd:MD_Format>
                                 </gmd:distributorFormat>
                                 </xsl:for-each>
-                                <xsl:for-each select="/root/record/online/item">
                                 <gmd:distributorTransferOptions>
-                                    <!-- May need to set this up as a list with multiples, in same style as keywords-->
                                     <gmd:MD_DigitalTransferOptions>
+                                        <xsl:for-each select="/root/record/online/item">
                                         <gmd:onLine>
                                             <gmd:CI_OnlineResource>
                                                 <gmd:linkage>
@@ -760,11 +759,14 @@
                                                     <xsl:value-of select="url"/>
                                                   </gmd:URL>
                                                 </gmd:linkage>
+                                                <gmd:function>
+                                                    <gmd:CI_OnLineFunctionCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode" codeListValue="download">download</gmd:CI_OnLineFunctionCode>
+                                                </gmd:function>
                                             </gmd:CI_OnlineResource>
                                         </gmd:onLine>
+                                        </xsl:for-each>
                                     </gmd:MD_DigitalTransferOptions>
                                 </gmd:distributorTransferOptions>
-                                </xsl:for-each>
                             </gmd:MD_Distributor>
                         </gmd:distributor>
                     </xsl:for-each>
