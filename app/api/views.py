@@ -148,7 +148,8 @@ def publish_metadata_record(_oid):
     with open(save_path, 'w+') as f:
         f.write(iso)
 
-    gptInsert.gptInsertRecord(iso, record.title)
+    if 'localhost' not in request.base_url:
+        gptInsert.gptInsertRecord(iso, record.title)
 
     return jsonify(record=record)
 
