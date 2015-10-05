@@ -23,7 +23,7 @@
             <xsl:for-each select="/root/record/topic_category/item"><dc:subject><xsl:value-of select="word"/></dc:subject></xsl:for-each>
             <xsl:for-each select="/root/record/thematic_keywords/item"><dc:subject><xsl:value-of select="word"/></dc:subject></xsl:for-each>
             <xsl:for-each select="/root/record/place_keywords/item"><dc:subject><xsl:value-of select="word"/></dc:subject></xsl:for-each>
-            <ows:WGS84BoundingBox>
+            <ows:WGS84BoundingBox rdf:parseType="Literal">
                 <ows:LowerCorner><xsl:value-of select="/root/record/south_lat"/> <xsl:value-of select="/root/record/west_lon"/></ows:LowerCorner>
                 <ows:UpperCorner><xsl:value-of select="/root/record/north_lat"/> <xsl:value-of select="/root/record/east_lon"/></ows:UpperCorner>
             </ows:WGS84BoundingBox>
