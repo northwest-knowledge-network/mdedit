@@ -177,6 +177,16 @@
                             <northBL><xsl:value-of select="root/record/north_lat"/></northBL>
                         </GeoBndBox>
                     </geoEle>
+                    <tempEle>
+                        <TempExtent>
+                            <exTemp>
+                                <TM_Period>
+                                    <tmBegin><xsl:value-of select="root/record/start_date"/></tmBegin>
+                                    <tmEnd><xsl:value-of select="root/record/end_date"/></tmEnd>
+                                </TM_Period>
+                            </exTemp>
+                        </TempExtent>
+                    </tempEle>
                 </dataExt>
                 <xsl:if test="root/record/topic_category/item/word = 'farming'">
                 <tpCat>
@@ -277,6 +287,11 @@
                     <Consts>
                         <useLimit><xsl:value-of select="root/record/use_restrictions"/></useLimit>
                     </Consts>
+                </resConst>
+                <resConst>
+                    <LegConsts>
+                        <othConsts><xsl:value-of select="root/record/use_restrictions"/></othConsts>
+                    </LegConsts>
                 </resConst>
             </dataIdInfo>
             <distInfo>
