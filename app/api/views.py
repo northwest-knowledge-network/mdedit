@@ -173,12 +173,12 @@ def get_single_esri_metadata(_oid):
     Produce the ESRI ISO representation of the metadata by
     using an XSLT transform operated on the generic xml found at /xml
     """
-    xml_str = get_single_esri_metadata(_oid).data
+    xml_str = get_single_xml_metadata(_oid).data
     md_xml = ET.fromstring(xml_str)
     esri_xslt = ET.parse(os.path.join(os.path.dirname(__file__), '..', '..',
                         'xslt', 'XSLT_for_mdedit_ESRIISO.xsl'))
     esri_transform = ET.XSLT(esri_xslt)
-    esri_str = str(esri_transform(esri_xml))
+    esri_str = str(esri_transform(md_xml))
 
     return Response(esri_str, 200, mimetype='application/xml')
 
