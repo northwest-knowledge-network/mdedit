@@ -45,22 +45,22 @@
                     <xsl:if test="root/record/status = 'completed'">
                     <ProgCd value="001"/>
                     </xsl:if>
-                    <xsl:if test="root/record/status = 'stored in an offline facility'">
+                    <xsl:if test="root/record/status = 'historicalArchive'">
                         <ProgCd value="002"/>
                     </xsl:if>
-                    <xsl:if test="root/record/status = 'no longer valid'">
+                    <xsl:if test="root/record/status = 'obsolete'">
                         <ProgCd value="003"/>
                     </xsl:if>
-                    <xsl:if test="root/record/status = 'continually updated'">
+                    <xsl:if test="root/record/status = 'onGoing'">
                         <ProgCd value="004"/>
                     </xsl:if>
                     <xsl:if test="root/record/status = 'planned'">
                         <ProgCd value="005"/>
                     </xsl:if>
-                    <xsl:if test="root/record/status = 'needs to be generated or updated'">
+                    <xsl:if test="root/record/status = 'required'">
                         <ProgCd value="006"/>
                     </xsl:if>
-                    <xsl:if test="root/record/status = 'in process'">
+                    <xsl:if test="root/record/status = 'underDevelopment'">
                         <ProgCd value="007"/>
                     </xsl:if>
                 </idStatus>
