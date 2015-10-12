@@ -41,6 +41,29 @@
                 <idPurp><xsl:value-of select="root/record/summary"/></idPurp>
                 <idAbs><xsl:value-of select="root/record/summary"/></idAbs>
                 <idCredit><xsl:for-each select="/root/record/citation/item"><xsl:value-of select="name"/>, <xsl:value-of select="org"/>;  </xsl:for-each></idCredit>
+                <idStatus>
+                    <xsl:if test="root/record/status = 'completed'">
+                    <ProgCd value="001"/>
+                    </xsl:if>
+                    <xsl:if test="root/record/status = 'stored in an offline facility'">
+                        <ProgCd value="002"/>
+                    </xsl:if>
+                    <xsl:if test="root/record/status = 'no longer valid'">
+                        <ProgCd value="003"/>
+                    </xsl:if>
+                    <xsl:if test="root/record/status = 'continually updated'">
+                        <ProgCd value="004"/>
+                    </xsl:if>
+                    <xsl:if test="root/record/status = 'planned'">
+                        <ProgCd value="005"/>
+                    </xsl:if>
+                    <xsl:if test="root/record/status = 'needs to be generated or updated'">
+                        <ProgCd value="006"/>
+                    </xsl:if>
+                    <xsl:if test="root/record/status = 'in process'">
+                        <ProgCd value="007"/>
+                    </xsl:if>
+                </idStatus>
                 <xsl:for-each select="/root/record/citation/item">
                 <idPoC>
                     <rpIndName><xsl:value-of select="name"/></rpIndName>
@@ -54,7 +77,9 @@
                             <country><xsl:value-of select="country"/></country>
                         </cntAddress>
                         <eMailAdd><xsl:value-of select="email"/></eMailAdd>
-                        <cntPhone><xsl:value-of select="phone"/></cntPhone>
+                        <cntPhone>
+                            <voiceNum><xsl:value-of select="phone"/></voiceNum>
+                        </cntPhone>
                     </rpCntInfo>
                     <role>
                         <RoleCd value="006"/>
@@ -74,7 +99,9 @@
                                 <country><xsl:value-of select="country"/></country>
                             </cntAddress>
                             <eMailAdd><xsl:value-of select="email"/></eMailAdd>
-                            <cntPhone><xsl:value-of select="phone"/></cntPhone>
+                            <cntPhone>
+                                <voiceNum><xsl:value-of select="phone"/></voiceNum>
+                            </cntPhone>
                         </rpCntInfo>
                         <role>
                             <RoleCd value="005"/>
@@ -295,11 +322,13 @@
                 </resConst>
             </dataIdInfo>
             <distInfo>
-                <xsl:for-each select="/root/record/data_format/item">
                 <distFormat>
+                    <xsl:for-each select="/root/record/data_format/item">
                     <formatName><xsl:value-of select="word"/></formatName>
+                    </xsl:for-each>
+                    <fileDecmTech><xsl:value-of select="root/record/compression_technique"/></fileDecmTech>
                 </distFormat>
-                </xsl:for-each>
+                <fileDecmTech><xsl:value-of select="root/record/compression_technique"/></fileDecmTech>
                 <distTranOps>
                     <xsl:for-each select="/root/record/online/item">
                     <onLineSrc>
@@ -332,7 +361,9 @@
                         <country>USA</country>
                     </cntAddress>
                     <eMailAdd>info@northwestknowledge.net</eMailAdd>
-                    <cntPhone>(208)885-8456</cntPhone>
+                    <cntPhone>
+                        <voiceNum>(208)885-8456</voiceNum>
+                    </cntPhone>
                 </rpCntInfo>
                 <role>
                     <RoleCd value="002"/>
