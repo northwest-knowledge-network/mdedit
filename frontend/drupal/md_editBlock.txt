@@ -1,0 +1,27 @@
+<!--
+
+The below PHP goes into a Drupal block that displays the editor
+to logged in users.  The block has these settings:
+
+ Text format: PHP code
+ Pages: Only the listed pages
+ [pages list]: metadata
+ Roles: authenticated user, administrator
+
+-->
+
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script><script>window.session_id = '<?php echo session_id() ?>';</script>
+<div id="pythonOutput">&nbsp;</div>
+<script>
+var hostname = 'nkn-dev.nkn.uidaho.edu/backend';
+$.ajax({
+    url: "/frontend/index.html",
+    cache: false,
+    async: false,
+    dataType: "html",
+    success: function(data) {
+        $('#pythonOutput').html( $(data).filter('#bodyDiv').html() );
+        var session_id = session_id;     
+    }
+});
+</script>
