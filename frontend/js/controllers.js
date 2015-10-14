@@ -47,7 +47,7 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
     $scope.minute_seconds = _.range(60);
 
     $scope.knownDataFormats = ["ASCII", "csv", "DLG", "docx", "DRG", "DWG", "eps", 
-      "ERDAS", "Esri grid", "Esri TIN", "FASTA", "FASTQ", "GenBank", 
+      "ERDAS", "Esri file GDB", "Esri grid", "Esri personal GDB","Esri TIN", "FASTA", "FASTQ", "GenBank", 
       "GeoJSON", "GeoTIFF", "GML", "HDF", "jpeg", "KML", "LAS", "mp3", 
       "MrSID", "netCDF", "pdf", "php", "png", "py", "R", "SDXF", "Shapefile", 
       "SPSS", "Stata", "Tab", "tiff", "txt", "VBS", "wav", "xls", "xlsx", 
