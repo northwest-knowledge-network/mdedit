@@ -1,0 +1,362 @@
+<form name="metadataForm" id="metadataForm" autocomplete="on">
+
+<div class="row">
+  <!---------------Left Divider-------------->
+  <div class="col-xs-6 col-sm-6 col-md-6">
+
+  <!--Basic Information: Title and Summary-->
+
+     <a class="anchor" name="basic">
+       <h2 class="section-header">
+         <span class="glyphicon glyphicon-check"></span> 
+         Basic Information
+       </h2>
+     </a>
+     <div class="subform">
+       <h4 class="attribute-label">Title</h4>
+       <h6>A brief description of your data; include 'what','where,' and 'when'.</h6>
+        <p class="field-description">
+         Examples: 
+        </p>
+          <ul class="field-description">
+            <li>
+              LiDAR data for Clear Creek Watershed, Idaho (2009) 
+            </li>
+            <li>
+              Water clarity for Lake Coeur d'Alene from IDEQ source data, Idaho (2005-2014)
+            </li>
+          </ul>
+       <input tabindex=1 style="width:95%" type="text" ng-model="currentRecord.title" required>
+
+       <h4 class="attribute-label">Summary</h4>
+       <h6>Describe your data for someone who knows very little about your field of study. Be sure to include what the data set is, what variables it describes over what spatial extent, why it was created, and if there are any major use restrictions.
+        <p><span style="text-transform: uppercase"><strong><i> Remember many people may not read past this description.</span style></strong></i></h6>
+       <textarea tabindex=2 style="width:95%" type="text" 
+                 ng-model="currentRecord.summary" required>
+       </textarea>
+
+       <h4 class="attribute-label">Date (dataset)</h4>
+       <h6>
+         What is the most recent date that the data was published or updated?
+       </h6>
+       <input tabindex=3 ui-date="dateOptions" 
+              ng-model="currentRecord.first_pub_date.$date">
+       
+   </div>
+       <h2 class="section-header">
+         <span class="mega-octicon octicon-tools"></span> 
+         Data Format Details
+       </h2>
+       <div class="subform">
+         <h4 class="attribute-label">Data Format</h4>
+         <h6>
+          In what formats are your data available for distribution? Use the command key (on a Mac) or the control key (on a PC) to select multiple categories.
+         </h6>
+         <select tabindex=20 id="format-selector" class="multiselect" 
+             style="width:80%;height:120px"
+                 ng-options="fmt for fmt in knownDataFormats" 
+                 ng-model="dataFormats" multiple ng-multiple="true"
+                 required>
+         </select>
+         <h6>Write in formats not listed (comma-separate for multiple)</h6>
+         <input tabindex=20 type="text" ng-model="auxDataFormats" style="width:95%">
+       </div>
+ </div>
+  <!---------------Right Divider-------------->
+
+  <!--Detailed Information: Place Keywords, Thematic Keywords, Topic, Update status/freq-->
+
+
+  <div class="col-xs-6 col-sm-6 col-md-6">
+
+   <h2 class="section-header">
+     <span class="glyphicon glyphicon-list-alt"></span> Detailed Information</h2>
+   <div class="subform">
+     <div ng-repeat="key_title in 
+       [['place_keywords', 'Place Keywords', 'List comma-separated keywords related to the geographic area covered by your data. Example: Idaho, Clear Creek Watershed, USA.'], 
+                                   
+       ['thematic_keywords', 'Thematic Keywords', 'List comma-separated keywords that will help others discover your data through an intuitive search. In addition to subject-based keywords, you may also want to include the grant numbers and funding sources associated with creation of the data. If you are part of an NKN-supported project and thematic keywords have been pre-loaded for you, please do NOT delete or modify these, simply add to the list.']]">
+        <h4 class="attribute-label">{{ key_title[1] }}</h4>
+        <h6>{{ key_title[2] }}</h6>
+        <input tabindex=4 style="width:95%" type="text" 
+               ng-model="currentRecord[key_title[0]]" required>
+      </div>
+     
+      <h4 class="attribute-label">Topic</h4>                           
+      <h6>Select as many of these high level categories as apply to your dataset. This is a set list of categories established by international standards. Use the command key (on a Mac) or the control key (on a PC) to select multiple categories.</h6>
+      <select tabindex=5 style="width:80%;height:100px;" multiple ng-multiple="true" class="multiselect" 
+              ng-options="c for c in topicCategoryChoices" 
+              ng-model="currentRecord.topic_category">
+      </select>
+
+     </div>
+   </div>
+ </div>
+
+
+  <!--Spatial and Temporal Extents (Bounding Box, Start/End dates)-->
+<div class="row">
+   <a class="anchor" name="spatiotemporal">
+     <h2 class="section-header">
+     <span class="glyphicon glyphicon-time"></span> 
+     <span class="glyphicon glyphicon-globe"></span> 
+       Spatiotemporal Extents
+     </h2>
+   </a>
+   <div class="subform">
+     
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+          <div class="extent-block">
+            <h4>Longitudinal and Latitudinal Extent   <span style="text-align:right" class="glyphicon glyphicon-globe" aria-hidden="true"></span></h4>
+            <h6>What is the geographic area covered by the data? Please enter units in decimal degrees.</h6>
+
+            <div class="row">
+              <div class="col-xs-4 col-sm-4 col-md-5 col-lg-5  col-xs-offset-4 col-sm-offset-4 col-lg-offset-3 col-md-offset-3">
+                <h4 class="attribute-label" id="north">North Latitude</h4>
+                <input tabindex=20 type="number" step="0.0000000000000001"
+                         ng-model="currentRecord.north_lat">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-4 col-sm-4 col-md-5 col-lg-5">
+                <h4 class="attribute-label" id="north">West Longitude</h4>
+                <input tabindex=20 type="number" step="0.0000000000000001"
+                         ng-model="currentRecord.west_lon">
+              </div>
+              <div class="col-xs-4 col-sm-4 col-md-5 col-lg-5 col-xs-offset-4 col-sm-offset-4 col-md-offset-2 col-lg-offset-2">
+                <h4 class="attribute-label" id="north">East Longitude</h4>
+                <input tabindex=20 type="number" step="0.0000000000000001"
+                         ng-model="currentRecord.east_lon">
+              </div>
+              
+            </div>
+              <div class="row">
+                <div class="col-xs-4 col-sm-4 col-md-5 col-lg-5 col-xs-offset-4 col-sm-offset-4 col-md-offset-3 col-lg-offset-3">
+                  <h4 class="attribute-label" id="north">South Latitude</h4>
+                  <input tabindex=20 type="number" 
+                         step="0.0000000000000001"
+                           ng-model="currentRecord.south_lat">
+                </div>
+              </div>
+            
+
+            <h6>Don't know your bounding coordinates? Enter a location name here (e.g., Idaho, Ada County, Coeur d'Alene, 83209). The system will not recognize watersheds by name. Click the button below to have the system calculate bounding coordinates and fill in the entries above.</h6>
+            <div class="row">
+              <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+              <input style="width:100%" tabindex=20 type="text" 
+                     ng-model="bboxInput">
+             </div>
+             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+              <div id="place-button">
+              <button class="btn btn-small btn-primary" 
+                      ng-click="getBbox()">
+                  <span class="glyphicon" aria-hide="true"></span>   Calculate Bounding Coordinates
+              </button>
+            </div>
+           </div>
+          </div>
+          </div>
+
+        </div>
+     
+     </div>
+   </div>
+   <br>
+
+  </div>
+
+
+
+<div class="row">
+  <div class="col-xs-6 col-sm-6 col-md-6" id="citation-contacts">
+    <a class="anchor" name="contacts">
+      <h2 class="section-header">
+        <span class="glyphicon glyphicon-user"></span> Data Contacts (i.e., Authors)</h2>
+    </a>
+    <h6 class="contacts-subheader">Who are the author(s) of this dataset? Consider who might be the author of a manuscript describing the data (likely PI, post-doc, or graduate student). Start with the first author and add additional authors as needed.</h6>
+    <div ng-repeat="contact in currentRecord.citation">
+      <div class="subform">
+        <h3 class="section-header">Data Contact {{ $index + 1 }}</h3>
+        <div class="row" ng-repeat="n in [0,1,2]">
+          <div ng-repeat="cfield in orderedContactFields.slice(n*3 , (n+1)*3)">
+            <div class="col-xs-12 col-sm-12 col-md-4 col-md-4">
+              <h4 class="attribute-label">{{cfieldsMap[cfield]}}</h4>
+              <input tabindex=20 style="width:100%" type="text" ng-model="contact[cfield]" 
+                     ng-if="!($parent.$index==0 && $index==1)" required>
+              <input tabindex=20 style="width:100%" type="email" ng-model="contact[cfield]" 
+                     ng-if="$parent.$index==0 && $index==1" required>
+            </div>
+          </div>
+        </div>
+    </div>
+    </div>
+    <br>
+
+    <div class="row">
+      <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4">
+        <button tabindex=20 class="btn btn-default btn-contact" 
+          ng-click="cancelAddContactCitation()">
+          Cancel
+        </button>
+      </div>
+
+      <!-- Only allowed to add a new contact if all current citation contact fields 
+          are valid -->
+      <div class="col-xs-6 col-sm-6 col-md-8 col-lg-8">
+        <button tabindex=20 class="btn btn-primary btn-contact" 
+                ng-show="metadataForm.$valid" 
+                ng-click="addContactCitation()">
+          <span class="glyphicon glyphicon-plus" aria-hide="true"></span> 
+          Add a Contact 
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="col-xs-6 col-sm-6 col-md-6" id="access-contacts">
+
+    <h2 class="section-header">
+      <span class="glyphicon glyphicon-cloud"></span>  Data Access Contacts</h2>
+    <h6 class="contacts-subheader">Identify the organization and, where appropriate, the point of contact (name or position, e.g., Data Manager) responsible for providing physical access to the data.</h6>
+    <div ng-repeat="contact in currentRecord.access">
+      <div class="subform">
+        <h3 class="section-header">Access Contact {{ $index + 1 }}</h3>
+        <div class="row" ng-repeat="n in [0,1,2]">
+          <div ng-repeat="cfield in orderedContactFields.slice(n*3 , (n+1)*3)">
+            <div class="col-xs-12 col-sm-12 col-md-4 col-md-4">
+              <h4 class="attribute-label">{{cfieldsMap[cfield]}}</h4>
+              <input tabindex=20 style="width:100%" type="text" ng-model="contact[cfield]" 
+                     ng-if="!($parent.$index==0 && $index==1)" required>
+              <input tabindex=20 style="width:100%" type="email" ng-model="contact[cfield]" 
+                     ng-if="$parent.$index==0 && $index==1" required>
+            </div>
+          </div>
+        </div>
+    </div>
+    </div>
+    <br>
+
+    <div class="row">
+      <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4">
+        <button tabindex=20 class="btn btn-default btn-contact" 
+          ng-click="cancelAddContactAccess()">
+          Cancel
+        </button>
+      </div>
+
+      <!-- Only allowed to add a new contact if all current contact fields 
+          are valid -->
+      <div class="col-xs-6 col-sm-6 col-md-8 col-lg-8">
+        <button tabindex=20 class="btn btn-primary btn-contact" 
+                ng-show="metadataForm.$valid" 
+                ng-click="addContactAccess()">
+          <span class="glyphicon glyphicon-plus" aria-hide="true"></span> 
+          Add a Contact 
+        </button>
+      </div>
+    </div>
+
+    <br>
+
+
+
+
+  </div>
+</form>
+
+      <div class="row">
+
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <a class="anchor" name="online">
+          <h2 class="section-header"><span class="mega-octicon octicon-device-desktop"></span>  Online Resources</h2>
+          <h6>
+            Is your data or any additional information specific to the data available
+            online or is your data provided as a web service (e.g., Web Mapping
+            Services, Catalog Services for the Web, REST services)? Provide the
+            URL for each online resource.
+          </h6>
+          <form name="onlineSubform" id="onlineSubform">
+            <div class="subform">
+              <div class="row">
+                <div ng-repeat="el in currentRecord.online track by $index">
+                  <h3 style="margin-left:10px" class="section-header">URL {{ $index + 1 }}</h3>
+                  <div class="row">
+                    <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+                      <input type="url" tabindex="21" style="margin-left:10px;width:100%"
+                             ng-model="currentRecord.online[$index]">
+                    </div>
+                    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                      <button tabindex=20 class="btn btn-default btn-xs" 
+                          ng-click="removeOnlineResource($index)">Remove </button>
+                    </div>
+                  </div>
+               </div>
+              </div>
+            </div>
+            <div id="online-buttons">
+              <button tabindex=21 class="btn btn-primary btn-contact" 
+                      ng-click="addOnlineResource()">
+                  <span class="glyphicon glyphicon-plus" aria-hide="true"></span>   Add a resource
+              </button>
+            </div>
+          </form>
+        </div>
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <a class="anchor" name="online">
+        <h2 class="section-header">
+          <span class="mega-octicon octicon-issue-opened"></span>  Use Restrictions
+        </h2>
+        <div class="subform">
+          <h6>
+            List any use restrictions for how others should use your data. 
+            For example, you might want to stipulate that "This 
+            dataset should be cited in any publications for which it is 
+            used." If there are no restrictions for how your dataset is 
+            used, please state so here.
+          </h6>
+          <form>
+                  <textarea style="width:100%" tabindex=21 rows=4 
+                            ng-model="currentRecord.use_restrictions">
+                  </textarea>
+              </div>
+            </form>
+        </div>
+</div>
+
+<!-- View of current metadata records -->
+<a class="anchor" name="list"><h1 name="list">Listing of Current Metadata Records</h1></a>  
+
+<table class="table table-striped">
+<thead>
+  <tr>
+    <td><b>Dataset Title</b></td>   
+    <td><b>Summary</b></td>   
+    <td><b>First Citation Contact</b></td> 
+    <td><b>Edit and formats</b></td>
+  </tr>
+</thead>
+<tr ng-repeat="mdRecord in allRecords">
+  <td>{{mdRecord.title}}</td>
+  <td>{{mdRecord.summary}}</td>
+  <td>{{mdRecord.citation[0].name}}</td>
+  <td>
+    <div class="btn-group btn-group-xs">
+      <span class="btn btn-default"
+            ng-click="editRecord(mdRecord._id.$oid)">
+          Edit 
+      </span>
+      <a
+        class="btn btn-default"
+        href="http://{{hostname}}/api/metadata/{{mdRecord._id.$oid}}/iso">
+        ISO
+      </a>
+      <a
+        class="btn btn-default"
+        href="http://{{hostname}}/api/metadata/{{mdRecord._id.$oid}}/dc">
+        Dublin Core
+      </a>
+    </div>
+  </td>
+</tr>
+</table>

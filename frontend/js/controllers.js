@@ -2,12 +2,12 @@
 
 /* Controllers */
 
-var metadataEditorApp = angular.module('metadataEditor', ['ui.date']);
+var metadataEditorApp = angular.module('metadataEditor', ['ngRoute', 'ui.date']);
 
 // track whether an existing record
 
 // for minification, explicitly declare dependencies $scope and $http
-metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log', 
+metadataEditorApp.controller('FormCtrl', ['$scope', '$http', '$log', 
   function($scope, $http, $log) {
 
     // first see if we have any user information given to us (from Drupal)
