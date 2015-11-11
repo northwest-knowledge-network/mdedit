@@ -103,7 +103,12 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
       $http.get('http://' + hostname + '/api/metadata/placeholder')
            .success(function(data) {
              var placeholderRec = data.record;
+             //$scope.currentRecord = placeholderRec;
              var emptyRec = JSON.parse(JSON.stringify(placeholderRec));
+
+             $log.log(emptyRec);
+             
+             // clear out placeholder values
              for (var field in emptyRec)
              {
                if (['citation', 'access'].indexOf(field) > -1)
@@ -128,24 +133,17 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
              emptyRec.end_date.$date.setMinutes(0);
              emptyRec.end_date.$date.setSeconds(0);
 
-             emptyRec.start_date.hours = 0;
-             emptyRec.end_date.hours = 0;
-             emptyRec.start_date.minutes = 0;
-             emptyRec.end_date.minutes = 0;
-             emptyRec.start_date.seconds = 0;
-             emptyRec.end_date.seconds = 0;
-
-             emptyRec.last_mod_date = {$date: new Date()};
-             emptyRec.first_pub_date = {$date: new Date()};
+             //emptyRec.last_mod_date = {$date: new Date()};
+             //emptyRec.first_pub_date = {$date: new Date()};
             
-             $scope.auxDataFormats = "";
+             //$scope.auxDataFormats = "";
 
-             emptyRec.online = [""];
+             //emptyRec.online = [""];
 
-             emptyRec.topic_category = [""];
-             emptyRec.thematic_keywords = [""];
-             emptyRec.place_keywords = [""];
-             emptyRec.data_format = [""];
+             //emptyRec.topic_category = [""];
+             //emptyRec.thematic_keywords = [""];
+             //emptyRec.place_keywords = [""];
+             //emptyRec.data_format = [""];
 
              $scope.currentRecord = emptyRec;
 
@@ -185,20 +183,11 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
              milesRec.end_date.$date.setMinutes(0);
              milesRec.end_date.$date.setSeconds(0);
 
-             milesRec.start_date.hours = 0;
-             milesRec.end_date.hours = 0;
-             milesRec.start_date.minutes = 0;
-             milesRec.end_date.minutes = 0;
-             milesRec.start_date.seconds = 0;
-             milesRec.end_date.seconds = 0;
-
              milesRec.last_mod_date = {};
              milesRec.first_pub_date = {};
              milesRec.last_mod_date.$date = new Date();
              milesRec.first_pub_date.$date = new Date();
             
-             $scope.auxDataFormats = "";
-
              $scope.currentRecord = milesRec;
 
              updateForms($scope.currentRecord);
@@ -253,6 +242,7 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
     $scope.publishRecord = function()
     {
       var current = prepareCurrentScopedRecord();
+      // if the record is totally new, we first want to save the draft of it
       if ($scope.newRecord)
       {
         $http.post('http://' + hostname + '/api/metadata', current)
@@ -268,6 +258,7 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
              })
              .error(function(data) { $log.log(data.record); });
       }
+      // if the record already existed as a draft, we update the draft
       else
       {
         $http.put('http://' + hostname + '/api/metadata/' + current._id.$oid, 
@@ -285,6 +276,7 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
 
       var currentId = $scope.currentRecord._id.$oid;
 
+      // publishing always creates a new published version, so it's a post
       $http.post('http://' + hostname + '/api/metadata/' + 
                  currentId + '/publish', 
                  current)

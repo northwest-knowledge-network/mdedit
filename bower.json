@@ -1,5 +1,5 @@
 {
-  "name": "mdedit frontent",
+  "name": "mdedit frontend",
   "description": "Northwest Knowledge Network's Metadata editor front end",
   "version": "0.0.0",
   "homepage": "https://github.com/northwest-knowledge-network/mdedit",
@@ -12,6 +12,8 @@
     "bootstrap": "~3.1.1",
     "angular-ui-date": "~0.0.8",
     "octicons": "~2.4.1",
-    "underscore": "~1.8.3"
+    "underscore": "~1.8.3",
+    "angular-route": "~1.4.7",
+    "angular-animate": "~1.4.7"
   }
 }
