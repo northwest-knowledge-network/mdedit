@@ -7,7 +7,7 @@
 
 <body>
 <div  id="bodyDiv">
-  <div ng-app="metadataEditor"> <!--ng-controller="MetadataCtrl">-->
+  <div ng-app="metadataEditor" ng-controller="FormCtrl">
   <link rel="stylesheet" 
       href="/frontend/bower_components/bootstrap/dist/css/bootstrap.css">
   <link rel="stylesheet" 
@@ -34,7 +34,7 @@
   <script type="text/javascript" 
       src="/frontend/bower_components/underscore/underscore-min.js"></script>
   <script src="/frontend/js/controllers.js"></script>
-  <script src="/frontend/js/routes.js"></script>
+  <!--<script src="/frontend/js/routes.js"></script>-->
 
   <nav class="navbar navbar-default navbar-fixed-top">
       <div class="container-fluid">
@@ -80,9 +80,14 @@
             Publish Record to NKN Portal
           </button>
 
-          <button tabindex=24 ng-click="checkDublin()"
-                  class="btn btn-small btn-primary navbar-btn">
-            Create Dublin Core Record
+          <button tabindex=24 href="#/iso" ng-click="toggleMetadataType('iso')"
+             class="btn btn-small btn-primary navbar-btn">
+            Create Dataset Record
+          </button>
+
+          <button tabindex=24 href="#/dublin" ng-click="toggleMetadataType('dublin')"
+             class="btn btn-small btn-primary navbar-btn">
+            Create Other Research Product Record
           </button>
 
           <button tabindex=24 ng-click="defaultMILES()" 
@@ -98,40 +103,13 @@
 
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li class="dropdown">
-              <a id="nav-button" class="dropdown-toggle" aria-expanded="false" 
-                 aria-haspopup="true" role="button" data-toggle="dropdown" href="#">
-                Go to Section <span class="caret"></span>
+            <li><a href="/#go-to-modal-info">Info</a></li>
+            <li>
+              <a href="https://github.com/northwest-knowledge-network/mdedit">
+                <span class="octicon octicon-mark-github" id="mdedit"></span>
               </a>
-              <ul class="dropdown-menu">
-                <li>
-                  <a href="#basic">
-                    <span class="glyphicon glyphicon-check"></span>
-                    Basic & Detailed Info
-                  </a>
-                </li>
-                <li>
-                  <a href="#spatiotemporal">
-                    <span class="glyphicon glyphicon-globe"></span>/<span class="glyphicon glyphicon-time"></span>
-                    Spatiotemporal Extents
-                  </a>
-                </li>
-                <li><a href="#contacts">
-                  <span class="octicon octicon-repo"></span> Contacts</a>
-                </li>
-                <li>
-                  <a href="#online"><span class="octicon octicon-device-desktop"></span> Online Resources</a>
-                </li>
-              </ul>
             </li>
-              <li><a href="/#go-to-modal-info">Info</a></li>
-              <li>
-                <a href="https://github.com/northwest-knowledge-network/mdedit">
-                  <span class="octicon octicon-mark-github" id="mdedit"></span>
-                </a>
-              </li>
-            
-            </ul>
+          </ul>
         </div>
         
       </div>
@@ -162,8 +140,8 @@
 
     <br>
 
-    <div ng-view><div>
-
+    <div ng-include="'iso.html'" ng-show="isISO" autoscroll></div>
+    <div ng-include="'dublin.html'" ng-show="isDublin" autoscroll></div>
 
 </div>
 </div>

@@ -160,9 +160,28 @@ metadataEditorApp.controller('FormCtrl', ['$scope', '$http', '$log',
    
     // sets default value fo dublin for False */
     $scope.isDublin = false;
-    $scope.checkDublin = function()
+    $scope.isISO = true;
+    $scope.toggleMetadataType = function(type)
     {
-      $scope.isDublin = $scope.isDublin ? false : true;
+      switch (type)
+      {
+        case 'dublin':
+          $scope.isDublin = true;
+          $scope.isISO = false;
+          break;
+
+        case 'iso':
+          $scope.isDublin = false;
+          $scope.isISO = true;
+          break;
+
+        default:
+          $scope.isDublin = false;
+          $scope.isISO = true;
+      }
+
+      $log.log('dublin: ' + $scope.isDublin);
+      $log.log('iso: ' + $scope.isISO);
     };
 
     /**On click of Load MILES Defaults button, load the defaults in MILES defaults 
