@@ -60,15 +60,6 @@
          </select>
          <h6>Write in formats not listed (comma-separate for multiple)</h6>
          <input tabindex=20 type="text" ng-model="auxDataFormats" style="width:95%">
-
-         <h4 class="attribute-label">Compression Technique</h4>
-         <h6>
-          Is your data offered in a compressed format? If so, please type a 
-          short description here. For example, "The LAS files are compressed 
-          in standard ZIP format"
-         </h6>
-         <input tabindex=20 type="text" ng-model="currentRecord.compression_technique" style="width:95%">
-       
        </div>
  </div>
   <!---------------Right Divider-------------->
@@ -98,39 +89,6 @@
               ng-model="currentRecord.topic_category">
       </select>
 
-        <h4 class="attribute-label">Update Status</h4>
-        <h6>What is the status of your dataset? For example, is it complete (you anticipate no further work and consider it final) or is it ongoing (continually being updated)?</h6>
-
-        <select tabindex=6 id="" name=""
-                ng-options="s for (s, iso) in statusChoicesIsoMap" 
-                ng-model="currentRecord.status">
-        </select>
-        <h4 class="attribute-label">Update Frequency</h4>
-        <h6>Please select the frequency with which changes (any modifications and deletions) are or will be made to your data after it is produced. Please select a value from below. Options are available if you do not plan to update your data or do not know the specific frequency of updates.</h6>
-        <select tabindex=7 id="" name=""
-                ng-options="f for (f, iso) in updateFrequencyChoicesMap" 
-                ng-model="currentRecord.update_frequency">
-        </select>
-
-        <h4 class="attribute-label">Data Type</h4>
-        <h6>
-          How are your data represented? Through a text file, vector spatial representation, a spatial grid of values, a table, a 
-          video of a scene, etc.?
-        </h6>
-        <select tabindex=8 id="" name=""
-                ng-options="f for f in spatialDataOptions" 
-                ng-model="currentRecord.spatial_dtype">
-        </select>
-
-        <h4 class="attribute-label">Hierarchy Level</h4>
-        <h6>
-          Is your data a single dataset or is it one of a series of datasets?
-        </h6>
-        <select tabindex=9 id="" name=""
-                ng-options="f for f in hierarchyLevels" 
-                ng-model="currentRecord.hierarchy_level">
-        </select>
-
      </div>
    </div>
  </div>
@@ -140,96 +98,59 @@
 <div class="row">
    <a class="anchor" name="spatiotemporal">
      <h2 class="section-header">
-     <span class="glyphicon glyphicon-time"></span> 
      <span class="glyphicon glyphicon-globe"></span> 
-       Spatiotemporal Extents
+       Geospatial Extents
      </h2>
    </a>
    <div class="subform">
-     
-     <div class="row" style="vertical-align:middle">
-       <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-         <div class="extent-block">
-           <h4><span class="glyphicon glyphicon-time"></span> 
-             Temporal Extent</h4>
-           <h6>What is the time period represented by the data?</h6>
-             <div ng-repeat="key_title in [['start_date','Start Date'], 
-                                     ['end_date', 'End Date']]"> 
-              <h4 class="attribute-label">{{ key_title[1] }}</h4>
-              
-              <!--<div class="row">-->
-                  <input tabindex=20 ui-date="dateOptions" 
-                      ng-model="currentRecord[key_title[0]].$date"> <!--<br>-->
-              <!--</div>-->
-              <!--<div class="row">-->
-                  H:
-                  <select tabindex=20 id="" name="" ng-model="currentRecord[key_title[0]].hours"
-                      ng-options="hour for hour in hours">
-                  </select>
-                  M:
-                  <select tabindex=20 id="" name="" ng-model="currentRecord[key_title[0]].minutes"
-                      ng-options="min for min in minute_seconds">
-                  </select>
-                  S:
-                  <select tabindex=20 id="" name="" ng-model="currentRecord[key_title[0]].seconds"
-                      ng-options="sec for sec in minute_seconds">
-                  </select>
-                </div>
-         </div>
-            <!--</div>-->
+        <div class="extent-block">
+          <h4>Longitudinal and Latitudinal Extent   <span style="text-align:right" class="glyphicon glyphicon-globe" aria-hidden="true"></span></h4>
+          <h6>What is the geographic area covered by the data? Please enter units in decimal degrees.</h6>
 
+          <div class="row">
+              <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 col-sm-offset-4 col-md-offset-4 col-lg-offset-4">
+              <h4 class="attribute-label" id="north">North Latitude</h4>
+              <input tabindex=20 type="number" step="0.0000000000000001"
+                       ng-model="currentRecord.north_lat">
+            </div>
           </div>
-
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-          <div class="extent-block">
-            <h4>Longitudinal and Latitudinal Extent   <span style="text-align:right" class="glyphicon glyphicon-globe" aria-hidden="true"></span></h4>
-            <h6>What is the geographic area covered by the data? Please enter units in decimal degrees.</h6>
-
-            <div class="row">
-              <div class="col-xs-4 col-sm-4 col-md-5 col-lg-5  col-xs-offset-4 col-sm-offset-4 col-lg-offset-3 col-md-offset-3">
-                <h4 class="attribute-label" id="north">North Latitude</h4>
-                <input tabindex=20 type="number" step="0.0000000000000001"
-                         ng-model="currentRecord.north_lat">
-              </div>
+          <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 col-sm-offset-1 col-md-offset-1 col-lg-offset-1">
+              <h4 class="attribute-label" id="north">West Longitude</h4>
+              <input tabindex=20 type="number" step="0.0000000000000001"
+                       ng-model="currentRecord.west_lon">
             </div>
-            <div class="row">
-              <div class="col-xs-4 col-sm-4 col-md-5 col-lg-5">
-                <h4 class="attribute-label" id="north">West Longitude</h4>
-                <input tabindex=20 type="number" step="0.0000000000000001"
-                         ng-model="currentRecord.west_lon">
-              </div>
-              <div class="col-xs-4 col-sm-4 col-md-5 col-lg-5 col-xs-offset-4 col-sm-offset-4 col-md-offset-2 col-lg-offset-2">
-                <h4 class="attribute-label" id="north">East Longitude</h4>
-                <input tabindex=20 type="number" step="0.0000000000000001"
-                         ng-model="currentRecord.east_lon">
-              </div>
-              
+            <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4"> <!--col-xs-offset-3 col-sm-offset-3 col-md-offset-3 col-lg-offset-3">-->
+              <h4 class="attribute-label" id="north">East Longitude</h4>
+              <input tabindex=20 type="number" step="0.0000000000000001"
+                       ng-model="currentRecord.east_lon">
             </div>
-              <div class="row">
-                <div class="col-xs-4 col-sm-4 col-md-5 col-lg-5 col-xs-offset-4 col-sm-offset-4 col-md-offset-3 col-lg-offset-3">
-                  <h4 class="attribute-label" id="north">South Latitude</h4>
-                  <input tabindex=20 type="number" 
-                         step="0.0000000000000001"
-                           ng-model="currentRecord.south_lat">
-                </div>
-              </div>
             
-
-            <h6>Don't know your bounding coordinates? Enter a location name here (e.g., Idaho, Ada County, Coeur d'Alene, 83209). The system will not recognize watersheds by name. Click the button below to have the system calculate bounding coordinates and fill in the entries above.</h6>
+          </div>
             <div class="row">
-              <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-              <input style="width:100%" tabindex=20 type="text" 
-                     ng-model="bboxInput">
-             </div>
-             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-              <div id="place-button">
+              <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 col-sm-offset-4 col-md-offset-4 col-lg-offset-4">
+                <h4 class="attribute-label" id="north">South Latitude</h4>
+                <input tabindex=20 type="number" 
+                       step="0.0000000000000001"
+                         ng-model="currentRecord.south_lat">
+              </div>
+            </div>
+          
+
+          <h6>Don't know your bounding coordinates? Enter a location name here (e.g., Idaho, Ada County, Coeur d'Alene, 83209). The system will not recognize watersheds by name. Click the button below to have the system calculate bounding coordinates and fill in the entries above.</h6>
+          <div class="row">
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+            <input style="width:100%" tabindex=20 type="text" 
+                   ng-model="bboxInput">
+           </div>
+           <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+            <div id="place-button">
               <button class="btn btn-small btn-primary" 
                       ng-click="getBbox()">
                   <span class="glyphicon" aria-hide="true"></span>   Calculate Bounding Coordinates
               </button>
             </div>
            </div>
-          </div>
           </div>
 
         </div>
@@ -398,40 +319,3 @@
             </form>
         </div>
 </div>
-
-<!-- View of current metadata records -->
-<a class="anchor" name="list"><h1 name="list">Listing of Current Metadata Records</h1></a>  
-
-<table class="table table-striped">
-<thead>
-  <tr>
-    <td><b>Dataset Title</b></td>   
-    <td><b>Summary</b></td>   
-    <td><b>First Citation Contact</b></td> 
-    <td><b>Edit and formats</b></td>
-  </tr>
-</thead>
-<tr ng-repeat="mdRecord in allRecords">
-  <td>{{mdRecord.title}}</td>
-  <td>{{mdRecord.summary}}</td>
-  <td>{{mdRecord.citation[0].name}}</td>
-  <td>
-    <div class="btn-group btn-group-xs">
-      <span class="btn btn-default"
-            ng-click="editRecord(mdRecord._id.$oid)">
-          Edit 
-      </span>
-      <a
-        class="btn btn-default"
-        href="http://{{hostname}}/api/metadata/{{mdRecord._id.$oid}}/iso">
-        ISO
-      </a>
-      <a
-        class="btn btn-default"
-        href="http://{{hostname}}/api/metadata/{{mdRecord._id.$oid}}/dc">
-        Dublin Core
-      </a>
-    </div>
-  </td>
-</tr>
-</table>

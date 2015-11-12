@@ -1,0 +1,36 @@
+<!-- View of current metadata records -->
+<a class="anchor" name="list"><h1 name="list">Listing of Current Metadata Records</h1></a>  
+
+<table class="table table-striped">
+<thead>
+  <tr>
+    <td><b>Dataset Title</b></td>   
+    <td><b>Summary</b></td>   
+    <td><b>First Citation Contact</b></td> 
+    <td><b>Edit and formats</b></td>
+  </tr>
+</thead>
+<tr ng-repeat="mdRecord in allRecords">
+  <td>{{mdRecord.title}}</td>
+  <td>{{mdRecord.summary}}</td>
+  <td>{{mdRecord.citation[0].name}}</td>
+  <td>
+    <div class="btn-group btn-group-xs">
+      <span class="btn btn-default"
+            ng-click="editRecord(mdRecord._id.$oid)">
+          Edit 
+      </span>
+      <a
+        class="btn btn-default"
+        href="http://{{hostname}}/api/metadata/{{mdRecord._id.$oid}}/iso">
+        ISO
+      </a>
+      <a
+        class="btn btn-default"
+        href="http://{{hostname}}/api/metadata/{{mdRecord._id.$oid}}/dc">
+        Dublin Core
+      </a>
+    </div>
+  </td>
+</tr>
+</table>
