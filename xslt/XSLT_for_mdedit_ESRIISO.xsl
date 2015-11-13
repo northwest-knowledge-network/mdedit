@@ -10,7 +10,7 @@
     <!-- Sets up XML template when root node in mdedit XML is encountered -->
     <xsl:template match="/">
         <!-- Sets up the XML document as a metadata document and references related schema documents  -->
-        <gmi:MI_Metadata xmlns:xlink="http://www.w3.org/1999/xlink"
+        <gmd:MD_Metadata xmlns:xlink="http://www.w3.org/1999/xlink"
             xmlns:gco="http://www.isotc211.org/2005/gco"
             xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gml="http://www.opengis.net/gml/3.2"
             xmlns:gts="http://www.isotc211.org/2005/gts"
@@ -865,6 +865,6 @@
                     </gmd:contact>
                 </gmd:MD_MaintenanceInformation>
             </gmd:metadataMaintenance>
-        </gmi:MI_Metadata>
+        </gmd:MD_Metadata>
     </xsl:template>
 </xsl:stylesheet>

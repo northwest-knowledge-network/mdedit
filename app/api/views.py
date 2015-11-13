@@ -17,6 +17,8 @@ from ..models import Metadata
 
 import sys
 
+import gptInsert
+
 
 @api.route('/api/metadata', methods=['POST', 'PUT'])
 @cross_origin(origin='*', methods=['POST', 'PUT'],
@@ -147,6 +149,9 @@ def publish_metadata_record(_oid):
     with open(save_path, 'w+') as f:
         f.write(iso)
 
+    if 'localhost' not in request.base_url:
+        gptInsert.gptInsertRecord(iso, record.title)
+
     return jsonify(record=record)
 
 
@@ -182,6 +187,23 @@ def get_single_dc_metadata(_oid):
     dc_str = str(dc_transform(md_xml))
 
     return Response(dc_str, 200, mimetype='application/xml')
+
+
+@api.route('/api/metadata/<string:_oid>/esri')
+@cross_origin(origin="*", methods=['GET'])
+def get_single_esri_metadata(_oid):
+    """
+    Produce the ESRI combined with ISO representation of the metadata by
+    using an XSLT transform operated on the generic xml found at /xml
+    """
+    xml_str = get_single_xml_metadata(_oid).data
+    md_xml = ET.fromstring(xml_str)
+    esri_xslt = ET.parse(os.path.join(os.path.dirname(__file__), '..', '..',
+                        'xslt', 'XSLT_for_mdedit_ESRI.xsl'))
+    esri_transform = ET.XSLT(esri_xslt)
+    esri_str = str(esri_transform(md_xml))
+
+    return Response(esri_str, 200, mimetype='application/xml')
 
 
 @api.route('/api/geocode/<string:place>', methods=['GET'])
@@ -241,9 +263,9 @@ def _authenticate_user_from_session(request):
         (str): username
     """
     username_url = (os.getenv('GETUSER_URL') or
-                    'http://nknportal-dev.nkn.uidaho.edu/getUsername/')
-    
-    session_id = request.json['session_id']    
+                    'https://nkn-dev.nkn.uidaho.edu/getUsername/')
+
+    session_id = request.json['session_id']
 
     if session_id == 'local':
         return 'local_user'
@@ -251,7 +273,7 @@ def _authenticate_user_from_session(request):
     else:
         data = {
             'session_id': session_id,
-            'config_kw': 'miles'
+            'config_kw': 'nkn-dev'
         }
 
         res = requests.post(username_url, data=data)

@@ -1,0 +1,16 @@
+<!--
+
+The below PHP goes into a Drupal block to force users to log in
+before using the metadata editor.  The block has these settings:
+
+ Text format: PHP code
+ Pages: Only the listed pages
+ [pages list]: metadata
+ Roles: anonymous user
+
+-->
+
+<?php
+$page = drupal_get_form('user_login_block');
+print render($page);
+?>

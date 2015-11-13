@@ -47,16 +47,16 @@ metadataEditorApp.controller('FormCtrl', ['$scope', '$http', '$log',
     $scope.minute_seconds = _.range(60);
 
     $scope.knownDataFormats = ["ASCII", "csv", "DLG", "docx", "DRG", "DWG", "eps", 
-      "ERDAS", "Esri grid", "Esri TIN", "FASTA", "FASTQ", "GenBank", 
+      "ERDAS", "Esri file GDB", "Esri grid", "Esri personal GDB","Esri TIN", "FASTA", "FASTQ", "GenBank", 
       "GeoJSON", "GeoTIFF", "GML", "HDF", "jpeg", "KML", "LAS", "mp3", 
       "MrSID", "netCDF", "pdf", "php", "png", "py", "R", "SDXF", "Shapefile", 
-      "SPSS", "Stata", "Tab", "tiff", "txt", "VBS", "wav", "xls", "xlsx", 
+      "SPSS", "Stata", "Tab", "tiff", "txt", "VBS", "wav", "xls", "xlsx",
       "xml"];
 
     $scope.dataFormats = [];
 
-    $scope.spatialDataOptions = ["vector", "grid", "table or text", 
-      "triangulated irregular network", "stereographic imaging", 
+    $scope.spatialDataOptions = ["vector", "grid", "table or text",
+      "triangulated irregular network", "stereographic imaging",
       "video recording of a scene"];
     $scope.hierarchyLevels = ["dataset", "series"];
 
@@ -69,7 +69,7 @@ metadataEditorApp.controller('FormCtrl', ['$scope', '$http', '$log',
     {
       $scope.newRecord = false;
 
-      $http.post('http://' + hostname + '/api/metadata/' + recordId,
+      $http.post('//' + hostname + '/api/metadata/' + recordId,
                  {'session_id': session_id})
            .success(function(data) {
              var record = data.record;
@@ -89,10 +89,10 @@ metadataEditorApp.controller('FormCtrl', ['$scope', '$http', '$log',
            });
     };
 
-    var EMPTY_CONTACT = 
+    var EMPTY_CONTACT =
     {
       'name': '', 'email': '', 'org': '', 'address': '',
-      'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': ''     
+      'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': ''
     };
 
 
@@ -100,7 +100,7 @@ metadataEditorApp.controller('FormCtrl', ['$scope', '$http', '$log',
     {
       $scope.newRecord = true;
 
-      $http.get('http://' + hostname + '/api/metadata/placeholder')
+      $http.get('//' + hostname + '/api/metadata/placeholder')
            .success(function(data) {
              var placeholderRec = data.record;
              //$scope.currentRecord = placeholderRec;
@@ -113,18 +113,18 @@ metadataEditorApp.controller('FormCtrl', ['$scope', '$http', '$log',
              {
                if (['citation', 'access'].indexOf(field) > -1)
                {
-                 emptyRec[field] = [JSON.parse(JSON.stringify(EMPTY_CONTACT))];    
+                 emptyRec[field] = [JSON.parse(JSON.stringify(EMPTY_CONTACT))];
                }
                else if (
                  ['place_keywords', 'thematic_keywords',
                   'data_format', 'online'].indexOf(field) > -1)
                {
-                 emptyRec[field] = [""];    
+                 emptyRec[field] = [""];
                }
                else if (['_cls', '_id', 'start_date', 'end_date', 'last_mod_date',
                          'first_pub_date'].indexOf(field) == -1)
                {
-                 emptyRec[field] = "";    
+                 emptyRec[field] = "";
                }
              }
              emptyRec.start_date = {$date: new Date(2010, 1, 1)};
@@ -132,18 +132,6 @@ metadataEditorApp.controller('FormCtrl', ['$scope', '$http', '$log',
              emptyRec.end_date.$date.setHours(0);
              emptyRec.end_date.$date.setMinutes(0);
              emptyRec.end_date.$date.setSeconds(0);
-
-             //emptyRec.last_mod_date = {$date: new Date()};
-             //emptyRec.first_pub_date = {$date: new Date()};
-            
-             //$scope.auxDataFormats = "";
-
-             //emptyRec.online = [""];
-
-             //emptyRec.topic_category = [""];
-             //emptyRec.thematic_keywords = [""];
-             //emptyRec.place_keywords = [""];
-             //emptyRec.data_format = [""];
 
              $scope.currentRecord = emptyRec;
 
@@ -191,7 +179,7 @@ metadataEditorApp.controller('FormCtrl', ['$scope', '$http', '$log',
     {
       $scope.newRecord = true;
 
-      $http.get('http://' + hostname + '/api/metadata/defaultMILES')
+      $http.get('//' + hostname + '/api/metadata/defaultMILES')
            .success(function(data) {
              var milesRec = data.record;
              milesRec.start_date = {};
@@ -206,7 +194,7 @@ metadataEditorApp.controller('FormCtrl', ['$scope', '$http', '$log',
              milesRec.first_pub_date = {};
              milesRec.last_mod_date.$date = new Date();
              milesRec.first_pub_date.$date = new Date();
-            
+
              $scope.currentRecord = milesRec;
 
              updateForms($scope.currentRecord);
@@ -216,40 +204,40 @@ metadataEditorApp.controller('FormCtrl', ['$scope', '$http', '$log',
     /**
      * On submit of metadata form, submitRecord. This both updates the server
      * and makes sure the form is current. Not sure how it wouldn't be, todo?
-     */ 
+     */
     $scope.submitDraftRecord = function()
     {
       // the start and end dates currently have hours and minutes zero;
-      // grab the hours and minutes and append them. Confusingly JS 
+      // grab the hours and minutes and append them. Confusingly JS
       // uses setHours to set minutes and seconds as well
       var current = prepareCurrentScopedRecord();
       if ($scope.newRecord)
       {
-        $http.put('http://' + hostname + '/api/metadata', 
+        $http.put('//' + hostname + '/api/metadata',
                   {'record': current, 'session_id': session_id})
              .success(function(data) {
                  updateForms(data.record);
                  $scope.newRecord = false;
-                 addedContacts = 
+                 addedContacts =
                  {
                   'access': 0,
                   'citation': 0
-                 };            
+                 };
                  displayCurrentRecords();
              })
              .error(function(data) { $log.log(data.record); });
       }
       else
       {
-        $http.put('http://' + hostname + '/api/metadata/' + current._id.$oid, 
+        $http.put('//' + hostname + '/api/metadata/' + current._id.$oid,
                   {'record': current, 'session_id': session_id})
              .success(function(data) {
                  updateForms(data.record);
-                 addedContacts = 
+                 addedContacts =
                  {
                   'access': 0,
                   'citation': 0
-                 };            
+                 };
                  displayCurrentRecords();
              });
       }
@@ -264,15 +252,15 @@ metadataEditorApp.controller('FormCtrl', ['$scope', '$http', '$log',
       // if the record is totally new, we first want to save the draft of it
       if ($scope.newRecord)
       {
-        $http.post('http://' + hostname + '/api/metadata', current)
+        $http.post('//' + hostname + '/api/metadata', current)
              .success(function(data) {
                  updateForms(data.record);
                  $scope.newRecord = false;
-                 addedContacts = 
+                 addedContacts =
                  {
                   'access': 0,
                   'citation': 0
-                 };            
+                 };
                  displayCurrentRecords();
              })
              .error(function(data) { $log.log(data.record); });
@@ -280,47 +268,46 @@ metadataEditorApp.controller('FormCtrl', ['$scope', '$http', '$log',
       // if the record already existed as a draft, we update the draft
       else
       {
-        $http.put('http://' + hostname + '/api/metadata/' + current._id.$oid, 
+        $http.put('//' + hostname + '/api/metadata/' + current._id.$oid,
                   current)
              .success(function(data) {
                  updateForms(data.record);
-                 addedContacts = 
+                 addedContacts =
                  {
                   'access': 0,
                   'citation': 0
-                 };            
+                 };
                  displayCurrentRecords();
              });
       }
 
       var currentId = $scope.currentRecord._id.$oid;
 
-      // publishing always creates a new published version, so it's a post
-      $http.post('http://' + hostname + '/api/metadata/' + 
-                 currentId + '/publish', 
+      $http.post('//' + hostname + '/api/metadata/' +
+                 currentId + '/publish',
                  current)
             .success(function(data) {
               updateForms(data.record);
-              addedContacts = 
+              addedContacts =
               {
                 'access': 0,
-                'citation': 0    
+                'citation': 0
               };
 
               displayCurrentRecords();
             });
     };
-    
-    function prepareCurrentScopedRecord() 
+
+    function prepareCurrentScopedRecord()
     {
       $scope.currentRecord.start_date.$date.setHours(
-        $scope.currentRecord.start_date.hours, 
+        $scope.currentRecord.start_date.hours,
         $scope.currentRecord.start_date.minutes,
         $scope.currentRecord.start_date.seconds
       );
 
       $scope.currentRecord.end_date.$date.setHours(
-        $scope.currentRecord.end_date.hours, 
+        $scope.currentRecord.end_date.hours,
         $scope.currentRecord.end_date.minutes,
         $scope.currentRecord.end_date.seconds
       );
@@ -340,14 +327,14 @@ metadataEditorApp.controller('FormCtrl', ['$scope', '$http', '$log',
         current.data_format = $scope.dataFormats.concat(auxList);
       }
 
-      current.last_mod_date = 
+      current.last_mod_date =
         {$date: $scope.currentRecord.last_mod_date.$date.getTime()};
-      current.start_date = 
+      current.start_date =
         {$date: $scope.currentRecord.start_date.$date.getTime()};
-      current.end_date = 
+      current.end_date =
         {$date: $scope.currentRecord.end_date.$date.getTime()};
 
-      current.first_pub_date = 
+      current.first_pub_date =
         {$date: $scope.currentRecord.first_pub_date.$date.getTime()};
 
       return current;
@@ -356,10 +343,10 @@ metadataEditorApp.controller('FormCtrl', ['$scope', '$http', '$log',
 
     function displayCurrentRecords()
     {
-      $http.post('http://' + hostname + '/api/metadata', 
+      $http.post('//' + hostname + '/api/metadata',
                  {'session_id': session_id})
-           .success(function(data){ 
-             $scope.allRecords = data.results; 
+           .success(function(data){
+             $scope.allRecords = data.results;
            });
     }
 
@@ -369,24 +356,24 @@ metadataEditorApp.controller('FormCtrl', ['$scope', '$http', '$log',
      * Args:
      *  (Object) actual record
      */
-    function updateForms(record) 
+    function updateForms(record)
     {
-       record.place_keywords = 
+       record.place_keywords =
          record.place_keywords.join(', ');
 
-       record.thematic_keywords = 
+       record.thematic_keywords =
          record.thematic_keywords.join(', ');
 
-       record.start_date.$date = 
+       record.start_date.$date =
          new Date(record.start_date.$date);
 
-       record.end_date.$date = 
+       record.end_date.$date =
          new Date(record.end_date.$date);
 
-       record.last_mod_date.$date = 
+       record.last_mod_date.$date =
          new Date(record.last_mod_date.$date);
 
-       record.first_pub_date.$date = 
+       record.first_pub_date.$date =
          new Date(record.first_pub_date.$date);
 
        record.start_date.hours = record.start_date.$date.getHours();
@@ -399,12 +386,12 @@ metadataEditorApp.controller('FormCtrl', ['$scope', '$http', '$log',
        record.end_date.seconds = record.end_date.$date.getSeconds();
 
        $scope.currentRecord = record;
-       $scope.auxDataFormats = 
+       $scope.auxDataFormats =
          record.data_format.filter(function (f) {
            return $scope.knownDataFormats.indexOf(f) === -1;
          }).join(', ');
 
-       $scope.dataFormats = 
+       $scope.dataFormats =
          record.data_format.filter(function (f) {
            return $scope.knownDataFormats.indexOf(f) > -1;
          });
@@ -429,12 +416,12 @@ metadataEditorApp.controller('FormCtrl', ['$scope', '$http', '$log',
       'no longer valid': 'obsolete'
     };
 
-    $scope.topicCategoryChoices = 
-      ['biota', 'boundaries', 
-       'climatologyMeteorologyAtmosphere', 'economy', 'elevation', 
-       'environment', 'farming', 'geoscientificInformation', 'health', 
-       'imageryBaseMapsEarthCover', 'inlandWaters', 'location', 
-       'intelligenceMilitary', 'oceans', 'planningCadastre', 'society', 
+    $scope.topicCategoryChoices =
+      ['biota', 'boundaries',
+       'climatologyMeteorologyAtmosphere', 'economy', 'elevation',
+       'environment', 'farming', 'geoscientificInformation', 'health',
+       'imageryBaseMapsEarthCover', 'inlandWaters', 'location',
+       'intelligenceMilitary', 'oceans', 'planningCadastre', 'society',
        'structure', 'transportation',
        'utilitiesCommunication'];
 
@@ -453,13 +440,13 @@ metadataEditorApp.controller('FormCtrl', ['$scope', '$http', '$log',
       'not planned': 'notPlanned',
       'unknown': 'unknown'
     };
-    
+
     // order for contact fields
-    $scope.orderedContactFields = 
-      ['name', 'email', 'org', 'address', 'city', 
+    $scope.orderedContactFields =
+      ['name', 'email', 'org', 'address', 'city',
        'state', 'zipcode', 'country', 'phone'];
 
-    $scope.cfieldsMap = 
+    $scope.cfieldsMap =
     {
         'name': 'Name',
         'email': 'Email',
@@ -472,7 +459,7 @@ metadataEditorApp.controller('FormCtrl', ['$scope', '$http', '$log',
         'phone': 'Phone'
     };
 
-    var addedContacts = 
+    var addedContacts =
     {
       'access': 0,
       'citation': 0
@@ -527,13 +514,13 @@ metadataEditorApp.controller('FormCtrl', ['$scope', '$http', '$log',
 
     $scope.addOnlineResource = function()
     {
-      $scope.currentRecord.online.push("");    
+      $scope.currentRecord.online.push("");
     };
 
     $scope.bboxInput = "";
     $scope.getBbox = function()
     {
-      var baseUrl = 'http://' + hostname + '/api/geocode/';
+      var baseUrl = '//' + hostname + '/api/geocode/';
       var fullUrl = baseUrl + $scope.bboxInput;
 
       $http.get(fullUrl)
