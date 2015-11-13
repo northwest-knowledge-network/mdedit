@@ -1,10 +1,7 @@
 'use strict';
 
-/* Controllers */
-
-var metadataEditorApp = angular.module('metadataEditor', ['ngRoute', 'ui.date']);
-
-// track whether an existing record
+var metadataEditorApp = 
+  angular.module('metadataEditor', ['ngRoute', 'ui.date']);
 
 // for minification, explicitly declare dependencies $scope and $http
 metadataEditorApp.controller('FormCtrl', ['$scope', '$http', '$log', 
@@ -142,11 +139,10 @@ metadataEditorApp.controller('FormCtrl', ['$scope', '$http', '$log',
     // initialize form with placeholder data for creating a new record
     $scope.createNewRecord();
 
-    /** On click check to see if this button has been clicked and then in index.html
-    use the ng-hide function to hide those fields that do not apply to Dublin Core
-    metadata form
-   
-    // sets default value fo dublin for False */
+    /**
+     * Change the metadata type being generated between ISO for datasets
+     * and Dublin Core for other research products
+     */
     $scope.isDublin = false;
     $scope.isISO = true;
     $scope.toggleMetadataType = function(type)
@@ -172,30 +168,25 @@ metadataEditorApp.controller('FormCtrl', ['$scope', '$http', '$log',
       $log.log('iso: ' + $scope.isISO);
     };
 
-    /**On click of Load MILES Defaults button, load the defaults in MILES defaults 
-    json file
-    */
+    /**On click of Load MILES Defaults button, 
+     * load the defaults in MILES defaults json file
+     */
     $scope.defaultMILES = function()
     {
       $scope.newRecord = true;
 
       $http.get('//' + hostname + '/api/metadata/defaultMILES')
            .success(function(data) {
+
              var milesRec = data.record;
-             milesRec.start_date = {};
-             milesRec.end_date = {};
-             milesRec.start_date.$date = new Date(2010, 1, 1);
-             milesRec.end_date.$date = new Date();
-             milesRec.end_date.$date.setHours(0);
-             milesRec.end_date.$date.setMinutes(0);
-             milesRec.end_date.$date.setSeconds(0);
 
-             milesRec.last_mod_date = {};
-             milesRec.first_pub_date = {};
-             milesRec.last_mod_date.$date = new Date();
-             milesRec.first_pub_date.$date = new Date();
-
-             $scope.currentRecord = milesRec;
+             for (var key in milesRec)
+             {
+               if (milesRec.hasOwnProperty(key))
+               {
+                  $scope.currentRecord[key] = milesRec[key];
+               }
+             }
 
              updateForms($scope.currentRecord);
            });
@@ -358,12 +349,17 @@ metadataEditorApp.controller('FormCtrl', ['$scope', '$http', '$log',
      */
     function updateForms(record)
     {
+       /* place and thematic keywords come as a list from the server */
        record.place_keywords =
          record.place_keywords.join(', ');
 
        record.thematic_keywords =
          record.thematic_keywords.join(', ');
 
+       /* 
+        * Need to do this with dates because our service returns them as
+        * epoch seconds.
+        */
        record.start_date.$date =
          new Date(record.start_date.$date);
 
@@ -376,6 +372,7 @@ metadataEditorApp.controller('FormCtrl', ['$scope', '$http', '$log',
        record.first_pub_date.$date =
          new Date(record.first_pub_date.$date);
 
+       // these hours, minutes, seconds get put into broken out select boxes
        record.start_date.hours = record.start_date.$date.getHours();
        record.end_date.hours = record.end_date.$date.getHours();
 
