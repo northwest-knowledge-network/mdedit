@@ -393,8 +393,6 @@ metadataEditorApp.controller('FormCtrl', ['$scope', '$http', '$log',
            return $scope.knownDataFormats.indexOf(f) > -1;
          });
 
-       $scope.bboxInput = "";
-
        if (!$scope.currentRecord.online) {
          record.online = [""];
        }
@@ -514,11 +512,12 @@ metadataEditorApp.controller('FormCtrl', ['$scope', '$http', '$log',
       $scope.currentRecord.online.push("");
     };
 
-    $scope.bboxInput = "";
+    $scope.options = {};
     $scope.getBbox = function()
     {
+      $log.log('bbox input: ' + $scope.options.bboxInput);
       var baseUrl = '//' + hostname + '/api/geocode/';
-      var fullUrl = baseUrl + $scope.bboxInput;
+      var fullUrl = baseUrl + $scope.options.bboxInput;
 
       $http.get(fullUrl)
            .success(function(data)
