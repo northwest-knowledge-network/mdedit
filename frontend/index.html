@@ -3,575 +3,72 @@
 <head>
   <meta charset="utf-8">
   <title>NKN Metadata Editor</title>
+  <link rel="stylesheet" 
+      href="/frontend/bower_components/bootstrap/dist/css/bootstrap.css">
+  <link rel="stylesheet" 
+      href="/frontend/css/metadata.css">
+  <link rel="stylesheet" 
+      href="/frontend/bower_components/octicons/octicons/octicons.css">
+  <link rel="stylesheet" 
+      href="/frontend/bower_components/jquery-ui/themes/smoothness/jquery-ui.css"/>
+  <script type="text/javascript" 
+      src="/frontend/bower_components/jquery/dist/jquery.min.js">
+  </script>
+  <script type="text/javascript" 
+      src="/frontend/bower_components/jquery-ui/jquery-ui.min.js">
+  </script>
+  <script type="text/javascript" 
+          src="/frontend/bower_components/bootstrap/dist/js/bootstrap.min.js">
+  </script>
+  <script type="text/javascript" 
+      src="/frontend/bower_components/angular/angular.js"></script>
+  <script type="text/javascript" 
+      src="/frontend/bower_components/angular-ui-date/src/date.js"></script>
+  <script type="text/javascript" 
+      src="/frontend/bower_components/angular-route/angular-route.min.js"></script>
+  <script type="text/javascript" 
+      src="/frontend/bower_components/underscore/underscore-min.js"></script>
+  <script src="/frontend/js/controllers.js"></script>
 </head>
 
 <body>
 <div  id="bodyDiv">
-<div ng-app="metadataEditor" ng-controller="MetadataCtrl">
-  <link rel="stylesheet" href="/frontend/bower_components/bootstrap/dist/css/bootstrap.css">
-  <link rel="stylesheet" href="/frontend/metadata.css">
-  <link rel="stylesheet" href="/frontend/bower_components/octicons/octicons/octicons.css">
-  <link rel="stylesheet" href="/frontend/bower_components/jquery-ui/themes/smoothness/jquery-ui.css"/>
-  <script type="text/javascript" src="/frontend/bower_components/jquery/dist/jquery.min.js"></script>
-  <script type="text/javascript" src="/frontend/bower_components/jquery-ui/jquery-ui.min.js"></script>
-  <script type="text/javascript" 
-          src="/frontend/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-  <script type="text/javascript" src="/frontend/bower_components/angular/angular.js"></script>
-  <script type="text/javascript" src="/frontend/bower_components/angular-ui-date/src/date.js"></script>
-  <script type="text/javascript" src="/frontend/bower_components/underscore/underscore-min.js"></script>
-  <script src="/frontend/js/controllers.js"></script>
-  <nav class="navbar navbar-default navbar-fixed-top">
-      <div class="container-fluid">
-        <div class="navbar-header">
+<div ng-app="metadataEditor" ng-controller="FormCtrl">
 
-          <button tabindex=24 class="navbar-toggle collapsed" aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" type="button"><span class="sr-only">Toggle menu</span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-          </button>
-
-          <!--<a class="navbar-brand" href="#">NKN Metadata Editor</a>-->
-          <a href="#list" 
-             class="btn btn-small btn-default navbar-btn">
-            Edit Existing
-          </a>
-
-          <button tabindex=24 ng-click="createNewRecord()" 
-                  class="btn btn-small btn-primary navbar-btn">
-            Create New
-          </button>
-
-          <button tabindex=25 ng-show="newRecord" 
-                  class="btn btn-small btn-primary navbar-btn" 
-                  type="submit" ng-click="submitDraftRecord()">
-            Save Draft
-          </button>
-          
-          <button tabindex=25 ng-show="!newRecord" 
-                  class="btn btn-small btn-primary navbar-btn" 
-                  type="submit" 
-                  ng-click="submitDraftRecord()">
-            Save Changes to Draft
-          </button>
-
-          <!-- 
-          Controller will handle case where form is valid, but a draft has
-          not yet been submitted.
-          -->
-          <button tabindex=25 ng-show="metadataForm.$valid" 
-                  class="btn btn-small btn-primary navbar-btn" 
-                  type="submit" ng-click="publishRecord()">
-            Publish Record to NKN Portal
-          </button>
-
-          <button tabindex=24 ng-click="defaultMILES()" 
-                  class="btn btn-small btn-primary navbar-btn">
-            Load MILES Defaults
-          </button>
-
-          <button tabindex=25 class="btn btn-small btn-danger navbar-btn"
-            ng-hide="metadataForm.$valid">
-           Please fix errors to publish to NKN Portal
-          </button>
-      </div>
-
-        <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav navbar-right">
-            <!--<li class="dropdown">-->
-              <!--<a id="nav-button" class="dropdown-toggle" aria-expanded="false" -->
-                 <!--aria-haspopup="true" role="button" data-toggle="dropdown" href="#">-->
-                <!--Go to Section <span class="caret"></span>-->
-              <!--</a>-->
-              <!--<ul class="dropdown-menu">-->
-                <!--<li>-->
-                  <!--<a href="#basic">-->
-                    <!--<span class="glyphicon glyphicon-check"></span>-->
-                    <!--Basic & Detailed Info-->
-                  <!--</a>-->
-                <!--</li>-->
-                <!--<li>-->
-                  <!--<a href="#spatiotemporal">-->
-                    <!--<span class="glyphicon glyphicon-globe"></span>/<span class="glyphicon glyphicon-time"></span>-->
-                    <!--Spatiotemporal Extents-->
-                  <!--</a>-->
-                <!--</li>-->
-                <!--<li><a href="#contacts">-->
-                  <!--<span class="octicon octicon-repo"></span> Contacts</a>-->
-                <!--</li>-->
-                <!--<li>-->
-                  <!--<a href="#online"><span class="octicon octicon-device-desktop"></span> Online Resources</a>-->
-                <!--</li>-->
-              <!--</ul>-->
-            <!--</li>-->
-              <!--<li><a href="/#go-to-modal-info">Info</a></li>-->
-              <li>
-                <a href="https://github.com/northwest-knowledge-network/mdedit">
-                  <span class="octicon octicon-mark-github" id="mdedit"></span>
-                </a>
-              </li>
-            
-            </ul>
-        </div>
-        
-      </div>
-    </nav>
+<div ng-include="'partials/nav.html'"></div>
 
 <div id="main-container" class="container">
 
-      <h5> Get started using NKN's Metadata Editor: </h5>
-      <div style="margin-left: 2em; font-size: small">
-        You can use this form to create a valid ISO 19115 metadata record for your dataset or dataset series. Use the <strong><i>Save Draft</strong></i> button to save your work at any point. At the bottom of your screen you will see a list of your saved metadata records. Use the <strong><i>Edit</strong></i> button located to the right to open up an existing draft record to continue working on it. Use the <strong><i>Submit Changes to Draft</strong></i> button to save your new version of this metadata record. Once you have completed all required fields in the form (highlighted in red), you will have the option to submit your record to the NKN Portal for publication, use the <strong><i>Publish Record to NKN Portal</strong></i>. Once submitted, we will review and publish your record. If you make changes to a record you have already submited, you will need to resubmit. To view your metadata record as valid ISO 19115 metadata, use the <strong><i>ISO</strong></i> button in your list of records at the bottom of the screen. You can start a new record at any time by using the <strong><i>Create New</strong></i> button or loading project defaults if you submitting metadata related to a NKN-supported project.
-        </p>
-        Please contact <a href="mailto:mguarinello@uidaho.edu"> NKN's Data Manager</a> if you have additional questions or if you have data associated with this metadata record that you would like to store in NKN's repository.
-      </div>
-    
-      <br>
-    
-      <h5>Special Instructions for MILES users:</h5>
-       <div style="margin-left: 2em; font-size: small">
-        Use the <strong><i>Load MILES Default</strong></i> button above to pre-load some of the fields with MILES-related content. Please add to these fields as appropriate: for example, you will likely want to add <i>place and thematic keywords</i> related to your specific dataset. The <i>bounding coordinates</i> provided here are for the entire state of Idaho; modify to fit the location of your dataset if appropriate. NKN has been listed as the <i>data access contact</i> and will need to be changed if your data files themselves will be stored in an alternative data repository (please refer to the official MILES Data Management Plan for a list of approved repositories). Please provide the first author's name and university affiliation toward the end of the <i>use restrictions</i> text where it currently reads "(Name, University Affiliation)". Please contact the <a href="mailto:mguarinello@uidaho.edu"> MILES Data Manager</a> if you have additional questions or if you have data associated with this metadata record that you would like to store in NKN's repository.
-      </div>
-    
-      <br>
-    
-      <h5>A Note to ArcGIS Users:</h5>
-       <div style="margin-left: 2em; font-size: small">
-        <b><i>You can take metadata you write here and apply it to geospatial files in ArcGIS.</b></i> To view your metadata record as ESRI-ISO metadata, use the <strong><i>Esri</strong></i> button in your list of records at the bottom of the screen. You can then save this format of the record as an xml document (right click and Save As) to use within ArcGIS. In ArcCatalog you can view the metadata on the Description tab of the xml file itself or you can import it to an existing geospatial file. To do this, click on the <i>Import</i> option in the Description tab of the geospatial file. In the prompt window that opens: 1) select your xml metadata file, and 2) use the 'From ESRI ISO' option. ArcCatalog will add additional information (e.g., projected coordinates, attribute fields) to the metadata record. You will be able to see the metadata you have uploaded after you refresh your view in ArcCatalog. Be sure to select an option other than 'Item Description' in the Metadata tab of ArcCatalog Options (available in the Customize menu) to see the full details for the record.
-      </div>
-    
+  <!-- Show/Hide Instructions -->
+  <button ng-hide="showInstructions" ng-click="showInstructions = true"
+          class="btn">
+   <span class="octicon octicon-question"></span> Show Instructions
+  </button>
 
-      <hr>
+  <button ng-show="showInstructions" ng-click="showInstructions = false"
+          class="btn">
+  <span class="octicon octicon-x"></span> Hide Instructions
+  </button>
 
-      <h2 id="record-title" ng-show="newRecord">New Metadata Record: {{currentRecord.title}}</h2>
-      <h2 id="record-title" ng-show="!newRecord">Editing Existing: {{currentRecord.title}}</h2>
+  <div ng-show="showInstructions" 
+       ng-include="'partials/instructions.html'">
+  </div>
+  <!-- End Show/Hide Instructions -->
+
+  <hr>
+
+  <!-- Display Current Record Title -->
+  <h2 id="record-title" ng-show="newRecord">New Metadata Record: {{currentRecord.title}}</h2>
+
+  <h2 id="record-title" ng-show="!newRecord">Editing Existing: {{currentRecord.title}}</h2>
   
+  <br>
 
-    <br>
+  <div ng-include="'partials/iso.html'" ng-show="isISO" autoscroll></div>
+  <div ng-include="'partials/dublin.html'" ng-show="isDublin" autoscroll></div>
 
-    <form name="metadataForm" id="metadataForm" autocomplete="on">
+  <div ng-include="'partials/recordsList.html'"></div>
 
-    <div class="row">
-      <!---------------Left Divider-------------->
-      <div class="col-xs-6 col-sm-6 col-md-6">
-
-      <!--Basic Information: Title and Summary-->
-
-         <a class="anchor" name="basic">
-           <h2 class="section-header">
-             <span class="glyphicon glyphicon-check"></span> 
-             Basic Information
-           </h2>
-         </a>
-         <div class="subform">
-           <h4 class="attribute-label">Title</h4>
-           <h6>A brief description of your data; include 'what','where,' and 'when'.</h6>
-            <p class="field-description">
-             Examples: 
-            </p>
-              <ul class="field-description">
-                <li>
-                  LiDAR data for Clear Creek Watershed, Idaho (2009) 
-                </li>
-                <li>
-                  Water clarity for Lake Coeur d'Alene from IDEQ source data, Idaho (2005-2014)
-                </li>
-              </ul>
-           <input tabindex=1 style="width:95%" type="text" ng-model="currentRecord.title" required>
-
-           <h4 class="attribute-label">Summary</h4>
-           <h6>Describe your data for someone who knows very little about your field of study. Be sure to include what the data set is, what variables it describes over what spatial extent, why it was created, and if there are any major use restrictions.
-            <p><span style="text-transform: uppercase"><strong><i> Remember many people may not read past this description.</span style></strong></i></h6>
-           <textarea tabindex=2 style="width:95%" type="text" 
-                     ng-model="currentRecord.summary" required>
-           </textarea>
-
-           <h4 class="attribute-label">Date (dataset)</h4>
-           <h6>
-             What is the most recent date that the data was published or updated?
-           </h6>
-           <input tabindex=3 ui-date="dateOptions" 
-                  ng-model="currentRecord.first_pub_date.$date">
-           
-       </div>
-           <h2 class="section-header">
-             <span class="mega-octicon octicon-tools"></span> 
-             Data Format Details
-           </h2>
-           <div class="subform">
-             <h4 class="attribute-label">Data Format</h4>
-             <h6>
-              In what formats are your data available for distribution? Use the command key (on a Mac) or the control key (on a PC) to select multiple categories.
-             </h6>
-             <select tabindex=20 id="format-selector" class="multiselect" 
-                 style="width:80%;height:120px"
-                     ng-options="fmt for fmt in knownDataFormats" 
-                     ng-model="dataFormats" multiple ng-multiple="true"
-                     required>
-             </select>
-             <h6>Write in formats not listed (comma-separate for multiple)</h6>
-             <input tabindex=20 type="text" ng-model="auxDataFormats" style="width:95%">
-             <h4 class="attribute-label">Compression Technique</h4>
-             <h6>
-              Is your data offered in a compressed format? If so, please type a 
-              short description here. For example, "The LAS files are compressed 
-              in standard ZIP format"
-             </h6>
-             <input tabindex=20 type="text" ng-model="currentRecord.compression_technique" style="width:95%">
-           </div>
-     </div>
-      <!---------------Right Divider-------------->
-
-      <!--Detailed Information: Place Keywords, Thematic Keywords, Topic, Update status/freq-->
-
-
-      <div class="col-xs-6 col-sm-6 col-md-6">
-
-       <h2 class="section-header">
-         <span class="glyphicon glyphicon-list-alt"></span> Detailed Information</h2>
-       <div class="subform">
-         <div ng-repeat="key_title in 
-           [['place_keywords', 'Place Keywords', 'List comma-separated keywords related to the geographic area covered by your data. Example: Idaho, Clear Creek Watershed, USA.'], 
-                                       
-           ['thematic_keywords', 'Thematic Keywords', 'List comma-separated keywords that will help others discover your data through an intuitive search. In addition to subject-based keywords, you may also want to include the grant numbers and funding sources associated with creation of the data. If you are part of an NKN-supported project and thematic keywords have been pre-loaded for you, please do NOT delete or modify these, simply add to the list.']]">
-            <h4 class="attribute-label">{{ key_title[1] }}</h4>
-            <h6>{{ key_title[2] }}</h6>
-            <input tabindex=4 style="width:95%" type="text" 
-                   ng-model="currentRecord[key_title[0]]" required>
-          </div>
-         
-          <h4 class="attribute-label">Topic</h4>                           
-          <h6>Select as many of these high level categories as apply to your dataset. This is a set list of categories established by international standards. Use the command key (on a Mac) or the control key (on a PC) to select multiple categories.</h6>
-          <select tabindex=5 style="width:80%;height:100px;" multiple ng-multiple="true" class="multiselect" 
-                  ng-options="c for c in topicCategoryChoices" 
-                  ng-model="currentRecord.topic_category">
-          </select>
-          <h4 class="attribute-label">Update Status</h4>
-          <h6>What is the status of your dataset? For example, is it complete (you anticipate no further work and consider it final) or is it ongoing (continually being updated)?</h6>
-
-          <select tabindex=6 id="" name=""
-                  ng-options="s for (s, iso) in statusChoicesIsoMap" 
-                  ng-model="currentRecord.status">
-          </select>
-          <h4 class="attribute-label">Update Frequency</h4>
-          <h6>Please select the frequency with which changes (any modifications and deletions) are or will be made to your data after it is produced. Please select a value from below. Options are available if you do not plan to update your data or do not know the specific frequency of updates.</h6>
-          <select tabindex=7 id="" name=""
-                  ng-options="f for (f, iso) in updateFrequencyChoicesMap" 
-                  ng-model="currentRecord.update_frequency">
-          </select>
-
-          <h4 class="attribute-label">Data Type</h4>
-          <h6>
-            How are your data represented? Through a text file, vector spatial representation, a spatial grid of values, a table, a 
-            video of a scene, etc.?
-          </h6>
-          <select tabindex=8 id="" name=""
-                  ng-options="f for f in spatialDataOptions" 
-                  ng-model="currentRecord.spatial_dtype">
-          </select>
-
-          <h4 class="attribute-label">Hierarchy Level</h4>
-          <h6>
-            Is your data a single dataset or is it one of a series of datasets?
-          </h6>
-          <select tabindex=9 id="" name=""
-                  ng-options="f for f in hierarchyLevels" 
-                  ng-model="currentRecord.hierarchy_level">
-          </select>
-
-         </div>
-       </div>
-     </div>
-
-
-      <!--Spatial and Temporal Extents (Bounding Box, Start/End dates)-->
-    <div class="row">
-       <a class="anchor" name="spatiotemporal">
-         <h2 class="section-header">
-         <span class="glyphicon glyphicon-time"></span> 
-         <span class="glyphicon glyphicon-globe"></span> 
-           Spatiotemporal Extents
-         </h2>
-       </a>
-       <div class="subform">
-         
-         <div class="row" style="vertical-align:middle">
-           <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-             <div class="extent-block">
-               <h4><span class="glyphicon glyphicon-time"></span> 
-                 Temporal Extent</h4>
-               <h6>What is the time period represented by the data?</h6>
-                 <div ng-repeat="key_title in [['start_date','Start Date'], 
-                                         ['end_date', 'End Date']]"> 
-                  <h4 class="attribute-label">{{ key_title[1] }}</h4>
-                  
-                  <!--<div class="row">-->
-                      <input tabindex=20 ui-date="dateOptions" 
-                          ng-model="currentRecord[key_title[0]].$date"> <!--<br>-->
-                  <!--</div>-->
-                  <!--<div class="row">-->
-                      H:
-                      <select tabindex=20 id="" name="" ng-model="currentRecord[key_title[0]].hours"
-                          ng-options="hour for hour in hours">
-                      </select>
-                      M:
-                      <select tabindex=20 id="" name="" ng-model="currentRecord[key_title[0]].minutes"
-                          ng-options="min for min in minute_seconds">
-                      </select>
-                      S:
-                      <select tabindex=20 id="" name="" ng-model="currentRecord[key_title[0]].seconds"
-                          ng-options="sec for sec in minute_seconds">
-                      </select>
-             </div>
-                <!--</div>-->
-
-              </div>
-            </div>
-
-            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-              <div class="extent-block">
-                <h4>Longitudinal and Latitudinal Extent   <span style="text-align:right" class="glyphicon glyphicon-globe" aria-hidden="true"></span></h4>
-                <h6>What is the geographic area covered by the data? Please enter units in decimal degrees.</h6>
-
-                <div class="row">
-                  <div class="col-xs-4 col-sm-4 col-md-5 col-lg-5  col-xs-offset-4 col-sm-offset-4 col-lg-offset-3 col-md-offset-3">
-                    <h4 class="attribute-label" id="north">North Latitude</h4>
-                    <input tabindex=20 type="number" step="0.0000000000000001"
-                             ng-model="currentRecord.north_lat">
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-xs-4 col-sm-4 col-md-5 col-lg-5">
-                    <h4 class="attribute-label" id="north">West Longitude</h4>
-                    <input tabindex=20 type="number" step="0.0000000000000001"
-                             ng-model="currentRecord.west_lon">
-                  </div>
-                  <div class="col-xs-4 col-sm-4 col-md-5 col-lg-5 col-xs-offset-4 col-sm-offset-4 col-md-offset-2 col-lg-offset-2">
-                    <h4 class="attribute-label" id="north">East Longitude</h4>
-                    <input tabindex=20 type="number" step="0.0000000000000001"
-                             ng-model="currentRecord.east_lon">
-                  </div>
-                  
-                </div>
-                  <div class="row">
-                    <div class="col-xs-4 col-sm-4 col-md-5 col-lg-5 col-xs-offset-4 col-sm-offset-4 col-md-offset-3 col-lg-offset-3">
-                      <h4 class="attribute-label" id="north">South Latitude</h4>
-                      <input tabindex=20 type="number" 
-                             step="0.0000000000000001"
-                               ng-model="currentRecord.south_lat">
-                    </div>
-                  </div>
-                
-
-                <h6>Don't know your bounding coordinates? Enter a location name here (e.g., Idaho, Ada County, Coeur d'Alene, 83209). The system will not recognize watersheds by name. Click the button below to have the system calculate bounding coordinates and fill in the entries above.</h6>
-                <div class="row">
-                  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                  <input style="width:100%" tabindex=20 type="text" 
-                         ng-model="bboxInput">
-                 </div>
-                 <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                  <div id="place-button">
-                    <input class="btn btn-small btn-primary" ng-click="getBbox()" value="Calculate Extents" type="button">
-                </div>
-               </div>
-              </div>
-              </div>
-
-            </div>
-         
-         </div>
-       </div>
-       <br>
-
-      </div>
-
-
-
-    <div class="row">
-      <div class="col-xs-6 col-sm-6 col-md-6" id="citation-contacts">
-        <a class="anchor" name="contacts">
-          <h2 class="section-header">
-            <span class="glyphicon glyphicon-user"></span> Data Contacts (i.e., Authors)</h2>
-        </a>
-        <h6 class="contacts-subheader">Who are the author(s) of this dataset? Consider who might be the author of a manuscript describing the data (likely PI, post-doc, or graduate student). Start with the first author and add additional authors as needed.</h6>
-        <div ng-repeat="contact in currentRecord.citation">
-          <div class="subform">
-            <h3 class="section-header">Data Contact {{ $index + 1 }}</h3>
-            <div class="row" ng-repeat="n in [0,1,2]">
-              <div ng-repeat="cfield in orderedContactFields.slice(n*3 , (n+1)*3)">
-                <div class="col-xs-12 col-sm-12 col-md-4 col-md-4">
-                  <h4 class="attribute-label">{{cfieldsMap[cfield]}}</h4>
-                  <input tabindex=20 style="width:100%" type="text" ng-model="contact[cfield]" 
-                         ng-if="!($parent.$index==0 && $index==1)" required>
-                  <input tabindex=20 style="width:100%" type="email" ng-model="contact[cfield]" 
-                         ng-if="$parent.$index==0 && $index==1" required>
-                </div>
-              </div>
-            </div>
-        </div>
-        </div>
-        <br>
-
-        <div class="row">
-          <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4">
-            <input type="button" tabindex=20 class="btn btn-default btn-contact" 
-                   ng-click="cancelAddContactCitation()"
-                   value="Cancel"/>
-          </div>
-  
-          <div class="col-xs-6 col-sm-6 col-md-8 col-lg-8">
-            <input type="button" tabindex=20 class="btn btn-primary btn-contact" 
-                   ng-click="addContactCitation()"
-                   value="Add a Contact" />
-          </div>
-        </div>
-
-      </div>
-
-      <div class="col-xs-6 col-sm-6 col-md-6" id="access-contacts">
-
-        <h2 class="section-header">
-          <span class="glyphicon glyphicon-cloud"></span>  Data Access Contacts</h2>
-        <h6 class="contacts-subheader">Identify the organization and, where appropriate, the point of contact (name or position, e.g., Data Manager) responsible for providing physical access to the data.</h6>
-        <div ng-repeat="contact in currentRecord.access">
-          <div class="subform">
-            <h3 class="section-header">Access Contact {{ $index + 1 }}</h3>
-            <div class="row" ng-repeat="n in [0,1,2]">
-              <div ng-repeat="cfield in orderedContactFields.slice(n*3 , (n+1)*3)">
-                <div class="col-xs-12 col-sm-12 col-md-4 col-md-4">
-                  <h4 class="attribute-label">{{cfieldsMap[cfield]}}</h4>
-                  <input tabindex=20 style="width:100%" type="text" ng-model="contact[cfield]" 
-                         ng-if="!($parent.$index==0 && $index==1)" required>
-                  <input tabindex=20 style="width:100%" type="email" ng-model="contact[cfield]" 
-                         ng-if="$parent.$index==0 && $index==1" required>
-                </div>
-              </div>
-            </div>
-        </div>
-        </div>
-        <br>
-
-        <div class="row">
-          <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4">
-            <input type="button" tabindex=20 class="btn btn-default btn-contact" 
-                   ng-click="cancelAddContactAccess()"
-                   value="Cancel" />
-          </div>
-  
-          <!-- Only allowed to add a new contact if all current contact fields 
-              are valid -->
-          <div class="col-xs-6 col-sm-6 col-md-8 col-lg-8">
-            <input type="button" tabindex=20 class="btn btn-primary btn-contact" 
-                    ng-click="addContactAccess()"
-                    value="Add a Contact" />
-          </div>
-        </div>
-
-        <br>
-
-
-
-
-      </div>
-    </form>
-    
-          <div class="row">
-
-            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-            <a class="anchor" name="online">
-              <h2 class="section-header"><span class="mega-octicon octicon-device-desktop"></span>  Online Resources</h2>
-              <h6>
-                Is your data or any additional information specific to the data available
-                online or is your data provided as a web service (e.g., Web Mapping
-                Services, Catalog Services for the Web, REST services)? Provide the
-                URL for each online resource.
-              </h6>
-              <form name="onlineSubform" id="onlineSubform">
-                <div class="subform">
-                  <div class="row">
-                    <div ng-repeat="el in currentRecord.online track by $index">
-                      <h3 style="margin-left:10px" class="section-header">URL {{ $index + 1 }}</h3>
-                      <div class="row">
-                        <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
-                          <input type="url" tabindex="21" style="margin-left:10px;width:100%"
-                                 ng-model="currentRecord.online[$index]">
-                        </div>
-                        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                          <input type="button" tabindex=20 class="btn btn-default btn-xs" 
-                              ng-click="removeOnlineResource($index)" 
-                              value="Remove">
-                        </div>
-                      </div>
-                   </div>
-                  </div>
-                </div>
-                <div id="online-buttons">
-                  <input type="button" tabindex=21 class="btn btn-primary btn-contact" 
-                          ng-click="addOnlineResource()"
-                          value="Add a Resource" />
-                </div>
-              </form>
-            </div>
-          <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-            <a class="anchor" name="online">
-            <h2 class="section-header">
-              <span class="mega-octicon octicon-issue-opened"></span>  Use Restrictions
-            </h2>
-            <div class="subform">
-              <h6>
-                List any use restrictions for how others should use your data. 
-                For example, you might want to stipulate that "This 
-                dataset should be cited in any publications for which it is 
-                used." If there are no restrictions for how your dataset is 
-                used, please state so here.
-              </h6>
-              <form>
-                      <textarea style="width:100%" tabindex=21 rows=4 
-                                ng-model="currentRecord.use_restrictions">
-                      </textarea>
-                  </div>
-                </form>
-            </div>
-</div>
-
-  <!-- View of current metadata records -->
-<a class="anchor" name="list"><h1 name="list">Listing of Current Metadata Records</h1></a>  
-
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <td><b>Dataset Title</b></td>   
-        <td><b>Summary</b></td>   
-        <td><b>First Citation Contact</b></td> 
-        <td><b>Edit and formats</b></td>
-      </tr>
-    </thead>
-    <tr ng-repeat="mdRecord in allRecords">
-      <td>{{mdRecord.title}}</td>
-      <td>{{mdRecord.summary}}</td>
-      <td>{{mdRecord.citation[0].name}}</td>
-      <td>
-        <div class="btn-group btn-group-xs">
-          <span class="btn btn-default"
-                ng-click="editRecord(mdRecord._id.$oid)">
-              Edit 
-          </span>
-          <a
-            class="btn btn-default"
-            href="http://{{hostname}}/api/metadata/{{mdRecord._id.$oid}}/iso">
-            ISO
-          </a>
-          <a
-            class="btn btn-default"
-            href="http://{{hostname}}/api/metadata/{{mdRecord._id.$oid}}/esri">
-            Esri
-          </a>
-        </div>
-      </td>
-    </tr>
-  </table>
-
-
-</div>
 </div>
 </body>
 </html>

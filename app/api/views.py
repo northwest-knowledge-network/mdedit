@@ -142,6 +142,7 @@ def publish_metadata_record(_oid):
                              str_id,
                              str_id + '.xml')
 
+
     if not os.path.exists(os.path.dirname(save_path)):
         os.mkdir(os.path.dirname(save_path))
 
@@ -169,6 +170,23 @@ def get_single_iso_metadata(_oid):
     iso_str = str(iso_transform(md_xml))
 
     return Response(iso_str, 200, mimetype='application/xml')
+
+
+@api.route('/api/metadata/<string:_oid>/dc')
+@cross_origin(origin="*", methods=['GET'])
+def get_single_dc_metadata(_oid):
+    """
+    Produce the Dublin Core representation of the metadata by
+    using an XSLT transform operated on the generic xml found at /xml
+    """
+    xml_str = get_single_xml_metadata(_oid).data
+    md_xml = ET.fromstring(xml_str)
+    dc_xslt = ET.parse(os.path.join(os.path.dirname(__file__), '..', '..',
+                        'xslt', 'XSLT_for_mdedit_dublineCore.xsl'))
+    dc_transform = ET.XSLT(dc_xslt)
+    dc_str = str(dc_transform(md_xml))
+
+    return Response(dc_str, 200, mimetype='application/xml')
 
 
 @api.route('/api/metadata/<string:_oid>/esri')

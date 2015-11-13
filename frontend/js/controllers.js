@@ -1,13 +1,10 @@
 'use strict';
 
-/* Controllers */
-
-var metadataEditorApp = angular.module('metadataEditor', ['ui.date']);
-
-// track whether an existing record
+var metadataEditorApp = 
+  angular.module('metadataEditor', ['ngRoute', 'ui.date']);
 
 // for minification, explicitly declare dependencies $scope and $http
-metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
+metadataEditorApp.controller('FormCtrl', ['$scope', '$http', '$log', 
   function($scope, $http, $log) {
 
     // first see if we have any user information given to us (from Drupal)
@@ -103,7 +100,12 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
       $http.get('//' + hostname + '/api/metadata/placeholder')
            .success(function(data) {
              var placeholderRec = data.record;
+             //$scope.currentRecord = placeholderRec;
              var emptyRec = JSON.parse(JSON.stringify(placeholderRec));
+
+             $log.log(emptyRec);
+             
+             // clear out placeholder values
              for (var field in emptyRec)
              {
                if (['citation', 'access'].indexOf(field) > -1)
@@ -128,25 +130,6 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
              emptyRec.end_date.$date.setMinutes(0);
              emptyRec.end_date.$date.setSeconds(0);
 
-             emptyRec.start_date.hours = 0;
-             emptyRec.end_date.hours = 0;
-             emptyRec.start_date.minutes = 0;
-             emptyRec.end_date.minutes = 0;
-             emptyRec.start_date.seconds = 0;
-             emptyRec.end_date.seconds = 0;
-
-             emptyRec.last_mod_date = {$date: new Date()};
-             emptyRec.first_pub_date = {$date: new Date()};
-
-             $scope.auxDataFormats = "";
-
-             emptyRec.online = [""];
-
-             emptyRec.topic_category = [""];
-             emptyRec.thematic_keywords = [""];
-             emptyRec.place_keywords = [""];
-             emptyRec.data_format = [""];
-
              $scope.currentRecord = emptyRec;
 
              updateForms($scope.currentRecord);
@@ -156,39 +139,54 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
     // initialize form with placeholder data for creating a new record
     $scope.createNewRecord();
 
-    /**On click of Load MILES Defaults button, load the defaults in MILES defaults
-    json file
-    */
+    /**
+     * Change the metadata type being generated between ISO for datasets
+     * and Dublin Core for other research products
+     */
+    $scope.isDublin = false;
+    $scope.isISO = true;
+    $scope.toggleMetadataType = function(type)
+    {
+      switch (type)
+      {
+        case 'dublin':
+          $scope.isDublin = true;
+          $scope.isISO = false;
+          break;
+
+        case 'iso':
+          $scope.isDublin = false;
+          $scope.isISO = true;
+          break;
+
+        default:
+          $scope.isDublin = false;
+          $scope.isISO = true;
+      }
+
+      $log.log('dublin: ' + $scope.isDublin);
+      $log.log('iso: ' + $scope.isISO);
+    };
+
+    /**On click of Load MILES Defaults button, 
+     * load the defaults in MILES defaults json file
+     */
     $scope.defaultMILES = function()
     {
       $scope.newRecord = true;
 
       $http.get('//' + hostname + '/api/metadata/defaultMILES')
            .success(function(data) {
+
              var milesRec = data.record;
-             milesRec.start_date = {};
-             milesRec.end_date = {};
-             milesRec.start_date.$date = new Date(2010, 1, 1);
-             milesRec.end_date.$date = new Date();
-             milesRec.end_date.$date.setHours(0);
-             milesRec.end_date.$date.setMinutes(0);
-             milesRec.end_date.$date.setSeconds(0);
 
-             milesRec.start_date.hours = 0;
-             milesRec.end_date.hours = 0;
-             milesRec.start_date.minutes = 0;
-             milesRec.end_date.minutes = 0;
-             milesRec.start_date.seconds = 0;
-             milesRec.end_date.seconds = 0;
-
-             milesRec.last_mod_date = {};
-             milesRec.first_pub_date = {};
-             milesRec.last_mod_date.$date = new Date();
-             milesRec.first_pub_date.$date = new Date();
-
-             $scope.auxDataFormats = "";
-
-             $scope.currentRecord = milesRec;
+             for (var key in milesRec)
+             {
+               if (milesRec.hasOwnProperty(key))
+               {
+                  $scope.currentRecord[key] = milesRec[key];
+               }
+             }
 
              updateForms($scope.currentRecord);
            });
@@ -242,6 +240,7 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
     $scope.publishRecord = function()
     {
       var current = prepareCurrentScopedRecord();
+      // if the record is totally new, we first want to save the draft of it
       if ($scope.newRecord)
       {
         $http.post('//' + hostname + '/api/metadata', current)
@@ -257,6 +256,7 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
              })
              .error(function(data) { $log.log(data.record); });
       }
+      // if the record already existed as a draft, we update the draft
       else
       {
         $http.put('//' + hostname + '/api/metadata/' + current._id.$oid,
@@ -349,12 +349,17 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
      */
     function updateForms(record)
     {
+       /* place and thematic keywords come as a list from the server */
        record.place_keywords =
          record.place_keywords.join(', ');
 
        record.thematic_keywords =
          record.thematic_keywords.join(', ');
 
+       /* 
+        * Need to do this with dates because our service returns them as
+        * epoch seconds.
+        */
        record.start_date.$date =
          new Date(record.start_date.$date);
 
@@ -367,6 +372,7 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
        record.first_pub_date.$date =
          new Date(record.first_pub_date.$date);
 
+       // these hours, minutes, seconds get put into broken out select boxes
        record.start_date.hours = record.start_date.$date.getHours();
        record.end_date.hours = record.end_date.$date.getHours();
 
@@ -386,8 +392,6 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
          record.data_format.filter(function (f) {
            return $scope.knownDataFormats.indexOf(f) > -1;
          });
-
-       $scope.bboxInput = "";
 
        if (!$scope.currentRecord.online) {
          record.online = [""];
@@ -508,11 +512,12 @@ metadataEditorApp.controller('MetadataCtrl', ['$scope', '$http', '$log',
       $scope.currentRecord.online.push("");
     };
 
-    $scope.bboxInput = "";
+    $scope.options = {};
     $scope.getBbox = function()
     {
+      $log.log('bbox input: ' + $scope.options.bboxInput);
       var baseUrl = '//' + hostname + '/api/geocode/';
-      var fullUrl = baseUrl + $scope.bboxInput;
+      var fullUrl = baseUrl + $scope.options.bboxInput;
 
       $http.get(fullUrl)
            .success(function(data)
