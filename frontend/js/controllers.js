@@ -82,6 +82,7 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
              if (typeof record.first_pub_date == "undefined") {
                record.first_pub_date = {$date: new Date()};
              }
+             $log.log(record);
              updateForms(record);
            });
     };
@@ -184,7 +185,16 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
              {
                if (milesRec.hasOwnProperty(key))
                {
-                  $scope.currentRecord[key] = milesRec[key];
+                  // only want to overwrite country and state for MILES
+                  if (key === "citation")
+                  {
+                    $scope.currentRecord[key][0].country = milesRec[key][0].country;
+                    $scope.currentRecord[key][0].state = milesRec[key][0].state;
+                  }
+                  else
+                  {
+                    $scope.currentRecord[key] = milesRec[key];
+                  }
                }
              }
 
