@@ -59,15 +59,6 @@
     Save Changes to Draft
   </button>
   
-  <!-- 
-  Controller will handle case where form is valid, but a draft has
-  not yet been submitted.
-  -->
-  <button tabindex=25 ng-show="metadataForm.$valid" 
-          class="btn btn-small btn-primary navbar-btn" 
-          type="submit" ng-click="publishRecord()">
-    Publish Record to NKN Portal
-  </button>
 
   <!--ng-click="toggleMetadataType('iso')"-->
   <a tabindex=24 href="#/iso"
@@ -86,10 +77,6 @@
     Load MILES Defaults
   </button>
   
-  <button tabindex=25 class="btn btn-small btn-danger navbar-btn"
-    ng-hide="metadataForm.$valid">
-   Please fix errors before publishing to NKN Portal
-  </button>
 </div>
 
 <div ng-show="showInstructions" 
