@@ -13,7 +13,6 @@ metadataEditorApp.config(['$routeProvider',
       when('/iso', {
         templateUrl: 'partials/iso.html',
         controller: 'ISOController'
-        //controller: 'BaseController'
       });
   }
 ]);

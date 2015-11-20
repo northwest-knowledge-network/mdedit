@@ -50,8 +50,6 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
       "SPSS", "Stata", "Tab", "tiff", "txt", "VBS", "wav", "xls", "xlsx",
       "xml"];
 
-    $scope.dataFormats = [];
-
     $scope.spatialDataOptions = ["vector", "grid", "table or text",
       "triangulated irregular network", "stereographic imaging",
       "video recording of a scene"];
@@ -82,7 +80,6 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
              if (typeof record.first_pub_date == "undefined") {
                record.first_pub_date = {$date: new Date()};
              }
-             $log.log(record);
              updateForms(record);
            });
     };
@@ -104,8 +101,6 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
              //$scope.currentRecord = placeholderRec;
              var emptyRec = JSON.parse(JSON.stringify(placeholderRec));
 
-             $log.log(emptyRec);
-             
              // clear out placeholder values
              for (var field in emptyRec)
              {
@@ -165,8 +160,6 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
           $scope.isISO = true;
       }
 
-      $log.log('dublin: ' + $scope.isDublin);
-      $log.log('iso: ' + $scope.isISO);
     };
 
     /**On click of Load MILES Defaults button, 
@@ -230,6 +223,8 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
       }
       else
       {
+        $log.log($scope.dataFormats);
+        $log.log(current);
         $http.put('//' + hostname + '/api/metadata/' + current._id.$oid,
                   {'record': current, 'session_id': session_id})
              .success(function(data) {
@@ -318,6 +313,8 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
       current.place_keywords = $scope.currentRecord.place_keywords.split(', ');
       current.thematic_keywords = $scope.currentRecord.thematic_keywords.split(', ');
 
+      $log.log('inside prepareCurrentScopedRecord');
+      $log.log($scope.dataFormats);
       current.data_format = $scope.dataFormats;
 
       if ($scope.auxDataFormats)
@@ -338,6 +335,8 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
       current.first_pub_date =
         {$date: $scope.currentRecord.first_pub_date.$date.getTime()};
 
+      // Handle situation where certain fields are missing.
+      // Remove them so they are not None when submitted to server.
       return current;
     }
 
@@ -392,7 +391,14 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
        record.start_date.seconds = record.start_date.$date.getSeconds();
        record.end_date.seconds = record.end_date.$date.getSeconds();
 
+       //record.data_format = $scope.auxDataFormats;
+       //record.data_format.concat($scope.dataFormats);
+
        $scope.currentRecord = record;
+       // This seems to be only for loading from the server.
+       // If we are saving updates, this will just overwrite updates with 
+       // whatever came from the server, again, which is fine for loading from 
+       // the server, but we must first set record.data_format above
        $scope.auxDataFormats =
          record.data_format.filter(function (f) {
            return $scope.knownDataFormats.indexOf(f) === -1;
@@ -525,7 +531,6 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
     $scope.options = {};
     $scope.getBbox = function()
     {
-      $log.log('bbox input: ' + $scope.options.bboxInput);
       var baseUrl = '//' + hostname + '/api/geocode/';
       var fullUrl = baseUrl + $scope.options.bboxInput;
 
@@ -543,6 +548,7 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
 .controller('ISOController', [function()
   {
     this.standard = 'iso';
+    this.dataFormats = ['docx'];     
   }     
 ])
 .controller('DCController', [function()

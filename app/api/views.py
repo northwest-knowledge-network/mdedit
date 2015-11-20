@@ -47,6 +47,8 @@ def metadata():
             new_md.default = None
             new_md.username = username
 
+            new_md.topic_category
+
             new_md.save()
 
             # return a JSON record of new metadata to load into the page
@@ -265,7 +267,10 @@ def _authenticate_user_from_session(request):
     username_url = (os.getenv('GETUSER_URL') or
                     'https://nkn-dev.nkn.uidaho.edu/getUsername/')
 
-    session_id = request.json['session_id']
+    try:
+        session_id = request.json['session_id']
+    except:
+        session_id = 'local'
 
     if session_id == 'local':
         return 'local_user'
