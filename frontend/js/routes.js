@@ -7,12 +7,13 @@ metadataEditorApp.config(['$routeProvider',
         redirectTo: '/iso'
       }).
       when('/dublin', {
-        templateUrl: 'dublin.html',
-        controller: 'FormCtrl'
+        templateUrl: 'partials/dublin.html',
+        controller: 'DCController'
       }).
       when('/iso', {
-        templateUrl: 'iso.html',
-        controller: 'FormCtrl'
+        templateUrl: 'partials/iso.html',
+        controller: 'ISOController'
+        //controller: 'BaseController'
       });
   }
 ]);

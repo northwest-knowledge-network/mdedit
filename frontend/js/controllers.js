@@ -1,10 +1,10 @@
 'use strict';
 
-var metadataEditorApp = 
-  angular.module('metadataEditor', ['ngRoute', 'ui.date']);
+//var metadataEditorApp = 
+  //angular.module('metadataEditor', ['ngRoute', 'ui.date']);
 
 // for minification, explicitly declare dependencies $scope and $http
-metadataEditorApp.controller('FormCtrl', ['$scope', '$http', '$log', 
+metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log', 
   function($scope, $http, $log) {
 
     // first see if we have any user information given to us (from Drupal)
@@ -357,7 +357,7 @@ metadataEditorApp.controller('FormCtrl', ['$scope', '$http', '$log',
          record.thematic_keywords.join(', ');
 
        /* 
-        * Need to do this with dates because our service returns them as
+        * Need to do $scope with dates because our service returns them as
         * epoch seconds.
         */
        record.start_date.$date =
@@ -529,4 +529,14 @@ metadataEditorApp.controller('FormCtrl', ['$scope', '$http', '$log',
            });
     };
   } // end of callback for controller initialization
+])
+.controller('ISOController', [function()
+  {
+    this.standard = 'iso';
+  }     
+])
+.controller('DCController', [function()
+  {
+    this.standard = 'dc';
+  }
 ]);

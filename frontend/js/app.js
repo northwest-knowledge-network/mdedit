@@ -1,3 +1,4 @@
 'use strict';
 
-/* App Module */
+var metadataEditorApp = 
+  angular.module('metadataEditor', ['ngRoute', 'ui.date']);

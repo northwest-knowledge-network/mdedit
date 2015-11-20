@@ -4,55 +4,44 @@
   <meta charset="utf-8">
   <title>NKN Metadata Editor</title>
   <link rel="stylesheet" 
-      href="/frontend/bower_components/bootstrap/dist/css/bootstrap.css">
+        href="/frontend/bower_components/bootstrap/dist/css/bootstrap.css">
   <link rel="stylesheet" 
-      href="/frontend/css/metadata.css">
+        href="/frontend/css/metadata.css">
   <link rel="stylesheet" 
-      href="/frontend/bower_components/octicons/octicons/octicons.css">
+        href="/frontend/bower_components/octicons/octicons/octicons.css">
   <link rel="stylesheet" 
-      href="/frontend/bower_components/jquery-ui/themes/smoothness/jquery-ui.css"/>
+        href="/frontend/bower_components/jquery-ui/themes/smoothness/jquery-ui.css"/>
   <script type="text/javascript" 
-      src="/frontend/bower_components/jquery/dist/jquery.min.js">
+          src="/frontend/bower_components/jquery/dist/jquery.min.js">
   </script>
   <script type="text/javascript" 
-      src="/frontend/bower_components/jquery-ui/jquery-ui.min.js">
+          src="/frontend/bower_components/jquery-ui/jquery-ui.min.js">
   </script>
   <script type="text/javascript" 
           src="/frontend/bower_components/bootstrap/dist/js/bootstrap.min.js">
   </script>
   <script type="text/javascript" 
-      src="/frontend/bower_components/angular/angular.js"></script>
+          src="/frontend/bower_components/angular/angular.js"></script>
   <script type="text/javascript" 
-      src="/frontend/bower_components/angular-ui-date/src/date.js"></script>
+          src="/frontend/bower_components/angular-ui-date/src/date.js"></script>
   <script type="text/javascript" 
-      src="/frontend/bower_components/angular-route/angular-route.min.js"></script>
+          src="/frontend/bower_components/angular-route/angular-route.min.js"></script>
   <script type="text/javascript" 
-      src="/frontend/bower_components/underscore/underscore-min.js"></script>
+          src="/frontend/bower_components/underscore/underscore-min.js"></script>
+  <script src="/frontend/js/app.js"></script>
+  <script src="/frontend/js/routes.js"></script>
   <script src="/frontend/js/controllers.js"></script>
 </head>
 
 <body>
 <div  id="bodyDiv">
-<div ng-app="metadataEditor" ng-controller="FormCtrl">
+<div ng-app="metadataEditor">
 
-<div ng-include="'partials/nav.html'"></div>
+<div ng-controller="BaseController as base">
+<div ng-include="'partials/header.html'"></div>
 
 <div id="main-container" class="container">
 
-  <!-- Show/Hide Instructions -->
-  <button ng-hide="showInstructions" ng-click="showInstructions = true"
-          class="btn">
-   <span class="octicon octicon-question"></span> Show Instructions
-  </button>
-
-  <button ng-show="showInstructions" ng-click="showInstructions = false"
-          class="btn">
-  <span class="octicon octicon-x"></span> Hide Instructions
-  </button>
-
-  <div ng-show="showInstructions" 
-       ng-include="'partials/instructions.html'">
-  </div>
   <!-- End Show/Hide Instructions -->
 
   <hr>
@@ -64,11 +53,15 @@
   
   <br>
 
-  <div ng-include="'partials/iso.html'" ng-show="isISO" autoscroll></div>
-  <div ng-include="'partials/dublin.html'" ng-show="isDublin" autoscroll></div>
+<!--<form name="metadataForm" id="metadataForm" autocomplete="on">-->
+  <!--<section ng-include="'partials/iso.html'" ng-show="isISO" autoscroll></section>-->
+  <!--<section ng-include="'partials/dublin.html'" ng-show="isDublin" autoscroll></section>-->
+<!--</form>-->
+  <div ng-view></div>
 
   <div ng-include="'partials/recordsList.html'"></div>
 
+</div>
 </div>
 </body>
 </html>

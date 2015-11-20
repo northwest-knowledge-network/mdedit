@@ -1,0 +1,98 @@
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+      <div class="navbar-header">
+
+        <button tabindex=24 class="navbar-toggle collapsed" aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" type="button"><span class="sr-only">Toggle menu</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+      </div>
+
+
+      <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+          <li class="navbar-brand">NKN Metadata Editor</li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li>  <a ng-hide="showInstructions" ng-click="showInstructions = true"
+          class="btn">
+   <span class="octicon octicon-question"></span> Show Instructions
+  </a>
+
+  <a ng-show="showInstructions" ng-click="showInstructions = false"
+          class="btn">
+  <span class="octicon octicon-x"></span> Hide Instructions
+  </a></li>
+          <li>
+            <a href="https://github.com/northwest-knowledge-network/mdedit">
+              <span class="octicon octicon-mark-github" id="mdedit"></span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div> 
+  </nav>
+
+
+<div style="text-align:center">
+  <a href="#list" 
+     class="btn btn-small btn-default navbar-btn">
+    Edit Existing
+  </a>
+  
+  <button tabindex=24 ng-click="createNewRecord()" 
+          class="btn btn-small btn-primary navbar-btn">
+    Create New
+  </button>
+  
+  <button tabindex=25 ng-show="newRecord" 
+          class="btn btn-small btn-primary navbar-btn" 
+          type="submit" ng-click="submitDraftRecord()">
+    Save Draft
+  </button>
+  
+  <button tabindex=25 ng-show="!newRecord" 
+          class="btn btn-small btn-primary navbar-btn" 
+          type="submit" 
+          ng-click="submitDraftRecord()">
+    Save Changes to Draft
+  </button>
+  
+  <!-- 
+  Controller will handle case where form is valid, but a draft has
+  not yet been submitted.
+  -->
+  <button tabindex=25 ng-show="metadataForm.$valid" 
+          class="btn btn-small btn-primary navbar-btn" 
+          type="submit" ng-click="publishRecord()">
+    Publish Record to NKN Portal
+  </button>
+
+  <!--ng-click="toggleMetadataType('iso')"-->
+  <a tabindex=24 href="#/iso"
+     class="btn btn-small btn-primary navbar-btn">
+    Create Dataset Record
+  </a>
+
+<!--ng-click="toggleMetadataType('dublin')"-->  
+  <a tabindex=24 href="#/dublin" 
+     class="btn btn-small btn-primary navbar-btn">
+    Create Other Research Product Record
+  </a>
+  
+  <button tabindex=24 ng-click="defaultMILES()" 
+          class="btn btn-small btn-primary navbar-btn">
+    Load MILES Defaults
+  </button>
+  
+  <button tabindex=25 class="btn btn-small btn-danger navbar-btn"
+    ng-hide="metadataForm.$valid">
+   Please fix errors before publishing to NKN Portal
+  </button>
+</div>
+
+<div ng-show="showInstructions" 
+ng-include="'partials/instructions.html'">
+</div>
+

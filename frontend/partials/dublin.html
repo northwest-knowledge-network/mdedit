@@ -1,5 +1,10 @@
-<form name="metadataForm" id="metadataForm" autocomplete="on">
-
+<ul>
+  <li ng-repeat="(key, errors) in metadataForm.$error track by $index"> <strong>{{ key }}</strong> errors
+    <ul>
+      <li ng-repeat="e in errors">{{ e.$name }} has an error: <strong>{{ key }}</strong>.<br>{{ e }}</li>
+    </ul>
+  </li>
+</ul>
 <div class="row">
   <!---------------Left Divider-------------->
   <div class="col-xs-6 col-sm-6 col-md-6">
