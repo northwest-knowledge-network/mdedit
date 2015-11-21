@@ -31,6 +31,9 @@ def metadata():
 
     PUT is a new record being created.
 
+    Access control is done here. A user can modify only their own records
+    because their session_id sent with the request.
+
     returns:
         Response with newly created or edited record as data.
     """
@@ -103,7 +106,6 @@ def defaultMILES_metadata():
     return jsonify(record=record)
 
 
-
 @api.route('/api/metadata/<string:_oid>', methods=['GET', 'POST', 'PUT'])
 @cross_origin(origin='*', methods=['GET', 'POST', 'PUT'],
               headers=['X-Requested-With', 'Content-Type', 'Origin'])
@@ -112,6 +114,9 @@ def get_single_metadata(_oid):
     Retrieve or update the metadata record with given _oid. Retrieval is done
     via POST because we must pass a session id so that the user is
     authenticated.
+
+    Access control is done here. A user can modify only their own records
+    because their session_id sent with the request.
     """
     username = _authenticate_user_from_session(request)
 
@@ -281,6 +286,43 @@ def get_single_xml_metadata(_oid):
     return Response(xml_str, 200, mimetype='application/xml')
 
 
+@api.route('/api/contacts/<string:type_>')
+@cross_origin(origin="*", methods=['GET'])
+def get_citation_contacts(type_):
+    """
+    Return contacts that have previously been used for Citation contacts
+    by the user.
+    """
+    username = _authenticate_user_from_session(request)
+
+    if username is None:
+        return Response(status=401)
+
+    if type_ not in ('citation', 'access'):
+
+        return Response(response='Type {} not recognized'
+                                 ' <img src="https://http.cat/404"/>'.format(
+                                     type_
+                                 ),
+                        status=404)
+
+    user_recs = Metadata.objects(username=username)
+
+    citation_contacts = reduce(
+        lambda a, b: a + b, [rec[type_] for rec in user_recs]
+    )
+
+    # filter out useless totally empty contacts
+    nonempty_contacts = [
+        c for c in citation_contacts
+            if not all(
+                [val == "" for val in json.loads(c.to_json()).values()]
+            )
+    ]
+
+    return jsonify(dict({'citation_contacts': nonempty_contacts}))
+
+
 def _authenticate_user_from_session(request):
     """
     Arguments:
@@ -288,6 +330,7 @@ def _authenticate_user_from_session(request):
     Returns:
         (str): username
     """
+    # TODO remove the default setting here. This is saying use a service.
     username_url = (os.getenv('GETUSER_URL') or
                     'https://nkn-dev.nkn.uidaho.edu/getUsername/')
 
