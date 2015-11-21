@@ -59,11 +59,11 @@
            <select tabindex=20 id="format-selector" class="multiselect" 
                style="width:80%;height:120px"
                    ng-options="fmt for fmt in knownDataFormats" 
-                   ng-model="dataFormats" multiple ng-multiple="true"
+                   ng-model="dataFormats.iso" multiple ng-multiple="true"
                    required>
            </select>
            <h6>Write in formats not listed (comma-separate for multiple)</h6>
-           <input tabindex=20 type="text" ng-model="auxDataFormats" style="width:95%">
+           <input tabindex=20 type="text" ng-model="dataFormats.aux" style="width:95%">
 
            <h4 class="attribute-label">Compression Technique</h4>
            <h6>

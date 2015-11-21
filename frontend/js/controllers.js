@@ -98,7 +98,7 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
       $http.get('//' + hostname + '/api/metadata/placeholder')
            .success(function(data) {
              var placeholderRec = data.record;
-             //$scope.currentRecord = placeholderRec;
+
              var emptyRec = JSON.parse(JSON.stringify(placeholderRec));
 
              // clear out placeholder values
@@ -127,6 +127,13 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
              emptyRec.end_date.$date.setSeconds(0);
 
              $scope.currentRecord = emptyRec;
+
+             // iso data formats come from a pre-defined list to from ISO std
+             $scope.dataFormats = {
+               iso: [''],
+               // aux, ie auxiliary, is a single text input write-in
+               aux: ''
+             };
 
              updateForms($scope.currentRecord);
            });
@@ -223,8 +230,6 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
       }
       else
       {
-        $log.log($scope.dataFormats);
-        $log.log(current);
         $http.put('//' + hostname + '/api/metadata/' + current._id.$oid,
                   {'record': current, 'session_id': session_id})
              .success(function(data) {
@@ -313,16 +318,14 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
       current.place_keywords = $scope.currentRecord.place_keywords.split(', ');
       current.thematic_keywords = $scope.currentRecord.thematic_keywords.split(', ');
 
-      $log.log('inside prepareCurrentScopedRecord');
-      $log.log($scope.dataFormats);
-      current.data_format = $scope.dataFormats;
+      current.data_format = $scope.dataFormats.iso;
 
-      if ($scope.auxDataFormats)
+      if ($scope.dataFormats.aux)
       {
-        var auxList = $scope.auxDataFormats.split(',')
+        var auxList = $scope.dataFormats.aux.split(',')
                             .map(function(el){ return el.trim(); });
 
-        current.data_format = $scope.dataFormats.concat(auxList);
+        current.data_format = current.data_format.concat(auxList);
       }
 
       current.last_mod_date =
@@ -391,20 +394,17 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
        record.start_date.seconds = record.start_date.$date.getSeconds();
        record.end_date.seconds = record.end_date.$date.getSeconds();
 
-       //record.data_format = $scope.auxDataFormats;
-       //record.data_format.concat($scope.dataFormats);
-
        $scope.currentRecord = record;
        // This seems to be only for loading from the server.
        // If we are saving updates, this will just overwrite updates with 
        // whatever came from the server, again, which is fine for loading from 
        // the server, but we must first set record.data_format above
-       $scope.auxDataFormats =
+       $scope.dataFormats.aux =
          record.data_format.filter(function (f) {
            return $scope.knownDataFormats.indexOf(f) === -1;
          }).join(', ');
 
-       $scope.dataFormats =
+       $scope.dataFormats.iso =
          record.data_format.filter(function (f) {
            return $scope.knownDataFormats.indexOf(f) > -1;
          });
@@ -548,7 +548,6 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
 .controller('ISOController', [function()
   {
     this.standard = 'iso';
-    this.dataFormats = ['docx'];     
   }     
 ])
 .controller('DCController', [function()
