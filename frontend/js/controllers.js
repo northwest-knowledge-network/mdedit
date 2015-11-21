@@ -127,6 +127,8 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
              emptyRec.end_date.$date.setSeconds(0);
 
              $scope.currentRecord = emptyRec;
+             $log.log("yo check it");
+             $log.log($scope.currentRecord);
 
              // iso data formats come from a pre-defined list to from ISO std
              $scope.dataFormats = {
@@ -141,6 +143,8 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
 
     // initialize form with placeholder data for creating a new record
     $scope.createNewRecord();
+
+    $log.log($scope.currentRecord);
 
     /**
      * Change the metadata type being generated between ISO for datasets

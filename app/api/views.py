@@ -24,12 +24,22 @@ import gptInsert
 @cross_origin(origin='*', methods=['POST', 'PUT'],
               headers=['X-Requested-With', 'Content-Type', 'Origin'])
 def metadata():
-    """Handle get and push requests coming to metadata server"""
+    """
+    Handle get and push requests coming to metadata server
+
+    POST is an update of an existing record.
+
+    PUT is a new record being created.
+
+    returns:
+        Response with newly created or edited record as data.
+    """
     username = _authenticate_user_from_session(request)
 
     if username:
         if request.method == 'POST':
 
+            # execute raw MongoDB query and return all of the user's records
             recs = Metadata.objects(
                 __raw__={'placeholder': False,
                          'default': None,
@@ -49,13 +59,27 @@ def metadata():
 
             new_md.topic_category
 
+            # this avoids errors in submitting None where a list is expected.
+            # string -> dict -> string seems wasteful, but don't see other way
+            new_md = Metadata.from_json(
+                        json.dumps(
+                            {
+                                k: v
+                                    for (k, v) in json.loads(
+                                        new_md.to_json()
+                                    ).iteritems()
+                                    if v != ''
+                            }
+                        )
+            )
+
             new_md.save()
 
             # return a JSON record of new metadata to load into the page
             return jsonify(record=new_md)
 
     else:
-        return Response('Bad or missing session id', 400)
+        return Response('Bad or missing session id.', 401)
 
 
 
