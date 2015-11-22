@@ -5,7 +5,8 @@
 
 // for minification, explicitly declare dependencies $scope and $http
 metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log', 
-  function($scope, $http, $log) {
+  '$route', '$routeParams',
+  function($scope, $http, $log, $route, $routeParams) {
 
     // first see if we have any user information given to us (from Drupal)
     if (typeof(window.session_id) === 'undefined')
