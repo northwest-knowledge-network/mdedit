@@ -1,0 +1,33 @@
+<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+  <div class="extent-block">
+   
+   <h4><span class="glyphicon glyphicon-time"></span> 
+     Temporal Extent</h4>
+   <h6>What is the time period represented by the data?</h6>
+   
+   <div ng-repeat="key_title in [['start_date','Start Date'], 
+                           ['end_date', 'End Date']]"> 
+     
+     <h4 class="attribute-label">{{ key_title[1] }}</h4>
+
+      <input tabindex=20 ui-date="dateOptions" 
+          ng-model="currentRecord[key_title[0]].$date">
+      
+      H:
+      <select tabindex=20 id="" name="" ng-model="currentRecord[key_title[0]].hours"
+          ng-options="hour for hour in hours">
+      </select>
+      
+      M:
+      <select tabindex=20 id="" name="" ng-model="currentRecord[key_title[0]].minutes"
+          ng-options="min for min in minute_seconds">
+      </select>
+      
+      S:
+      <select tabindex=20 id="" name="" ng-model="currentRecord[key_title[0]].seconds"
+          ng-options="sec for sec in minute_seconds">
+      </select>
+    </div>
+  
+  </div>
+</div>
