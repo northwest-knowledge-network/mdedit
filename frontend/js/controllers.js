@@ -1,12 +1,10 @@
 'use strict';
 
-//var metadataEditorApp = 
-  //angular.module('metadataEditor', ['ngRoute', 'ui.date']);
 
 // for minification, explicitly declare dependencies $scope and $http
 metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log', 
-  '$route', '$routeParams',
-  function($scope, $http, $log, $route, $routeParams) {
+  '$route', '$routeParams', 'formOptions',
+  function($scope, $http, $log, $route, $routeParams, formOptions) {
 
     // first see if we have any user information given to us (from Drupal)
     if (typeof(window.session_id) === 'undefined')
@@ -30,6 +28,14 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
     }
     $scope.hostname = hostname;
 
+    /** load up formOptions constants (defined in app.js) **/
+    $scope.topicCategoryChoices = formOptions.topicCategoryChoices;
+
+    // order for contact fields
+    $scope.orderedContactFields = formOptions.orderedContactFields;
+
+    $scope.cfieldsMap = formOptions.cfieldsMap;
+
     // initialize list of existing metadata records
     displayCurrentRecords();
 
@@ -41,20 +47,22 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
     };
 
     // create time picker vars
-    $scope.hours = _.range(24);
-    $scope.minute_seconds = _.range(60);
+    $scope.hours = [];
+    for (var i = 0; i < 24; i++)
+    {
+      $scope.hours.push(i);
+    }
 
-    $scope.knownDataFormats = ["ASCII", "csv", "DLG", "docx", "DRG", "DWG", "eps", 
-      "ERDAS", "Esri file GDB", "Esri grid", "Esri personal GDB","Esri TIN", "FASTA", "FASTQ", "GenBank", 
-      "GeoJSON", "GeoTIFF", "GML", "HDF", "jpeg", "KML", "LAS", "mp3", 
-      "MrSID", "netCDF", "pdf", "php", "png", "py", "R", "SDXF", "Shapefile", 
-      "SPSS", "Stata", "Tab", "tiff", "txt", "VBS", "wav", "xls", "xlsx",
-      "xml"];
+    $scope.minute_seconds = [];
+    for (var i = 0; i < 60; i++)
+    {
+      $scope.minute_seconds.push(i);
+    }
+    $scope.knownDataFormats = formOptions.knownDataFormats;
 
-    $scope.spatialDataOptions = ["vector", "grid", "table or text",
-      "triangulated irregular network", "stereographic imaging",
-      "video recording of a scene"];
-    $scope.hierarchyLevels = ["dataset", "series"];
+    $scope.spatialDataOptions = formOptions.spatialDataOptions;
+    
+    $scope.hierarchyLevels = formOptions.hierarchyLevels;
 
     /**
      * Fetch the record with recordId and update the form to display it.
@@ -418,62 +426,8 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
          record.online = [""];
        }
     }
-    /*
-     * Use these maps in the view: key gets displayed, value is actually the
-     * object value
-     */
-    $scope.statusChoicesIsoMap = {
-      'completed': 'completed',
-      'continually updated': 'onGoing',
-      'in process': 'underDevelopment',
-      'planned': 'planned',
-      'needs to be generated or updated': 'required',
-      'stored in an offline facility': 'historicalArchive',
-      'no longer valid': 'obsolete'
-    };
-
-    $scope.topicCategoryChoices =
-      ['biota', 'boundaries',
-       'climatologyMeteorologyAtmosphere', 'economy', 'elevation',
-       'environment', 'farming', 'geoscientificInformation', 'health',
-       'imageryBaseMapsEarthCover', 'inlandWaters', 'location',
-       'intelligenceMilitary', 'oceans', 'planningCadastre', 'society',
-       'structure', 'transportation',
-       'utilitiesCommunication'];
-
-    // our more human-readable update frequency choices need trans to ISO 19115
-    $scope.updateFrequencyChoicesMap = {
-      'continual': 'continual',
-      'daily': 'daily',
-      'weekly': 'weekly',
-      'fortnightly': 'fortnightly',
-      'monthly': 'monthly',
-      'quarterly': 'quarterly',
-      'biannually': 'biannually',
-      'annually': 'annually',
-      'as needed': 'asNeeded',
-      'irregular': 'irregular',
-      'not planned': 'notPlanned',
-      'unknown': 'unknown'
-    };
-
-    // order for contact fields
-    $scope.orderedContactFields =
-      ['name', 'email', 'org', 'address', 'city',
-       'state', 'zipcode', 'country', 'phone'];
-
-    $scope.cfieldsMap =
-    {
-        'name': 'Name',
-        'email': 'Email',
-        'org': 'Organization',
-        'address': 'Address',
-        'city': 'City',
-        'state': 'State',
-        'zipcode': 'Zip Code',
-        'country': 'Country',
-        'phone': 'Phone'
-    };
+    
+    
 
     var addedContacts =
     {
@@ -550,9 +504,13 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
     };
   } // end of callback for controller initialization
 ])
-.controller('ISOController', [function()
+.controller('ISOController', ['formOptions', function(formOptions)
   {
     this.standard = 'iso';
+    this.statusChoicesIsoMap = formOptions.statusChoicesIsoMap;
+
+    // our more human-readable update frequency choices need trans to ISO 19115
+    this.updateFrequencyChoicesMap = formOptions.updateFrequencyChoicesMap;
   }     
 ])
 .controller('DCController', [function()
