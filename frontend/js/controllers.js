@@ -4,17 +4,16 @@
 // for minification, explicitly declare dependencies $scope and $http
 metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log', 
   '$route', '$routeParams', 'formOptions', 'updateForms', 'editRecordService',
-  'getSessionId', 'getHostname',
+  'sessionId', 'hostname', 'createNewRecordService', 'EMPTY_CONTACT',
   function($scope, $http, $log, $route, $routeParams, 
-           formOptions, updateForms, editRecordService, getSessionId,
-           getHostname) 
+           formOptions, updateForms, editRecordService, sessionId,
+           hostname, createNewRecordService, EMPTY_CONTACT) 
   {
     
 
-    var session_id = getSessionId;
-
+    var session_id = sessionId;
     
-    $scope.hostname = getHostname;
+    $scope.hostname = hostname;
 
     /** load up formOptions constants (defined in app.js) **/
     $scope.topicCategoryChoices = formOptions.topicCategoryChoices;
@@ -22,6 +21,7 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
     // order for contact fields
     $scope.orderedContactFields = formOptions.orderedContactFields;
 
+    // contact fields mapping for layperson-to-iso translation
     $scope.cfieldsMap = formOptions.cfieldsMap;
 
     // initialize list of existing metadata records
@@ -57,64 +57,8 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
     {
       return editRecordService($scope, recordId);
     }
-      
 
-    var EMPTY_CONTACT =
-    {
-      'name': '', 'email': '', 'org': '', 'address': '',
-      'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': ''
-    };
-
-
-    $scope.createNewRecord = function()
-    {
-      $scope.newRecord = true;
-
-      $http.get('//' + getHostname + '/api/metadata/placeholder')
-           .success(function(data) {
-             var placeholderRec = data.record;
-
-             var emptyRec = JSON.parse(JSON.stringify(placeholderRec));
-
-             // clear out placeholder values
-             for (var field in emptyRec)
-             {
-               if (['citation', 'access'].indexOf(field) > -1)
-               {
-                 emptyRec[field] = [JSON.parse(JSON.stringify(EMPTY_CONTACT))];
-               }
-               else if (
-                 ['place_keywords', 'thematic_keywords',
-                  'data_format', 'online'].indexOf(field) > -1)
-               {
-                 emptyRec[field] = [""];
-               }
-               else if (['_cls', '_id', 'start_date', 'end_date', 'last_mod_date',
-                         'first_pub_date'].indexOf(field) == -1)
-               {
-                 emptyRec[field] = "";
-               }
-             }
-             emptyRec.start_date = {$date: new Date(2010, 1, 1)};
-             emptyRec.end_date = {$date: new Date()};
-             emptyRec.end_date.$date.setHours(0);
-             emptyRec.end_date.$date.setMinutes(0);
-             emptyRec.end_date.$date.setSeconds(0);
-
-             $scope.currentRecord = emptyRec;
-             $log.log("yo check it");
-             $log.log($scope.currentRecord);
-
-             // iso data formats come from a pre-defined list to from ISO std
-             $scope.dataFormats = {
-               iso: [''],
-               // aux, ie auxiliary, is a single text input write-in
-               aux: ''
-             };
-
-             updateForms($scope, $scope.currentRecord);
-           });
-    };
+    $scope.createNewRecord = function() { createNewRecordService($scope) };
 
     // initialize form with placeholder data for creating a new record
     $scope.createNewRecord();
@@ -145,7 +89,10 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
                   }
                   else
                   {
-                    $scope.currentRecord[key] = milesRec[key];
+                    if (key !== "data_format")
+                    {
+                      $scope.currentRecord[key] = milesRec[key];
+                    }
                   }
                }
              }
@@ -298,17 +245,12 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
 
     function displayCurrentRecords()
     {
-      $http.post('//' + getHostname + '/api/metadata',
+      $http.post('//' + hostname + '/api/metadata',
                  {'session_id': session_id})
            .success(function(data){
              $scope.allRecords = data.results;
            });
     }
-
-
-
-    
-    
 
     var addedContacts =
     {

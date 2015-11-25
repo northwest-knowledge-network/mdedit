@@ -3,7 +3,7 @@
 /* Services */
 
 metadataEditorApp
-.factory('getSessionId', function()
+.factory('sessionId', function()
 {
 	var session_id = '';
 
@@ -19,7 +19,7 @@ metadataEditorApp
 
     return session_id;
 })
-.factory('getHostname', function()
+.factory('hostname', function()
 {
 	// next see if there is a hostname defined
     var hostname = '';
@@ -107,15 +107,15 @@ metadataEditorApp
  * Intended for use in conjunction with the Edit buttons in the records list
  */
 .factory('editRecordService', 
-	['$http', 'getSessionId', 'getHostname', 'updateForms',
-	function($http, getSessionId, getHostname, updateForms)
+	['$http', 'sessionId', 'hostname', 'updateForms',
+	function($http, sessionId, hostname, updateForms)
 	{
 		return function(scope, recordId)
 		{
 			scope.newRecord = false;
 
-		    $http.post('//' + getHostname + '/api/metadata/' + recordId,
-		               {'session_id': getSessionId})
+		    $http.post('//' + hostname + '/api/metadata/' + recordId,
+		               {'session_id': sessionId})
 		         .success(function(data) {
 		            var record = data.record;
 		            if (typeof record.start_date == "undefined") {
@@ -134,4 +134,57 @@ metadataEditorApp
            });
 		}
 	}
-]);
+])
+.factory('createNewRecordService', 
+	['$http', 'hostname', 'EMPTY_CONTACT', 'updateForms',
+	function($http, hostname, EMPTY_CONTACT, updateForms)
+    {
+	    return function(scope) {
+
+	        scope.newRecord = true;
+      
+      	    $http.get('//' + hostname + '/api/metadata/placeholder')
+      	         .success(function(data) {
+         	        var placeholderRec = data.record;
+           	        var emptyRec = JSON.parse(JSON.stringify(placeholderRec));
+      
+      	            // clear out placeholder values
+      	            for (var field in emptyRec)
+      	            {
+      	              if (['citation', 'access'].indexOf(field) > -1)
+      	              {
+      	                emptyRec[field] = [JSON.parse(JSON.stringify(EMPTY_CONTACT))];
+      	              }
+      	              else if (
+      	                ['place_keywords', 'thematic_keywords',
+      	                 'data_format', 'online'].indexOf(field) > -1)
+      	              {
+      	                emptyRec[field] = [""];
+      	              }
+      	              else if (['_cls', '_id', 'start_date', 'end_date', 'last_mod_date',
+      	                        'first_pub_date'].indexOf(field) == -1)
+      	              {
+      	                emptyRec[field] = "";
+      	              }
+      	            }
+      	            emptyRec.start_date = {$date: new Date(2010, 1, 1)};
+      	            emptyRec.end_date = {$date: new Date()};
+      	            emptyRec.end_date.$date.setHours(0);
+      	            emptyRec.end_date.$date.setMinutes(0);
+      	            emptyRec.end_date.$date.setSeconds(0);
+      
+      	            scope.currentRecord = emptyRec;
+      
+      	            // iso data formats come from a pre-defined list to from ISO std
+      	            scope.dataFormats = {
+      	              iso: [''],
+      	              // aux, ie auxiliary, is a single text input write-in
+      	              aux: ''
+      	            };
+      
+      	            updateForms(scope, scope.currentRecord);
+      	           });
+		}
+    }
+ ]
+);

@@ -1,10 +1,8 @@
 'use strict';
 
-var metadataEditorApp = 
-angular
+var metadataEditorApp = angular
 .module('metadataEditor', ['ngRoute', 'ui.date'])
-.constant('formOptions', 
- {
+.constant('formOptions',  {
  	topicCategoryChoices: ['biota', 'boundaries',
    'climatologyMeteorologyAtmosphere', 'economy', 'elevation',
    'environment', 'farming', 'geoscientificInformation', 'health',
@@ -20,13 +18,13 @@ angular
       "SPSS", "Stata", "Tab", "tiff", "txt", "VBS", "wav", "xls", "xlsx",
       "xml"],
 
-spatialDataOptions: ["vector", "grid", "table or text",
+	spatialDataOptions: ["vector", "grid", "table or text",
       "triangulated irregular network", "stereographic imaging",
       "video recording of a scene"],
 
-hierarchyLevels: ["dataset", "series"],
+	hierarchyLevels: ["dataset", "series"],
 
-statusChoicesIsoMap: {
+	statusChoicesIsoMap: {
     'completed': 'completed',
     'continually updated': 'onGoing',
     'in process': 'underDevelopment',
@@ -36,7 +34,7 @@ statusChoicesIsoMap: {
     'no longer valid': 'obsolete'
     },
 
-updateFrequencyChoicesMap: {
+	updateFrequencyChoicesMap: {
     'continual': 'continual',
     'daily': 'daily',
     'weekly': 'weekly',
@@ -51,10 +49,10 @@ updateFrequencyChoicesMap: {
     'unknown': 'unknown'
     },
 
-orderedContactFields: ['name', 'email', 'org', 'address', 'city',
+	orderedContactFields: ['name', 'email', 'org', 'address', 'city',
 				       'state', 'zipcode', 'country', 'phone'],
 
-cfieldsMap:     {
+	cfieldsMap:     {
     'name': 'Name',
     'email': 'Email',
     'org': 'Organization',
@@ -65,5 +63,9 @@ cfieldsMap:     {
     'country': 'Country',
     'phone': 'Phone'
     }
- }
-);
+})
+.constant('EMPTY_CONTACT', {
+      'name': '', 'email': '', 'org': '', 'address': '',
+      'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': ''
+    })
+;
