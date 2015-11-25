@@ -3,30 +3,18 @@
 
 // for minification, explicitly declare dependencies $scope and $http
 metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log', 
-  '$route', '$routeParams', 'formOptions',
-  function($scope, $http, $log, $route, $routeParams, formOptions) {
+  '$route', '$routeParams', 'formOptions', 'updateForms', 'editRecordService',
+  'getSessionId', 'getHostname',
+  function($scope, $http, $log, $route, $routeParams, 
+           formOptions, updateForms, editRecordService, getSessionId,
+           getHostname) 
+  {
+    
 
-    // first see if we have any user information given to us (from Drupal)
-    if (typeof(window.session_id) === 'undefined')
-    {
-      var session_id = 'local';
-    }
-    else
-    {
-      var session_id = window.session_id;
-    }
+    var session_id = getSessionId;
 
-    // next see if there is a hostname defined
-    var hostname = '';
-    if (typeof(window.hostname) === 'undefined')
-    {
-      hostname = 'localhost:4000';
-    }
-    else
-    {
-      hostname = window.hostname;
-    }
-    $scope.hostname = hostname;
+    
+    $scope.hostname = getHostname;
 
     /** load up formOptions constants (defined in app.js) **/
     $scope.topicCategoryChoices = formOptions.topicCategoryChoices;
@@ -64,34 +52,12 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
     
     $scope.hierarchyLevels = formOptions.hierarchyLevels;
 
-    /**
-     * Fetch the record with recordId and update the form to display it.
-     *
-     * Intended for use in conjunction with the Edit buttons in the records list
-     */
+    
     $scope.editRecord = function(recordId)
     {
-      $scope.newRecord = false;
-
-      $http.post('//' + hostname + '/api/metadata/' + recordId,
-                 {'session_id': session_id})
-           .success(function(data) {
-             var record = data.record;
-             if (typeof record.start_date == "undefined") {
-               record.start_date = {$date: new Date(2010, 1, 1)};
-             }
-             if (typeof record.end_date == "undefined") {
-               record.end_date = {$date: new Date()};
-             }
-             if (typeof record.last_mod_date == "undefined") {
-               record.last_mod_date = {$date: new Date()};
-             }
-             if (typeof record.first_pub_date == "undefined") {
-               record.first_pub_date = {$date: new Date()};
-             }
-             updateForms(record);
-           });
-    };
+      return editRecordService($scope, recordId);
+    }
+      
 
     var EMPTY_CONTACT =
     {
@@ -104,7 +70,7 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
     {
       $scope.newRecord = true;
 
-      $http.get('//' + hostname + '/api/metadata/placeholder')
+      $http.get('//' + getHostname + '/api/metadata/placeholder')
            .success(function(data) {
              var placeholderRec = data.record;
 
@@ -146,43 +112,16 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
                aux: ''
              };
 
-             updateForms($scope.currentRecord);
+             updateForms($scope, $scope.currentRecord);
            });
     };
 
     // initialize form with placeholder data for creating a new record
     $scope.createNewRecord();
 
-    $log.log($scope.currentRecord);
 
     /**
-     * Change the metadata type being generated between ISO for datasets
-     * and Dublin Core for other research products
-     */
-    $scope.isDublin = false;
-    $scope.isISO = true;
-    $scope.toggleMetadataType = function(type)
-    {
-      switch (type)
-      {
-        case 'dublin':
-          $scope.isDublin = true;
-          $scope.isISO = false;
-          break;
-
-        case 'iso':
-          $scope.isDublin = false;
-          $scope.isISO = true;
-          break;
-
-        default:
-          $scope.isDublin = false;
-          $scope.isISO = true;
-      }
-
-    };
-
-    /**On click of Load MILES Defaults button, 
+     * On click of Load MILES Defaults button, 
      * load the defaults in MILES defaults json file
      */
     $scope.defaultMILES = function()
@@ -211,7 +150,7 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
                }
              }
 
-             updateForms($scope.currentRecord);
+             updateForms($scope, $scope.currentRecord);
            });
     };
 
@@ -230,7 +169,7 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
         $http.put('//' + hostname + '/api/metadata',
                   {'record': current, 'session_id': session_id})
              .success(function(data) {
-                 updateForms(data.record);
+                 updateForms($scope, data.record);
                  $scope.newRecord = false;
                  addedContacts =
                  {
@@ -246,7 +185,7 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
         $http.put('//' + hostname + '/api/metadata/' + current._id.$oid,
                   {'record': current, 'session_id': session_id})
              .success(function(data) {
-                 updateForms(data.record);
+                 updateForms($scope, data.record);
                  addedContacts =
                  {
                   'access': 0,
@@ -268,7 +207,7 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
       {
         $http.post('//' + hostname + '/api/metadata', current)
              .success(function(data) {
-                 updateForms(data.record);
+                 updateForms($scope, data.record);
                  $scope.newRecord = false;
                  addedContacts =
                  {
@@ -285,7 +224,7 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
         $http.put('//' + hostname + '/api/metadata/' + current._id.$oid,
                   current)
              .success(function(data) {
-                 updateForms(data.record);
+                 updateForms($scope, data.record);
                  addedContacts =
                  {
                   'access': 0,
@@ -301,7 +240,7 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
                  currentId + '/publish',
                  current)
             .success(function(data) {
-              updateForms(data.record);
+              updateForms($scope, data.record);
               addedContacts =
               {
                 'access': 0,
@@ -359,73 +298,15 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
 
     function displayCurrentRecords()
     {
-      $http.post('//' + hostname + '/api/metadata',
+      $http.post('//' + getHostname + '/api/metadata',
                  {'session_id': session_id})
            .success(function(data){
              $scope.allRecords = data.results;
            });
     }
 
-    /**
-     * Assign a record to the scope's current record.
-     *
-     * Args:
-     *  (Object) actual record
-     */
-    function updateForms(record)
-    {
-       /* place and thematic keywords come as a list from the server */
-       record.place_keywords =
-         record.place_keywords.join(', ');
 
-       record.thematic_keywords =
-         record.thematic_keywords.join(', ');
 
-       /* 
-        * Need to do $scope with dates because our service returns them as
-        * epoch seconds.
-        */
-       record.start_date.$date =
-         new Date(record.start_date.$date);
-
-       record.end_date.$date =
-         new Date(record.end_date.$date);
-
-       record.last_mod_date.$date =
-         new Date(record.last_mod_date.$date);
-
-       record.first_pub_date.$date =
-         new Date(record.first_pub_date.$date);
-
-       // these hours, minutes, seconds get put into broken out select boxes
-       record.start_date.hours = record.start_date.$date.getHours();
-       record.end_date.hours = record.end_date.$date.getHours();
-
-       record.start_date.minutes = record.start_date.$date.getMinutes();
-       record.end_date.minutes = record.end_date.$date.getMinutes();
-
-       record.start_date.seconds = record.start_date.$date.getSeconds();
-       record.end_date.seconds = record.end_date.$date.getSeconds();
-
-       $scope.currentRecord = record;
-       // This seems to be only for loading from the server.
-       // If we are saving updates, this will just overwrite updates with 
-       // whatever came from the server, again, which is fine for loading from 
-       // the server, but we must first set record.data_format above
-       $scope.dataFormats.aux =
-         record.data_format.filter(function (f) {
-           return $scope.knownDataFormats.indexOf(f) === -1;
-         }).join(', ');
-
-       $scope.dataFormats.iso =
-         record.data_format.filter(function (f) {
-           return $scope.knownDataFormats.indexOf(f) > -1;
-         });
-
-       if (!$scope.currentRecord.online) {
-         record.online = [""];
-       }
-    }
     
     
 
