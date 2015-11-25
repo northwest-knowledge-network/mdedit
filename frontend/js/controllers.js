@@ -2,18 +2,22 @@
 
 
 // for minification, explicitly declare dependencies $scope and $http
-metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log', 
+metadataEditorApp.controller('BaseController', 
+ 
+ ['$scope', '$http', '$log', 
   '$route', '$routeParams', 'formOptions', 'updateForms', 'editRecordService',
   'sessionId', 'hostname', 'createNewRecordService', 'EMPTY_CONTACT',
+  'submitDraftRecordService', 'updateRecordsList', 'publishRecordService',
+
   function($scope, $http, $log, $route, $routeParams, 
            formOptions, updateForms, editRecordService, sessionId,
-           hostname, createNewRecordService, EMPTY_CONTACT) 
+           hostname, createNewRecordService, EMPTY_CONTACT, 
+           submitDraftRecordService, updateRecordsList, publishRecordService) 
   {
-    
-
     var session_id = sessionId;
-    
-    $scope.hostname = hostname;
+
+    // initialize list of existing metadata records
+    updateRecordsList($scope);
 
     /** load up formOptions constants (defined in app.js) **/
     $scope.topicCategoryChoices = formOptions.topicCategoryChoices;
@@ -24,8 +28,7 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
     // contact fields mapping for layperson-to-iso translation
     $scope.cfieldsMap = formOptions.cfieldsMap;
 
-    // initialize list of existing metadata records
-    displayCurrentRecords();
+
 
     // set date options
     $scope.dateOptions = {
@@ -46,213 +49,45 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
     {
       $scope.minute_seconds.push(i);
     }
+
     $scope.knownDataFormats = formOptions.knownDataFormats;
 
     $scope.spatialDataOptions = formOptions.spatialDataOptions;
     
     $scope.hierarchyLevels = formOptions.hierarchyLevels;
 
-    
-    $scope.editRecord = function(recordId)
-    {
-      return editRecordService($scope, recordId);
-    }
+
 
     $scope.createNewRecord = function() { createNewRecordService($scope) };
 
     // initialize form with placeholder data for creating a new record
     $scope.createNewRecord();
 
+   $scope.editRecord = function(recordId)
+    {
+      return editRecordService($scope, recordId);
+    }
 
     /**
      * On click of Load MILES Defaults button, 
      * load the defaults in MILES defaults json file
      */
-    $scope.defaultMILES = function()
-    {
-      $scope.newRecord = true;
-
-      $http.get('//' + hostname + '/api/metadata/defaultMILES')
-           .success(function(data) {
-
-             var milesRec = data.record;
-
-             for (var key in milesRec)
-             {
-               if (milesRec.hasOwnProperty(key))
-               {
-                  // only want to overwrite country and state for MILES
-                  if (key === "citation")
-                  {
-                    $scope.currentRecord[key][0].country = milesRec[key][0].country;
-                    $scope.currentRecord[key][0].state = milesRec[key][0].state;
-                  }
-                  else
-                  {
-                    if (key !== "data_format")
-                    {
-                      $scope.currentRecord[key] = milesRec[key];
-                    }
-                  }
-               }
-             }
-
-             updateForms($scope, $scope.currentRecord);
-           });
-    };
+    $scope.defaultMILES = function() { defaultMilesService($scope); };
+      
 
     /**
      * On submit of metadata form, submitRecord. This both updates the server
      * and makes sure the form is current. Not sure how it wouldn't be, todo?
      */
-    $scope.submitDraftRecord = function()
-    {
-      // the start and end dates currently have hours and minutes zero;
-      // grab the hours and minutes and append them. Confusingly JS
-      // uses setHours to set minutes and seconds as well
-      var current = prepareCurrentScopedRecord();
-      if ($scope.newRecord)
-      {
-        $http.put('//' + hostname + '/api/metadata',
-                  {'record': current, 'session_id': session_id})
-             .success(function(data) {
-                 updateForms($scope, data.record);
-                 $scope.newRecord = false;
-                 addedContacts =
-                 {
-                  'access': 0,
-                  'citation': 0
-                 };
-                 displayCurrentRecords();
-             })
-             .error(function(data) { $log.log(data.record); });
-      }
-      else
-      {
-        $http.put('//' + hostname + '/api/metadata/' + current._id.$oid,
-                  {'record': current, 'session_id': session_id})
-             .success(function(data) {
-                 updateForms($scope, data.record);
-                 addedContacts =
-                 {
-                  'access': 0,
-                  'citation': 0
-                 };
-                 displayCurrentRecords();
-             });
-      }
-    };
+    $scope.submitDraftRecord = function() { submitDraftRecordService($scope); };
+    
 
     /**
      * Publish a record to the portal. Requires all fields to be valid
      */
-    $scope.publishRecord = function()
-    {
-      var current = prepareCurrentScopedRecord();
-      // if the record is totally new, we first want to save the draft of it
-      if ($scope.newRecord)
-      {
-        $http.post('//' + hostname + '/api/metadata', current)
-             .success(function(data) {
-                 updateForms($scope, data.record);
-                 $scope.newRecord = false;
-                 addedContacts =
-                 {
-                  'access': 0,
-                  'citation': 0
-                 };
-                 displayCurrentRecords();
-             })
-             .error(function(data) { $log.log(data.record); });
-      }
-      // if the record already existed as a draft, we update the draft
-      else
-      {
-        $http.put('//' + hostname + '/api/metadata/' + current._id.$oid,
-                  current)
-             .success(function(data) {
-                 updateForms($scope, data.record);
-                 addedContacts =
-                 {
-                  'access': 0,
-                  'citation': 0
-                 };
-                 displayCurrentRecords();
-             });
-      }
+    $scope.publishRecord = function() { publishRecordService($scope); };
 
-      var currentId = $scope.currentRecord._id.$oid;
-
-      $http.post('//' + hostname + '/api/metadata/' +
-                 currentId + '/publish',
-                 current)
-            .success(function(data) {
-              updateForms($scope, data.record);
-              addedContacts =
-              {
-                'access': 0,
-                'citation': 0
-              };
-
-              displayCurrentRecords();
-            });
-    };
-
-    function prepareCurrentScopedRecord()
-    {
-      $scope.currentRecord.start_date.$date.setHours(
-        $scope.currentRecord.start_date.hours,
-        $scope.currentRecord.start_date.minutes,
-        $scope.currentRecord.start_date.seconds
-      );
-
-      $scope.currentRecord.end_date.$date.setHours(
-        $scope.currentRecord.end_date.hours,
-        $scope.currentRecord.end_date.minutes,
-        $scope.currentRecord.end_date.seconds
-      );
-
-      var current = JSON.parse(JSON.stringify($scope.currentRecord));
-
-      current.place_keywords = $scope.currentRecord.place_keywords.split(', ');
-      current.thematic_keywords = $scope.currentRecord.thematic_keywords.split(', ');
-
-      current.data_format = $scope.dataFormats.iso;
-
-      if ($scope.dataFormats.aux)
-      {
-        var auxList = $scope.dataFormats.aux.split(',')
-                            .map(function(el){ return el.trim(); });
-
-        current.data_format = current.data_format.concat(auxList);
-      }
-
-      current.last_mod_date =
-        {$date: $scope.currentRecord.last_mod_date.$date.getTime()};
-      current.start_date =
-        {$date: $scope.currentRecord.start_date.$date.getTime()};
-      current.end_date =
-        {$date: $scope.currentRecord.end_date.$date.getTime()};
-
-      current.first_pub_date =
-        {$date: $scope.currentRecord.first_pub_date.$date.getTime()};
-
-      // Handle situation where certain fields are missing.
-      // Remove them so they are not None when submitted to server.
-      return current;
-    }
-
-
-    function displayCurrentRecords()
-    {
-      $http.post('//' + hostname + '/api/metadata',
-                 {'session_id': session_id})
-           .success(function(data){
-             $scope.allRecords = data.results;
-           });
-    }
-
-    var addedContacts =
+    $scope.addedContacts =
     {
       'access': 0,
       'citation': 0
@@ -263,7 +98,7 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
       $scope.currentRecord.citation
             .push(JSON.parse(JSON.stringify(EMPTY_CONTACT)));
 
-      addedContacts.citation += 1;
+      $scope.addedContacts.citation += 1;
     };
 
     $scope.addContactAccess = function()
@@ -271,25 +106,25 @@ metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log',
       $scope.currentRecord.access
             .push(JSON.parse(JSON.stringify(EMPTY_CONTACT)));
 
-      addedContacts.access += 1;
+      $scope.addedContacts.access += 1;
     };
 
 
     $scope.cancelAddContactCitation = function()
     {
-      if (addedContacts.citation > 0)
+      if ($scope.addedContacts.citation > 0)
       {
         $scope.currentRecord.citation.pop();
-        addedContacts.citation -= 1;
+        $scope.addedContacts.citation -= 1;
       }
     };
 
     $scope.cancelAddContactAccess = function()
     {
-      if (addedContacts.access > 0)
+      if ($scope.addedContacts.access > 0)
       {
         $scope.currentRecord.access.pop();
-        addedContacts.access -= 1;
+        $scope.addedContacts.access -= 1;
       }
     };
 

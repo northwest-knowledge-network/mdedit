@@ -126,7 +126,8 @@ def get_single_metadata(_oid):
 
             existing_record = Metadata.objects.get_or_404(pk=_oid,
                                                           username=username)
-            updater = Metadata.from_json(json.dumps(request.json['record']))
+
+            updater = Metadata.from_json(json.dumps(request.json))
 
             for f in existing_record._fields:
                 existing_record[f] = updater[f]
