@@ -187,42 +187,43 @@ metadataEditorApp
             });
     }
  ])
-.factory('defaultMilesService', ['$http', 'hostname',
-        function($http, hostname)
-        {
-                return function(scope)
-                {
-                        scope.newRecord = true;
+.factory('defaultMilesService', ['$http', 'hostname', 'updateForms',
+    function($http, hostname, updateForms)
+    {
+            return function(scope)
+            {
+                    scope.newRecord = true;
 
-                      $http.get('//' + hostname + '/api/metadata/defaultMILES')
-                           .success(function(data) {
+                  $http.get('//' + hostname + '/api/metadata/defaultMILES')
+                       .success(function(data) {
 
-             var milesRec = data.record;
+                     var milesRec = data.record;
 
-             for (var key in milesRec)
-             {
-               if (milesRec.hasOwnProperty(key))
-               {
-                  // only want to overwrite country and state for MILES
-                  if (key === "citation")
-                  {
-                    scope.currentRecord[key][0].country = milesRec[key][0].country;
-                    scope.currentRecord[key][0].state = milesRec[key][0].state;
-                  }
-                  else
-                  {
-                    if (key !== "data_format")
-                    {
-                      scope.currentRecord[key] = milesRec[key];
-                    }
-                  }
-               }
-             }
+                     for (var key in milesRec)
+                     {
+                       if (milesRec.hasOwnProperty(key))
+                       {
+                          // only want to overwrite country and state for MILES
+                          if (key === "citation")
+                          {
+                            scope.currentRecord[key][0].country = milesRec[key][0].country;
+                            scope.currentRecord[key][0].state = milesRec[key][0].state;
+                          }
+                          else
+                          {
+                            if (key !== "data_format")
+                            {
+                              scope.currentRecord[key] = milesRec[key];
+                            }
+                          }
+                       }
+                     }
 
-             updateForms(scope, scope.currentRecord);
-           });
-        }       
-        }
+                     updateForms(scope, scope.currentRecord);
+
+               });
+        }; 
+    }
 ])
 .factory('prepareCurrentScopedRecord', 
         function()
