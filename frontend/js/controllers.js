@@ -5,19 +5,19 @@
 metadataEditorApp.controller('BaseController', 
  
  ['$scope', '$http', '$log', 
-  '$route', '$routeParams', 'formOptions', 'updateForms', 'editRecordService',
-  'sessionId', 'hostname', 'createNewRecordService', 'EMPTY_CONTACT',
+  'formOptions', 'updateForms', 'editRecordService',
+  'hostname', 'createNewRecordService', 'EMPTY_CONTACT',
   'submitDraftRecordService', 'updateRecordsList', 'publishRecordService',
 
-  function($scope, $http, $log, $route, $routeParams, 
-           formOptions, updateForms, editRecordService, sessionId,
+  function($scope, $http, $log,
+           formOptions, updateForms, editRecordService,
            hostname, createNewRecordService, EMPTY_CONTACT, 
            submitDraftRecordService, updateRecordsList, publishRecordService) 
   {
-    var session_id = sessionId;
-
     // initialize list of existing metadata records
     updateRecordsList($scope);
+
+    $scope.errors = [];
 
     /** load up formOptions constants (defined in app.js) **/
     $scope.topicCategoryChoices = formOptions.topicCategoryChoices;
@@ -27,8 +27,6 @@ metadataEditorApp.controller('BaseController',
 
     // contact fields mapping for layperson-to-iso translation
     $scope.cfieldsMap = formOptions.cfieldsMap;
-
-
 
     // set date options
     $scope.dateOptions = {
@@ -56,9 +54,29 @@ metadataEditorApp.controller('BaseController',
     
     $scope.hierarchyLevels = formOptions.hierarchyLevels;
 
+    $scope.createNewRecord = function() {
 
-
-    $scope.createNewRecord = function() { createNewRecordService($scope) };
+        createNewRecordService.then(
+            function(emptyRec)
+            {
+                $scope.newRecord = true;    
+                $scope.currentRecord = emptyRec;
+  
+                // iso data formats come from a pre-defined list to from ISO std
+                $scope.dataFormats = {
+                  iso: [''],
+                  // aux, ie auxiliary, is a single text input write-in
+                  aux: ''
+                };
+  
+                updateForms($scope, $scope.currentRecord);
+            },
+            function(errorMsg)
+            {
+                $scope.errors.push("Error in fetching form data prototype");
+            }
+        );
+    };
 
     // initialize form with placeholder data for creating a new record
     $scope.createNewRecord();

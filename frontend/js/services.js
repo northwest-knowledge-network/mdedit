@@ -5,9 +5,9 @@
 metadataEditorApp
 .factory('sessionId', function()
 {
-	var sessionId = '';
+    var sessionId = '';
 
-	// first see if we have any user information given to us (from Drupal)
+    // first see if we have any user information given to us (from Drupal)
     if (typeof(window.sessionId) === 'undefined')
     {
       var sessionId = 'local';
@@ -21,7 +21,7 @@ metadataEditorApp
 })
 .factory('hostname', function()
 {
-	// next see if there is a hostname defined
+        // next see if there is a hostname defined
     var hostname = '';
     if (typeof(window.hostname) === 'undefined')
     {
@@ -46,9 +46,9 @@ metadataEditorApp
  */
 .factory('updateForms', function()
 {
-	return function(scope, record)
-	{
-	   /* place and thematic keywords come as a list from the server */
+        return function(scope, record)
+        {
+           /* place and thematic keywords come as a list from the server */
        record.place_keywords =
          record.place_keywords.join(', ');
 
@@ -99,7 +99,7 @@ metadataEditorApp
        if (!scope.currentRecord.online) {
          record.online = [""];
        }
-	}
+        }
 })
 /**
  * Fetch the record with recordId and update the form to display it.
@@ -107,95 +107,95 @@ metadataEditorApp
  * Intended for use in conjunction with the Edit buttons in the records list
  */
 .factory('editRecordService', 
-	['$http', 'sessionId', 'hostname', 'updateForms',
-	function($http, sessionId, hostname, updateForms)
-	{
-		return function(scope, recordId)
-		{
-			scope.newRecord = false;
+        ['$http', 'sessionId', 'hostname', 'updateForms',
+        function($http, sessionId, hostname, updateForms)
+        {
+                return function(scope, recordId)
+                {
+                        scope.newRecord = false;
 
-		    $http.post('//' + hostname + '/api/metadata/' + recordId,
-		               {'session_id': sessionId})
-		         .success(function(data) {
-		            var record = data.record;
-		            if (typeof record.start_date == "undefined") {
-		             record.start_date = {$date: new Date(2010, 1, 1)};
-		            }
-		            if (typeof record.end_date == "undefined") {
-		             record.end_date = {$date: new Date()};
-		            }
-		            if (typeof record.last_mod_date == "undefined") {
-		              record.last_mod_date = {$date: new Date()};
-		            }
-		            if (typeof record.first_pub_date == "undefined") {
-		               record.first_pub_date = {$date: new Date()};
-		             }
-		             updateForms(scope, record);
+                    $http.post('//' + hostname + '/api/metadata/' + recordId,
+                               {'session_id': sessionId})
+                         .success(function(data) {
+                            var record = data.record;
+                            if (typeof record.start_date == "undefined") {
+                             record.start_date = {$date: new Date(2010, 1, 1)};
+                            }
+                            if (typeof record.end_date == "undefined") {
+                             record.end_date = {$date: new Date()};
+                            }
+                            if (typeof record.last_mod_date == "undefined") {
+                              record.last_mod_date = {$date: new Date()};
+                            }
+                            if (typeof record.first_pub_date == "undefined") {
+                               record.first_pub_date = {$date: new Date()};
+                             }
+                             updateForms(scope, record);
            });
-		}
-	}
+                };
+        }
 ])
-.factory('createNewRecordService', 
-	['$http', 'hostname', 'EMPTY_CONTACT', 'updateForms',
-	function($http, hostname, EMPTY_CONTACT, updateForms)
+.factory('createNewRecordService', ['$http', '$q', 'hostname', 'EMPTY_CONTACT',
+        '$log',
+    function($http, $q, hostname, EMPTY_CONTACT, $log)
     {
-	    return function(scope) {
+            return $q(function(resolve, reject) {
 
-	        scope.newRecord = true;
-      
-      	    $http.get('//' + hostname + '/api/metadata/placeholder')
-      	         .success(function(data) {
-         	        var placeholderRec = data.record;
-           	        var emptyRec = JSON.parse(JSON.stringify(placeholderRec));
-      
-      	            // clear out placeholder values
-      	            for (var field in emptyRec)
-      	            {
-      	              if (['citation', 'access'].indexOf(field) > -1)
-      	              {
-      	                emptyRec[field] = [JSON.parse(JSON.stringify(EMPTY_CONTACT))];
-      	              }
-      	              else if (
-      	                ['place_keywords', 'thematic_keywords',
-      	                 'data_format', 'online'].indexOf(field) > -1)
-      	              {
-      	                emptyRec[field] = [""];
-      	              }
-      	              else if (['_cls', '_id', 'start_date', 'end_date', 'last_mod_date',
-      	                        'first_pub_date'].indexOf(field) == -1)
-      	              {
-      	                emptyRec[field] = "";
-      	              }
-      	            }
-      	            emptyRec.start_date = {$date: new Date(2010, 1, 1)};
-      	            emptyRec.end_date = {$date: new Date()};
-      	            emptyRec.end_date.$date.setHours(0);
-      	            emptyRec.end_date.$date.setMinutes(0);
-      	            emptyRec.end_date.$date.setSeconds(0);
-      
-      	            scope.currentRecord = emptyRec;
-      
-      	            // iso data formats come from a pre-defined list to from ISO std
-      	            scope.dataFormats = {
-      	              iso: [''],
-      	              // aux, ie auxiliary, is a single text input write-in
-      	              aux: ''
-      	            };
-      
-      	            updateForms(scope, scope.currentRecord);
-      	           });
-		}
+                $http.get('//' + hostname + '/api/metadata/placeholder')
+                     .then(
+
+                    function(data) {
+
+                        var placeholderRec = data.data.record;
+
+                        var emptyRec = 
+                            JSON.parse(JSON.stringify(placeholderRec));
+          
+                        // clear out placeholder values
+                        for (var field in emptyRec)
+                        {
+                            if (['citation', 'access'].indexOf(field) > -1)
+                            {
+                              emptyRec[field] = [JSON.parse(JSON.stringify(EMPTY_CONTACT))];
+                            }
+                            else if (
+                              ['place_keywords', 'thematic_keywords',
+                               'data_format', 'online'].indexOf(field) > -1)
+                            {
+                              emptyRec[field] = [""];
+                            }
+                            else if (['_cls', '_id', 'start_date', 'end_date', 'last_mod_date',
+                                      'first_pub_date'].indexOf(field) == -1)
+                            {
+                                emptyRec[field] = "";
+                            }
+                        }
+
+                        emptyRec.start_date = {$date: new Date(2010, 1, 1)};
+                        emptyRec.end_date = {$date: new Date()};
+                        emptyRec.end_date.$date.setHours(0);
+                        emptyRec.end_date.$date.setMinutes(0);
+                        emptyRec.end_date.$date.setSeconds(0);
+          
+                        resolve(emptyRec);
+                    }, 
+
+                    function(data) {
+                        reject({error: "Error in creating a new record"});
+                    }
+                );
+            });
     }
  ])
 .factory('defaultMilesService', ['$http', 'hostname',
-	function($http, hostname)
-	{
-		return function(scope)
-		{
-			scope.newRecord = true;
+        function($http, hostname)
+        {
+                return function(scope)
+                {
+                        scope.newRecord = true;
 
-		      $http.get('//' + hostname + '/api/metadata/defaultMILES')
-		           .success(function(data) {
+                      $http.get('//' + hostname + '/api/metadata/defaultMILES')
+                           .success(function(data) {
 
              var milesRec = data.record;
 
@@ -221,166 +221,166 @@ metadataEditorApp
 
              updateForms(scope, scope.currentRecord);
            });
-    	}	
-	}
+        }       
+        }
 ])
 .factory('prepareCurrentScopedRecord', 
-	function()
-	{
-		return function(scope)
-		{
-		  scope.currentRecord.start_date.$date.setHours(
-	        scope.currentRecord.start_date.hours,
-	        scope.currentRecord.start_date.minutes,
-	        scope.currentRecord.start_date.seconds
-	      );
+        function()
+        {
+            return function(scope)
+            {
+                scope.currentRecord.start_date.$date.setHours(
+                  scope.currentRecord.start_date.hours,
+                  scope.currentRecord.start_date.minutes,
+                  scope.currentRecord.start_date.seconds
+                );
 
-	      scope.currentRecord.end_date.$date.setHours(
-	        scope.currentRecord.end_date.hours,
-	        scope.currentRecord.end_date.minutes,
-	        scope.currentRecord.end_date.seconds
-	      );
+                scope.currentRecord.end_date.$date.setHours(
+                  scope.currentRecord.end_date.hours,
+                  scope.currentRecord.end_date.minutes,
+                  scope.currentRecord.end_date.seconds
+                );
 
-	      var current = JSON.parse(JSON.stringify(scope.currentRecord));
+                var current = JSON.parse(JSON.stringify(scope.currentRecord));
 
-	      current.place_keywords = scope.currentRecord.place_keywords.split(', ');
-	      current.thematic_keywords = scope.currentRecord.thematic_keywords.split(', ');
+                current.place_keywords = scope.currentRecord.place_keywords.split(', ');
+                current.thematic_keywords = scope.currentRecord.thematic_keywords.split(', ');
 
-	      current.data_format = scope.dataFormats.iso;
+                current.data_format = scope.dataFormats.iso;
 
-	      if (scope.dataFormats.aux)
-	      {
-	        var auxList = scope.dataFormats.aux.split(',')
-	                            .map(function(el){ return el.trim(); });
+                if (scope.dataFormats.aux)
+                {
+                  var auxList = scope.dataFormats.aux.split(',')
+                                     .map(function(el){ return el.trim(); });
 
-	        current.data_format = current.data_format.concat(auxList);
-	      }
+                  current.data_format = current.data_format.concat(auxList);
+                }
 
-	      current.last_mod_date =
-	        {$date: scope.currentRecord.last_mod_date.$date.getTime()};
-	      current.start_date =
-	        {$date: scope.currentRecord.start_date.$date.getTime()};
-	      current.end_date =
-	        {$date: scope.currentRecord.end_date.$date.getTime()};
+                current.last_mod_date =
+                  {$date: scope.currentRecord.last_mod_date.$date.getTime()};
+                current.start_date =
+                  {$date: scope.currentRecord.start_date.$date.getTime()};
+                current.end_date =
+                  {$date: scope.currentRecord.end_date.$date.getTime()};
 
-	      current.first_pub_date =
-	        {$date: scope.currentRecord.first_pub_date.$date.getTime()};
+                current.first_pub_date =
+                  {$date: scope.currentRecord.first_pub_date.$date.getTime()};
 
-	      return current;
-		}
-	})
+                return current;
+            };
+        })
 .factory('updateRecordsList', ['$http', 'hostname', 'sessionId',
-	function($http, hostname, sessionId)
-	{
-		return function(scope)
-		{
-			$http.post('//' + hostname + '/api/metadata',
+        function($http, hostname, sessionId)
+        {
+                return function(scope)
+                {
+                        $http.post('//' + hostname + '/api/metadata',
                  {'session_id': sessionId})
-	             .success(function(data){
-	               scope.allRecords = data.results;
-	             });
-		}
-	}])
+                     .success(function(data){
+                       scope.allRecords = data.results;
+                     });
+                }
+        }])
 .factory('submitDraftRecordService', 
-	['$http', 'prepareCurrentScopedRecord', 'hostname', 'sessionId', 
-	 'updateForms', 'updateRecordsList',
-	 function($http, prepareCurrentScopedRecord, hostname, sessionId, 
-	 	      updateForms, updateRecordsList)
-	 {
-	 	return function(scope)
-	 	{
-		      // the start and end dates currently have hours and minutes zero;
-		      // grab the hours and minutes and append them. Confusingly JS
-		      // uses setHours to set minutes and seconds as well
-		      var current = prepareCurrentScopedRecord(scope);
-		      if (scope.newRecord)
-		      {
-		        $http.put('//' + hostname + '/api/metadata',
-		                  {'record': current, 'session_id': sessionId})
-		             .success(function(data) {
-		                 updateForms(scope, data.record);
-		                 scope.newRecord = false;
-		                 scope.addedContacts =
-		                 {
-		                  'access': 0,
-		                  'citation': 0
-		                 };
-		                 updateRecordsList(scope);
-		             })
-		             .error(function(data) { $log.log(data.record); });
-		      }
-		      else
-		      {
-		        $http.put('//' + hostname + '/api/metadata/' + current._id.$oid,
-		                  {'record': current, 'session_id': sessionId})
-		             .success(function(data) {
-		                 updateForms(scope, data.record);
-		                 scope.addedContacts =
-		                 {
-		                  'access': 0,
-		                  'citation': 0
-		                 };
-		                 updateRecordsList(scope);
-		             });
-		      }
-	    }
-	 }])
+        ['$http', 'prepareCurrentScopedRecord', 'hostname', 'sessionId', 
+         'updateForms', 'updateRecordsList',
+         function($http, prepareCurrentScopedRecord, hostname, sessionId, 
+                      updateForms, updateRecordsList)
+         {
+                return function(scope)
+                {
+                      // the start and end dates currently have hours and minutes zero;
+                      // grab the hours and minutes and append them. Confusingly JS
+                      // uses setHours to set minutes and seconds as well
+                      var current = prepareCurrentScopedRecord(scope);
+                      if (scope.newRecord)
+                      {
+                        $http.put('//' + hostname + '/api/metadata',
+                                  {'record': current, 'session_id': sessionId})
+                             .success(function(data) {
+                                 updateForms(scope, data.record);
+                                 scope.newRecord = false;
+                                 scope.addedContacts =
+                                 {
+                                  'access': 0,
+                                  'citation': 0
+                                 };
+                                 updateRecordsList(scope);
+                             })
+                             .error(function(data) { $log.log(data.record); });
+                      }
+                      else
+                      {
+                        $http.put('//' + hostname + '/api/metadata/' + current._id.$oid,
+                                  {'record': current, 'session_id': sessionId})
+                             .success(function(data) {
+                                 updateForms(scope, data.record);
+                                 scope.addedContacts =
+                                 {
+                                  'access': 0,
+                                  'citation': 0
+                                 };
+                                 updateRecordsList(scope);
+                             });
+                      }
+            };
+         }])
 .factory('publishRecordService', 
-	['$http', 'hostname', 'prepareCurrentScopedRecord', 
-	 'updateForms', 'updateRecordsList',
-	function($http, hostname, prepareCurrentScopedRecord, 
-			 updateForms, updateRecordsList)
-	{
-		return function(scope)
-		{
-			var current = prepareCurrentScopedRecord(scope);
-		    // if the record is totally new, we first want to save the draft of it
-		    if (scope.newRecord)
-		    {
-		      $http.post('//' + hostname + '/api/metadata', current)
-		           .success(function(data) {
-		               updateForms(scope, data.record);
-		               scope.newRecord = false;
-		               scope.addedContacts =
-		               {
-		                  'access': 0,
-		                  'citation': 0
-		               };
-		               updateRecordsList(scope);
-		            })
-		            .error(function(data) { $log.log(data.record); });
-		    }
-		    // if the record already existed as a draft, we update the draft
-		    else
-		    {
-		      $http.put('//' + hostname + '/api/metadata/' + current._id.$oid,
-		                current)
-		           .success(function(data) {
-		               updateForms(scope, data.record);
-		                scope.addedContacts =
-		                {
-		                  'access': 0,
-		                  'citation': 0
-		                };
-		                updateRecordsList(scope);
-		            });
-		    }
+        ['$http', 'hostname', 'prepareCurrentScopedRecord', 
+         'updateForms', 'updateRecordsList',
+        function($http, hostname, prepareCurrentScopedRecord, 
+                         updateForms, updateRecordsList)
+        {
+                return function(scope)
+                {
+                    var current = prepareCurrentScopedRecord(scope);
+                    // if the record is totally new, we first want to save the draft of it
+                    if (scope.newRecord)
+                    {
+                      $http.post('//' + hostname + '/api/metadata', current)
+                           .success(function(data) {
+                               updateForms(scope, data.record);
+                               scope.newRecord = false;
+                               scope.addedContacts =
+                               {
+                                  'access': 0,
+                                  'citation': 0
+                               };
+                               updateRecordsList(scope);
+                            })
+                            .error(function(data) { $log.log(data.record); });
+                    }
+                    // if the record already existed as a draft, we update the draft
+                    else
+                    {
+                      $http.put('//' + hostname + '/api/metadata/' + current._id.$oid,
+                                current)
+                           .success(function(data) {
+                               updateForms(scope, data.record);
+                                scope.addedContacts =
+                                {
+                                  'access': 0,
+                                  'citation': 0
+                                };
+                                updateRecordsList(scope);
+                            });
+                    }
 
-		    var currentId = scope.currentRecord._id.$oid;
+                    var currentId = scope.currentRecord._id.$oid;
 
-	        $http.post('//' + hostname + '/api/metadata/' +
-	                   currentId + '/publish',
-	                   current)
-		          .success(function(data) {
-		               updateForms(scope, data.record);
-		               scope.addedContacts =
-		               {
-		                 'access': 0,
-		                 'citation': 0
-		               };
+                $http.post('//' + hostname + '/api/metadata/' +
+                           currentId + '/publish',
+                           current)
+                          .success(function(data) {
+                               updateForms(scope, data.record);
+                               scope.addedContacts =
+                               {
+                                 'access': 0,
+                                 'citation': 0
+                               };
 
-		            updateRecordsList(scope);
-		        });
-		}
-	}])
+                            updateRecordsList(scope);
+                        });
+                }
+        }])
 ;

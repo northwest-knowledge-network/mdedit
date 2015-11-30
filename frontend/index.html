@@ -41,13 +41,15 @@
 
 <div id="main-container" class="container">
 
-  <!-- End Show/Hide Instructions -->
+    <hr>
 
-  <hr>
+    <ul>
+        <li ng-repeat="err in errors">{{err}}</li>
+    </ul>
 
-  <div ng-view></div>
+    <div ng-view></div>
 
-  <div ng-include="'partials/recordsList.html'"></div>
+    <div ng-include="'partials/recordsList.html'"></div>
 
 </div>
 </div>
