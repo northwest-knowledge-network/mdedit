@@ -8,6 +8,7 @@ module.exports = function(config){
       'frontend/bower_components/angular-route/angular-route.js',
       'frontend/bower_components/angular-mocks/angular-mocks.js',
       'frontend/js/**/*.js',
+      'frontend/js/*.js',
       'test/unit/**/*.js'
     ],
 
