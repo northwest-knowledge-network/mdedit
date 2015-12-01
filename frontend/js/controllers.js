@@ -208,5 +208,6 @@ metadataEditorApp.controller('BaseController',
     vm.sw = this.getBounds().getSouthWest();
     vm.center = this.getBounds().getCenter();
     vm.map.setCenter(vm.center);
+    vm.map.fitBounds(this.getBounds());
   };
 });
