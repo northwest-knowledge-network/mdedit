@@ -193,4 +193,19 @@ metadataEditorApp.controller('BaseController',
   {
     this.standard = 'dc';
   }
-]);
+])
+//map work
+.controller('MapController',function($compile, NgMap)
+  {
+    var vm = this;
+    vm.ne, vm.sw;
+    NgMap.getMap().then(function(map) {
+    console.log('map', map);
+    vm.map = map;
+  });
+    vm.boundsChanged = function() {
+    vm.ne = this.getBounds().getNorthEast();
+    vm.sw = this.getBounds().getSouthWest();
+    vm.map.showInfoWindow('foo', vm.sw);
+  };
+});
