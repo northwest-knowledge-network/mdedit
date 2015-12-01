@@ -198,7 +198,7 @@ metadataEditorApp.controller('BaseController',
 .controller('MapController',function($compile, NgMap)
   {
     var vm = this;
-    vm.ne, vm.sw;
+    vm.ne, vm.sw, vm.center;
     NgMap.getMap().then(function(map) {
     console.log('map', map);
     vm.map = map;
@@ -206,6 +206,7 @@ metadataEditorApp.controller('BaseController',
     vm.boundsChanged = function() {
     vm.ne = this.getBounds().getNorthEast();
     vm.sw = this.getBounds().getSouthWest();
-    vm.map.showInfoWindow('foo', vm.sw);
+    vm.center = this.getBounds().getCenter();
+    vm.map.setCenter(vm.center);
   };
 });
