@@ -33,7 +33,7 @@
 </div>
 
 
-<h6>Don't know your bounding coordinates? Enter a location name here (e.g., Idaho, Ada County, Coeur d'Alene, 83209). The system will not recognize watersheds by name. Click the button below to have the system calculate bounding coordinates and fill in the entries above.</h6>
+<h6>Don't know your bounding coordinates? Enter a location name here (e.g., Idaho, Ada County, Coeur d'Alene, 83209). Click the button below to have the system calculate bounding coordinates and fill in the entries above.</h6>
 <div class="row">
 <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 <input style="width:100%" tabindex=20 type="text" 
@@ -48,6 +48,8 @@
 </div>
 </div>
 </div>
+<h6>Once you've entered bounding coordinates, a rectangle will appear showing you the corresponding area on the map. Be sure to verify that this is correct.</h6>
+
 <!-- MAP -->    
 <div ng-controller="MapController as vm">
   <ng-map default-style="true" zoom="5" map-type-id="TERRAIN" center="[45.5,-115]">
@@ -55,7 +57,7 @@
     </shape>
     </ng-map>
     <div>
-      <b>Bounds</b><br/>
+      <b>Rectangle Bounds</b><br/>
           North-east corner: {{vm.ne.lat()}}, {{vm.ne.lng()}}<br/>
           South-west corner: {{vm.sw.lat()}}, {{vm.sw.lng()}}
     </div>
