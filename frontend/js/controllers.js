@@ -8,11 +8,13 @@ metadataEditorApp.controller('BaseController',
   'formOptions', 'updateForms', 'editRecordService',
   'hostname', 'createNewRecordService', 'EMPTY_CONTACT',
   'submitDraftRecordService', 'updateRecordsList', 'publishRecordService',
+  'defaultMilesService',
 
   function($scope, $http, $log,
            formOptions, updateForms, editRecordService,
            hostname, createNewRecordService, EMPTY_CONTACT, 
-           submitDraftRecordService, updateRecordsList, publishRecordService) 
+           submitDraftRecordService, updateRecordsList, publishRecordService,
+           defaultMilesService) 
   {
     // initialize list of existing metadata records
     updateRecordsList($scope);
@@ -81,10 +83,10 @@ metadataEditorApp.controller('BaseController',
     // initialize form with placeholder data for creating a new record
     $scope.createNewRecord();
 
-   $scope.editRecord = function(recordId)
+    $scope.editRecord = function(recordId)
     {
-      return editRecordService($scope, recordId);
-    }
+        return editRecordService($scope, recordId);
+    };
 
     /**
      * On click of Load MILES Defaults button, 
