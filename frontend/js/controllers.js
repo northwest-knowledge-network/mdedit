@@ -197,13 +197,17 @@ metadataEditorApp.controller('BaseController',
   }
 ])
 //map work
-.controller('MapController',function($compile, NgMap)
+.controller('MapController',function($scope, $compile, NgMap)
   {
     var vm = this;
     vm.ne, vm.sw, vm.center;
     NgMap.getMap().then(function(map) {
     console.log('map', map);
     vm.map = map;
+    $scope.currentRecord.north_lat = vm.ne.lat();
+    $scope.currentRecord.south_lat = vm.sw.lat();
+    $scope.currentRecord.east_lon = vm.ne.lng();
+    $scope.currentRecord.west_lon = vm.sw.lng();
   });
     vm.boundsChanged = function() {
     vm.ne = this.getBounds().getNorthEast();
@@ -211,5 +215,9 @@ metadataEditorApp.controller('BaseController',
     vm.center = this.getBounds().getCenter();
     vm.map.setCenter(vm.center);
     vm.map.fitBounds(this.getBounds());
-  };
+    $scope.currentRecord.north_lat = vm.ne.lat();
+    $scope.currentRecord.south_lat = vm.sw.lat();
+    $scope.currentRecord.east_lon = vm.ne.lng();
+    $scope.currentRecord.west_lon = vm.sw.lng();
+  }
 });

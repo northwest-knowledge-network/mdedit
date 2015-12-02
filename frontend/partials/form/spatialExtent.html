@@ -48,7 +48,7 @@
 </div>
 </div>
 </div>
-<h6>Once you've entered bounding coordinates, a rectangle will appear showing you the corresponding area on the map. Be sure to verify that this is correct.</h6>
+<h6>Once you've entered bounding coordinates, a rectangle will appear showing you the corresponding area on the map. Be sure to verify that it is where you expect it to be. You can also edit the rectangle and new bounds will appear in the above fields.</h6>
 
 <!-- MAP -->    
 <div ng-controller="MapController as vm">
@@ -56,11 +56,6 @@
     <shape ng-show = ({{currentRecord.south_lat}} != NULL) name="rectangle" id="extent" fill-color="#111111" fill-opacity="0.3" stroke-weight="2" bounds="[[{{currentRecord.south_lat}},{{currentRecord.west_lon}}],[{{currentRecord.north_lat}},{{currentRecord.east_lon}}]]" editable ="true" draggable="false" on-bounds_changed="vm.boundsChanged()">
     </shape>
     </ng-map>
-    <div>
-      <b>Rectangle Bounds</b><br/>
-          North-east corner: {{vm.ne.lat()}}, {{vm.ne.lng()}}<br/>
-          South-west corner: {{vm.sw.lat()}}, {{vm.sw.lng()}}
-    </div>
 </div>
 <!-- end of Map -->
 </div>
