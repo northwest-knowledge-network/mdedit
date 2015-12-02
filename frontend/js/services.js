@@ -155,23 +155,55 @@ metadataEditorApp
         };
     }
 ])
-.factory('getFreshRecord', ['$http', 'hostname', 'EMPTY_CONTACT', '$log',
-    function($http, hostname, EMPTY_CONTACT)
+.value('emptyRecord', 
+{
+    title: '',
+    summary: '',
+    last_mod_date: '',
+    first_pub_date: '',
+
+    update_frequency: '',
+    status: '',
+    spatial_dtype: '',
+    hierarchy_level: '',
+    topic_category: [''],
+    place_keywords: [''],
+    thematic_keywords: [''],
+
+    data_format: [''],
+    compression_technique: '',
+    online: [''],
+    use_restrictions: '',
+
+    citation: [],
+    access: [],
+
+    west_lon: 0.0,
+    east_lon: 0.0,
+    north_lat: 0.0,
+    south_lat: 0.0,
+
+    start_date: '',
+    end_date: ''
+})
+.value('milesFields',
+{
+
+})
+.service('recordService', ['$http', '$q', 'hostname', 'EMPTY_CONTACT', 'emptyRecord',
+    function($http, $q, hostname, EMPTY_CONTACT, emptyRecord)
     {
-        return function(stuffing)
-        {
-            var freshRecord = {};
+        var copyObj = function(obj) { return JSON.parse(JSON.stringify(obj)); }; 
 
-            $http.get('/emptyRecord.json')
-                 .success(function(result) {
-                     console.log(result);
-                     freshRecord = result.data;
-                 })
-                 .error(function() {
-                     console.log("\nerror!\n");
-                 });
+        var getFreshRecord = function() {
+            var freshy = copyObj(emptyRecord);
+            freshy.citation.push(copyObj(EMPTY_CONTACT));
+            freshy.access.push(copyObj(EMPTY_CONTACT));
+            return freshy;
+        };
 
-            return freshRecord;
+        return {
+            getFreshRecord: getFreshRecord
         };
     }
  ])

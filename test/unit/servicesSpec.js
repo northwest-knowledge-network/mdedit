@@ -1,35 +1,30 @@
 'use strict';
 
 /* jasmine specs for services go here */
-var getFreshRecord, freshness;
-describe('get a fresh record', function() {
+var recordService, freshness, yo, EMPTY_CONTACT;
+describe('inspect correctness of a fresh record from recordService', function() {
 
-    beforeEach(module('metadataEditor', ['ngRoute', 'ui.date']));
+    beforeEach(module('metadataEditor'));
 
     beforeEach(
-
         inject(function($injector) {
-            getFreshRecord = $injector.get('getFreshRecord');
-            console.log("here!");
-    })
+            recordService = $injector.get('recordService');
+            EMPTY_CONTACT = $injector.get('EMPTY_CONTACT');
+        })
     );
 
     //);
 
-    it('should return lists with for topic_category, place_keywords, ' +
-       'thematic_keywords, data_format, online', function() {
+    it('should have a single, empty contact for access and citation contacts', 
+        function()
+        {
+            var f1 = recordService.getFreshRecord();
 
-        console.log("\nyo!!!!!! ***\n\n*****\n\n***");
-        expect(true).toBe(true);
-        //var freshness = getFreshRecord("stuffing")[>;<]
-        //console.log(getFreshRecord);
-        //console.log(freshness);
-        //var keys = ['topic_category', 'place_keywords', 'thematic_keywords',
-                    //'data_format', 'online'];
+            expect(f1.access.length).toEqual(1);
+            expect(f1.access[0]).toEqual(EMPTY_CONTACT);
 
-        //for (var i = 0; i < keys.length; i++)
-        //{
-            //expect(freshness[keys[i]]).toBe(['']);
-        /*}*/
-    });
+            expect(f1.citation.length).toEqual(1);
+            expect(f1.citation[0]).toEqual(EMPTY_CONTACT);
+        }
+    );
 });
