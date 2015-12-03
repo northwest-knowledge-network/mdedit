@@ -11,10 +11,10 @@ var metadataEditorApp = angular
    'structure', 'transportation',
    'utilitiesCommunication'],
 
- knownDataFormats: ["ASCII", "csv", "DLG", "docx", "DRG", "DWG", "eps", 
-      "ERDAS", "Esri file GDB", "Esri grid", "Esri personal GDB","Esri TIN", "FASTA", "FASTQ", "GenBank", 
-      "GeoJSON", "GeoTIFF", "GML", "HDF", "jpeg", "KML", "LAS", "mp3", 
-      "MrSID", "netCDF", "pdf", "php", "png", "py", "R", "SDXF", "Shapefile", 
+ knownDataFormats: ["ASCII", "csv", "DLG", "docx", "DRG", "DWG", "eps",
+      "ERDAS", "Esri file GDB", "Esri grid", "Esri personal GDB","Esri TIN", "FASTA", "FASTQ", "GenBank",
+      "GeoJSON", "GeoTIFF", "GML", "HDF", "jpeg", "KML", "LAS", "mp3",
+      "MrSID", "netCDF", "pdf", "php", "png", "py", "R", "SDXF", "Shapefile",
       "SPSS", "Stata", "Tab", "tiff", "txt", "VBS", "wav", "xls", "xlsx",
       "xml"],
 
@@ -64,7 +64,7 @@ var metadataEditorApp = angular
     'phone': 'Phone'
     }
 })
-.constant('EMPTY_CONTACT', {
+.constant('emptyContact', {
       'name': '', 'email': '', 'org': '', 'address': '',
       'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': ''
     })
