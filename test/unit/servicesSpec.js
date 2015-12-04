@@ -1,6 +1,5 @@
 'use strict';
 
-/* jasmine specs for services go here */
 var recordService, freshness, yo, emptyContact, emptyRecord;
 
 describe('inspect correctness of a fresh record from recordService', function()
@@ -54,8 +53,7 @@ describe('inspect correctness of a fresh record from recordService', function()
         function()
         {
             var fields =
-                'title, summary, last_mod_date, ' +
-                'first_pub_date, update_frequency, status, spatial_dtype, ' +
+                'title, summary, update_frequency, status, spatial_dtype, ' +
                 'hierarchy_level, compression_technique, use_restrictions';
 
             var fieldsArr = fields.split(', ');
@@ -69,8 +67,23 @@ describe('inspect correctness of a fresh record from recordService', function()
             expect(j).toEqual(fieldsArr.length);
         }
     );
+
+    it('should have default dates of January 1, 2010 for last_mod_date and first_pub_date',
+        function()
+        {
+            // not sure why but the first date in `expect`s gets
+            // formatted as ISO and fails if expDate is not also ISO-formatted
+            var expDate = new Date(2010, 0, 1);
+            expDate = expDate.toISOString();
+
+            expect(emptyRecord.last_mod_date.$date).toEqual(expDate);
+
+            expect(emptyRecord.first_pub_date.$date).toEqual(expDate);
+        }
+    );
 }
 );
+
 
 describe('MILES default generation', function()
 {
@@ -167,7 +180,7 @@ describe('Service to provide an existing record for editing', function()
         $httpBackend.flush();
     });
 
-    it('should not overwrite the ', function()
+    it('should not overwrite non-MILES fields', function()
     {
         $httpBackend.expectPOST(/someFields/).respond(200,
             {
@@ -195,9 +208,76 @@ describe('Service to provide an existing record for editing', function()
                 expect(edate.month, 7);
                 expect(edate.day, 5);
 
-                expect(rec.use_restrictions).toEqual('http://www.wtfpl.net/')
+                expect(rec.use_restrictions).toEqual('http://www.wtfpl.net/');
             });
 
         $httpBackend.flush();
-    })
+    });
+});
+
+
+describe('Submit draft record to server', function () {
+
+    var recordService, scope, emptyRecord, $httpBackend, $rootScope;
+
+    beforeEach(module('metadataEditor'));
+
+    beforeEach(
+        inject(function($injector) {
+            recordService = $injector.get('recordService');
+
+            // recordId will point the mock to the proper data to return
+            var recordId = 'noDates';
+
+            $httpBackend = $injector.get('$httpBackend');
+            $rootScope = $injector.get('$rootScope');
+
+            scope = {
+                currentRecord: $injector.get('emptyRecord'),
+                dataFormats: {
+                    iso: ['ASCII', 'GML', 'HDF'],
+                    aux: 'snoop, lion, dogg'
+                }
+            };
+
+            // coming from the scope, the place and thematic keywords are
+            // comma-separated lists, unlike the emptyRecord `value`
+            scope.currentRecord.thematic_keywords = 'rocks, jocks';
+            scope.currentRecord.place_keywords = 'idaho, moscow';
+            scope.currentRecord.west_lon = -118.12;
+            scope.currentRecord.east_lon = -110.10;
+            scope.currentRecord.south_lat = 30.0;
+            scope.currentRecord.north_lat = 45.0;
+            scope._id = {$oid: 'xxxo'};
+        })
+    );
+
+    afterEach(function() {
+        $httpBackend.verifyNoOutstandingExpectation();
+        $httpBackend.verifyNoOutstandingRequest();
+    });
+
+    it('should make a PUT request if submitting a new record', function () {
+        scope.newRecord = true;
+
+        $httpBackend.expectPUT(/api\/metadata/).respond(200,
+            scope.currentRecord
+        );
+
+        recordService.saveDraft(scope);
+
+        $httpBackend.flush();
+    });
+
+    it('should make a POST request if updating an existing record', function () {
+        scope.newRecord = false;
+
+        $httpBackend.expectPUT(/api\/metadata\/xxxo/).respond(200,
+            scope.currentRecord
+        );
+
+        recordService.saveDraft(scope);
+
+        $httpBackend.flush();
+    });
 });

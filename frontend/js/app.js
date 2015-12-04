@@ -2,7 +2,8 @@
 
 var metadataEditorApp = angular
 .module('metadataEditor', ['ngRoute', 'ui.date'])
-.constant('formOptions',  {
+.constant('formOptions',
+{
  	topicCategoryChoices: ['biota', 'boundaries',
    'climatologyMeteorologyAtmosphere', 'economy', 'elevation',
    'environment', 'farming', 'geoscientificInformation', 'health',
@@ -24,47 +25,50 @@ var metadataEditorApp = angular
 
 	hierarchyLevels: ["dataset", "series"],
 
-	statusChoicesIsoMap: {
-    'completed': 'completed',
-    'continually updated': 'onGoing',
-    'in process': 'underDevelopment',
-    'planned': 'planned',
-    'needs to be generated or updated': 'required',
-    'stored in an offline facility': 'historicalArchive',
-    'no longer valid': 'obsolete'
+	statusChoicesIsoMap:
+    {
+        'completed': 'completed',
+        'continually updated': 'onGoing',
+        'in process': 'underDevelopment',
+        'planned': 'planned',
+        'needs to be generated or updated': 'required',
+        'stored in an offline facility': 'historicalArchive',
+        'no longer valid': 'obsolete'
     },
 
-	updateFrequencyChoicesMap: {
-    'continual': 'continual',
-    'daily': 'daily',
-    'weekly': 'weekly',
-    'fortnightly': 'fortnightly',
-    'monthly': 'monthly',
-    'quarterly': 'quarterly',
-    'biannually': 'biannually',
-    'annually': 'annually',
-    'as needed': 'asNeeded',
-    'irregular': 'irregular',
-    'not planned': 'notPlanned',
-    'unknown': 'unknown'
+	updateFrequencyChoicesMap:
+    {
+        'continual': 'continual',
+        'daily': 'daily',
+        'weekly': 'weekly',
+        'fortnightly': 'fortnightly',
+        'monthly': 'monthly',
+        'quarterly': 'quarterly',
+        'biannually': 'biannually',
+        'annually': 'annually',
+        'as needed': 'asNeeded',
+        'irregular': 'irregular',
+        'not planned': 'notPlanned',
+        'unknown': 'unknown'
     },
 
 	orderedContactFields: ['name', 'email', 'org', 'address', 'city',
 				       'state', 'zipcode', 'country', 'phone'],
 
-	cfieldsMap:     {
-    'name': 'Name',
-    'email': 'Email',
-    'org': 'Organization',
-    'address': 'Address',
-    'city': 'City',
-    'state': 'State',
-    'zipcode': 'Zip Code',
-    'country': 'Country',
-    'phone': 'Phone'
+	cfieldsMap:
+    {
+        'name': 'Name',
+        'email': 'Email',
+        'org': 'Organization',
+        'address': 'Address',
+        'city': 'City',
+        'state': 'State',
+        'zipcode': 'Zip Code',
+        'country': 'Country',
+        'phone': 'Phone'
     }
-})
-.constant('emptyContact', {
+}
+).constant('emptyContact', {
       'name': '', 'email': '', 'org': '', 'address': '',
       'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': ''
     })

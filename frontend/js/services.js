@@ -10,11 +10,11 @@ metadataEditorApp
     // first see if we have any user information given to us (from Drupal)
     if (typeof(window.sessionId) === 'undefined')
     {
-        var sessionId = 'local';
+        sessionId = 'local';
     }
     else
     {
-        var sessionId = window.sessionId;
+        sessionId = window.sessionId;
     }
 
     return sessionId;
@@ -50,16 +50,16 @@ metadataEditorApp
     {
         $log.log(record);
         /* place and thematic keywords come as a list from the server */
-        if (typeof record.place_keywords !== 'string'
-            && typeof record.place_keywords !== 'object')
+        if (typeof record.place_keywords !== 'string' &&
+            typeof record.place_keywords !== 'object')
         {
                 record.place_keywords =
                     record.place_keywords.join(', ');
         }
 
 
-        if (typeof record.thematic_keywords !== 'string'
-            && typeof record.thematic_keywords !== 'object')
+        if (typeof record.thematic_keywords !== 'string' &&
+            typeof record.thematic_keywords !== 'object')
         {
             record.thematic_keywords =
                 record.thematic_keywords.join(', ');
@@ -109,7 +109,7 @@ metadataEditorApp
         if (!scope.currentRecord.online) {
             record.online = [""];
         }
-    }
+    };
 }])
 /**
  * Fetch the record with recordId and update the form to display it.
@@ -159,8 +159,8 @@ metadataEditorApp
 {
     title: '',
     summary: '',
-    last_mod_date: '',
-    first_pub_date: '',
+    last_mod_date: {$date: new Date(2010, 0, 1)},
+    first_pub_date: {$date: new Date(2010, 0, 1)},
 
     update_frequency: '',
     status: '',
@@ -183,8 +183,8 @@ metadataEditorApp
     north_lat: 0.0,
     south_lat: 0.0,
 
-    start_date: {$date: ''},
-    end_date: {$date: ''}
+    start_date: {$date: new Date(2010, 1, 1)},
+    end_date: {$date: new Date()}
 })
 .value('milesFields',
 {
@@ -226,8 +226,74 @@ metadataEditorApp
     function($http, $q, hostname, sessionId,
              emptyContact, emptyRecord, milesFields)
     {
+
+
+        /**
+         * Private functions that will not be exposed to controller
+         */
+
+        // shorthand for this standard way to copy a javascript object
         var copyObj = function(obj) { return JSON.parse(JSON.stringify(obj)); };
 
+        /**
+         * Prepare record being edited to save to the server. This takes the
+         * scope as an argument, but doesn't modify the scope. It only returns
+         * the current record ready to save to the server.
+         *
+         * @param {Object} scope Scope containing the metadata record to save
+         *  to server.
+         */
+        var prepareRecordForSave = function(scope)
+        {
+            // the scope contains
+            var record = scope.currentRecord;
+
+            record.start_date.$date.setHours(
+              record.start_date.hours,
+              record.start_date.minutes,
+              record.start_date.seconds
+            );
+
+            record.end_date.$date.setHours(
+              record.end_date.hours,
+              record.end_date.minutes,
+              record.end_date.seconds
+            );
+
+            var serverReady = JSON.parse(JSON.stringify(record));
+
+            serverReady.place_keywords =
+                record.place_keywords.split(', ');
+
+            serverReady.thematic_keywords =
+                record.thematic_keywords.split(', ');
+
+            serverReady.data_format = scope.dataFormats.iso;
+
+            if (scope.dataFormats.aux)
+            {
+              var auxList = scope.dataFormats.aux.split(',')
+                                 .map(function(el){ return el.trim(); });
+
+              serverReady.data_format = serverReady.data_format.concat(auxList);
+            }
+
+            serverReady.last_mod_date =
+              {$date: record.last_mod_date.$date.getTime()};
+            serverReady.start_date =
+              {$date: record.start_date.$date.getTime()};
+            serverReady.end_date =
+              {$date: record.end_date.$date.getTime()};
+
+            serverReady.first_pub_date =
+              {$date: record.first_pub_date.$date.getTime()};
+
+            return serverReady;
+        };
+
+        /**
+         * These functions are exposed by the service to the controllers.
+         */
         var getFreshRecord = function() {
 
             var freshy = copyObj(emptyRecord);
@@ -293,14 +359,44 @@ metadataEditorApp
                         }
                     }
             );
-
         };
 
+        /**
+         * Save a draft record to the server.
+         *
+         * @param {Object} scope Scope object from the controller. No
+         * modifications to the scope are made; a promise is returned
+         * for use by the controller.
+         * @returns {}
+         */
+        var saveDraft = function (scope) {
+
+            var q;
+
+            if (scope.newRecord)
+            {
+                q = $http.put('//' + hostname + '/api/metadata',
+                          {'record': prepareRecordForSave(scope),
+                           'session_id': sessionId}
+                );
+
+            }
+            else
+            {
+                q = $http.put('//' + hostname + '/api/metadata/' + scope._id.$oid,
+                          {'record': prepareRecordForSave(scope),
+                           'session_id': sessionId}
+                );
+            }
+
+            return q;
+        };
 
         return {
             getFreshRecord: getFreshRecord,
             getMilesDefaults: getMilesDefaults,
-            getRecordToEdit: getRecordToEdit
+            getRecordToEdit: getRecordToEdit,
+            saveDraft: saveDraft
         };
     }
 ])
@@ -403,7 +499,7 @@ metadataEditorApp
                      .success(function(data){
                        scope.allRecords = data.results;
                      });
-                }
+                };
         }])
 .factory('submitDraftRecordService',
         ['$http', 'prepareCurrentScopedRecord', 'hostname', 'sessionId',
@@ -505,6 +601,6 @@ metadataEditorApp
 
                             updateRecordsList(scope);
                         });
-                }
+                };
         }])
 ;

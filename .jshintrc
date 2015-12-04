@@ -1,0 +1,8 @@
+{
+    "predef": ["angular"],
+    "browser": true,
+    "jasmine": true,
+    "module": false,
+    "inject": false,
+    "ddescribe": false
+}
