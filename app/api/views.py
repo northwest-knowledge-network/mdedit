@@ -15,8 +15,6 @@ from mongoengine import ValidationError
 from . import api
 from ..models import Metadata
 
-import sys
-
 import gptInsert
 
 
@@ -53,6 +51,8 @@ def metadata():
 
         if request.method == 'PUT':
 
+            import ipdb; ipdb.set_trace();
+
             new_md = Metadata.from_json(json.dumps(request.json['record']))
 
             new_md.id = None
@@ -61,6 +61,8 @@ def metadata():
             new_md.username = username
 
             new_md.topic_category
+
+
 
             # this avoids errors in submitting None where a list is expected.
             # string -> dict -> string seems wasteful, but don't see other way

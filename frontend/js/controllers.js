@@ -2,22 +2,21 @@
 
 
 // for minification, explicitly declare dependencies $scope and $http
-metadataEditorApp.controller('BaseController', 
- 
-    ['$scope', '$http', '$log', 
-     'formOptions', 'updateForms', 'editRecordService',
-     'hostname', 'getFreshRecord', 'EMPTY_CONTACT',
-     'submitDraftRecordService', 'updateRecordsList', 'publishRecordService',
-     'defaultMilesService',
+metadataEditorApp.controller('BaseController',
 
-    function($scope, $http, $log,
-             formOptions, updateForms, editRecordService,
-             hostname, getFreshRecord, EMPTY_CONTACT, 
-             submitDraftRecordService, updateRecordsList, publishRecordService,
-             defaultMilesService) 
+    ['$scope', '$http', '$log', 'formOptions', 'updateForms', 'recordService',
+
+    function($scope, $http, $log, formOptions, updateForms, recordService)
     {
         // initialize list of existing metadata records
-        updateRecordsList($scope);
+        $scope.allRecords = [];
+
+        $scope.updateRecordsList = () => {
+            recordService.list()
+                .success( (data) => { $scope.allRecords = data.results; });
+        };
+
+        $scope.updateRecordsList();
 
         $scope.errors = [];
 
@@ -53,14 +52,14 @@ metadataEditorApp.controller('BaseController',
         $scope.knownDataFormats = formOptions.knownDataFormats;
 
         $scope.spatialDataOptions = formOptions.spatialDataOptions;
-        
+
         $scope.hierarchyLevels = formOptions.hierarchyLevels;
 
         $scope.createNewRecord = function() {
 
-            var fresh = getFreshRecord();
+            var fresh = recordService.getFreshRecord();
 
-            $scope.newRecord = true;    
+            $scope.newRecord = true;
             $scope.currentRecord = fresh;
 
             // iso data formats come from a pre-defined list to from ISO std
@@ -79,21 +78,20 @@ metadataEditorApp.controller('BaseController',
 
         $scope.editRecord = function(recordId)
         {
-            editRecordService(recordId).promise.then(
-                function(recordToEdit)
-                {
+            recordService.getRecordToEdit(recordId)
+                .success( (data) => {
                     $scope.newRecord = false;
-                    updateForms($scope, recordToEdit);
-                },
-                function(error)
-                {
+
+                    updateForms($scope, data.record);
+                })
+                .error( (error) => {
                     $scope.errors.push("Error in loading record to edit");
                 }
             );
         };
 
         /**
-         * On click of Load MILES Defaults button, 
+         * On click of Load MILES Defaults button,
          * load the defaults in MILES defaults json file
          */
         $scope.defaultMILES = function() { defaultMilesService($scope); };
@@ -102,13 +100,53 @@ metadataEditorApp.controller('BaseController',
          * On submit of metadata form, submitRecord. This both updates the server
          * and makes sure the form is current. Not sure how it wouldn't be, todo?
          */
-        $scope.submitDraftRecord = function() { submitDraftRecordService($scope); };
-        
+        $scope.submitDraftRecord = function() {
+
+            recordService.saveDraft($scope)
+                .success( function (data) {
+
+                    updateForms($scope, data.record);
+
+                    $scope.newRecord = false;
+
+                    $scope.addedContacts = {
+                        'access': 0,
+                        'citation': 0
+                    };
+
+                    updateRecordsList();
+                })
+                .error( function (data) {
+                    // TODO
+                });
+            // submitDraftRecordService($scope);
+        };
+
 
         /**
          * Publish a record to the portal. Requires all fields to be valid
          */
-        $scope.publishRecord = function() { publishRecordService($scope); };
+        $scope.publishRecord = function() {
+
+            recordService.publish($scope)
+                .success( function (data) {
+
+                    updateForms(data.record);
+
+                    $scope.newRecord = false;
+
+                    $scope.addedContacts = {
+                        'access': 0,
+                        'citation': 0
+                    };
+
+                    updateRecordsList();
+                })
+                .error( function (data) {
+                    // TODO
+                });
+            //publishRecordService($scope);
+        };
 
         $scope.addedContacts =
         {
@@ -192,7 +230,7 @@ metadataEditorApp.controller('BaseController',
 
     // our more human-readable update frequency choices need trans to ISO 19115
     this.updateFrequencyChoicesMap = formOptions.updateFrequencyChoicesMap;
-  }     
+  }
 ])
 .controller('DCController', [function()
   {

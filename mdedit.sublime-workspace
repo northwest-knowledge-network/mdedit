@@ -1,0 +1,509 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"miles",
+				"getMilesDefaults"
+			],
+			[
+				"use",
+				"use_restrictions"
+			],
+			[
+				"publishR",
+				"publishRecordService"
+			],
+			[
+				"display",
+				"displayCurrentRecords"
+			],
+			[
+				"submitDraft",
+				"submitDraftRecordService	AngularJS"
+			],
+			[
+				"submitDraftR",
+				"submitDraftRecordService"
+			],
+			[
+				"emp",
+				"EMPTY_CONTACT"
+			],
+			[
+				"createNewRec",
+				"createNewRecordService"
+			],
+			[
+				"editRec",
+				"editRecordService"
+			],
+			[
+				"createNew",
+				"createNewRecordService	AngularJS"
+			],
+			[
+				"curret",
+				"currentRecord"
+			],
+			[
+				"from",
+				"fromstring"
+			],
+			[
+				"xml",
+				"xml_str"
+			],
+			[
+				"iso_",
+				"iso_str"
+			],
+			[
+				"get_sing",
+				"get_single_xml_metadata"
+			],
+			[
+				"get",
+				"get_single_xml_metadata"
+			],
+			[
+				"ar",
+				"arg2"
+			],
+			[
+				"def",
+				"def	Function"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"color",
+				"Colorsublime: Install Theme"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"pack",
+				"Package Control: Install Package"
+			],
+			[
+				"packag",
+				"Package Control: Install Package"
+			],
+			[
+				"angular lookup",
+				"AngularJS: Look Up Definition"
+			],
+			[
+				"Angular s",
+				"AngularJS: Rebuild Search Index"
+			],
+			[
+				"Package",
+				"Package Control: Install Package"
+			],
+			[
+				"",
+				"Package Control: Install Package"
+			],
+			[
+				"Snippet: ",
+				"Snippet: For Loop"
+			]
+		],
+		"width": 530.0
+	},
+	"console":
+	{
+		"height": 146.0,
+		"history":
+		[
+			"h = '2915d1851351e5ee549c20394736b442' + '8bc59f460fa1548d1514676163dafc88'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)",
+			"import urllib.request, os, hashlib"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/Users/mturner/workspace/mdedit"
+	],
+	"file_history":
+	[
+		"/Users/mturner/workspace/mdedit/frontend/js/app.js",
+		"/Users/mturner/workspace/mdedit/frontend/js/controllers.js",
+		"/Users/mturner/workspace/mdedit/frontend/js/services.js",
+		"/Users/mturner/workspace/mdedit/frontend_export/controllers.js",
+		"/Users/mturner/workspace/mdedit/default_metadata.json",
+		"/Users/mturner/Library/Application Support/Sublime Text 3/Packages/User/Preferences.sublime-settings",
+		"/Users/mturner/workspace/mdedit/test/unit/servicesSpec.js",
+		"/Users/mturner/workspace/mdedit/frontend/index.html",
+		"/Users/mturner/workspace/mdedit/frontend/js/routes.js",
+		"/Users/mturner/workspace/mdedit/frontend/partials/form/detailed.html",
+		"/Users/mturner/workspace/mdedit/app/api/views.py",
+		"/Users/mturner/Desktop/subl_text_test.py",
+		"/Users/mturner/workspace/mdedit/frontend/partials/header.html",
+		"/Users/mturner/workspace/vw-webapp/app/static/js/angular/services.js",
+		"/Users/mturner/workspace/mdedit/frontend/partials/iso.html",
+		"/Users/mturner/workspace/mdedit/frontend/partials/form/temporalExtent.html",
+		"/Users/mturner/workspace/mdedit/frontend/partials/head.html",
+		"/Users/mturner/workspace/mdedit/frontend/partials/dublin.html",
+		"/Users/mturner/workspace/mdedit/frontend/partials/form/contacts.html",
+		"/Users/mturner/workspace/mdedit/frontend/partials/form/basic.html",
+		"/Users/mturner/workspace/mdedit/frontend/partials/form/onlineResourcesAndRestrictions.html",
+		"/Users/mturner/workspace/mdedit/frontend/partials/form/dataFormats.html",
+		"/Users/mturner/workspace/mdedit/frontend/partials/form/spatialExtent.html",
+		"/Users/mturner/workspace/mdedit/frontend/partials:form:spatialExtent.html",
+		"/Users/mturner/workspace/vw-webapp/app/templates/base.html",
+		"/Users/mturner/workspace/mdedit/frontend/dublin.html",
+		"/Users/mturner/workspace/mdedit/frontend/iso.html",
+		"/Users/mturner/workspace/vw-webapp/app/static/js/angular/controllers.js",
+		"/Users/mturner/workspace/vw-webapp/app/templates/share/datasets.html",
+		"/Users/mturner/workspace/wcwave/wcwave_adaptors/generated_lixo.json",
+		"/Users/mturner/workspace/vw-py/foo.asc",
+		"/Users/mturner/Desktop/primer-dataset.json",
+		"/Users/mturner/Desktop/iso.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00013.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00014.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00015.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00016.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00017.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00018.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00019.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00020.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00021.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00022.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00024.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00025.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00026.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00027.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00029.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00028.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00030.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00031.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00032.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00033.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00034.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00035.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00036.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00037.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00038.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00039.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00040.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00041.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00042.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00043.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00044.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00045.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00046.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00047.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00048.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00049.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00051.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00052.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00054.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00055.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00056.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00057.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00058.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00059.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00060.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00061.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00062.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00064.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00065.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00066.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00067.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00069.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00071.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00072.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00073.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00074.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00075.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00077.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00078.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00079.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00080.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00101.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00111.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00112.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00113.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00114.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00115.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00116.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00117.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00118.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00120.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00121.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00122.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00123.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00124.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00125.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00126.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00127.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00128.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00130.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00131.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00132.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00133.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00134.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00135.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00136.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00137.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00138.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00139.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00140.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00141.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00142.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00143.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00144.xml",
+		"/Users/mturner/Desktop/icpsr-ddi-metadata/00145.xml"
+	],
+	"find":
+	{
+		"height": 35.0
+	},
+	"find_in_files":
+	{
+		"height": 93.0,
+		"where_history":
+		[
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": true,
+		"find_history":
+		[
+			"phone",
+			"EMPTY_CONTACT",
+			"})\n",
+			"log",
+			"{\n",
+			"session_id",
+			"updateForms",
+			"$scope",
+			"prepareCurrent",
+			"addedContacts",
+			"$scope",
+			"updateRecordsList(scope)",
+			"updateRecordsList()",
+			"session_id",
+			"displayCurrentRecords",
+			"prepareCurrent",
+			"$scope",
+			"prepare",
+			"session_id",
+			"$scope.hostname",
+			"$scope",
+			"EMPTY_CONTACT",
+			"EMPTY",
+			"yo check",
+			"yo check it",
+			"createNewRecord()",
+			"$scope",
+			"getSessionId",
+			"getSession",
+			"getHostname",
+			"updateForms",
+			"formOptions",
+			"updateForms",
+			"updateForms = ",
+			"updateForms(record)",
+			"updateForms",
+			"createNew",
+			"record",
+			"createNewRecord",
+			"updateForms(record)",
+			"updateForms(record",
+			"updateForms(record)",
+			"updateForms(",
+			"updateForms",
+			"=",
+			"strong",
+			"Detailed Information",
+			"        \n",
+			"<div ng-include=\"'partials/form/dataFormats.html'\"></div>",
+			"ng-options",
+			"topicCategory",
+			"ng-options",
+			"dataFormat",
+			"ng-repeat",
+			"forEach",
+			"spatialExtent",
+			"spatialEstent",
+			"spatial",
+			"form/",
+			"<!",
+			"isDublin",
+			"endblock",
+			"\\n",
+			"http",
+			"hostname",
+			"title",
+			"timePrd",
+			"meta",
+			"timePrd",
+			"timePrd	",
+			"timePrd"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"emptyContact",
+			"scope",
+			"$scope.addedContacts",
+			"scope",
+			"updateRecordsList($scope)",
+			"updateRecordsList(scope)",
+			"updateRecordsList()",
+			"sessionId",
+			"updateRecordsList",
+			"scope",
+			"hostname",
+			"updateForms($scope, record)",
+			"updateForms(record)",
+			"<div ng-include=\"'partials/form/dataFormats.html'\"></div>",
+			"           <"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 27.0
+	},
+	"input":
+	{
+		"height": 35.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "mdedit.sublime-project",
+	"replace":
+	{
+		"height": 64.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"contro",
+				"frontend_export/controllers.js"
+			],
+			[
+				"defautlmet",
+				"default_metadata.json"
+			],
+			[
+				"frontend/",
+				"~/workspace/mdedit/frontend/partials/iso.html"
+			],
+			[
+				"",
+				"~/workspace/vw-webapp/app/static/js/angular/controllers.js"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": false,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 150.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

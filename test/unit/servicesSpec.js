@@ -2,8 +2,7 @@
 
 var recordService, freshness, yo, emptyContact, emptyRecord;
 
-describe('inspect correctness of a fresh record from recordService', function()
-{
+describe('inspect correctness of a fresh record from recordService', function () {
 
     beforeEach(module('metadataEditor'));
 
@@ -85,8 +84,7 @@ describe('inspect correctness of a fresh record from recordService', function()
 );
 
 
-describe('MILES default generation', function()
-{
+describe('MILES default generation', function () {
     beforeEach(module('metadataEditor'));
 
     var recordService, milesFields;
@@ -118,8 +116,7 @@ describe('MILES default generation', function()
 );
 
 
-describe('Service to provide an existing record for editing', function()
-{
+describe('Service to provide an existing record for editing', function() {
     var recordToEdit_noDates, recordToEdit_someFields, $httpBackend, $rootScope;
     beforeEach(module('metadataEditor'));
 
@@ -248,7 +245,7 @@ describe('Submit draft record to server', function () {
             scope.currentRecord.east_lon = -110.10;
             scope.currentRecord.south_lat = 30.0;
             scope.currentRecord.north_lat = 45.0;
-            scope._id = {$oid: 'xxxo'};
+            scope.currentRecord._id = {$oid: 'xxxo'};
         })
     );
 
@@ -277,6 +274,81 @@ describe('Submit draft record to server', function () {
         );
 
         recordService.saveDraft(scope);
+
+        $httpBackend.flush();
+    });
+});
+
+
+describe('Initiate publishing process request to server', function () {
+
+    var recordService, scope, emptyRecord, $httpBackend, $rootScope;
+
+    beforeEach(module('metadataEditor'));
+
+    beforeEach(
+        inject(function($injector) {
+            recordService = $injector.get('recordService');
+
+            // recordId will point the mock to the proper data to return
+            var recordId = 'noDates';
+
+            $httpBackend = $injector.get('$httpBackend');
+            $rootScope = $injector.get('$rootScope');
+
+            scope = {
+                currentRecord: $injector.get('emptyRecord'),
+                dataFormats: {
+                    iso: ['ASCII', 'GML', 'HDF'],
+                    aux: 'snoop, lion, dogg'
+                }
+            };
+
+            // coming from the scope, the place and thematic keywords are
+            // comma-separated lists, unlike the emptyRecord `value`
+            scope.currentRecord.thematic_keywords = 'rocks, jocks';
+            scope.currentRecord.place_keywords = 'idaho, moscow';
+            scope.currentRecord.west_lon = -118.12;
+            scope.currentRecord.east_lon = -110.10;
+            scope.currentRecord.south_lat = 30.0;
+            scope.currentRecord.north_lat = 45.0;
+            scope.currentRecord._id = {$oid: 'xxxo'};
+        })
+    );
+
+    afterEach(function() {
+        $httpBackend.verifyNoOutstandingExpectation();
+        $httpBackend.verifyNoOutstandingRequest();
+    });
+
+    it('should make one PUT request and one POST request if submitting a new record', function () {
+        scope.newRecord = true;
+
+        $httpBackend.expectPUT(/api\/metadata/).respond(200,
+            scope.currentRecord
+        );
+
+        $httpBackend.expectPOST(/publish/).respond(200,
+            scope.currentRecord
+        );
+
+        recordService.publish(scope);
+
+        $httpBackend.flush();
+    });
+
+    it('should make two PUT request and one POST request if updating an existing record', function () {
+        scope.newRecord = false;
+
+        $httpBackend.expectPUT(/api\/metadata\/xxxo/).respond(200,
+            scope.currentRecord
+        );
+
+        $httpBackend.expectPOST(/publish/).respond(200,
+            scope.currentRecord
+        );
+
+        recordService.publish(scope);
 
         $httpBackend.flush();
     });
