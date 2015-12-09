@@ -77,6 +77,7 @@ describe('createNewRecord', function() {
 
     it('MILES defaults should only replace fields that it contains',
         function () {
+
         testScope.currentRecord.title = 'Fernan Lake Data';
         testScope.currentRecord.description = 'Limnology variables observed 2001 - 2003';
         testScope.currentRecord.start_date.$date = new Date(2001, 9, 1);
@@ -87,12 +88,13 @@ describe('createNewRecord', function() {
         testScope.loadDefaultMILES();
 
         var rec = testScope.currentRecord;
+
         expect(rec.title).toEqual('Fernan Lake Data');
         expect(rec.description).toEqual('Limnology variables observed 2001 - 2003');
         expect(rec.start_date.$date).toEqual(new Date(2001, 9, 1));
         expect(rec.end_date.$date).toEqual(new Date(2003, 8, 30));
-        expect(rec.place_keywords).toEqual(['USA', 'Idaho']);
-        expect(rec.thematic_keywords).toEqual(['IIA-1301792', 'MILES', 'EPSCoR']);
+        expect(rec.place_keywords).toEqual('USA, Idaho');
+        expect(rec.thematic_keywords).toEqual('IIA-1301792, MILES, EPSCoR');
 
         expect(rec.citation).toEqual(
             [{

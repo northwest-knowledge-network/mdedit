@@ -127,8 +127,8 @@ metadataEditorApp
     spatial_dtype: '',
     hierarchy_level: '',
     topic_category: [''],
-    place_keywords: [''],
-    thematic_keywords: [''],
+    place_keywords: '',
+    thematic_keywords: '',
 
     data_format: [''],
     compression_technique: '',
@@ -158,15 +158,18 @@ metadataEditorApp
         "USA",
         "Idaho"
     ],
+
     thematic_keywords: [
         "IIA-1301792",
         "MILES",
         "EPSCoR"
     ],
+
     citation: [{
         "country": "USA",
         "state": "Idaho"
     }],
+
     access: [{
         "address": "875 Perimeter Dr. MS 2358",
         "city": "Moscow",
@@ -178,9 +181,11 @@ metadataEditorApp
         "state": "Idaho",
         "zipcode": "83844-2358"
     }],
+
     online: [
         "https://www.idahoecosystems.org"
     ],
+
     west_lon: -117.2413657,
     east_lon: -111.043495,
     south_lat: 41.9880051,

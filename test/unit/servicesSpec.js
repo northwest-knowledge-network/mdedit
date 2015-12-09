@@ -27,14 +27,15 @@ describe('inspect correctness of a fresh record from recordService', function ()
     );
 
     it('should have an array of a single empty string for topic_category, ' +
-       'place_keywords, thematic_keywords, data_format, and online fields',
+       'data_format, and online fields',
         function()
         {
-            var fields =
-                'place_keywords, thematic_keywords, data_format, online';
+            var fields = 'data_format, online, topic_category';
 
             var fieldsArr = fields.split(', ');
+
             var j = 0;
+
             for (var i=0; i < fieldsArr.length; i++)
             {
                 expect(emptyRecord[fieldsArr[i]]).toEqual(['']);
@@ -53,7 +54,8 @@ describe('inspect correctness of a fresh record from recordService', function ()
         {
             var fields =
                 'title, summary, update_frequency, status, spatial_dtype, ' +
-                'hierarchy_level, compression_technique, use_restrictions';
+                'place_keywords, thematic_keywords, hierarchy_level, ' +
+                'compression_technique, use_restrictions';
 
             var fieldsArr = fields.split(', ');
             var j = 0;

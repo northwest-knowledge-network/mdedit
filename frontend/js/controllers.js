@@ -68,9 +68,6 @@ metadataEditorApp.controller('BaseController',
               // aux, ie auxiliary, is a single text input write-in
               aux: ''
             };
-
-            // $log.log($scope.currentRecord.access);
-            //$scope.currentRecord.citation = EMPTY_CONTACT;
         };
 
         // initialize form with placeholder data for creating a new record
@@ -112,6 +109,10 @@ metadataEditorApp.controller('BaseController',
                             $scope.currentRecord.citation[idx].state =
                                 milesFields[key][0].state;
                         }
+                    }
+                    else if (['place_keywords', 'thematic_keywords'].indexOf(key) > -1)
+                    {
+                        $scope.currentRecord[key] = milesFields[key].join(', ');
                     }
                     else
                     {
