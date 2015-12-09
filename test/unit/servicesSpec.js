@@ -81,6 +81,8 @@ describe('inspect correctness of a fresh record from recordService', function ()
                    new Date().getTime() <
                    100)
                 .toBeTruthy();
+
+            expect(emptyRecord.start_date.$date).toEqual(new Date(2010, 0, 1));
         }
     );
 }

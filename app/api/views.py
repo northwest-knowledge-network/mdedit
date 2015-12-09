@@ -60,18 +60,16 @@ def metadata():
 
             new_md.topic_category
 
-
-
             # this avoids errors in submitting None where a list is expected.
             # string -> dict -> string seems wasteful, but don't see other way
             new_md = Metadata.from_json(
                         json.dumps(
                             {
                                 k: v
-                                    for (k, v) in json.loads(
+                                for (k, v) in json.loads(
                                         new_md.to_json()
                                     ).iteritems()
-                                    if v != ''
+                                if v != ''
                             }
                         )
             )
@@ -127,7 +125,7 @@ def get_single_metadata(_oid):
             existing_record = Metadata.objects.get_or_404(pk=_oid,
                                                           username=username)
 
-            updater = Metadata.from_json(json.dumps(request.json))
+            updater = Metadata.from_json(json.dumps(request.json['record']))
 
             for f in existing_record._fields:
                 existing_record[f] = updater[f]

@@ -48,6 +48,7 @@ metadataEditorApp
 {
     return function(scope, record)
     {
+        $log.log(scope);
         $log.log(record);
         /* place and thematic keywords come as a list from the server */
         if (typeof record.place_keywords !== 'string' &&
@@ -97,14 +98,17 @@ metadataEditorApp
         // whatever came from the server, again, which is fine for loading from
         // the server, but we must first set record.data_format above
         scope.dataFormats.aux =
-            record.data_format.filter(function (f) {
-                return scope.knownDataFormats.indexOf(f) === -1;
-        }).join(', ');
+            record.data_format.filter(
+                format =>
+                    scope.knownDataFormats.indexOf(format) === -1
+            )
+            .join(', ');
 
         scope.dataFormats.iso =
-            record.data_format.filter(function (f) {
-                return scope.knownDataFormats.indexOf(f) > -1;
-        });
+            record.data_format.filter(
+                format =>
+                    scope.knownDataFormats.indexOf(format) > -1
+        );
 
         if (!scope.currentRecord.online) {
             record.online = [""];
@@ -219,11 +223,17 @@ metadataEditorApp
             }
 
             // getTime returns Unix epoch seconds (or ms, don't remember)
-            serverReady.start_date = record.start_date.$date.getTime();
-            serverReady.end_date.$date = record.end_date.$date.getTime();
+            serverReady.start_date.$date =
+                record.start_date.$date.getTime();
 
-            serverReady.first_pub_date = record.first_pub_date.$date.getTime();
-            serverReady.last_mod_date = record.last_mod_date.$date.getTime();
+            serverReady.end_date.$date =
+                record.end_date.$date.getTime();
+
+            serverReady.first_pub_date.$date =
+                record.first_pub_date.$date.getTime();
+
+            serverReady.last_mod_date.$date =
+                record.last_mod_date.$date.getTime();
 
             return serverReady;
         };
@@ -369,17 +379,16 @@ metadataEditorApp
 
             // this is a little wasteful to send the record back to server,
             // but probably not consequential
-            draftQ.success( () => {
-                var currentId = scope.currentRecord._id.$oid;
+            draftQ
+                .success(() => {
+                    var currentId = scope.currentRecord._id.$oid;
 
-                publishQ = $http.post(
-                    '//' + hostname + '/api/metadata/' +
-                        currentId + '/publish',
-                    current);
-            })
-            .error( () =>
-                { publishQ = draftQ; }
-            );
+                    publishQ = $http.post(
+                        '//' + hostname + '/api/metadata/' +
+                            currentId + '/publish',
+                        current);
+                })
+                .error(() => { publishQ = draftQ; });
 
             return publishQ;
         };
