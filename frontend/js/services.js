@@ -131,8 +131,14 @@ metadataEditorApp
     online: [''],
     use_restrictions: '',
 
-    citation: [],
-    access: [],
+    citation: [{
+      'name': '', 'email': '', 'org': '', 'address': '',
+      'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': ''
+    }],
+    access: [{
+      'name': '', 'email': '', 'org': '', 'address': '',
+      'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': ''
+    }],
 
     west_lon: 0.0,
     east_lon: 0.0,
@@ -178,10 +184,10 @@ metadataEditorApp
     use_restrictions: "Access constraints: Data will be provided to all who agree to appropriately acknowledge the National Science Foundation (NSF), Idaho EPSCoR and the individual investigators responsible for the data set. By downloading these data and using them to produce further analysis and/or products, users agree to appropriately  acknowledge the National Science Foundation (NSF), Idaho  EPSCoR and the individual investigators responsible for the data set. Use constraints: Acceptable uses of data provided by Idaho EPSCoR include any academic, research, educational, governmental, recreational, or other not-for-profit activities. Any use of data provided by the Idaho EPSCoR must acknowledge Idaho EPSCoR and the funding source(s) that contributed to the collection of the data. Users are expected to inform the Idaho EPSCoR Office and the PI(s) responsible for the data of any work or publications based on data provided. Citation: The appropriate statement to be used when citing these data is 'data were provided by (Name, University Affiliation) through the support of the NSF Idaho EPSCoR Program and by the National Science Foundation under award number IIA-1301792.' More information about EPSCoR Research Data can be found at http://www.idahoepscor.org/"
 })
 .service('recordService',
-    ['$http', '$q', '$log', 'hostname', 'sessionId', 'emptyContact',
+    ['$http', '$q', '$log', 'hostname', 'sessionId',
             'emptyRecord', 'milesFields',
     function($http, $q, $log, hostname, sessionId,
-             emptyContact, emptyRecord, milesFields)
+             emptyRecord, milesFields)
     {
         /**
          * Private functions that will not be exposed to controller
@@ -197,53 +203,27 @@ metadataEditorApp
          */
         var prepareRecordForSave = function(scope)
         {
-
-            // the scope contains
             var record = scope.currentRecord;
-            var dateFields = ['start_date', 'end_date',
-                              'last_mod_date',  'first_pub_date'];
-
-            for (var i = 0; i < dateFields.length; i++)
-            {
-                var date = record[dateFields[i]].$date;
-                if (typeof(date) === 'string')
-                {
-                    $log.log(date);
-                    // don't understand why date becomes a string like this...
-                    record[dateFields[i]].$date = new Date(date);
-                    $log.log(record[dateFields[i]].$date);
-                    $log.log(typeof(record[dateFields[i]].$date));
-                }
-            }
 
             var serverReady = angular.copy(record);
-
-            // serverReady.place_keywords =
-            //     record.place_keywords.split(', ');
-
-            // serverReady.thematic_keywords =
-            //     record.thematic_keywords.split(', ');
 
             serverReady.data_format = scope.dataFormats.iso;
 
             if (scope.dataFormats.aux)
             {
               var auxList = scope.dataFormats.aux.split(',')
-                                 .map(function(el){ return el.trim(); });
+                                 .map(el => el.trim());
 
-              serverReady.data_format = serverReady.data_format.concat(auxList);
+              serverReady.data_format =
+                serverReady.data_format.concat(auxList);
             }
 
-            // getTime returns Unix epoch seconds (or ms don't remember)
-            serverReady.last_mod_date =
-              {$date: record.last_mod_date.$date.getTime()};
-            serverReady.start_date =
-              {$date: record.start_date.$date.getTime()};
-            serverReady.end_date =
-              {$date: record.end_date.$date.getTime()};
+            // getTime returns Unix epoch seconds (or ms, don't remember)
+            serverReady.start_date = record.start_date.$date.getTime();
+            serverReady.end_date.$date = record.end_date.$date.getTime();
 
-            serverReady.first_pub_date =
-              {$date: record.first_pub_date.$date.getTime()};
+            serverReady.first_pub_date = record.first_pub_date.$date.getTime();
+            serverReady.last_mod_date = record.last_mod_date.$date.getTime();
 
             return serverReady;
         };
@@ -252,12 +232,14 @@ metadataEditorApp
         /**
          * These functions are exposed by the service to the controllers.
          */
+
+        /**
+         * Return a cleared, newly instantiated
+         * @return {[type]} [description]
+         */
         var getFreshRecord = function() {
 
             var freshy = angular.copy(emptyRecord);
-
-            freshy.citation.push(angular.copy(emptyContact));
-            freshy.access.push(angular.copy(emptyContact));
 
             return freshy;
         };

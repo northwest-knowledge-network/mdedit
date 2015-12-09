@@ -13,12 +13,11 @@ describe('createNewRecord', function() {
 
     beforeEach(module('metadataEditor'));
 
-    var recordService, emptyContact, emptyRecord, testCtrl;
+    var recordService, emptyContact, testCtrl;
 
     beforeEach(
         inject(function($injector, $controller) {
             recordService = $injector.get('recordService');
-            emptyContact = $injector.get('emptyContact');
             testCtrl = $controller('BaseController', {$scope: testScope});
         })
     );
@@ -72,5 +71,10 @@ describe('createNewRecord', function() {
                    new Date().getTime()
                    < 100)
                 .toBeTruthy();
-        });
+        }
+    );
+
+    it('description', function () {
+        // body...
+    })
 });
