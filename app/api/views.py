@@ -51,8 +51,6 @@ def metadata():
 
         if request.method == 'PUT':
 
-            import ipdb; ipdb.set_trace();
-
             new_md = Metadata.from_json(json.dumps(request.json['record']))
 
             new_md.id = None

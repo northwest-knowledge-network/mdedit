@@ -2,114 +2,75 @@
 
 /* jasmine specs for controllers go here */
 
-//describe('Metadata Editor Controllers', function() {
+var testScope = {
+    currentRecord: {
+        title: 'Fernan Lake Data 2010 - 2011',
+        description: 'Limnology data',
+    }
+};
 
-  //describe('MetadataCtrl', function() {
-    //var scope, ctrl, $httpBackend;
+describe('createNewRecord', function() {
 
-    //// Load our app module definition before each test
-    //beforeEach(module('metadataEditor'));
+    beforeEach(module('metadataEditor'));
 
-    //beforeEach(inject(function(_$httpBackend_, $rootScope, $controller) {
-      //$httpBackend = _$httpBackend_;
+    var recordService, emptyContact, emptyRecord, testCtrl;
 
-      //$httpBackend.expectGET('http://localhost:4000/api/metadata')
-                  //.respond({results: [TEST_RESULT]});
-      
-      //scope = $rootScope.$new();
+    beforeEach(
+        inject(function($injector, $controller) {
+            recordService = $injector.get('recordService');
+            emptyContact = $injector.get('emptyContact');
+            testCtrl = $controller('BaseController', {$scope: testScope});
+        })
+    );
 
-      //ctrl = $controller('MetadataCtrl', {$scope: scope});
-    //}));
+    it('should clear all data in scope and replace with blanks or placeholder dates',
+        function () {
+            // even though testScope had a title and description,
+            // createNewRecord is called on creation of the BaseController
+            expect(testScope.currentRecord.title).toEqual('');
 
-    //it('should read a sample metadata record properly into the "records" model',
-      //function () {
-        //expect(true).toBe(true);
-        ////expect(scope.firstRecord).toBeUndefined();
-        ////$httpBackend.flush();
-        ////expect(scope.firstRecord).toBeDefined();
-      //});
+            testScope.currentRecord.title = 'new title';
 
-    //it('should gather the basic form fields together and title, describe the basic info',
-      //function() {
-        //expect(scope.basicForm).toBeUndefined();
-        //$httpBackend.flush();
-        //expect(scope.basicForm).toBeDefined();
+            testScope.currentRecord.last_mod_date.$date = new Date(2014, 1, 1);
+            testScope.currentRecord.start_date.$date = new Date(2014, 4, 2);
 
-        //expect(scope.basicForm).toEqual(
-          //{ 
-            //title: 'Basic Information',
-            //description: 'Just some get to know ya',
-            //fields: {
-              //title: 'Dry Creek DEM',
-              //summary: 'DEM of Dry Creek Watershed northeast of Boise, ID'
-            //}
-          //});
-      //});
+            testScope.currentRecord.end_date.$date = new Date(2015, 1, 1);
+            testScope.currentRecord.first_pub_date.$date = new Date(2013, 4, 2);
 
-    //it('should gather the detailed form fields together and title, describe the basic info',
-      //function() {
-        //expect(scope.detailsForm).toBeUndefined();
-        //$httpBackend.flush();
-        //expect(scope.detailsForm).toBeDefined();
 
-        //expect(scope.detailsForm).toEqual(
-          //{ 
-            //title: 'Detailed Information',
-            //description: 'and the secrets of your soul-a',
-            //fields: {
-              //title: 'Dry Creek DEM',
-              //summary: 'DEM of Dry Creek Watershed northeast of Boise, ID'
-            //}
-          //});
-      //});
-  //});
-//});
+            expect(testScope.currentRecord.last_mod_date.$date)
+                .toEqual(new Date(2014, 1, 1));
 
-//var TEST_RESULT = 
-//{
-  //access: [{address: '86 Rayburn',
-           //city: 'Moscow',
-           //country: 'United States',
-           //email: 'info@northwestknowledge.net',
-           //name: 'Matt',
-           //org: 'NKN',
-           //phone: '555-5555',
-           //state: 'ID',
-           //zipcode: '83843',
-          //}],
-  //citation: [{address: '43 University',
-              //city: 'Boise',
-              //country: 'United States',
-              //email: 'heyguy@bsu.edu',
-              //name: 'George',
-              //org: 'Boise State University',
-              //phone: '555-5555',
-              //state: 'ID',
-              //zipcode: '83725',
-          //}],
-  //first_pub_date: '2015-01-01',
-  //last_mod_date: '2015-03-10',
-  //place_keywords: [
-   //'Dry Creek', 'Idaho', 'Forest Service'
-  //],
-  //status: 'Completed',
-  //update_frequency: 'quarterly',
-  //summary: 'DEM of Dry Creek Watershed northeast of Boise, ID',
-  //theme_keywords: [
-    //'lidar', 'dem', 'hydrology'
-  //],
-  //title: 'Dry Creek DEM',
-  //topic_category: 'Biota',
-  //bbox:
-  //{
-    //west_lon: -117.53186,
-    //east_lon: -110.655421,
-    //north_lat: 41.946097,
-    //south_lat: 49.039542
-  //},
-  //temporal_extent:
-  //{
-    //start_date: "2010-10-01",
-    //end_date: "2011-09-31"
-  //}
-//};
+            expect(testScope.currentRecord.start_date.$date)
+                .toEqual(new Date(2014, 4, 2));
+
+            expect(testScope.currentRecord.end_date.$date)
+                .toEqual(new Date(2015, 1, 1));
+
+            expect(testScope.currentRecord.first_pub_date.$date)
+                .toEqual(new Date(2013, 4, 2));
+
+            expect(testScope.currentRecord.title).toEqual('new title');
+
+            testScope.createNewRecord();
+
+            // createNewRecord has cleared all fields that had been assigned
+            expect(testScope.currentRecord.title).toEqual('');
+
+            expect(testScope.currentRecord.start_date.$date)
+                .toEqual(new Date(2010, 0, 1));
+
+            expect(testScope.currentRecord.last_mod_date.$date)
+                .toEqual(new Date(2010, 0, 1));
+
+            expect(testScope.currentRecord.end_date.$date.getTime() -
+                   new Date().getTime() <
+                   100)
+                .toBeTruthy();
+
+            expect(testScope.currentRecord.first_pub_date.$date.getTime() -
+                   new Date().getTime()
+                   < 100)
+                .toBeTruthy();
+        });
+});

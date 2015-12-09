@@ -69,7 +69,7 @@ metadataEditorApp.controller('BaseController',
               aux: ''
             };
 
-            $log.log($scope.currentRecord.access);
+            // $log.log($scope.currentRecord.access);
             //$scope.currentRecord.citation = EMPTY_CONTACT;
         };
 
@@ -114,12 +114,11 @@ metadataEditorApp.controller('BaseController',
                         'citation': 0
                     };
 
-                    updateRecordsList();
+                    $scope.updateRecordsList();
                 })
                 .error( function (data) {
                     // TODO
                 });
-            // submitDraftRecordService($scope);
         };
 
 

@@ -73,11 +73,14 @@ describe('inspect correctness of a fresh record from recordService', function ()
             // not sure why but the first date in `expect`s gets
             // formatted as ISO and fails if expDate is not also ISO-formatted
             var expDate = new Date(2010, 0, 1);
-            expDate = expDate.toISOString();
+            // expDate = expDate.toISOString();
 
             expect(emptyRecord.last_mod_date.$date).toEqual(expDate);
 
-            expect(emptyRecord.first_pub_date.$date).toEqual(expDate);
+            expect(emptyRecord.first_pub_date.$date.getTime() -
+                   new Date().getTime() <
+                   100)
+                .toBeTruthy();
         }
     );
 }
