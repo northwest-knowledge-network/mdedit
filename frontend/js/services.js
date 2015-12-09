@@ -179,12 +179,12 @@ metadataEditorApp
         "zipcode": "83844-2358"
     }],
     online: [
-        "https://www.idahoecosystems.org/"
+        "https://www.idahoecosystems.org"
     ],
-    west_lon: "-117.2413657",
-    east_lon: "-111.043495",
-    south_lat: "41.9880051",
-    north_lat: "49.0011461",
+    west_lon: -117.2413657,
+    east_lon: -111.043495,
+    south_lat: 41.9880051,
+    north_lat: 49.0011461,
     use_restrictions: "Access constraints: Data will be provided to all who agree to appropriately acknowledge the National Science Foundation (NSF), Idaho EPSCoR and the individual investigators responsible for the data set. By downloading these data and using them to produce further analysis and/or products, users agree to appropriately  acknowledge the National Science Foundation (NSF), Idaho  EPSCoR and the individual investigators responsible for the data set. Use constraints: Acceptable uses of data provided by Idaho EPSCoR include any academic, research, educational, governmental, recreational, or other not-for-profit activities. Any use of data provided by the Idaho EPSCoR must acknowledge Idaho EPSCoR and the funding source(s) that contributed to the collection of the data. Users are expected to inform the Idaho EPSCoR Office and the PI(s) responsible for the data of any work or publications based on data provided. Citation: The appropriate statement to be used when citing these data is 'data were provided by (Name, University Affiliation) through the support of the NSF Idaho EPSCoR Program and by the National Science Foundation under award number IIA-1301792.' More information about EPSCoR Research Data can be found at http://www.idahoepscor.org/"
 })
 .service('recordService',
@@ -256,28 +256,28 @@ metadataEditorApp
 
         var getMilesDefaults = function() {
             var milesy = angular.copy(milesFields);
-            for (var key in milesFields)
-            {
-                if (milesFields.hasOwnProperty(key))
-                {
-                    // only want to overwrite country and state for MILES
-                    if (key === "citation")
-                    {
-                        milesy[key][0].country =
-                            milesFields[key][0].country;
+            // for (var key in milesFields)
+            // {
+            //     if (milesFields.hasOwnProperty(key))
+            //     {
+            //         // only want to overwrite country and state for MILES
+            //         if (key === "citation")
+            //         {
+            //             milesy[key][0].country =
+            //                 milesFields[key][0].country;
 
-                        milesy[key][0].state =
-                            milesFields[key][0].state;
-                    }
-                    else
-                    {
-                        if (key !== "data_format")
-                        {
-                            milesy[key] = milesFields[key];
-                        }
-                    }
-                }
-            }
+            //             milesy[key][0].state =
+            //                 milesFields[key][0].state;
+            //         }
+            //         else
+            //         {
+            //             if (key !== "data_format")
+            //             {
+            //                 milesy[key] = milesFields[key];
+            //             }
+            //         }
+            //     }
+            // }
 
             return milesy;
         };

@@ -13,7 +13,7 @@ metadataEditorApp.controller('BaseController',
 
         $scope.updateRecordsList = () => {
             recordService.list()
-                .success( (data) => { $scope.allRecords = data.results; });
+                .success(data => $scope.allRecords = data.results);
         };
 
         $scope.updateRecordsList();
@@ -76,17 +76,16 @@ metadataEditorApp.controller('BaseController',
         // initialize form with placeholder data for creating a new record
         $scope.createNewRecord();
 
-        $scope.editRecord = function(recordId)
-        {
+        $scope.editRecord = function (recordId) {
+
             recordService.getRecordToEdit(recordId)
                 .success( (data) => {
                     $scope.newRecord = false;
 
                     updateForms($scope, data.record);
                 })
-                .error( (error) => {
-                    $scope.errors.push("Error in loading record to edit");
-                }
+                .error( error =>
+                    $scope.errors.push("Error in loading record to edit")
             );
         };
 
@@ -94,7 +93,33 @@ metadataEditorApp.controller('BaseController',
          * On click of Load MILES Defaults button,
          * load the defaults in MILES defaults json file
          */
-        $scope.defaultMILES = function() { defaultMilesService($scope); };
+        $scope.loadDefaultMILES = function() {
+
+            var milesFields = recordService.getMilesDefaults();
+
+            for (var key in milesFields)
+            {
+                if (milesFields.hasOwnProperty(key))
+                {
+                    // only want to overwrite country and state for MILES
+                    if (key === "citation")
+                    {
+                        for (var idx = 0; idx < $scope.currentRecord.citation.length; idx++)
+                        {
+                            $scope.currentRecord.citation[idx].country =
+                                milesFields[key][0].country;
+
+                            $scope.currentRecord.citation[idx].state =
+                                milesFields[key][0].state;
+                        }
+                    }
+                    else
+                    {
+                        $scope.currentRecord[key] = milesFields[key];
+                    }
+                }
+            }
+        };
 
         /**
          * On submit of metadata form, submitRecord. This both updates the server
@@ -144,7 +169,6 @@ metadataEditorApp.controller('BaseController',
                 .error( function (data) {
                     // TODO
                 });
-            //publishRecordService($scope);
         };
 
         $scope.addedContacts =
@@ -208,17 +232,17 @@ metadataEditorApp.controller('BaseController',
         $scope.options = {};
         $scope.getBbox = function()
         {
-        var baseUrl = '//' + hostname + '/api/geocode/';
-        var fullUrl = baseUrl + $scope.options.bboxInput;
+            var baseUrl = '//' + hostname + '/api/geocode/';
+            var fullUrl = baseUrl + $scope.options.bboxInput;
 
-        $http.get(fullUrl)
-             .success(function(data)
-             {
-               $scope.currentRecord.north_lat = data.north;
-               $scope.currentRecord.south_lat = data.south;
-               $scope.currentRecord.east_lon = data.east;
-               $scope.currentRecord.west_lon = data.west;
-             });
+            $http.get(fullUrl)
+                 .success(function(data)
+                 {
+                   $scope.currentRecord.north_lat = data.north;
+                   $scope.currentRecord.south_lat = data.south;
+                   $scope.currentRecord.east_lon = data.east;
+                   $scope.currentRecord.west_lon = data.west;
+                 });
         };
   } // end of callback for controller initialization
 ])
