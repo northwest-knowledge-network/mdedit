@@ -115,17 +115,16 @@ metadataEditorApp.controller('BaseController',
          * @param  {string} recordId The server-generated ID
          */
         $scope.editRecord = function (recordId) {
-            console.log("in here");
 
             recordService.getRecordToEdit(recordId)
                 .success( (data) => {
                     $scope.newRecord = false;
-                    console.log("deeper in here");
+
                     updateForms($scope, data.record);
                 })
                 .error( error =>
                     $scope.errors.push("Error in loading record to edit")
-            );
+                );
         };
 
 

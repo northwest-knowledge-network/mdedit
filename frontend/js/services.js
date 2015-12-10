@@ -54,17 +54,26 @@ metadataEditorApp
         * Need to do $scope with dates because our service returns them as
         * epoch seconds.
         */
-        record.start_date.$date =
-            new Date(record.start_date.$date);
+        var dateFields =
+            ['start_date', 'end_date', 'last_mod_date', 'first_pub_date'];
 
-        record.end_date.$date =
-            new Date(record.end_date.$date);
+        for (var idx = 0; idx < dateFields.length; idx++)
+        {
+            record[dateFields[idx]].$date =
+                new Date(record[dateFields[idx]].$date);
+        }
 
-        record.last_mod_date.$date =
-            new Date(record.last_mod_date.$date);
+        // record.start_date.$date =
+        //     new Date(record.start_date.$date);
 
-        record.first_pub_date.$date =
-            new Date(record.first_pub_date.$date);
+        // record.end_date.$date =
+        //     new Date(record.end_date.$date);
+
+        // record.last_mod_date.$date =
+        //     new Date(record.last_mod_date.$date);
+
+        // record.first_pub_date.$date =
+        //     new Date(record.first_pub_date.$date);
 
         // these hours, minutes, seconds get put into broken out select boxes
         record.start_date.hours = record.start_date.$date.getHours();

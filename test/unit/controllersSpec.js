@@ -138,22 +138,80 @@ describe('Edit existing record', function()
 {
     beforeEach(module('metadataEditor'));
 
-    beforeEach(module(function($provide) {
-        // we have to mock the record services
-            // may be more appropriate outside of this particular test block
-            // for use in other blocks
-            var recordService = {
-                saveDraft: () => {
-                    return {
-                        success: function(callback) { return callback({}); }
-                    };
-                },
+    // beforeEach(module(function($provide) {
+    //     // we have to mock the record services
+    //         // may be more appropriate outside of this particular test block
+    //         // for use in other blocks
+    //         var recordService = {
+    //             saveDraft: () => {
+    //                 return {
+    //                     success: function(callback) { return callback({}); }
+    //                 };
+    //             },
 
-                getRecordToEdit: function(recordId) {
-                    console.log("in the mocked getRecordToEdit");
-                    return {
-                        success: function(callback) {
-                            var data =
+    //             getRecordToEdit: function(recordId) {
+    //                 console.log("in the mocked getRecordToEdit");
+    //                 return {
+    //                     success: function(callback) {
+    //                         var data =
+    //                         {
+    //                             record: {
+    //                                 access: [{
+    //                                     'address': '875 Perimeter Dr. MS 2358',
+    //                                     'city': 'Moscow',
+    //                                     'country': 'USA',
+    //                                     'name': 'Northwest Knowledge Network',
+    //                                     'email': 'info@northwestknowledge.net',
+    //                                     'org': 'University of Idaho',
+    //                                     'phone': '208-885-2080',
+    //                                     'state': 'Idaho',
+    //                                     'zipcode': '83844-2358',
+    //                                     }],
+
+    //                                 title: 'Dabke on the Moon',
+
+    //                                 description: 'Dabke is a traditional dance from the Levant. The moon is the Earth\'s only natural satellite',
+    //                             }
+    //                         };
+
+    //                         return callback(data);
+    //                     }
+    //                 };
+    //             },
+
+    //             list: () => {
+    //                 return {
+    //                     success: function(callback) { return callback({}); }
+    //                 };
+    //             },
+
+    //             getFreshRecord: () => { return {
+    //                 title: 'yo', first_pub_date: {$date: new Date(2009, 5, 6)}
+    //                 };
+    //             }
+    //         };
+
+    //         $provide.value('recordService', recordService);
+    // }));
+
+    var recordService, $rootScope, testCtrl, createController;
+    beforeEach(
+        inject(function($controller, $q, $rootScope, _recordService_) {
+            $rootScope = $rootScope;
+            recordService = _recordService_;
+
+            testCtrl = $controller('BaseController',
+                {$scope: testScope, recordService: recordService});
+        }
+    ));
+
+    it('should overwrite all currently filled fields with the fields from server',
+        function () {
+
+            spyOn(recordService, 'getRecordToEdit').andReturn({
+                success: function(callback) {
+
+                    var data =
                             {
                                 record: {
                                     access: [{
@@ -171,68 +229,56 @@ describe('Edit existing record', function()
                                     title: 'Dabke on the Moon',
 
                                     description: 'Dabke is a traditional dance from the Levant. The moon is the Earth\'s only natural satellite',
+
+                                    start_date: {$date: new Date(2010, 0, 1)},
+                                    end_date: {$date: new Date(2011, 11, 31)},
+                                    last_mod_date: {$date: new Date(2015, 12, 3)},
+                                    first_pub_date: {$date: new Date(2009, 5, 6)},
+                                    data_format: ['docx', 'pdf'],
+                                    place_keywords: [''],
+                                    thematic_keywords: ['']
                                 }
                             };
 
-                            return callback(data);
-                        }
-                    };
-                },
-
-                list: () => {
+                    callback(data);
                     return {
-                        success: function(callback) { return callback({}); }
+                        error: function(callback) { return callback({}); }
                     };
                 },
 
-                getFreshRecord: () => { return {
-                    title: 'yo', first_pub_date: {$date: new Date(2009, 5, 6)}
-                    };
-                }
-            };
+            });
 
-            $provide.value('recordService', recordService);
-    }));
-
-    var recordService, $rootScope, testCtrl, createController;
-    beforeEach(
-        inject(function($controller, $q, $rootScope, _recordService_) {
-
-            // scope = $rootScope.$new();
-
-            recordService = _recordService_;
-
-            // createController = function(params)
-            // {
-            //     $controller('BaseController', {
-            //         $scope: scope,
-            //         $stateParams: params || {}
-            //     });
-                // };
-            console.log(testScope);
-            testCtrl = $controller('BaseController',
-                {$scope: testScope, recordService: recordService});
-        }
-    ));
-
-    // afterEach(function() {
-    //     $httpBackend.verifyNoOutstandingExpectation();
-    //     $httpBackend.verifyNoOutstandingRequest();
-    // });
-
-    it('should overwrite all currently filled fields with the fields from server',
-        function () {
-            console.log(recordService.getRecordToEdit);
-            console.log(jasmine.getEnv().versionString());
-            spyOn(recordService, 'getRecordToEdit').andCallThrough();
-
-            // console.log(testScope);
             testScope.currentRecord.title = 'The title';
             testScope.currentRecord.first_pub_date = new Date(2009, 5, 6);
+            testScope.currentRecord.description = ' something blue... ';
 
             testScope.editRecord('xxxo');
+
             expect(recordService.getRecordToEdit).toHaveBeenCalled();
+
             var rec = testScope.currentRecord;
+
             expect(rec.title).toEqual('Dabke on the Moon');
+            expect(rec.description).toEqual('Dabke is a traditional dance from the Levant. ' +
+                'The moon is the Earth\'s only natural satellite');
+
+            expect(rec.start_date.$date).toEqual(new Date(2010, 0, 1));
+            expect(rec.end_date.$date).toEqual(new Date(2011, 11, 31));
+            expect(rec.last_mod_date.$date).toEqual(new Date(2015, 12, 3));
+            expect(rec.first_pub_date.$date).toEqual(new Date(2009, 5, 6));
+
+            expect(rec.access).toEqual([{
+                'address': '875 Perimeter Dr. MS 2358',
+                'city': 'Moscow',
+                'country': 'USA',
+                'name': 'Northwest Knowledge Network',
+                'email': 'info@northwestknowledge.net',
+                'org': 'University of Idaho',
+                'phone': '208-885-2080',
+                'state': 'Idaho',
+                'zipcode': '83844-2358'
+            }]);
+
+            expect(rec.data_format).toEqual(['docx', 'pdf']);
     });
 });
