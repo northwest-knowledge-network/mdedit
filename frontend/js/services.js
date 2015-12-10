@@ -34,6 +34,8 @@ metadataEditorApp
 
     return hostname;
 })
+
+/// TODO: fix this terrible comment ///
 /**
  * Assign a record to the scope's current record. Not totatlly sure of its use.
  *
@@ -48,24 +50,6 @@ metadataEditorApp
 {
     return function(scope, record)
     {
-        $log.log(scope);
-        $log.log(record);
-        /* place and thematic keywords come as a list from the server */
-        if (typeof record.place_keywords !== 'string' &&
-            typeof record.place_keywords !== 'object')
-        {
-                record.place_keywords =
-                    record.place_keywords.join(', ');
-        }
-
-
-        if (typeof record.thematic_keywords !== 'string' &&
-            typeof record.thematic_keywords !== 'object')
-        {
-            record.thematic_keywords =
-                record.thematic_keywords.join(', ');
-        }
-
        /*
         * Need to do $scope with dates because our service returns them as
         * epoch seconds.
@@ -113,6 +97,9 @@ metadataEditorApp
         if (!scope.currentRecord.online) {
             record.online = [""];
         }
+
+        scope.currentRecord.place_keywords = record.place_keywords.join(', ');
+        scope.currentRecord.thematic_keywords = record.thematic_keywords.join(', ');
     };
 }])
 .value('emptyRecord',
@@ -215,6 +202,15 @@ metadataEditorApp
             var record = scope.currentRecord;
 
             var serverReady = angular.copy(record);
+
+            // server requires list of strings
+            serverReady.place_keywords =
+                serverReady.place_keywords.split(',')
+                    .map(el => el.trim());
+
+            serverReady.thematic_keywords =
+                serverReady.thematic_keywords.split(',')
+                    .map(el => el.trim());
 
             serverReady.data_format = scope.dataFormats.iso;
 

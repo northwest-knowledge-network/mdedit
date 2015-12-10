@@ -73,19 +73,6 @@ metadataEditorApp.controller('BaseController',
         // initialize form with placeholder data for creating a new record
         $scope.createNewRecord();
 
-        $scope.editRecord = function (recordId) {
-
-            recordService.getRecordToEdit(recordId)
-                .success( (data) => {
-                    $scope.newRecord = false;
-
-                    updateForms($scope, data.record);
-                })
-                .error( error =>
-                    $scope.errors.push("Error in loading record to edit")
-            );
-        };
-
         /**
          * On click of Load MILES Defaults button,
          * load the defaults in MILES defaults json file
@@ -121,6 +108,26 @@ metadataEditorApp.controller('BaseController',
                 }
             }
         };
+
+
+        /**
+         * Load a record that from the server and display fields in form
+         * @param  {string} recordId The server-generated ID
+         */
+        $scope.editRecord = function (recordId) {
+            console.log("in here");
+
+            recordService.getRecordToEdit(recordId)
+                .success( (data) => {
+                    $scope.newRecord = false;
+                    console.log("deeper in here");
+                    updateForms($scope, data.record);
+                })
+                .error( error =>
+                    $scope.errors.push("Error in loading record to edit")
+            );
+        };
+
 
         /**
          * On submit of metadata form, submitRecord. This both updates the server

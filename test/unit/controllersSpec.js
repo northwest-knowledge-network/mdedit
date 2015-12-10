@@ -74,7 +74,9 @@ describe('createNewRecord', function() {
                 .toBeTruthy();
         }
     );
-
+});
+describe('MILES defaults', function()
+{
     it('MILES defaults should only replace fields that it contains',
         function () {
 
@@ -107,15 +109,15 @@ describe('createNewRecord', function() {
 
         expect(rec.access).toEqual(
             [{
-                "address": "875 Perimeter Dr. MS 2358",
-                "city": "Moscow",
-                "country": "USA",
-                "name": "Northwest Knowledge Network",
-                "email": "info@northwestknowledge.net",
-                "org": "University of Idaho",
-                "phone": "208-885-2080",
-                "state": "Idaho",
-                "zipcode": "83844-2358"
+                'address': '875 Perimeter Dr. MS 2358',
+                'city': 'Moscow',
+                'country': 'USA',
+                'name': 'Northwest Knowledge Network',
+                'email': 'info@northwestknowledge.net',
+                'org': 'University of Idaho',
+                'phone': '208-885-2080',
+                'state': 'Idaho',
+                'zipcode': '83844-2358'
             }]
         );
 
@@ -129,5 +131,108 @@ describe('createNewRecord', function() {
         expect(rec.use_restrictions).toEqual(
             "Access constraints: Data will be provided to all who agree to appropriately acknowledge the National Science Foundation (NSF), Idaho EPSCoR and the individual investigators responsible for the data set. By downloading these data and using them to produce further analysis and/or products, users agree to appropriately  acknowledge the National Science Foundation (NSF), Idaho  EPSCoR and the individual investigators responsible for the data set. Use constraints: Acceptable uses of data provided by Idaho EPSCoR include any academic, research, educational, governmental, recreational, or other not-for-profit activities. Any use of data provided by the Idaho EPSCoR must acknowledge Idaho EPSCoR and the funding source(s) that contributed to the collection of the data. Users are expected to inform the Idaho EPSCoR Office and the PI(s) responsible for the data of any work or publications based on data provided. Citation: The appropriate statement to be used when citing these data is 'data were provided by (Name, University Affiliation) through the support of the NSF Idaho EPSCoR Program and by the National Science Foundation under award number IIA-1301792.' More information about EPSCoR Research Data can be found at http://www.idahoepscor.org/"
         );
+    });
+});
+
+describe('Edit existing record', function()
+{
+    beforeEach(module('metadataEditor'));
+
+    beforeEach(module(function($provide) {
+        // we have to mock the record services
+            // may be more appropriate outside of this particular test block
+            // for use in other blocks
+            var recordService = {
+                saveDraft: () => {
+                    return {
+                        success: function(callback) { return callback({}); }
+                    };
+                },
+
+                getRecordToEdit: function(recordId) {
+                    console.log("in the mocked getRecordToEdit");
+                    return {
+                        success: function(callback) {
+                            var data =
+                            {
+                                record: {
+                                    access: [{
+                                        'address': '875 Perimeter Dr. MS 2358',
+                                        'city': 'Moscow',
+                                        'country': 'USA',
+                                        'name': 'Northwest Knowledge Network',
+                                        'email': 'info@northwestknowledge.net',
+                                        'org': 'University of Idaho',
+                                        'phone': '208-885-2080',
+                                        'state': 'Idaho',
+                                        'zipcode': '83844-2358',
+                                        }],
+
+                                    title: 'Dabke on the Moon',
+
+                                    description: 'Dabke is a traditional dance from the Levant. The moon is the Earth\'s only natural satellite',
+                                }
+                            };
+
+                            return callback(data);
+                        }
+                    };
+                },
+
+                list: () => {
+                    return {
+                        success: function(callback) { return callback({}); }
+                    };
+                },
+
+                getFreshRecord: () => { return {
+                    title: 'yo', first_pub_date: {$date: new Date(2009, 5, 6)}
+                    };
+                }
+            };
+
+            $provide.value('recordService', recordService);
+    }));
+
+    var recordService, $rootScope, testCtrl, createController;
+    beforeEach(
+        inject(function($controller, $q, $rootScope, _recordService_) {
+
+            // scope = $rootScope.$new();
+
+            recordService = _recordService_;
+
+            // createController = function(params)
+            // {
+            //     $controller('BaseController', {
+            //         $scope: scope,
+            //         $stateParams: params || {}
+            //     });
+                // };
+            console.log(testScope);
+            testCtrl = $controller('BaseController',
+                {$scope: testScope, recordService: recordService});
+        }
+    ));
+
+    // afterEach(function() {
+    //     $httpBackend.verifyNoOutstandingExpectation();
+    //     $httpBackend.verifyNoOutstandingRequest();
+    // });
+
+    it('should overwrite all currently filled fields with the fields from server',
+        function () {
+            console.log(recordService.getRecordToEdit);
+            console.log(jasmine.getEnv().versionString());
+            spyOn(recordService, 'getRecordToEdit').andCallThrough();
+
+            // console.log(testScope);
+            testScope.currentRecord.title = 'The title';
+            testScope.currentRecord.first_pub_date = new Date(2009, 5, 6);
+
+            testScope.editRecord('xxxo');
+            expect(recordService.getRecordToEdit).toHaveBeenCalled();
+            var rec = testScope.currentRecord;
+            expect(rec.title).toEqual('Dabke on the Moon');
     });
 });
