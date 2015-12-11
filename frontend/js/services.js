@@ -63,18 +63,6 @@ metadataEditorApp
                 new Date(record[dateFields[idx]].$date);
         }
 
-        // record.start_date.$date =
-        //     new Date(record.start_date.$date);
-
-        // record.end_date.$date =
-        //     new Date(record.end_date.$date);
-
-        // record.last_mod_date.$date =
-        //     new Date(record.last_mod_date.$date);
-
-        // record.first_pub_date.$date =
-        //     new Date(record.first_pub_date.$date);
-
         // these hours, minutes, seconds get put into broken out select boxes
         record.start_date.hours = record.start_date.$date.getHours();
         record.end_date.hours = record.end_date.$date.getHours();
@@ -265,29 +253,8 @@ metadataEditorApp
         };
 
         var getMilesDefaults = function() {
-            var milesy = angular.copy(milesFields);
-            // for (var key in milesFields)
-            // {
-            //     if (milesFields.hasOwnProperty(key))
-            //     {
-            //         // only want to overwrite country and state for MILES
-            //         if (key === "citation")
-            //         {
-            //             milesy[key][0].country =
-            //                 milesFields[key][0].country;
 
-            //             milesy[key][0].state =
-            //                 milesFields[key][0].state;
-            //         }
-            //         else
-            //         {
-            //             if (key !== "data_format")
-            //             {
-            //                 milesy[key] = milesFields[key];
-            //             }
-            //         }
-            //     }
-            // }
+            var milesy = angular.copy(milesFields);
 
             return milesy;
         };

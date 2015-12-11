@@ -75,8 +75,8 @@ describe('createNewRecord', function() {
         }
     );
 });
-describe('MILES defaults', function()
-{
+
+describe('MILES defaults', function() {
     it('MILES defaults should only replace fields that it contains',
         function () {
 
@@ -134,65 +134,8 @@ describe('MILES defaults', function()
     });
 });
 
-describe('Edit existing record', function()
-{
+describe('Edit existing record', function() {
     beforeEach(module('metadataEditor'));
-
-    // beforeEach(module(function($provide) {
-    //     // we have to mock the record services
-    //         // may be more appropriate outside of this particular test block
-    //         // for use in other blocks
-    //         var recordService = {
-    //             saveDraft: () => {
-    //                 return {
-    //                     success: function(callback) { return callback({}); }
-    //                 };
-    //             },
-
-    //             getRecordToEdit: function(recordId) {
-    //                 console.log("in the mocked getRecordToEdit");
-    //                 return {
-    //                     success: function(callback) {
-    //                         var data =
-    //                         {
-    //                             record: {
-    //                                 access: [{
-    //                                     'address': '875 Perimeter Dr. MS 2358',
-    //                                     'city': 'Moscow',
-    //                                     'country': 'USA',
-    //                                     'name': 'Northwest Knowledge Network',
-    //                                     'email': 'info@northwestknowledge.net',
-    //                                     'org': 'University of Idaho',
-    //                                     'phone': '208-885-2080',
-    //                                     'state': 'Idaho',
-    //                                     'zipcode': '83844-2358',
-    //                                     }],
-
-    //                                 title: 'Dabke on the Moon',
-
-    //                                 description: 'Dabke is a traditional dance from the Levant. The moon is the Earth\'s only natural satellite',
-    //                             }
-    //                         };
-
-    //                         return callback(data);
-    //                     }
-    //                 };
-    //             },
-
-    //             list: () => {
-    //                 return {
-    //                     success: function(callback) { return callback({}); }
-    //                 };
-    //             },
-
-    //             getFreshRecord: () => { return {
-    //                 title: 'yo', first_pub_date: {$date: new Date(2009, 5, 6)}
-    //                 };
-    //             }
-    //         };
-
-    //         $provide.value('recordService', recordService);
-    // }));
 
     var recordService, $rootScope, testCtrl, createController;
     beforeEach(
@@ -209,6 +152,7 @@ describe('Edit existing record', function()
         function () {
 
             spyOn(recordService, 'getRecordToEdit').andReturn({
+
                 success: function(callback) {
 
                     var data =
@@ -244,8 +188,7 @@ describe('Edit existing record', function()
                     return {
                         error: function(callback) { return callback({}); }
                     };
-                },
-
+                }
             });
 
             testScope.currentRecord.title = 'The title';
@@ -254,7 +197,7 @@ describe('Edit existing record', function()
 
             testScope.editRecord('xxxo');
 
-            expect(recordService.getRecordToEdit).toHaveBeenCalled();
+            expect(recordService.getRecordToEdit).toHaveBeenCalledWith('xxxo');
 
             var rec = testScope.currentRecord;
 
@@ -280,5 +223,133 @@ describe('Edit existing record', function()
             }]);
 
             expect(rec.data_format).toEqual(['docx', 'pdf']);
+    });
+});
+
+
+describe('Save record as draft', function () {
+
+    beforeEach(module('metadataEditor'));
+
+    var recordService, $rootScope, testCtrl, createController;
+    beforeEach(
+        inject(function($controller, $q, $rootScope, _recordService_) {
+            $rootScope = $rootScope;
+            recordService = _recordService_;
+
+            testCtrl = $controller('BaseController',
+                {$scope: testScope, recordService: recordService});
+
+            testScope.currentRecord.title = 'YO A TITLE';
+            testScope.currentRecord.description = 'description';
+        }
+    ));
+
+    beforeEach( function()
+    {
+        spyOn(recordService, 'saveDraft').andReturn({
+
+                success: function(callback) {
+                    var data = {};
+
+                    callback(data);
+
+                    return {
+                        error: function(callback) { return callback({}); }
+                    };
+                }
+            });
+    });
+
+    it('should call recordService.saveDraft', function () {
+        testScope.submitDraftRecord();
+        expect(recordService.saveDraft).toHaveBeenCalled();
+    });
+
+    it('should reset the access and citation\'s addedContacts count to 0', function () {
+
+        testScope.addContactCitation();
+        expect(testScope.addedContacts.citation).toEqual(1);
+
+        testScope.addContactAccess();
+        expect(testScope.addedContacts.access).toEqual(1);
+
+        testScope.submitDraftRecord();
+        expect(recordService.saveDraft).toHaveBeenCalled();
+        expect(testScope.addedContacts).toEqual({
+            access: 0,
+            citation: 0
+        });
+    });
+
+    it('should set newRecord to false on the scope', function () {
+        expect(testScope.newRecord).toEqual(true);
+        testScope.submitDraftRecord();
+
+        expect(recordService.saveDraft).toHaveBeenCalled();
+        expect(testScope.newRecord).toEqual(false);
+    });
+});
+
+
+describe('Publish record', function () {
+    beforeEach(module('metadataEditor'));
+
+    var recordService, $rootScope, testCtrl, createController;
+    beforeEach(
+        inject(function($controller, $q, $rootScope, _recordService_) {
+            $rootScope = $rootScope;
+            recordService = _recordService_;
+
+            testCtrl = $controller('BaseController',
+                {$scope: testScope, recordService: recordService});
+
+            testScope.currentRecord.title = 'YO A TITLE';
+            testScope.currentRecord.description = 'description';
+        }
+    ));
+
+    beforeEach( function()
+    {
+        spyOn(recordService, 'publish').andReturn({
+
+                success: function(callback) {
+                    var data = {};
+
+                    callback(data);
+
+                    return {
+                        error: function(callback) { return callback({}); }
+                    };
+                }
+            });
+    });
+
+    it('should call recordService.publishRecord', function () {
+        testScope.publishRecord();
+        expect(recordService.publish).toHaveBeenCalled();
+    });
+
+    it('should reset the access and citation\'s addedContacts count to 0', function () {
+        testScope.addContactCitation();
+        expect(testScope.addedContacts.citation).toEqual(1);
+
+        testScope.addContactAccess();
+        expect(testScope.addedContacts.access).toEqual(1);
+
+        testScope.publishRecord();
+        expect(recordService.publish).toHaveBeenCalled();
+        expect(testScope.addedContacts).toEqual({
+            access: 0,
+            citation: 0
+        });
+    });
+
+    it('should set newRecord to false on the scope', function () {
+        expect(testScope.newRecord).toEqual(true);
+        testScope.publishRecord();
+
+        expect(recordService.publish).toHaveBeenCalled();
+        expect(testScope.newRecord).toEqual(false);
     });
 });

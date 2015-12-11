@@ -137,7 +137,8 @@ metadataEditorApp.controller('BaseController',
             recordService.saveDraft($scope)
                 .success( function (data) {
 
-                    updateForms($scope, data.record);
+                    // why?
+                    // updateForms($scope, data.record);
 
                     $scope.newRecord = false;
 
@@ -162,7 +163,8 @@ metadataEditorApp.controller('BaseController',
             recordService.publish($scope)
                 .success( function (data) {
 
-                    updateForms(data.record);
+                    // why?
+                    // updateForms(data.record);
 
                     $scope.newRecord = false;
 
@@ -171,7 +173,7 @@ metadataEditorApp.controller('BaseController',
                         'citation': 0
                     };
 
-                    updateRecordsList();
+                    $scope.updateRecordsList();
                 })
                 .error( function (data) {
                     // TODO
@@ -186,18 +188,28 @@ metadataEditorApp.controller('BaseController',
 
         $scope.addContactCitation = function()
         {
-          $scope.currentRecord.citation
-                .push(JSON.parse(JSON.stringify(EMPTY_CONTACT)));
+            $scope.currentRecord.citation
+                .push({
+                    'name': '', 'email': '', 'org': '', 'address': '',
+                    'city': '', 'state': '', 'zipcode': '',
+                    'country': '', 'phone': ''
+                }
+            );
 
-          $scope.addedContacts.citation += 1;
+            $scope.addedContacts.citation += 1;
         };
 
         $scope.addContactAccess = function()
         {
-          $scope.currentRecord.access
-                .push(JSON.parse(JSON.stringify(EMPTY_CONTACT)));
+            $scope.currentRecord.access
+                .push({
+                    'name': '', 'email': '', 'org': '', 'address': '',
+                    'city': '', 'state': '', 'zipcode': '',
+                    'country': '', 'phone': ''
+                }
+            );
 
-          $scope.addedContacts.access += 1;
+            $scope.addedContacts.access += 1;
         };
 
 
