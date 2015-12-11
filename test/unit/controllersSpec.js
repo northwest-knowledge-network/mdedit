@@ -1,7 +1,5 @@
 'use strict';
 
-/* jasmine specs for controllers go here */
-
 var testScope = {
     currentRecord: {
         title: 'Fernan Lake Data 2010 - 2011',
@@ -351,5 +349,51 @@ describe('Publish record', function () {
 
         expect(recordService.publish).toHaveBeenCalled();
         expect(testScope.newRecord).toEqual(false);
+    });
+});
+
+
+describe('Query geoprocessing service', function () {
+
+    beforeEach(module('metadataEditor'));
+
+    var Geoprocessing, $rootScope, testCtrl, createController;
+    beforeEach(
+        inject(function($controller, $q, $rootScope, _Geoprocessing_) {
+            $rootScope = $rootScope;
+            Geoprocessing = _Geoprocessing_;
+
+            testCtrl = $controller('BaseController',
+                {$scope: testScope, Geoprocessing: Geoprocessing});
+        }
+    ));
+
+    beforeEach( function() {
+
+        spyOn(Geoprocessing, 'getBbox').andReturn({
+
+                success: function(callback) {
+
+                    var data = {
+                        north: 49.001,
+                        south: 41.9880051,
+                        east: -111.043,
+                        west: -117.2413657
+                    };
+
+                    callback(data);
+
+                    return {
+                        error: function(callback) { return callback({}); }
+                    };
+                }
+            });
+    });
+
+    it('should call geoservice.getBbox', function () {
+        testScope.options.bboxInput = 'Idaho';
+        testScope.getBbox();
+
+        expect(Geoprocessing.getBbox).toHaveBeenCalledWith('Idaho');
     });
 });

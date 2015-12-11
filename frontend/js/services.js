@@ -379,4 +379,16 @@ metadataEditorApp
             publish: publish
         };
     }
-]);
+])
+.service('Geoprocessing', ['$http', '$q', 'hostname', function($http, $q, hostname) {
+    var getBbox = function(placeName) {
+        var baseUrl = '//' + hostname + '/api/geocode/';
+        var fullUrl = baseUrl + placeName;
+
+        return $http.get(fullUrl);
+    };
+
+    return {
+        getBbox: getBbox
+    };
+}]);

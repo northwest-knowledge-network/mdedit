@@ -5,8 +5,10 @@
 metadataEditorApp.controller('BaseController',
 
     ['$scope', '$http', '$log', 'formOptions', 'updateForms', 'recordService',
+        'Geoprocessing',
 
-    function($scope, $http, $log, formOptions, updateForms, recordService)
+    function($scope, $http, $log, formOptions, updateForms,
+        recordService, Geoprocessing)
     {
         // initialize list of existing metadata records
         $scope.allRecords = [];
@@ -251,22 +253,18 @@ metadataEditorApp.controller('BaseController',
         $scope.options = {};
         $scope.getBbox = function()
         {
-            var baseUrl = '//' + hostname + '/api/geocode/';
-            var fullUrl = baseUrl + $scope.options.bboxInput;
-
-            $http.get(fullUrl)
-                 .success(function(data)
-                 {
-                   $scope.currentRecord.north_lat = data.north;
-                   $scope.currentRecord.south_lat = data.south;
-                   $scope.currentRecord.east_lon = data.east;
-                   $scope.currentRecord.west_lon = data.west;
-                 });
+            Geoprocessing.getBbox($scope.options.bboxInput)
+                .success( function(data) {
+                    $scope.currentRecord.north_lat = data.north;
+                    $scope.currentRecord.south_lat = data.south;
+                    $scope.currentRecord.east_lon = data.east;
+                    $scope.currentRecord.west_lon = data.west;
+                })
+                .error( function(error) { $log.log(error); });
         };
   } // end of callback for controller initialization
 ])
-.controller('ISOController', ['formOptions', function(formOptions)
-  {
+.controller('ISOController', ['formOptions', function(formOptions) {
     this.standard = 'iso';
     this.statusChoicesIsoMap = formOptions.statusChoicesIsoMap;
 

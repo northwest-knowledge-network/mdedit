@@ -360,3 +360,38 @@ describe('Initiate publishing process request to server', function () {
         $httpBackend.flush();
     });
 });
+
+
+describe('Geoprocessing service', function () {
+
+    var $httpBackend, $rootScope, Geoprocessing;
+    beforeEach(module('metadataEditor'))
+    beforeEach(
+            inject(function($injector) {
+
+                Geoprocessing = $injector.get('Geoprocessing');
+
+                $httpBackend = $injector.get('$httpBackend');
+                $rootScope = $injector.get('$rootScope');
+    }));
+
+    afterEach(function() {
+        $httpBackend.verifyNoOutstandingExpectation();
+        $httpBackend.verifyNoOutstandingRequest();
+    });
+
+    it('should call the server geocoding service', function () {
+        $httpBackend.expectGET(/api\/geocode/).respond(200,
+            {
+                north: 49.001,
+                south: 41.9880051,
+                east: -111.043,
+                west: -117.2413657
+            }
+        );
+
+        Geoprocessing.getBbox('Idaho');
+
+        $httpBackend.flush();
+    });
+});
