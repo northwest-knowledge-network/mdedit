@@ -5,7 +5,7 @@ from flask import Flask
 from flask_moment import Moment
 from flask_mongoengine import MongoEngine
 from flask_cors import CORS
-from config import config
+from ..config import config
 
 
 moment = Moment()

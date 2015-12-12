@@ -5,8 +5,7 @@ import geocoder
 import os
 import requests
 
-
-from config import config
+from .. import config
 from dicttoxml import dicttoxml
 from flask import request, jsonify, Response
 from flask_cors import cross_origin
@@ -83,28 +82,8 @@ def metadata():
         return Response('Bad or missing session id.', 401)
 
 
-@api.route('/api/metadata/placeholder', methods=['GET'])
-@cross_origin(origin='*', methods=['GET'],
-              headers=['X-Requested-With', 'Content-Type', 'Origin'])
-def placeholder_metadata():
-
-    record = Metadata.objects.get(placeholder=True)
-
-    return jsonify(record=record)
-
-
-@api.route('/api/metadata/defaultMILES', methods=['GET'])
-@cross_origin(origin='*', methods=['GET'],
-              headers=['X-Requested-With', 'Content-Type', 'Origin'])
-def defaultMILES_metadata():
-
-    record = Metadata.objects.get(default='miles')
-
-    return jsonify(record=record)
-
-
-@api.route('/api/metadata/<string:_oid>', methods=['GET', 'POST', 'PUT'])
-@cross_origin(origin='*', methods=['GET', 'POST', 'PUT'],
+@api.route('/api/metadata/<string:_oid>', methods=['GET', 'PUT'])
+@cross_origin(origin='*', methods=['GET', 'PUT'],
               headers=['X-Requested-With', 'Content-Type', 'Origin'])
 def get_single_metadata(_oid):
     """
@@ -211,7 +190,7 @@ def get_single_dc_metadata(_oid):
     xml_str = get_single_xml_metadata(_oid).data
     md_xml = ET.fromstring(xml_str)
     dc_xslt = ET.parse(os.path.join(os.path.dirname(__file__), '..', '..',
-                        'xslt', 'XSLT_for_mdedit_dublineCore.xsl'))
+                       'xslt', 'XSLT_for_mdedit_dublineCore.xsl'))
     dc_transform = ET.XSLT(dc_xslt)
     dc_str = str(dc_transform(md_xml))
 
