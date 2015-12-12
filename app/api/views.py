@@ -83,7 +83,6 @@ def metadata():
         return Response('Bad or missing session id.', 401)
 
 
-
 @api.route('/api/metadata/placeholder', methods=['GET'])
 @cross_origin(origin='*', methods=['GET'],
               headers=['X-Requested-With', 'Content-Type', 'Origin'])
@@ -229,7 +228,7 @@ def get_single_esri_metadata(_oid):
     xml_str = get_single_xml_metadata(_oid).data
     md_xml = ET.fromstring(xml_str)
     esri_xslt = ET.parse(os.path.join(os.path.dirname(__file__), '..', '..',
-                        'xslt', 'XSLT_for_mdedit_ESRI.xsl'))
+                         'xslt', 'XSLT_for_mdedit_ESRI.xsl'))
     esri_transform = ET.XSLT(esri_xslt)
     esri_str = str(esri_transform(md_xml))
 
@@ -266,6 +265,12 @@ def get_single_xml_metadata(_oid):
     # for XSLT, need something inside of each <item> in this generic XML
     _enclose_word = lambda k: {'word': k}
     _enclose_words = lambda words: map(_enclose_word, words)
+
+    # def _enclose_word(word):
+    #         return {'word': word}
+
+    # def _enclose_words(words):
+    #     return [_enclose_word(word) for word in words]
 
     json_rec['thematic_keywords'] = _enclose_words(
                                         json_rec['thematic_keywords'])
@@ -311,12 +316,12 @@ def get_citation_contacts(type_):
         lambda a, b: a + b, [rec[type_] for rec in user_recs]
     )
 
-    # filter out useless totally empty contacts
+    # filter out totally empty contacts
     nonempty_contacts = [
         c for c in citation_contacts
-            if not all(
-                [val == "" for val in json.loads(c.to_json()).values()]
-            )
+        if not all(
+            (val == "" for val in json.loads(c.to_json()).values())
+        )
     ]
 
     return jsonify(dict({'citation_contacts': nonempty_contacts}))
