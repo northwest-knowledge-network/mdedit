@@ -1,5 +1,7 @@
 #!venv/bin/python
+import argparse
 import atexit
+import getopt
 import os
 import signal
 import sys
@@ -17,44 +19,14 @@ db = MongoEngine()
 db.init_app(app)
 
 
+def _kill_servers():
+
+    Popen('kill -9 `lsof -ti :8000`', shell=True, stderr=None)
+
+    Popen('kill -9 `lsof -ti :4000`', shell=True, stderr=None)
 
 
-# @atexit.register
-# def stop_servers():
-    # # output = p2.communicate()[0]
-
-
-    # # stop server processes
-    # try:
-        # os.killpg(int(os.getenv('server_pid')), signal.SIGTERM)
-        # os.killpg(int(os.getenv('client_pid')), signal.SIGTERM)
-
-    # except:
-        # pass
-
-    # print "yeeh"
-
-
-def init_db():
-    # get possibly new collection 'metadata' in the 'metadata' database
-    md_objs = Metadata.objects
-
-    if not md_objs.count():
-
-        md = Metadata.from_json(open('default_metadata.json', 'r').read())
-        md.save()
-        id = md.pk
-        md = Metadata.from_json(open('project_defaults/MILES_default_metadata.json','r').read())
-        md.save()
-
-    else:
-
-        id = md_objs.first().pk
-
-    return id
-
-
-def start_servers(test=False):
+def start_servers(test):
     """
     Start the backend and client side servers. If test is True, set up
     the backend for end-to-end testing.
@@ -66,45 +38,25 @@ def start_servers(test=False):
         None
     """
 
+    print test
+
     if test:
-       os.environ['FLASKCONFIG'] = 'testing'
+        print "setting testing..."
+        print test
+        os.environ['FLASKCONFIG'] = 'testing'
 
 
     print "\n*** starting metadata server at localhost:4000 ***\n"
     server_process = Popen("python manage.py runserver --port=4000",
-                           shell=True, # stdout=PIPE,
+                           shell=True, stdout=None, stderr=None,
                            preexec_fn=os.setsid)
-
-    # print "\n SERVER COMMUNICATE \n"
-    # server_process.communicate()
-
-    print "\n SERVER PROCESS ID: \n"
-    print server_process.returncode
-
-
-    if server_process.returncode:
-
-        print "\nError in starting server.\n"
-        sys.exit()
-
-
 
     print "\n*** starting front end server at localhost:8000 ***\n"
-    client_process = Popen("python -m SimpleHTTPServer",
-                           shell=True, stdout=PIPE,
-                           preexec_fn=os.setsid)
-
-    client_process.communicate()
-
-
-
-    if client_process.returncode:
-
-        client_process.kill()
-
-        print "\nError in starting server.\n"
-        sys.exit()
-
+    # client_process = Popen("python -m SimpleHTTPServer",
+                           # shell=True, stdout=PIPE,
+                           # preexec_fn=os.setsid)
+    Popen("python -m SimpleHTTPServer",
+          shell=True, stdout=None, stderr=None, preexec_fn=os.setsid)
 
     print "\n----------------------------------------------------------------------"
     print "Both servers have successfully started. Visit http://localhost:8000/frontend"
@@ -113,26 +65,53 @@ def start_servers(test=False):
         str(id) + "/xml.  Remove '/xml' to see the original json."
     print "----------------------------------------------------------------------"
 
-    # export process ids as environment variables for @atexit
-    os.environ['server_pid'] = str(server_process.pid)
-    os.environ['client_pid'] = str(client_process.pid)
-
-    while True:
-
-        time.sleep(1)
-
 
 if __name__ == '__main__':
 
-    # p4000 = Popen(['lsof', '-a', '-p4000', '-i4'])
-    # p8000 = Popen(['lsof', '-a', '-p8000', '-i4'])
+    parser = argparse.ArgumentParser()
+    run_choices = ['e2e', 'ngSpec', 'pyTest', 'testAll', 'run']
 
-    Popen('kill -9 `lsof -ti :8000`', shell=True, stderr=None)
+    parser.add_argument('type', choices=run_choices,
+        help='One of "e2e", "ngSpec", "pyTest", or "run"')
 
-    Popen('kill -9 `lsof -ti :4000`', shell=True, stderr=None)
+    args = parser.parse_args()
 
-    print "\n\n YO ***** \n\n"
+    # if the servers were already running (could be zombie) kill them
+    _kill_servers()
 
-    # print p4000.communicate()[0]
+    test = False
 
-    start_servers(test=True)
+    runType = args.type
+
+    if runType in ['testAll', 'e2e']:
+
+        start_servers(test=True)
+
+        proTest = Popen('npm run protractor', shell=True)
+
+        proTest.communicate()[0]
+
+        if runType == 'testAll':
+
+            nt = Popen('npm test', shell=True)
+
+            nt.communicate()
+
+
+    if runType in ['run']:
+
+        start_servers(test=False)
+
+
+    if args.type in ['ngSpec']:
+
+        nt = Popen('npm test', shell=True)
+
+        nt.communicate()
+
+
+    if args.type in ['testPy']:
+
+        nt = Popen('nosetests -v', shell=True)
+
+        nt.communicate()
