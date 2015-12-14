@@ -5,7 +5,12 @@ from flask import Flask
 from flask_moment import Moment
 from flask_mongoengine import MongoEngine
 from flask_cors import CORS
-from ..config import config
+
+# if there is an exception, we are running tests
+try:
+    from config import config
+except:
+    from ..config import config
 
 
 moment = Moment()

@@ -45,16 +45,14 @@ def start_servers(test):
         print test
         os.environ['FLASKCONFIG'] = 'testing'
 
-
     print "\n*** starting metadata server at localhost:4000 ***\n"
-    server_process = Popen("python manage.py runserver --port=4000",
-                           shell=True, stdout=None, stderr=None,
-                           preexec_fn=os.setsid)
+
+    Popen("python manage.py runserver --port=4000",
+          shell=True, stdout=None, stderr=None,
+          preexec_fn=os.setsid)
 
     print "\n*** starting front end server at localhost:8000 ***\n"
-    # client_process = Popen("python -m SimpleHTTPServer",
-                           # shell=True, stdout=PIPE,
-                           # preexec_fn=os.setsid)
+
     Popen("python -m SimpleHTTPServer",
           shell=True, stdout=None, stderr=None, preexec_fn=os.setsid)
 
@@ -63,7 +61,7 @@ def start_servers(test):
     print "to see the front end and to see some sample xml of default_form.json "
     print "that the server emits, visit http://localhost:4000/api/metadata/" +\
         str(id) + "/xml.  Remove '/xml' to see the original json."
-    print "----------------------------------------------------------------------"
+    print "----------------------------------------------------------"
 
 
 if __name__ == '__main__':
@@ -71,8 +69,12 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     run_choices = ['e2e', 'ngSpec', 'pyTest', 'testAll', 'run']
 
-    parser.add_argument('type', choices=run_choices,
-        help='One of "e2e", "ngSpec", "pyTest", or "run"')
+    parser.add_argument(
+        'type', choices=run_choices,
+        help='You can run end-to-end tests (e2e), Angular Jasmine tests of ' +
+        'the controllers and services (ngSpec), Python server tests ' +
+        '(pyTest), or testAll will run all those tests. Can also run demo ' +
+        'servers with a persistent local database using the run command.')
 
     args = parser.parse_args()
 
@@ -97,11 +99,9 @@ if __name__ == '__main__':
 
             nt.communicate()
 
-
     if runType in ['run']:
 
         start_servers(test=False)
-
 
     if args.type in ['ngSpec']:
 
@@ -109,8 +109,7 @@ if __name__ == '__main__':
 
         nt.communicate()
 
-
-    if args.type in ['testPy']:
+    if args.type in ['pyTest']:
 
         nt = Popen('nosetests -v', shell=True)
 

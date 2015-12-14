@@ -108,6 +108,7 @@ def get_single_metadata(_oid):
             for f in existing_record._fields:
                 existing_record[f] = updater[f]
 
+            import ipdb; ipdb.set_trace()
             existing_record.save()
 
             return jsonify(record=existing_record)
