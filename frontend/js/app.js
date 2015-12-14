@@ -1,9 +1,8 @@
 'use strict';
 
 var metadataEditorApp = angular
-.module('metadataEditor', ['ngRoute', 'ui.date'])
-.constant('formOptions',
-{
+.module('metadataEditor', ['ngRoute', 'ui.date','ngMap'])
+.constant('formOptions',  {
  	topicCategoryChoices: ['biota', 'boundaries',
    'climatologyMeteorologyAtmosphere', 'economy', 'elevation',
    'environment', 'farming', 'geoscientificInformation', 'health',
