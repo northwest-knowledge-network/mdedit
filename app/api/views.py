@@ -96,35 +96,41 @@ def get_single_metadata(_oid):
     """
     username = _authenticate_user_from_session(request)
 
-    if ('record' in request.json and
-        'id' in request.json['record'] and
-        'username' in request.json['record']):
+    try:
 
         if request.method == 'PUT':
 
-            existing_record = Metadata.objects.get_or_404(pk=_oid,
-                                                          username=username)
+            if ('record' in request.json and 'id' in request.json['record']):
 
-            updater = Metadata.from_json(json.dumps(request.json['record']))
+                existing_record = \
+                    Metadata.objects.get_or_404(pk=_oid,
+                                                username=username)
 
-            for f in existing_record._fields:
-                existing_record[f] = updater[f]
+                updater = Metadata.from_json(
+                    json.dumps(request.json['record'])
+                )
 
-            existing_record.save()
+                for f in existing_record._fields:
+                    existing_record[f] = updater[f]
 
-            return jsonify(record=existing_record)
+                existing_record.save()
+
+                return jsonify(record=existing_record)
+
+            else:
+                return Response('Bad or missing id', 400)
 
         else:
+                record = Metadata.objects.get_or_404(
+                    pk=_oid, username=username
+                )
 
-            record = Metadata.objects.get_or_404(pk=_oid, username=username)
+                record.format_dates()
 
-            record.format_dates()
+                return jsonify(record=record)
+    except:
 
-            return jsonify(record=record)
-
-    else:
-
-        return Response('Bad or missing session id and/or username', 400)
+        return Response('Bad request for record with id ' + _oid, 400)
 
 
 @api.route('/api/metadata/<string:_oid>/publish', methods=['POST'])

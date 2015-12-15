@@ -6,7 +6,6 @@ Date: 2015-12-12
 """
 import json
 import unittest
-import os
 
 from ..manage import app
 from ..app.models import Metadata
@@ -105,34 +104,25 @@ class TestAPI(unittest.TestCase):
 
         assert res.status_code == 400
 
-        assert res.data == 'Bad or missing session id and/or username'
+        assert res.data == 'Bad or missing id'
 
-    def test_savedraft_update_nousername_400(self):
-        """
-        Attempts to save updated draft w/o username will result in bad request error
-        """
+    def test_retrieve_record(self):
 
-        data = """
-            {
-                "record": {
-                    "title": "Dabke on the Moon",
-                    "summary": "Some good music",
-                    "place_keywords": ["California", "Delta"],
-                    "id": "xxxxx"
-                }
-            }
-            """
+        res = self.client.get('/api/metadata/' + str(self.md1_id))
 
-        res = self.client.put('/api/metadata/' + str(self.md1_id), data=data,
-                              content_type='application/json',
-                              headers={'Content-Type': '*', 'Origin': '*'})
+        data = json.loads(res.data)['record']
 
-        assert res.status_code == 400
+        assert data['title'] == 'Dabke on the Moon'
+        assert data['summary'] == 'Some good music'
 
-        assert res.data == 'Bad or missing session id and/or username'
+        res = self.client.get('/api/metadata/' + str(self.md2_id))
 
-    # def test_retrieve_record(self):
-    #     assert False
+        data = json.loads(res.data)['record']
+
+        assert data['title'] == 'Another one'
+        assert data['place_keywords'] == ['Idaho', 'Pacific Northwest']
+        assert data['thematic_keywords'] == ['limnology', 'batholith']
+
 
     # def test_get_user_contacts(self):
     #     assert False
