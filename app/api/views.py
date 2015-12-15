@@ -96,7 +96,9 @@ def get_single_metadata(_oid):
     """
     username = _authenticate_user_from_session(request)
 
-    if username:
+    if ('record' in request.json and
+        'id' in request.json['record'] and
+        'username' in request.json['record']):
 
         if request.method == 'PUT':
 
@@ -108,7 +110,6 @@ def get_single_metadata(_oid):
             for f in existing_record._fields:
                 existing_record[f] = updater[f]
 
-            import ipdb; ipdb.set_trace()
             existing_record.save()
 
             return jsonify(record=existing_record)
@@ -122,7 +123,8 @@ def get_single_metadata(_oid):
             return jsonify(record=record)
 
     else:
-        return Response('Bad or missing session id', 400)
+
+        return Response('Bad or missing session id and/or username', 400)
 
 
 @api.route('/api/metadata/<string:_oid>/publish', methods=['POST'])

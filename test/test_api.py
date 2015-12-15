@@ -18,29 +18,20 @@ class TestAPI(unittest.TestCase):
     """
     def setUp(self):
 
-        import ipdb; ipdb.set_trace()
-        os.environ['FLASKCONFIG'] = 'testing'
-        app.config['MONGODB_SETTINGS'] = {'db': 'mdedit_test'}
-        TESTING = True
-        app.config['TESTING'] = True
-        app.config['DEBUG'] = False
         self.client = app.test_client()
-
-
 
         try:
             Metadata.drop_collection()
         except:
             pass
 
-        # insert test data
         md1 = Metadata.from_json("""
                 {"title": "Dabke on the Moon",
                  "summary": "Some good music",
                  "username": "local_user"}
             """)
         md1.save()
-        import ipdb; ipdb.set_trace()
+
         self.md1_id = md1.id
 
         md2 = Metadata.from_json("""
@@ -51,10 +42,7 @@ class TestAPI(unittest.TestCase):
             """)
         md2.save()
 
-        # # md2.id is type ObjectId
         self.md2_id = md2.id
-
-        # assert False
 
     def tearDown(self):
 
@@ -70,30 +58,78 @@ class TestAPI(unittest.TestCase):
 
         assert len(record_list) == 2
 
-    def test_update_record(self):
+    def test_savedraft_update(self):
+
         # see werkzeug.test.EnvironBuilder
-        self.client.put(
-            '/api/metadata/' + str(self.md1_id), data="""
-            {
-                "record": {
+        data = """
+            {{
+                "record": {{
                     "title": "Dabke on the Moon",
                     "summary": "Some good music",
-                    "place_keywords": ["California", "Delta"]
-                }
-            }
-            """,
+                    "place_keywords": ["California", "Delta"],
+                    "username": "local_user",
+                    "id": "{}"
+                }}
+            }}
+            """
+
+        res = self.client.put(
+            '/api/metadata/' + str(self.md1_id), data=data.format(self.md1_id),
             content_type='application/json',
             headers={'Content-Type': '*', 'Origin': '*'}
         )
 
-        print "self.md1_id"
-        print self.md1_id
         md1 = Metadata.objects.get(pk=str(self.md1_id))
 
-        print "md"
-        print md1.place_keywords
-
         assert md1.place_keywords == ['California', 'Delta']
+
+    def test_savedraft_update_noid_400(self):
+        """
+        Attempts to save updated draft w/o id will result in bad request error
+        """
+
+        data = """
+            {
+                "record": {
+                    "title": "Dabke on the Moon",
+                    "summary": "Some good music",
+                    "place_keywords": ["California", "Delta"],
+                    "username": "local_user"
+                }
+            }
+            """
+
+        res = self.client.put('/api/metadata/' + str(self.md1_id), data=data,
+                              content_type='application/json',
+                              headers={'Content-Type': '*', 'Origin': '*'})
+
+        assert res.status_code == 400
+
+        assert res.data == 'Bad or missing session id and/or username'
+
+    def test_savedraft_update_nousername_400(self):
+        """
+        Attempts to save updated draft w/o username will result in bad request error
+        """
+
+        data = """
+            {
+                "record": {
+                    "title": "Dabke on the Moon",
+                    "summary": "Some good music",
+                    "place_keywords": ["California", "Delta"],
+                    "id": "xxxxx"
+                }
+            }
+            """
+
+        res = self.client.put('/api/metadata/' + str(self.md1_id), data=data,
+                              content_type='application/json',
+                              headers={'Content-Type': '*', 'Origin': '*'})
+
+        assert res.status_code == 400
+
+        assert res.data == 'Bad or missing session id and/or username'
 
     # def test_retrieve_record(self):
     #     assert False

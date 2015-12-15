@@ -11,12 +11,6 @@ from subprocess import Popen, PIPE
 
 from app import create_app
 from flask_mongoengine import MongoEngine
-from app.models import Metadata
-
-app = create_app('default')
-
-db = MongoEngine()
-db.init_app(app)
 
 
 def _kill_servers():
@@ -110,6 +104,8 @@ if __name__ == '__main__':
         nt.communicate()
 
     if args.type in ['pyTest']:
+
+        os.environ['FLASKCONFIG'] = 'testing'
 
         nt = Popen('nosetests -v', shell=True)
 
