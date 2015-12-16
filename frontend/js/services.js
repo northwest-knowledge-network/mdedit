@@ -128,10 +128,10 @@ metadataEditorApp
       'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': ''
     }],
 
-    west_lon: 0.0,
-    east_lon: 0.0,
-    north_lat: 0.0,
-    south_lat: 0.0,
+    west_lon: '',
+    east_lon: '',
+    north_lat: '',
+    south_lat: '',
 
     start_date: {$date: new Date(2010, 0, 1)},
     end_date: {$date: new Date()}

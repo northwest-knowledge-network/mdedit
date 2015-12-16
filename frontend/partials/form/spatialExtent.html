@@ -26,7 +26,7 @@
 <div class="row">
   <div class="col-xs-4 col-sm-4 col-md-5 col-lg-5 col-xs-offset-4 col-sm-offset-4 col-md-offset-3 col-lg-offset-3">
     <h4 class="attribute-label" id="north">South Latitude</h4>
-    <input tabindex=20 type="number" 
+    <input tabindex=20 type="number"
            step="0.0000000000000001"
              ng-model="currentRecord.south_lat">
   </div>
@@ -36,7 +36,7 @@
 <h6>Don't know your bounding coordinates? Enter a location name here (e.g., Idaho, Ada County, Coeur d'Alene, 83209). Click the button below to have the system calculate bounding coordinates and fill in the entries above.</h6>
 <div class="row">
 <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-<input style="width:100%" tabindex=20 type="text" 
+<input style="width:100%" tabindex=20 type="text"
        ng-model="options.bboxInput">
 </div>
 <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
@@ -50,13 +50,13 @@
 </div>
 <h6>Once you've entered bounding coordinates, a rectangle will appear showing you the corresponding area on the map. Be sure to verify that it is where you expect it to be. You can also edit the rectangle and new bounds will appear in the above fields.</h6>
 
-<!-- MAP -->    
-<div ng-controller="MapController as vm">
+<!-- MAP -->
+<!-- <div ng-controller="MapController as vm">
   <ng-map default-style="true" zoom="5" map-type-id="TERRAIN" center="[45.5,-115]">
     <shape ng-show = ({{currentRecord.south_lat}} != NULL) name="rectangle" id="extent" fill-color="#111111" fill-opacity="0.3" stroke-weight="2" bounds="[[{{currentRecord.south_lat}},{{currentRecord.west_lon}}],[{{currentRecord.north_lat}},{{currentRecord.east_lon}}]]" editable ="true" draggable="false" on-bounds_changed="vm.boundsChanged()">
     </shape>
     </ng-map>
-</div>
+</div> -->
 <!-- end of Map -->
 </div>
 

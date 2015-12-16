@@ -5,13 +5,15 @@
 metadataEditorApp.controller('BaseController',
 
     ['$scope', '$http', '$log', 'formOptions', 'updateForms', 'recordService',
-        'Geoprocessing',
+        'Geoprocessing', 'hostname',
 
     function($scope, $http, $log, formOptions, updateForms,
-        recordService, Geoprocessing)
+        recordService, Geoprocessing, hostname)
     {
         // initialize list of existing metadata records
         $scope.allRecords = [];
+
+        $scope.hostname = hostname;
 
         $scope.updateRecordsList = () => {
             recordService.list()
@@ -283,22 +285,21 @@ metadataEditorApp.controller('BaseController',
     var vm = this;
     vm.ne, vm.sw, vm.center;
     NgMap.getMap().then(function(map) {
-    console.log('map', map);
-    vm.map = map;
-    $scope.currentRecord.north_lat = vm.ne.lat();
-    $scope.currentRecord.south_lat = vm.sw.lat();
-    $scope.currentRecord.east_lon = vm.ne.lng();
-    $scope.currentRecord.west_lon = vm.sw.lng();
+        vm.map = map;
+        $scope.currentRecord.north_lat = vm.ne.lat();
+        $scope.currentRecord.south_lat = vm.sw.lat();
+        $scope.currentRecord.east_lon = vm.ne.lng();
+        $scope.currentRecord.west_lon = vm.sw.lng();
   });
     vm.boundsChanged = function() {
-    vm.ne = this.getBounds().getNorthEast();
-    vm.sw = this.getBounds().getSouthWest();
-    vm.center = this.getBounds().getCenter();
-    vm.map.setCenter(vm.center);
-    vm.map.fitBounds(this.getBounds());
-    $scope.currentRecord.north_lat = vm.ne.lat();
-    $scope.currentRecord.south_lat = vm.sw.lat();
-    $scope.currentRecord.east_lon = vm.ne.lng();
-    $scope.currentRecord.west_lon = vm.sw.lng();
-  }
+        vm.ne = this.getBounds().getNorthEast();
+        vm.sw = this.getBounds().getSouthWest();
+        vm.center = this.getBounds().getCenter();
+        vm.map.setCenter(vm.center);
+        vm.map.fitBounds(this.getBounds());
+        $scope.currentRecord.north_lat = vm.ne.lat();
+        $scope.currentRecord.south_lat = vm.sw.lat();
+        $scope.currentRecord.east_lon = vm.ne.lng();
+        $scope.currentRecord.west_lon = vm.sw.lng();
+    };
 });
