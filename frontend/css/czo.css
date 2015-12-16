@@ -1,0 +1,72 @@
+.navbar {
+    /*border-bottom: 2px solid #A6A6A6;*/
+
+    background-color: #93B3C6;
+    font-color: white;
+}
+.navbar-default {
+    color: white;
+}
+
+.panel-default > .panel-heading {
+    color: #333;
+    background-color: #000;
+    border-color: #ddd;
+}
+
+.navbar {
+    font-family: PtMono,"Courier New",Courier,monospace;
+}
+
+.navbar-default .navbar-brand {
+    color: white;
+}
+
+.navbar-default .navbar-nav > li > a {
+    color: white;
+}
+
+.section-header {
+    color: #2884BA;
+    margin: 15px 10px;
+}
+
+.btn-danger {
+    background-color: #D15B59
+}
+
+.attribute-label {
+    color: #E82622
+}
+
+#recordTable {
+    color: #333;
+}
+
+.btn-contact {
+    background-color: #2884BA;
+}
+
+.btn-contact:hover{
+    color: #2884BA;
+}
+
+div#upload {
+    border-radius: 6px;
+    padding-top: 6px;
+    border-style: solid;
+    border-width: 1px;
+}
+
+.btn-cancel-contact {
+    background-color: #D15B59;
+    color: white;
+}
+
+#records-table {
+    font-size: .8em;
+}
+
+#records-table > span.badge {
+    font-size: .8em;
+}

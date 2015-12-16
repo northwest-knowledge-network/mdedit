@@ -1,29 +1,19 @@
 <div class="row">
-  <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-    <!-- Display Current Record Title -->
-    <h2 id="record-title" ng-show="newRecord">New Metadata Record:<br>
-       &nbsp{{currentRecord.title}}</h2>
-    
-    <h2 id="record-title" ng-show="!newRecord">Editing Existing:<br>
-       &nbsp{{currentRecord.title}}</h2>
-  </div>
-  
-  <br>
 
-  <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-    <button tabindex=25 class="btn btn-small btn-danger navbar-btn"
-      ng-hide="metadataForm.$valid">
-     Please fix errors before publishing to NKN Portal
-    </button>
-    
-    <!-- 
-    Controller will handle case where form is valid, but a draft has
-    not yet been submitted.
-    -->
-    <button tabindex=25 ng-show="metadataForm.$valid" 
-            class="btn btn-small btn-primary navbar-btn" 
-            type="submit" ng-click="publishRecord()">
-      Publish Record to NKN Portal
-    </button>
-  </div>
+    <!-- Display Current Record Title -->
+   <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+        <h2 id="record-title" ng-show="newRecord">New Metadata Record:
+          &nbsp{{currentRecord.title}}</h2>
+
+        <h2 id="record-title" ng-show="!newRecord">Editing Existing:
+          &nbsp{{currentRecord.title}}</h2>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" id="upload">
+        <input type="button" class="btn btn-primary btn-contact" value="Upload Data">
+        <h4>Associated Data</h4>
+        <ol>
+            <li>gauge_data.csv (<span style="color:red">remove</span>)</li>
+            <li>spatially_inferenced.nc (<span style="color:red">remove</span>)</li>
+        </ol>
+    </div>
 </div>

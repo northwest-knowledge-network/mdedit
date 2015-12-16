@@ -1,4 +1,4 @@
-<form name="metadataForm" id="metadataForm">
+<form name="$root.metadataForm" id="metadataForm" ng-controller="BaseController">
 
   <!-- form header contains title and submit to portal button -->
   <div ng-include="'partials/formHeader.html'"></div>
@@ -10,27 +10,27 @@
     <!--Basic Information: Title and Summary-->
 
        <div ng-include="'partials/form/basic.html'"></div>
-         
+
            <h2 class="section-header">
-           <span class="mega-octicon octicon-tools"></span> 
+           <span class="mega-octicon octicon-tools"></span>
            Data Format Details
          </h2>
          <div class="subform">
-           
+
            <div ng-include="'partials/form/dataFormats.html'"></div>
-           
+
            <h4 class="attribute-label">Compression Technique</h4>
            <h6>
-            Is your data offered in a compressed format? If so, please type a 
-            short description here. For example, "The LAS files are compressed 
+            Is your data offered in a compressed format? If so, please type a
+            short description here. For example, "The LAS files are compressed
             in standard ZIP format"
            </h6>
-           
+
            <input tabindex=20 type="text" ng-model="currentRecord.compression_technique" style="width:95%">
-         
+
          </div>
       </div>
- 
+
     <!---------------Right Divider-------------->
 
     <!--Detailed Information: Place Keywords, Thematic Keywords, Topic, Update status/freq-->
@@ -38,7 +38,7 @@
     <h2 class="section-header">
       <span class="glyphicon glyphicon-list-alt"></span> Detailed Information
     </h2>
- 
+
     <div class="subform">
 
      <div ng-include="'partials/form/detailed.html'"></div>
@@ -47,23 +47,23 @@
       <h6>What is the status of your dataset? For example, is it complete (you anticipate no further work and consider it final) or is it ongoing (continually being updated)?</h6>
 
       <select tabindex=6 id="" name=""
-              ng-options="s for (s, iso) in iso.statusChoicesIsoMap" 
+              ng-options="s for (s, iso) in iso.statusChoicesIsoMap"
               ng-model="currentRecord.status">
       </select>
       <h4 class="attribute-label">Update Frequency</h4>
       <h6>Please select the frequency with which changes (any modifications and deletions) are or will be made to your data after it is produced. Please select a value from below. Options are available if you do not plan to update your data or do not know the specific frequency of updates.</h6>
       <select tabindex=7 id="" name=""
-              ng-options="f for (f, iso) in iso.updateFrequencyChoicesMap" 
+              ng-options="f for (f, iso) in iso.updateFrequencyChoicesMap"
               ng-model="currentRecord.update_frequency">
       </select>
 
       <h4 class="attribute-label">Data Type</h4>
       <h6>
-        How are your data represented? Through a text file, vector spatial representation, a spatial grid of values, a table, a 
+        How are your data represented? Through a text file, vector spatial representation, a spatial grid of values, a table, a
         video of a scene, etc.?
       </h6>
       <select tabindex=8 id="" name=""
-              ng-options="f for f in spatialDataOptions" 
+              ng-options="f for f in spatialDataOptions"
               ng-model="currentRecord.spatial_dtype">
       </select>
 
@@ -72,7 +72,7 @@
         Is your data a single dataset or is it one of a series of datasets?
       </h6>
       <select tabindex=9 id="" name=""
-              ng-options="f for f in hierarchyLevels" 
+              ng-options="f for f in hierarchyLevels"
               ng-model="currentRecord.hierarchy_level">
       </select>
 
@@ -85,17 +85,17 @@
   <div class="row">
      <a class="anchor" name="spatiotemporal">
        <h2 class="section-header">
-       <span class="glyphicon glyphicon-time"></span> 
+       <span class="glyphicon glyphicon-time"></span>
 
-       <span class="glyphicon glyphicon-globe"></span> 
+       <span class="glyphicon glyphicon-globe"></span>
          Spatiotemporal Extents
        </h2>
      </a>
      <div class="subform">
        <div class="row" style="vertical-align:left">
-         
+
           <div ng-include="'partials/form/temporalExtent.html'"></div>
-          
+
           <div ng-include="'partials/form/spatialExtent.html'"></div>
 
        </div>
@@ -104,7 +104,7 @@
   </div>
 
   <div ng-include="'partials/form/contacts.html'"></div>
-  
+
   <div ng-include="'partials/form/onlineResourcesAndRestrictions.html'"></div>
 
 </form>

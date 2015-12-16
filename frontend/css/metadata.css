@@ -6,7 +6,7 @@
   color: dodgerblue;
   margin: 15px 10px;
 }
-  
+
 .subform {
   /*border-style: solid;*/
   /*border-width:1px;*/
@@ -30,19 +30,19 @@ h6 {
 }
 
 #access-contacts {
-  margin: 0 -8px 0 8px;  
+  margin: 0 -8px 0 8px;
 }
 
 #citation-contacts {
-  margin: 0 8px 0 -8px;  
+  margin: 0 8px 0 -8px;
 }
 
 .field-description {
-  font-size: 12px;  
+  font-size: 12px;
 }
 .contacts-subheader {
   width: 80%;
-} 
+}
 
 .btn-contact {
   width:100%;
@@ -56,14 +56,14 @@ h6 {
 
 /*
  * to accomodate the navbar
- * see http://getbootstrap.com/components/#navbar-fixed-top 
+ * see http://getbootstrap.com/components/#navbar-fixed-top
  */
-body { 
-    padding-top: 70px; 
+body {
+    padding-top: 70px;
 }
 
 h1#record-title {
-  margin-top: -10px; 
+  margin-top: -10px;
 }
 
 h3#brand {
@@ -74,18 +74,18 @@ h3#brand {
 
 
 #nav-button {
-  font-weight: bold;  
+  font-weight: bold;
 }
 
 #online-buttons {
   margin: 10px auto;
   width: 80%;
-}  
+}
 
 .extent-block {
   margin: 10px auto;
   width: 80%;
-}  
+}
 
 div.centered-container {
   position: relative;

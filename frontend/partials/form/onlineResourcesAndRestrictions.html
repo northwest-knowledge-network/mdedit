@@ -1,7 +1,7 @@
   <div class="row">
 
     <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-      
+
       <a class="anchor" name="online"></a>
       <h2 class="section-header">
         <span class="mega-octicon octicon-device-desktop"></span>  Online Resources
@@ -13,7 +13,7 @@
         URL for each online resource.
       </h6>
 
-      
+
       <form name="onlineSubform" id="onlineSubform">
         <div class="subform">
           <div class="row">
@@ -25,7 +25,7 @@
                          ng-model="currentRecord.online[$index]">
                 </div>
                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                  <button tabindex=20 class="btn btn-default btn-xs" 
+                  <button tabindex=20 class="btn btn-default btn-xs"
                       ng-click="removeOnlineResource($index)">Remove </button>
                 </div>
               </div>
@@ -33,37 +33,35 @@
           </div>
         </div>
         <div id="online-buttons">
-          <button tabindex=21 class="btn btn-primary btn-contact" 
-                  ng-click="addOnlineResource()">
-              <span class="glyphicon glyphicon-plus" aria-hide="true"></span>   Add a resource
-          </button>
+          <input type="button" tabindex=21 class="btn btn-primary btn-contact"
+                  ng-click="addOnlineResource()" value="Add an Online Resource">
         </div>
       </form>
-    
+
     </div>
 
 
     <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-      
+
       <a class="anchor" name="online"></a>
       <h2 class="section-header">
         <span class="mega-octicon octicon-issue-opened"></span>  Use Restrictions
       </h2>
       <div class="subform">
         <h6>
-          List any use restrictions for how others should use your data. 
-          For example, you might want to stipulate that "This 
-          dataset should be cited in any publications for which it is 
-          used." If there are no restrictions for how your dataset is 
+          List any use restrictions for how others should use your data.
+          For example, you might want to stipulate that "This
+          dataset should be cited in any publications for which it is
+          used." If there are no restrictions for how your dataset is
           used, please state so here.
         </h6>
         <form>
-          <textarea style="width:100%" tabindex=21 rows=4 
+          <textarea style="width:100%" tabindex=21 rows=4
                     ng-model="currentRecord.use_restrictions">
           </textarea>
         </form>
       </div>
-    
+
     </div>
 
   </div>
