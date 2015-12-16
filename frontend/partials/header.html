@@ -1,8 +1,154 @@
 <nav class="navbar navbar-default navbar-fixed-top">
-    <div class="container-fluid">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div id="navbar-custom" class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">CZO Metadata Management Tool</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+       <!--  <li><a>Cr</a></li>
+        <li><a href="#/iso">Link</a></li> -->
+        <li class="dropdown">
+            <a href="#/iso" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                Manage your metadata <span class="caret"></span>
+            </a>
+            <ul id="records-table" class="dropdown-menu">
+                <table class="table" id="recordTable" style="width:800px">
+                    <li>
+
+                        <thead>
+                            <tr>
+                                <td>
+                                    <b>Title</b>
+                                </td>
+                                <td>
+                                    <b>Summary</b>
+                                </td>
+                                <td>
+                                    <b>Last Edited</b>
+                                </td>
+                                <td>
+                                    <b>Last Published</b>
+                                </td>
+                                <td>
+                                    <b>Actions</b>
+                                </td>
+                            </tr>
+                        </thead>
+                    </li>
+                    <li>
+                        <tr>
+                            <td>Fernan Lake Limnology</td>
+                            <td>Temperature, acidity, and toxin study</td>
+                            <td>2015-10-01</td>
+                            <td>2015-7-26</td>
+                            <td>
+                                Edit | Publish
+                            </td>
+                        </tr>
+                    </li>
+                    <li>
+                        <tr>
+                            <td>Reynolds Creek Snotel</td>
+                            <td>Measurement set from 15 different instruments</td>
+                            <td>2014-10-01</td>
+                            <td>2015-10-26</td>
+                            <td>
+                                Edit | Publish
+                            </td>
+                        </tr>
+                    </li>
+                    </table>
+                </li>
+            </ul>
+        </li>
+        <li class="dropdown">
+          <a href="#/iso" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Record Options <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="#/iso">Create new record</a></li>
+            <li><a href="#/iso">Save this record as a draft</a></li>
+            <li ng-show="$root.metadataForm.$valid"><a href="#/iso">Publish record to share with other CZOs</a></li>
+            <li ng-hide="$root.metadataForm.$valid" class="disabled"><a href="#/iso">Please complete the record to publish data</a></li>
+
+<!--             <li role="separator" class="divider"></li>
+            <li><a href="#/iso">Separated link</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="#/iso">One more separated link</a></li> -->
+          </ul>
+        </li>
+
+        <li class="dropdown">
+            <a href="#/iso" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                Load CZO Defaults <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+                <li><a href="#/iso">Reynolds Creek</a></li>
+                <li><a href="#/iso">Southern Sierra</a></li>
+                <li><a href="#/iso">Calhoun</a></li>
+                <li><a href="#/iso">Shale Hills</a></li>
+            </ul>
+        </li>
+      </ul>
+
+      <form class="navbar-form navbar-right" role="search">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Search">
+        </div>
+        <button type="submit" class="btn btn-default">Help</button>
+      </form>
+      <!-- <ul class="nav navbar-nav navbar-right">
+        <li><a href="#/iso">Link</a></li>
+        <li class="dropdown">
+          <a href="#/iso" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="#/iso">Action</a></li>
+            <li><a href="#/iso">Another action</a></li>
+            <li><a href="#/iso">Something else here</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="#/iso">Separated link</a></li>
+          </ul>
+        </li>
+      </ul> -->
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
+
+
+
+<!-- <nav class="navbar navbar-default navbar-fixed-top">
+
+  <div class="row">
+      <div class="col-xs-12 col-sm-6 col-md-4 col-md-3">
+          <img width="200" src='http://search.criticalzone.org/assets/img/czo_logo.png'/>
+      </div>
+      <div class="col-xs-12 col-sm-6 col-md-8 col-md-9">
+          <div class="container-fluid">
+              <div class="navbar-header">
+                  <div id="navbar">
+                      <ul class="nav navbar-nav">
+                              <li class="navbar-brand">ODM2-Compliant Metadata Generation Tool
+                          </li>
+                          <li class="nav navbar-nav navbar-right">Something else</li>
+                      </ul>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div> -->
+
+  <!--   <div class="container-fluid">
       <div class="navbar-header">
 
-        <button tabindex=24 class="navbar-toggle collapsed" aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" type="button"><span class="sr-only">Toggle menu</span>
+        <button tabindex=24 class="navbar-toggle collapsed" aria-controls="navbar" aria-expanded="false" data-target="#/isonavbar" data-toggle="collapse" type="button"><span class="sr-only">Toggle menu</span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
@@ -31,12 +177,12 @@
           </li>
         </ul>
       </div>
-    </div>
-  </nav>
+    </div> -->
+  <!-- </nav> -->
 
 
-<div style="text-align:center">
-  <a href="#list"
+<!-- <div style="text-align:center">
+  <a href="#/isolist"
      class="btn btn-small btn-default navbar-btn">
     Edit Existing
   </a>
@@ -59,7 +205,7 @@
     Save Changes to Draft
   </button>
 
-  <a tabindex=24 href="#/iso"
+  <a tabindex=24 href="#/iso/iso"
      class="btn btn-small btn-primary navbar-btn">
     Create Dataset Record
   </a>
@@ -73,10 +219,4 @@
           class="btn btn-small btn-primary navbar-btn">
     Load MILES Defaults
   </button>
-
-</div>
-
-<div ng-show="showInstructions"
-ng-include="'partials/instructions.html'">
-</div>
 
