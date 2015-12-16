@@ -15,7 +15,6 @@
     "underscore": "~1.8.3",
     "angular-route": "~1.4.7",
     "angular-animate": "~1.4.7",
-    "ng-maps": "ng-map#*",
     "ngmap": "~1.15.4"
   },
   "resolutions": {
