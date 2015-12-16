@@ -112,11 +112,13 @@ Angular.js, Twitter Bootstrap, and JQuery.
 3. Run the development web servers
 ``````````````````````````````````
 
-Finally, we will start the two web servers, front and back end, needed for our mdedit package. To do this, run ``startup.py``
+Finally, we will start the two web servers, front and back end, needed for our
+mdedit package. To do this, make sure your Python virtual environment has been
+started and use ``startup.py`` like so
 
 .. code-block:: bash
 
-    ./startup.py
+    ./startup.py run
 
 If all is well, you can navigate to http://localhost:8000 in your browser to try out the
 metadata editor:
@@ -140,7 +142,48 @@ http://localhost:4000/api/metadata, find a metadata record of interest, copy the
 quotes should be dropped.
 
 
-4. Try filling out and publishing a record
+4. Running the tests
+````````````````````
+
+There are three different tests to run: End-to-end tests using
+`Protractor <https://angular.github.io/protractor/#/>`_, server-side tests
+using Python `nose <http://nose.readthedocs.org/en/latest/index.html>`_ and
+the standard library's ``unittest`` module, and finally Angular "specifications"
+using `Jasmine testing suite <http://jasmine.github.io/1.3/introduction.html>`_
+and the `Karma test runner <http://karma-runner.github.io/0.13/index.html>`_.
+
+Currently we use Jasmine 1.3, but we will be upgrading soon.
+
+All three can be run, plus the option to run all at once, using
+our ``startup.py``.
+
+End-to-end:
+
+.. code-block:: bash
+
+    ./startup.py e2e
+
+Angular Specifications:
+
+.. code-block:: bash
+
+    ./startup.py ngSpec
+
+Python tests:
+
+.. code-block:: bash
+
+    ./startup.py pyTest
+
+All three at once, keeping the Karma server running:
+
+.. code-block:: bash
+
+    ./startup.py testAll
+
+
+
+5. Try filling out and publishing a record
 ``````````````````````````````````````````
 
 Publishing to the NKN portal is currently enabled. In development, new
