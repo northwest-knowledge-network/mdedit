@@ -81,6 +81,11 @@ if __name__ == '__main__':
 
     if runType in ['testAll', 'e2e']:
 
+        if runType == 'testAll':
+            nt = Popen('nosetests -v', shell=True)
+
+            nt.communicate()
+
         start_servers(test=True)
 
         proTest = Popen('npm run protractor', shell=True)
