@@ -77,3 +77,10 @@ class Metadata(db.Document):
         for el in [self.start_date, self.end_date, self.first_pub_date]:
             if type(el) is datetime:
                 el = el.isoformat()
+
+    def __str__(self):
+
+        return \
+            '\n'.join(["{}: {}".format(k, self[k])
+                       for k in self._fields_ordered])
+

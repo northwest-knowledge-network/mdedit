@@ -15,6 +15,8 @@ exports.config = {
 
   framework: 'jasmine',
 
+  rootElement: '#ngMain',
+
   jasmineNodeOpts: {
     defaultTimeoutInterval: 30000
   }

@@ -8,9 +8,11 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
 
-    MONGODB_SETTINGS = {'db': "metadata"}
+    MONGODB_SETTINGS = {'db': 'mdedit'}
+
     PREPROD_DIRECTORY = (os.environ.get('MDEDIT_PREPROD_DIRECTORY') or
                          'local-preprod-directory')
+
     if not os.path.exists(PREPROD_DIRECTORY):
         os.makedirs(PREPROD_DIRECTORY)
 
@@ -25,6 +27,8 @@ class DevelopmentConfig(Config):
 
 class TestingConfig(Config):
     TESTING = True
+
+    MONGODB_SETTINGS = {'db': 'mdedit_test'}
 
 
 class ProductionConfig(Config):

@@ -31,55 +31,52 @@
           </li>
         </ul>
       </div>
-    </div> 
+    </div>
   </nav>
 
 
 <div style="text-align:center">
-  <a href="#list" 
+  <a href="#list"
      class="btn btn-small btn-default navbar-btn">
     Edit Existing
   </a>
-  
-  <button tabindex=24 ng-click="createNewRecord()" 
+
+  <button tabindex=24 ng-click="createNewRecord()"
           class="btn btn-small btn-primary navbar-btn">
     Create New
   </button>
-  
-  <button tabindex=25 ng-show="newRecord" 
-          class="btn btn-small btn-primary navbar-btn" 
+
+  <button tabindex=25 ng-show="newRecord"
+          class="btn btn-small btn-primary navbar-btn"
           type="submit" ng-click="submitDraftRecord()">
     Save Draft
   </button>
-  
-  <button tabindex=25 ng-show="!newRecord" 
-          class="btn btn-small btn-primary navbar-btn" 
-          type="submit" 
+
+  <button tabindex=25 ng-show="!newRecord"
+          class="btn btn-small btn-primary navbar-btn"
+          type="submit"
           ng-click="submitDraftRecord()">
     Save Changes to Draft
   </button>
-  
 
-  <!--ng-click="toggleMetadataType('iso')"-->
   <a tabindex=24 href="#/iso"
      class="btn btn-small btn-primary navbar-btn">
     Create Dataset Record
   </a>
 
-<!--ng-click="toggleMetadataType('dublin')"-->  
-  <a tabindex=24 href="#/dublin" 
+  <a tabindex=24 href="#/dublin"
      class="btn btn-small btn-primary navbar-btn">
     Create Other Research Product Record
   </a>
-  
-  <button tabindex=24 ng-click="defaultMILES()" 
+
+  <button tabindex=24 ng-click="loadDefaultMILES()"
           class="btn btn-small btn-primary navbar-btn">
     Load MILES Defaults
   </button>
-  
+
 </div>
 
-<div ng-show="showInstructions" 
+<div ng-show="showInstructions"
 ng-include="'partials/instructions.html'">
 </div>
 

@@ -7,7 +7,10 @@ module.exports = function(config){
       'frontend/bower_components/angular/angular.js',
       'frontend/bower_components/angular-route/angular-route.js',
       'frontend/bower_components/angular-mocks/angular-mocks.js',
+      'frontend/bower_components/angular-ui-date/src/date.js',
+      'frontend/bower_components/ngmap/build/scripts/ng-map.min.js',
       'frontend/js/**/*.js',
+      'frontend/js/*.js',
       'test/unit/**/*.js'
     ],
 

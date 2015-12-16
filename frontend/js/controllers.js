@@ -1,558 +1,305 @@
 'use strict';
 
-//var metadataEditorApp = 
-  //angular.module('metadataEditor', ['ngRoute', 'ui.date']);
 
 // for minification, explicitly declare dependencies $scope and $http
-metadataEditorApp.controller('BaseController', ['$scope', '$http', '$log', 
-  function($scope, $http, $log) {
+metadataEditorApp.controller('BaseController',
 
-    // first see if we have any user information given to us (from Drupal)
-    if (typeof(window.session_id) === 'undefined')
+    ['$scope', '$http', '$log', 'formOptions', 'updateForms', 'recordService',
+        'Geoprocessing', 'hostname',
+
+    function($scope, $http, $log, formOptions, updateForms,
+        recordService, Geoprocessing, hostname)
     {
-      var session_id = 'local';
-    }
-    else
-    {
-      var session_id = window.session_id;
-    }
-
-    // next see if there is a hostname defined
-    var hostname = '';
-    if (typeof(window.hostname) === 'undefined')
-    {
-      hostname = 'localhost:4000';
-    }
-    else
-    {
-      hostname = window.hostname;
-    }
-    $scope.hostname = hostname;
-
-    // initialize list of existing metadata records
-    displayCurrentRecords();
-
-    // set date options
-    $scope.dateOptions = {
-        changeYear: true,
-        changeMonth: true,
-        yearRange: '1700:+10'
-    };
-
-    // create time picker vars
-    $scope.hours = _.range(24);
-    $scope.minute_seconds = _.range(60);
-
-    $scope.knownDataFormats = ["ASCII", "csv", "DLG", "docx", "DRG", "DWG", "eps", 
-      "ERDAS", "Esri file GDB", "Esri grid", "Esri personal GDB","Esri TIN", "FASTA", "FASTQ", "GenBank", 
-      "GeoJSON", "GeoTIFF", "GML", "HDF", "jpeg", "KML", "LAS", "mp3", 
-      "MrSID", "netCDF", "pdf", "php", "png", "py", "R", "SDXF", "Shapefile", 
-      "SPSS", "Stata", "Tab", "tiff", "txt", "VBS", "wav", "xls", "xlsx",
-      "xml"];
-
-    $scope.spatialDataOptions = ["vector", "grid", "table or text",
-      "triangulated irregular network", "stereographic imaging",
-      "video recording of a scene"];
-    $scope.hierarchyLevels = ["dataset", "series"];
-
-    /**
-     * Fetch the record with recordId and update the form to display it.
-     *
-     * Intended for use in conjunction with the Edit buttons in the records list
-     */
-    $scope.editRecord = function(recordId)
-    {
-      $scope.newRecord = false;
-
-      $http.post('//' + hostname + '/api/metadata/' + recordId,
-                 {'session_id': session_id})
-           .success(function(data) {
-             var record = data.record;
-             if (typeof record.start_date == "undefined") {
-               record.start_date = {$date: new Date(2010, 1, 1)};
-             }
-             if (typeof record.end_date == "undefined") {
-               record.end_date = {$date: new Date()};
-             }
-             if (typeof record.last_mod_date == "undefined") {
-               record.last_mod_date = {$date: new Date()};
-             }
-             if (typeof record.first_pub_date == "undefined") {
-               record.first_pub_date = {$date: new Date()};
-             }
-             updateForms(record);
-           });
-    };
-
-    var EMPTY_CONTACT =
-    {
-      'name': '', 'email': '', 'org': '', 'address': '',
-      'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': ''
-    };
-
-
-    $scope.createNewRecord = function()
-    {
-      $scope.newRecord = true;
-
-      $http.get('//' + hostname + '/api/metadata/placeholder')
-           .success(function(data) {
-             var placeholderRec = data.record;
-             //$scope.currentRecord = placeholderRec;
-             var emptyRec = JSON.parse(JSON.stringify(placeholderRec));
-
-             // clear out placeholder values
-             for (var field in emptyRec)
-             {
-               if (['citation', 'access'].indexOf(field) > -1)
-               {
-                 emptyRec[field] = [JSON.parse(JSON.stringify(EMPTY_CONTACT))];
-               }
-               else if (
-                 ['place_keywords', 'thematic_keywords',
-                  'data_format', 'online'].indexOf(field) > -1)
-               {
-                 emptyRec[field] = [""];
-               }
-               else if (['_cls', '_id', 'start_date', 'end_date', 'last_mod_date',
-                         'first_pub_date'].indexOf(field) == -1)
-               {
-                 emptyRec[field] = "";
-               }
-             }
-             emptyRec.start_date = {$date: new Date(2010, 1, 1)};
-             emptyRec.end_date = {$date: new Date()};
-             emptyRec.end_date.$date.setHours(0);
-             emptyRec.end_date.$date.setMinutes(0);
-             emptyRec.end_date.$date.setSeconds(0);
-
-             $scope.currentRecord = emptyRec;
-
-             updateForms($scope.currentRecord);
-           });
-    };
-
-    // initialize form with placeholder data for creating a new record
-    $scope.createNewRecord();
-
-    /**
-     * Change the metadata type being generated between ISO for datasets
-     * and Dublin Core for other research products
-     */
-    $scope.isDublin = false;
-    $scope.isISO = true;
-    $scope.toggleMetadataType = function(type)
-    {
-      switch (type)
-      {
-        case 'dublin':
-          $scope.isDublin = true;
-          $scope.isISO = false;
-          break;
-
-        case 'iso':
-          $scope.isDublin = false;
-          $scope.isISO = true;
-          break;
-
-        default:
-          $scope.isDublin = false;
-          $scope.isISO = true;
-      }
-
-    };
-
-    /**On click of Load MILES Defaults button, 
-     * load the defaults in MILES defaults json file
-     */
-    $scope.defaultMILES = function()
-    {
-      $scope.newRecord = true;
-
-      $http.get('//' + hostname + '/api/metadata/defaultMILES')
-           .success(function(data) {
-
-             var milesRec = data.record;
-
-             for (var key in milesRec)
-             {
-               if (milesRec.hasOwnProperty(key))
-               {
-                  // only want to overwrite country and state for MILES
-                  if (key === "citation")
-                  {
-                    $scope.currentRecord[key][0].country = milesRec[key][0].country;
-                    $scope.currentRecord[key][0].state = milesRec[key][0].state;
-                  }
-                  else
-                  {
-                    $scope.currentRecord[key] = milesRec[key];
-                  }
-               }
-             }
-
-             updateForms($scope.currentRecord);
-           });
-    };
-
-    /**
-     * On submit of metadata form, submitRecord. This both updates the server
-     * and makes sure the form is current. Not sure how it wouldn't be, todo?
-     */
-    $scope.submitDraftRecord = function()
-    {
-      // the start and end dates currently have hours and minutes zero;
-      // grab the hours and minutes and append them. Confusingly JS
-      // uses setHours to set minutes and seconds as well
-      var current = prepareCurrentScopedRecord();
-      if ($scope.newRecord)
-      {
-        $http.put('//' + hostname + '/api/metadata',
-                  {'record': current, 'session_id': session_id})
-             .success(function(data) {
-                 updateForms(data.record);
-                 $scope.newRecord = false;
-                 addedContacts =
-                 {
-                  'access': 0,
-                  'citation': 0
-                 };
-                 displayCurrentRecords();
-             })
-             .error(function(data) { $log.log(data.record); });
-      }
-      else
-      {
-        $log.log($scope.dataFormats);
-        $log.log(current);
-        $http.put('//' + hostname + '/api/metadata/' + current._id.$oid,
-                  {'record': current, 'session_id': session_id})
-             .success(function(data) {
-                 updateForms(data.record);
-                 addedContacts =
-                 {
-                  'access': 0,
-                  'citation': 0
-                 };
-                 displayCurrentRecords();
-             });
-      }
-    };
-
-    /**
-     * Publish a record to the portal. Requires all fields to be valid
-     */
-    $scope.publishRecord = function()
-    {
-      var current = prepareCurrentScopedRecord();
-      // if the record is totally new, we first want to save the draft of it
-      if ($scope.newRecord)
-      {
-        $http.post('//' + hostname + '/api/metadata', current)
-             .success(function(data) {
-                 updateForms(data.record);
-                 $scope.newRecord = false;
-                 addedContacts =
-                 {
-                  'access': 0,
-                  'citation': 0
-                 };
-                 displayCurrentRecords();
-             })
-             .error(function(data) { $log.log(data.record); });
-      }
-      // if the record already existed as a draft, we update the draft
-      else
-      {
-        $http.put('//' + hostname + '/api/metadata/' + current._id.$oid,
-                  current)
-             .success(function(data) {
-                 updateForms(data.record);
-                 addedContacts =
-                 {
-                  'access': 0,
-                  'citation': 0
-                 };
-                 displayCurrentRecords();
-             });
-      }
-
-      var currentId = $scope.currentRecord._id.$oid;
-
-      $http.post('//' + hostname + '/api/metadata/' +
-                 currentId + '/publish',
-                 current)
-            .success(function(data) {
-              updateForms(data.record);
-              addedContacts =
-              {
-                'access': 0,
-                'citation': 0
-              };
-
-              displayCurrentRecords();
-            });
-    };
-
-    function prepareCurrentScopedRecord()
-    {
-      $scope.currentRecord.start_date.$date.setHours(
-        $scope.currentRecord.start_date.hours,
-        $scope.currentRecord.start_date.minutes,
-        $scope.currentRecord.start_date.seconds
-      );
-
-      $scope.currentRecord.end_date.$date.setHours(
-        $scope.currentRecord.end_date.hours,
-        $scope.currentRecord.end_date.minutes,
-        $scope.currentRecord.end_date.seconds
-      );
-
-      var current = JSON.parse(JSON.stringify($scope.currentRecord));
-
-      current.place_keywords = $scope.currentRecord.place_keywords.split(', ');
-      current.thematic_keywords = $scope.currentRecord.thematic_keywords.split(', ');
-
-      $log.log('inside prepareCurrentScopedRecord');
-      $log.log($scope.dataFormats);
-      current.data_format = $scope.dataFormats;
-
-      if ($scope.auxDataFormats)
-      {
-        var auxList = $scope.auxDataFormats.split(',')
-                            .map(function(el){ return el.trim(); });
-
-        current.data_format = $scope.dataFormats.concat(auxList);
-      }
-
-      current.last_mod_date =
-        {$date: $scope.currentRecord.last_mod_date.$date.getTime()};
-      current.start_date =
-        {$date: $scope.currentRecord.start_date.$date.getTime()};
-      current.end_date =
-        {$date: $scope.currentRecord.end_date.$date.getTime()};
-
-      current.first_pub_date =
-        {$date: $scope.currentRecord.first_pub_date.$date.getTime()};
-
-      // Handle situation where certain fields are missing.
-      // Remove them so they are not None when submitted to server.
-      return current;
-    }
-
-
-    function displayCurrentRecords()
-    {
-      $http.post('//' + hostname + '/api/metadata',
-                 {'session_id': session_id})
-           .success(function(data){
-             $scope.allRecords = data.results;
-           });
-    }
-
-    /**
-     * Assign a record to the scope's current record.
-     *
-     * Args:
-     *  (Object) actual record
-     */
-    function updateForms(record)
-    {
-       /* place and thematic keywords come as a list from the server */
-       record.place_keywords =
-         record.place_keywords.join(', ');
-
-       record.thematic_keywords =
-         record.thematic_keywords.join(', ');
-
-       /* 
-        * Need to do $scope with dates because our service returns them as
-        * epoch seconds.
-        */
-       record.start_date.$date =
-         new Date(record.start_date.$date);
-
-       record.end_date.$date =
-         new Date(record.end_date.$date);
-
-       record.last_mod_date.$date =
-         new Date(record.last_mod_date.$date);
-
-       record.first_pub_date.$date =
-         new Date(record.first_pub_date.$date);
-
-       // these hours, minutes, seconds get put into broken out select boxes
-       record.start_date.hours = record.start_date.$date.getHours();
-       record.end_date.hours = record.end_date.$date.getHours();
-
-       record.start_date.minutes = record.start_date.$date.getMinutes();
-       record.end_date.minutes = record.end_date.$date.getMinutes();
-
-       record.start_date.seconds = record.start_date.$date.getSeconds();
-       record.end_date.seconds = record.end_date.$date.getSeconds();
-
-       //record.data_format = $scope.auxDataFormats;
-       //record.data_format.concat($scope.dataFormats);
-
-       $scope.currentRecord = record;
-       // This seems to be only for loading from the server.
-       // If we are saving updates, this will just overwrite updates with 
-       // whatever came from the server, again, which is fine for loading from 
-       // the server, but we must first set record.data_format above
-       $scope.auxDataFormats =
-         record.data_format.filter(function (f) {
-           return $scope.knownDataFormats.indexOf(f) === -1;
-         }).join(', ');
-
-       $scope.dataFormats =
-         record.data_format.filter(function (f) {
-           return $scope.knownDataFormats.indexOf(f) > -1;
-         });
-
-       if (!$scope.currentRecord.online) {
-         record.online = [""];
-       }
-    }
-    /*
-     * Use these maps in the view: key gets displayed, value is actually the
-     * object value
-     */
-    $scope.statusChoicesIsoMap = {
-      'completed': 'completed',
-      'continually updated': 'onGoing',
-      'in process': 'underDevelopment',
-      'planned': 'planned',
-      'needs to be generated or updated': 'required',
-      'stored in an offline facility': 'historicalArchive',
-      'no longer valid': 'obsolete'
-    };
-
-    $scope.topicCategoryChoices =
-      ['biota', 'boundaries',
-       'climatologyMeteorologyAtmosphere', 'economy', 'elevation',
-       'environment', 'farming', 'geoscientificInformation', 'health',
-       'imageryBaseMapsEarthCover', 'inlandWaters', 'location',
-       'intelligenceMilitary', 'oceans', 'planningCadastre', 'society',
-       'structure', 'transportation',
-       'utilitiesCommunication'];
-
-    // our more human-readable update frequency choices need trans to ISO 19115
-    $scope.updateFrequencyChoicesMap = {
-      'continual': 'continual',
-      'daily': 'daily',
-      'weekly': 'weekly',
-      'fortnightly': 'fortnightly',
-      'monthly': 'monthly',
-      'quarterly': 'quarterly',
-      'biannually': 'biannually',
-      'annually': 'annually',
-      'as needed': 'asNeeded',
-      'irregular': 'irregular',
-      'not planned': 'notPlanned',
-      'unknown': 'unknown'
-    };
-
-    // order for contact fields
-    $scope.orderedContactFields =
-      ['name', 'email', 'org', 'address', 'city',
-       'state', 'zipcode', 'country', 'phone'];
-
-    $scope.cfieldsMap =
-    {
-        'name': 'Name',
-        'email': 'Email',
-        'org': 'Organization',
-        'address': 'Address',
-        'city': 'City',
-        'state': 'State',
-        'zipcode': 'Zip Code',
-        'country': 'Country',
-        'phone': 'Phone'
-    };
-
-    var addedContacts =
-    {
-      'access': 0,
-      'citation': 0
-    };
-
-    $scope.addContactCitation = function()
-    {
-      $scope.currentRecord.citation
-            .push(JSON.parse(JSON.stringify(EMPTY_CONTACT)));
-
-      addedContacts.citation += 1;
-    };
-
-    $scope.addContactAccess = function()
-    {
-      $scope.currentRecord.access
-            .push(JSON.parse(JSON.stringify(EMPTY_CONTACT)));
-
-      addedContacts.access += 1;
-    };
-
-
-    $scope.cancelAddContactCitation = function()
-    {
-      if (addedContacts.citation > 0)
-      {
-        $scope.currentRecord.citation.pop();
-        addedContacts.citation -= 1;
-      }
-    };
-
-    $scope.cancelAddContactAccess = function()
-    {
-      if (addedContacts.access > 0)
-      {
-        $scope.currentRecord.access.pop();
-        addedContacts.access -= 1;
-      }
-    };
-
-    $scope.removeOnlineResource = function(resourceIndex)
-    {
-      if ($scope.currentRecord.online.length === 1)
-      {
-        $scope.currentRecord.online[0] = "";
-      }
-      else
-      {
-        $scope.currentRecord.online.splice(resourceIndex, 1);
-      }
-    };
-
-    $scope.addOnlineResource = function()
-    {
-      $scope.currentRecord.online.push("");
-    };
-
-    $scope.options = {};
-    $scope.getBbox = function()
-    {
-      var baseUrl = '//' + hostname + '/api/geocode/';
-      var fullUrl = baseUrl + $scope.options.bboxInput;
-
-      $http.get(fullUrl)
-           .success(function(data)
-           {
-             $scope.currentRecord.north_lat = data.north;
-             $scope.currentRecord.south_lat = data.south;
-             $scope.currentRecord.east_lon = data.east;
-             $scope.currentRecord.west_lon = data.west;
-           });
-    };
+        // initialize list of existing metadata records
+        $scope.allRecords = [];
+
+        $scope.hostname = hostname;
+
+        $scope.updateRecordsList = () => {
+            recordService.list()
+                .success(data => $scope.allRecords = data.results);
+        };
+
+        $scope.updateRecordsList();
+
+        $scope.errors = [];
+
+        /** load up formOptions constants (defined in app.js) **/
+        $scope.topicCategoryChoices = formOptions.topicCategoryChoices;
+
+        // order for contact fields
+        $scope.orderedContactFields = formOptions.orderedContactFields;
+
+        // contact fields mapping for layperson-to-iso translation
+        $scope.cfieldsMap = formOptions.cfieldsMap;
+
+        // set date options
+        $scope.dateOptions = {
+            changeYear: true,
+            changeMonth: true,
+            yearRange: '1700:+10'
+        };
+
+        // create time picker vars
+        $scope.hours = [];
+        for (var i = 0; i < 24; i++)
+        {
+          $scope.hours.push(i);
+        }
+
+        $scope.minute_seconds = [];
+        for (var i = 0; i < 60; i++)
+        {
+          $scope.minute_seconds.push(i);
+        }
+
+        $scope.knownDataFormats = formOptions.knownDataFormats;
+
+        $scope.spatialDataOptions = formOptions.spatialDataOptions;
+
+        $scope.hierarchyLevels = formOptions.hierarchyLevels;
+
+        $scope.createNewRecord = function() {
+
+            var fresh = recordService.getFreshRecord();
+
+            $scope.newRecord = true;
+            $scope.currentRecord = fresh;
+
+            // iso data formats come from a pre-defined list to from ISO std
+            $scope.dataFormats = {
+              iso: [''],
+              // aux, ie auxiliary, is a single text input write-in
+              aux: ''
+            };
+        };
+
+        // initialize form with placeholder data for creating a new record
+        $scope.createNewRecord();
+
+        /**
+         * On click of Load MILES Defaults button,
+         * load the defaults in MILES defaults json file
+         */
+        $scope.loadDefaultMILES = function() {
+
+            var milesFields = recordService.getMilesDefaults();
+
+            for (var key in milesFields)
+            {
+                if (milesFields.hasOwnProperty(key))
+                {
+                    // only want to overwrite country and state for MILES
+                    if (key === "citation")
+                    {
+                        for (var idx = 0; idx < $scope.currentRecord.citation.length; idx++)
+                        {
+                            $scope.currentRecord.citation[idx].country =
+                                milesFields[key][0].country;
+
+                            $scope.currentRecord.citation[idx].state =
+                                milesFields[key][0].state;
+                        }
+                    }
+                    else if (['place_keywords', 'thematic_keywords'].indexOf(key) > -1)
+                    {
+                        $scope.currentRecord[key] = milesFields[key].join(', ');
+                    }
+                    else
+                    {
+                        $scope.currentRecord[key] = milesFields[key];
+                    }
+                }
+            }
+        };
+
+
+        /**
+         * Load a record that from the server and display fields in form
+         * @param  {string} recordId The server-generated ID
+         */
+        $scope.editRecord = function (recordId) {
+
+            recordService.getRecordToEdit(recordId)
+                .success( (data) => {
+                    $scope.newRecord = false;
+
+                    updateForms($scope, data.record);
+                })
+                .error( error =>
+                    $scope.errors.push("Error in loading record to edit")
+                );
+        };
+
+
+        /**
+         * On submit of metadata form, submitRecord. This both updates the server
+         * and makes sure the form is current. Not sure how it wouldn't be, todo?
+         */
+        $scope.submitDraftRecord = function() {
+
+            recordService.saveDraft($scope)
+                .success( function (data) {
+
+                    // why?
+                    // updateForms($scope, data.record);
+
+                    $scope.newRecord = false;
+
+                    $scope.addedContacts = {
+                        'access': 0,
+                        'citation': 0
+                    };
+
+                    $scope.updateRecordsList();
+                })
+                .error( function (data) {
+                    // TODO
+                });
+        };
+
+
+        /**
+         * Publish a record to the portal. Requires all fields to be valid
+         */
+        $scope.publishRecord = function() {
+
+            recordService.publish($scope)
+                .success( function (data) {
+
+                    // why?
+                    // updateForms(data.record);
+
+                    $scope.newRecord = false;
+
+                    $scope.addedContacts = {
+                        'access': 0,
+                        'citation': 0
+                    };
+
+                    $scope.updateRecordsList();
+                })
+                .error( function (data) {
+                    // TODO
+                });
+        };
+
+        $scope.addedContacts =
+        {
+          'access': 0,
+          'citation': 0
+        };
+
+        $scope.addContactCitation = function()
+        {
+            $scope.currentRecord.citation
+                .push({
+                    'name': '', 'email': '', 'org': '', 'address': '',
+                    'city': '', 'state': '', 'zipcode': '',
+                    'country': '', 'phone': ''
+                }
+            );
+
+            $scope.addedContacts.citation += 1;
+        };
+
+        $scope.addContactAccess = function()
+        {
+            $scope.currentRecord.access
+                .push({
+                    'name': '', 'email': '', 'org': '', 'address': '',
+                    'city': '', 'state': '', 'zipcode': '',
+                    'country': '', 'phone': ''
+                }
+            );
+
+            $scope.addedContacts.access += 1;
+        };
+
+
+        $scope.cancelAddContactCitation = function()
+        {
+          if ($scope.addedContacts.citation > 0)
+          {
+            $scope.currentRecord.citation.pop();
+            $scope.addedContacts.citation -= 1;
+          }
+        };
+
+        $scope.cancelAddContactAccess = function()
+        {
+          if ($scope.addedContacts.access > 0)
+          {
+            $scope.currentRecord.access.pop();
+            $scope.addedContacts.access -= 1;
+          }
+        };
+
+        $scope.removeOnlineResource = function(resourceIndex)
+        {
+          if ($scope.currentRecord.online.length === 1)
+          {
+            $scope.currentRecord.online[0] = "";
+          }
+          else
+          {
+            $scope.currentRecord.online.splice(resourceIndex, 1);
+          }
+        };
+
+        $scope.addOnlineResource = function()
+        {
+          $scope.currentRecord.online.push("");
+        };
+
+        $scope.options = {};
+        $scope.getBbox = function()
+        {
+            Geoprocessing.getBbox($scope.options.bboxInput)
+                .success( function(data) {
+                    $scope.currentRecord.north_lat = data.north;
+                    $scope.currentRecord.south_lat = data.south;
+                    $scope.currentRecord.east_lon = data.east;
+                    $scope.currentRecord.west_lon = data.west;
+                })
+                .error( function(error) { $log.log(error); });
+        };
   } // end of callback for controller initialization
 ])
-.controller('ISOController', [function()
-  {
+.controller('ISOController', ['formOptions', function(formOptions) {
     this.standard = 'iso';
-    this.dataFormats = ['docx'];     
-  }     
+    this.statusChoicesIsoMap = formOptions.statusChoicesIsoMap;
+
+    // our more human-readable update frequency choices need trans to ISO 19115
+    this.updateFrequencyChoicesMap = formOptions.updateFrequencyChoicesMap;
+  }
 ])
 .controller('DCController', [function()
   {
     this.standard = 'dc';
   }
-]);
+])
+//map work
+.controller('MapController',function($scope, $compile, NgMap)
+  {
+    var vm = this;
+    vm.ne, vm.sw, vm.center;
+    NgMap.getMap().then(function(map) {
+        vm.map = map;
+        $scope.currentRecord.north_lat = vm.ne.lat();
+        $scope.currentRecord.south_lat = vm.sw.lat();
+        $scope.currentRecord.east_lon = vm.ne.lng();
+        $scope.currentRecord.west_lon = vm.sw.lng();
+  });
+    vm.boundsChanged = function() {
+        vm.ne = this.getBounds().getNorthEast();
+        vm.sw = this.getBounds().getSouthWest();
+        vm.center = this.getBounds().getCenter();
+        vm.map.setCenter(vm.center);
+        vm.map.fitBounds(this.getBounds());
+        $scope.currentRecord.north_lat = vm.ne.lat();
+        $scope.currentRecord.south_lat = vm.sw.lat();
+        $scope.currentRecord.east_lon = vm.ne.lng();
+        $scope.currentRecord.west_lon = vm.sw.lng();
+    };
+});
