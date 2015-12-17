@@ -294,10 +294,13 @@ metadataEditorApp.controller('BaseController',
     vm.ne, vm.sw, vm.center;
     NgMap.getMap().then(function(map) {
         vm.map = map;
-        $scope.currentRecord.north_lat = vm.ne.lat();
-        $scope.currentRecord.south_lat = vm.sw.lat();
-        $scope.currentRecord.east_lon = vm.ne.lng();
-        $scope.currentRecord.west_lon = vm.sw.lng();
+        if (vm.ne !== undefined)
+        {
+            $scope.currentRecord.north_lat = vm.ne.lat();
+            $scope.currentRecord.south_lat = vm.sw.lat();
+            $scope.currentRecord.east_lon = vm.ne.lng();
+            $scope.currentRecord.west_lon = vm.sw.lng();
+        }
   });
     vm.boundsChanged = function() {
         vm.ne = this.getBounds().getNorthEast();
