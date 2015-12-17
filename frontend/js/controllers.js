@@ -126,11 +126,13 @@ metadataEditorApp.controller('BaseController',
             recordService.getRecordToEdit(recordId)
                 .success( (data) => {
                     $scope.newRecord = false;
+                    $log.log('in success callback')
 
                     updateForms($scope, data.record);
                 })
-                .error( error =>
-                    $scope.errors.push("Error in loading record to edit")
+                .error( (error) => {
+                    $scope.errors.push("Error in loading record to edit");
+                }
                 );
 
              //set geocode write-in box to be blank (not sure yet if this works b/c edit is giving error)   

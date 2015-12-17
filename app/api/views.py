@@ -82,8 +82,8 @@ def metadata():
         return Response('Bad or missing session id.', 401)
 
 
-@api.route('/api/metadata/<string:_oid>', methods=['GET', 'PUT'])
-@cross_origin(origin='*', methods=['GET', 'PUT'],
+@api.route('/api/metadata/<string:_oid>', methods=['POST', 'PUT'])
+@cross_origin(origin='*', methods=['POST', 'PUT'],
               headers=['X-Requested-With', 'Content-Type', 'Origin'])
 def get_single_metadata(_oid):
     """
