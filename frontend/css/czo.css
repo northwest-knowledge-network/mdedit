@@ -39,10 +39,6 @@
     color: #E82622
 }
 
-#recordTable {
-    color: #333;
-}
-
 .btn-contact {
     background-color: #2884BA;
 }
@@ -65,6 +61,7 @@ div#upload {
 
 #records-table {
     font-size: .8em;
+    color: #333;
 }
 
 #records-table > span.badge {

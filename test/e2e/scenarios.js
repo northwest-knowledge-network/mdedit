@@ -36,12 +36,12 @@ describe('Adding and removing contacts using buttons', function () {
         element.all(by.css('.contact-email')).sendKeys('a@aaaa.com');
 
         var addContact = element(by.css('[ng-click="addContactAccess()"]'));
-        
+
         addContact.click();
 
-        var accessContacts = 
+        var accessContacts =
             element.all(by.repeater('contact in currentRecord.access'));
-        
+
         expect(accessContacts.count()).toEqual(2);
 
         addContact.click();
@@ -72,12 +72,12 @@ describe('Adding and removing contacts using buttons', function () {
         element.all(by.css('.contact-email')).sendKeys('a@aaaa.com');
 
         var addContact = element(by.css('[ng-click="addContactCitation()"]'));
-        
+
         addContact.click();
 
-        var citationContacts = 
+        var citationContacts =
             element.all(by.repeater('contact in currentRecord.citation'));
-        
+
         expect(citationContacts.count()).toEqual(2);
 
         addContact.click();
@@ -101,6 +101,67 @@ describe('Adding and removing contacts using buttons', function () {
     });
 });
 
+describe('Manage your metadata dropdown', function () {
+
+    describe('Edit existing record', function () {
+        beforeEach(function () {
+            element(by.model('currentRecord.title')).sendKeys('Record One');
+            element(by.css('[ng-click="submitDraftRecord()"]')).click();
+
+            element(by.css('[ng-click="createNewRecord()"]')).click();
+
+            element(by.model('currentRecord.title')).sendKeys('Record Two');
+            element(by.css('[ng-click="submitDraftRecord()"]')).click();
+        });
+
+        afterEach(function() {
+            // remove records from the database
+        })
+
+        it('should show the records that have been saved as draft', function () {
+            var recordListElements = element.all(by.css('.record-list-actions'));
+
+            expect(recordListElements.count()).toEqual(2);
+        });
+
+        it('should load the appropriate record when Edit is clicked', function () {
+            var editRecordButtons = element.all(by.css('a.record-list-edit'));
+
+            editRecordButtons.get(0).click();
+
+            expect(element(by.id('record-title')).getText()).toEqual('Editing Existing: Record One');
+
+            editRecordButtons.get(1).click();
+
+            expect(element(by.id('record-title')).getText()).toEqual('Editing Existing: Record Two');
+        });
+    });
+
+    describe('Create new metadata record', function () {
+        it('should clear any information that has been input', function () {
+
+            element(by.model('currentRecord.title')).sendKeys('Record One');
+            element(by.model('currentRecord.summary')).sendKeys('A record of some stuff');
+
+            element(by.model('currentRecord.north_lat')).sendKeys('46.8');
+            element(by.model('currentRecord.south_lat')).sendKeys('35.5');
+            element(by.model('currentRecord.east_lon')).sendKeys('-115.0');
+            element(by.model('currentRecord.west_lon')).sendKeys('-120.0');
+
+            element(by.css('[ng-click="submitDraftRecord()"]')).click();
+
+            element(by.css('[ng-click="createNewRecord()"]')).click();
+
+            element(by.model('currentRecord.title')).toEqual('');
+            element(by.model('currentRecord.summary')).sendKeys('A record of some stuff');
+
+            expect(element(by.model('currentRecord.north_lat')).getText()).toEqual('');
+            expect(element(by.model('currentRecord.south_lat')).getText()).toEqual('');
+            expect(element(by.model('currentRecord.east_lon')).getText()).toEqual('');
+            expect(element(by.model('currentRecord.west_lon')).getText()).toEqual('');
+        });
+    });
+});
 
 //describe('MILES Defaults', function () {
 
