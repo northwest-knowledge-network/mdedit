@@ -13,6 +13,8 @@ metadataEditorApp.controller('BaseController',
         // initialize list of existing metadata records
         $scope.allRecords = [];
 
+        $scope.options = {};
+
         $scope.hostname = hostname;
 
         $scope.updateRecordsList = () => {
@@ -65,6 +67,9 @@ metadataEditorApp.controller('BaseController',
 
             $scope.newRecord = true;
             $scope.currentRecord = fresh;
+
+            //set geocode write-in box to be blank
+            $scope.options.bboxInput ='';
 
             // iso data formats come from a pre-defined list to from ISO std
             $scope.dataFormats = {
@@ -260,7 +265,6 @@ metadataEditorApp.controller('BaseController',
           $scope.currentRecord.online.push("");
         };
 
-        $scope.options = {};
         $scope.getBbox = function()
         {
             Geoprocessing.getBbox($scope.options.bboxInput)
