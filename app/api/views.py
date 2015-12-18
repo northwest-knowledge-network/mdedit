@@ -82,8 +82,8 @@ def metadata():
         return Response('Bad or missing session id.', 401)
 
 
-@api.route('/api/metadata/<string:_oid>', methods=['GET', 'PUT'])
-@cross_origin(origin='*', methods=['GET', 'PUT'],
+@api.route('/api/metadata/<string:_oid>', methods=['POST', 'PUT'])
+@cross_origin(origin='*', methods=['POST', 'PUT'],
               headers=['X-Requested-With', 'Content-Type', 'Origin'])
 def get_single_metadata(_oid):
     """
@@ -100,7 +100,7 @@ def get_single_metadata(_oid):
 
         if request.method == 'PUT':
 
-            if ('record' in request.json and 'id' in request.json['record']):
+            if ('record' in request.json and '_id' in request.json['record']):
 
                 existing_record = \
                     Metadata.objects.get_or_404(pk=_oid,
@@ -158,7 +158,6 @@ def publish_metadata_record(_oid):
     save_path = os.path.join(config['default'].PREPROD_DIRECTORY,
                              str_id,
                              str_id + '.xml')
-
 
     if not os.path.exists(os.path.dirname(save_path)):
         os.mkdir(os.path.dirname(save_path))

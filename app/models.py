@@ -22,7 +22,7 @@ class Metadata(db.Document):
     """MongoDB Document representation of metadata"""
     # basic info
     title = db.StringField(max_length=255)
-    last_mod_date = db.DateTimeField()
+    last_mod_date = db.DateTimeField(default=datetime.now)
     first_pub_date = db.DateTimeField()
     summary = db.StringField(max_length=3000)
     username = db.StringField(max_length=255, default="anonymous")

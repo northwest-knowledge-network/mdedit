@@ -230,8 +230,8 @@ metadataEditorApp
             serverReady.first_pub_date.$date =
                 record.first_pub_date.$date.getTime();
 
-            serverReady.last_mod_date.$date =
-                record.last_mod_date.$date.getTime();
+            serverReady.last_mod_date.$date = new Date().getTime();
+                // record.last_mod_date.$date.getTime();
 
             return serverReady;
         };
@@ -305,6 +305,7 @@ metadataEditorApp
 
             if (scope.newRecord)
             {
+                $log.log(prepareRecordForSave(scope));
                 q = $http.put('//' + hostname + '/api/metadata',
                           {'record': prepareRecordForSave(scope),
                            'session_id': sessionId}

@@ -1,4 +1,4 @@
-<div ng-repeat="key_title in
+<!-- <div ng-repeat="key_title in
  [['place_keywords', 'Place Keywords', 'List comma-separated keywords related to the geographic area covered by your data. Example: Idaho, Clear Creek Watershed, USA.'],
 
  ['thematic_keywords', 'Thematic Keywords', 'List comma-separated keywords that will help others discover your data through an intuitive search. In addition to subject-based keywords, you may also want to include the grant numbers and funding sources associated with creation of the data. If you are part of an NKN-supported project and thematic keywords have been pre-loaded for you, please do NOT delete or modify these, simply add to the list.']]">
@@ -6,7 +6,15 @@
   <h6>{{ key_title[2] }}</h6>
   <input tabindex=4 style="width:95%" type="text"
          ng-model="currentRecord[key_title[0]]" required>
-</div>
+</div> -->
+
+<h4 class="attribute-label">Place Keywords</h4>
+<h6>List comma-separated keywords related to the geographic area covered by your data. Example: Idaho, Clear Creek Watershed, USA.</h6>
+<input type="text" tabindex="4" style="width:95%" ng-model="currentRecord.place_keywords" required="">
+
+<h4 class="attribute-label">Thematic Keywords</h4>
+<h6>List comma-separated keywords that will help others discover your data through an intuitive search. In addition to subject-based keywords, you may also want to include the grant numbers and funding sources associated with creation of the data. If you are part of an NKN-supported project and thematic keywords have been pre-loaded for you, please do NOT delete or modify these, simply add to the list.</h6>
+<input type="text" tabindex="4" style="width:95%" ng-model="currentRecord.thematic_keywords" required="">
 
 <h4 class="attribute-label">Topic</h4>
 <h6>Select as many of these high level categories as apply to your dataset. This is a set list of categories established by international standards. Use the command key (on a Mac) or the control key (on a PC) to select multiple categories.</h6>

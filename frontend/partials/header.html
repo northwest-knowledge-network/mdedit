@@ -16,11 +16,13 @@
        <!--  <li><a>Cr</a></li>
         <li><a href="#/iso">Link</a></li> -->
         <li class="dropdown">
-            <a href="#/iso" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            <a href="#/iso" id="manage-your-metadata-dropdown" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                 Manage your metadata <span class="caret"></span>
             </a>
             <ul id="records-table" class="dropdown-menu">
-                <table class="table" style="width:1000px">
+
+                <table class="table" style="width:1000px;margin-bottom:-5px">
+
                     <li>
                         <thead>
                             <tr>
@@ -42,57 +44,70 @@
                             </tr>
                         </thead>
                     </li>
+
                     <li>
-                        <tr class="record-list-element">
-                            <td class="record-list-title">Fernan Lake Limnology</td>
-                            <td class="record-list-summary">Temperature, acidity, and toxin study</td>
-                            <td class="record-list-last-saved">2015-10-01</td>
+                        <tr class="record-dropdown-list-element" ng-repeat="record in allRecords">
+                            <td class="record-list-title">{{record.title | limitTo:20}}</td>
+                            <td class="record-list-summary">{{record.summary | limitTo:30}}</td>
+                            <td class="record-list-last-saved">{{record.last_mod_date.$date | date:'short'}}</td>
                             <td class="record-list-last-published">Never</td>
                             <td class="record-list-actions">
-                                <a href="#/iso" class="record-list-edit">Edit</a> |
-                                <a href="#/iso" class="record-list-publish">Publish</a> |
-                                <a href="#/iso" class="record-list-delete">Delete</a>
+                                <a ng-click="editRecord(record._id.$oid)"
+                                   class="btn btn-xs record-list-edit"
+                                   id="{{'edit-record-' + $index}}">
+                                   Edit
+                                </a> |
+                                <a href="#/iso" ng-click="publishRecord()"
+                                   class="btn btn-xs record-list-publish">Publish
+                                </a> |
+                                <a href="#/iso" class="btn btn-xs record-list-delete">
+                                    Delete
+                                </a>
                             </td>
                         </tr>
                     </li>
-                    <li>
-                        <tr class="record-list-element">
-                            <td class="record-list-title">Reynolds Creek Snotel</td>
-                            <td class="record-list-summary">Measurement set from 15 different instruments</td>
-                            <td class="record-list-last-saved">2014-10-01</td>
-                            <td class="record-list-last-published">2015-10-26</td>
-                            <td class="record-list-actions">
-                                <a href="#/iso" class="record-list-edit">Edit</a> |
-                                <a href="#/iso" class="record-list-publish">Publish</a> |
-                                <a href="#/iso" class="record-list-delete">Delete</a>
-                            </td>
-                        </tr>
-                    </li>
-                    </table>
-                </li>
+
+                </table>
+
             </ul>
         </li>
+
         <li class="dropdown">
-          <a href="#/iso" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Record Options <span class="caret"></span></a>
+
+          <a id="record-options-dropdown" href="#/iso" class="dropdown-toggle" data-toggle="dropdown"
+             role="button" aria-haspopup="true" aria-expanded="false">Record Options <span class="caret"></span></a>
+
           <ul class="dropdown-menu">
-            <li><a href="#/iso">Create new record</a></li>
-            <li><a href="#/iso">Save this record as a draft</a></li>
-            <li ng-show="$root.metadataForm.$valid"><a href="#/iso">Publish record to share with other CZOs</a></li>
-            <li ng-hide="$root.metadataForm.$valid" class="disabled"><a href="#/iso">
+
+            <li><a ng-click="createNewRecord()">Create new dataset record</a></li>
+
+            <li><a href="#/dublin">Create new non-dataset record</a></li>
+
+            <li><a ng-click="submitDraftRecord()"
+                   class="btn btn-small btn-default navbar-btn"
+                   style="border:0;text-align:left">
+                Save this record as a draft
+            </a></li>
+
+            <li ng-show="metadataForm.$valid">
+                <a ng-click="publishRecord()">Publish record to share with other CZOs</a>
+            </li>
+
+            <li ng-hide="metadataForm.$valid" class="disabled"><a href="#/iso">
                 Please complete the record to publish data
             </a></li>
+
           </ul>
+
         </li>
 
         <li class="dropdown">
             <a href="#/iso" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                Load CZO Defaults <span class="caret"></span>
+                Load Defaults <span class="caret"></span>
             </a>
             <ul class="dropdown-menu">
-                <li><a href="#/iso">Reynolds Creek</a></li>
-                <li><a href="#/iso">Southern Sierra</a></li>
-                <li><a href="#/iso">Calhoun</a></li>
-                <li><a href="#/iso">Shale Hills</a></li>
+                <li><a href="#/iso">MILES</a></li>
+                <li><a href="#/iso">NKN as Distributor</a></li>
             </ul>
         </li>
       </ul>
@@ -107,103 +122,3 @@
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
-
-
-
-
-<!-- <nav class="navbar navbar-default navbar-fixed-top">
-
-  <div class="row">
-      <div class="col-xs-12 col-sm-6 col-md-4 col-md-3">
-          <img width="200" src='http://search.criticalzone.org/assets/img/czo_logo.png'/>
-      </div>
-      <div class="col-xs-12 col-sm-6 col-md-8 col-md-9">
-          <div class="container-fluid">
-              <div class="navbar-header">
-                  <div id="navbar">
-                      <ul class="nav navbar-nav">
-                              <li class="navbar-brand">ODM2-Compliant Metadata Generation Tool
-                          </li>
-                          <li class="nav navbar-nav navbar-right">Something else</li>
-                      </ul>
-                  </div>
-              </div>
-          </div>
-      </div>
-  </div> -->
-
-  <!--   <div class="container-fluid">
-      <div class="navbar-header">
-
-        <button tabindex=24 class="navbar-toggle collapsed" aria-controls="navbar" aria-expanded="false" data-target="#/isonavbar" data-toggle="collapse" type="button"><span class="sr-only">Toggle menu</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-        </button>
-      </div>
-
-
-      <div id="navbar" class="navbar-collapse collapse">
-        <ul class="nav navbar-nav">
-          <li class="navbar-brand">NKN Metadata Editor</li>
-        </ul>
-        <ul class="nav navbar-nav navbar-right">
-          <li>  <a ng-hide="showInstructions" ng-click="showInstructions = true"
-          class="btn">
-   <span class="octicon octicon-question"></span> Show Instructions
-  </a>
-
-  <a ng-show="showInstructions" ng-click="showInstructions = false"
-          class="btn">
-  <span class="octicon octicon-x"></span> Hide Instructions
-  </a></li>
-          <li>
-            <a href="https://github.com/northwest-knowledge-network/mdedit">
-              <span class="octicon octicon-mark-github" id="mdedit"></span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div> -->
-  <!-- </nav> -->
-
-
-<!-- <div style="text-align:center">
-  <a href="#/isolist"
-     class="btn btn-small btn-default navbar-btn">
-    Edit Existing
-  </a>
-
-  <button tabindex=24 ng-click="createNewRecord()"
-          class="btn btn-small btn-primary navbar-btn">
-    Create New
-  </button>
-
-  <button tabindex=25 ng-show="newRecord"
-          class="btn btn-small btn-primary navbar-btn"
-          type="submit" ng-click="submitDraftRecord()">
-    Save Draft
-  </button>
-
-  <button tabindex=25 ng-show="!newRecord"
-          class="btn btn-small btn-primary navbar-btn"
-          type="submit"
-          ng-click="submitDraftRecord()">
-    Save Changes to Draft
-  </button>
-
-  <a tabindex=24 href="#/iso/iso"
-     class="btn btn-small btn-primary navbar-btn">
-    Create Dataset Record
-  </a>
-
-  <a tabindex=24 href="#/dublin"
-     class="btn btn-small btn-primary navbar-btn">
-    Create Other Research Product Record
-  </a>
-
-  <button tabindex=24 ng-click="loadDefaultMILES()"
-          class="btn btn-small btn-primary navbar-btn">
-    Load MILES Defaults
-  </button>
-

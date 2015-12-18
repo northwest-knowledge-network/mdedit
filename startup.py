@@ -1,10 +1,6 @@
 #!venv/bin/python
 import argparse
-import atexit
-import getopt
 import os
-import signal
-import sys
 import time
 
 from subprocess import Popen, PIPE
@@ -50,12 +46,18 @@ def start_servers(test):
     Popen("python -m SimpleHTTPServer",
           shell=True, stdout=None, stderr=None, preexec_fn=os.setsid)
 
-    print "\n----------------------------------------------------------------------"
-    print "Both servers have successfully started. Visit http://localhost:8000/frontend"
-    print "to see the front end and to see some sample xml of default_form.json "
-    print "that the server emits, visit http://localhost:4000/api/metadata/" +\
-        str(id) + "/xml.  Remove '/xml' to see the original json."
-    print "----------------------------------------------------------"
+
+    if not test:
+
+        print "\n--------------------------------------------------------------------------"
+        print "Both servers have successfully started. Visit http://localhost:8000/frontend"
+        print "to see the front end and to see some sample xml of default_form.json "
+        print "that the server emits, visit http://localhost:4000/api/metadata/" +\
+            str(id) + "/xml.  Remove '/xml' to see the original json."
+        print "----------------------------------------------------------"
+
+        while True:
+            time.sleep(1)
 
 
 if __name__ == '__main__':

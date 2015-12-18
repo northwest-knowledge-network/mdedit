@@ -43,9 +43,18 @@
 <div  id="bodyDiv">
 <div id="ngMain" ng-app="metadataEditor">
 
-<div ng-controller="BaseController as base">
+<div ng-controller="BaseController">
 
 <div ng-include="'partials/header.html'"></div>
+
+<!-- <p>title: {{currentRecord.title}}</p>
+
+    <button tabindex=25 ng-show="newRecord"
+          class="btn btn-small btn-primary navbar-btn"
+          type="submit" ng-click="submitDraftRecord()">
+        Save Draft
+    </button> -->
+
 
 <div id="main-container" class="container">
 
@@ -55,7 +64,6 @@
 
     <div ng-view></div>
 
-    <!-- <div ng-include="'partials/recordsList.html'"></div> -->
 
 </div>
 </div>
