@@ -140,7 +140,7 @@ metadataEditorApp.controller('BaseController',
                 }
                 );
 
-             //set geocode write-in box to be blank (not sure yet if this works b/c edit is giving error)   
+             //set geocode write-in box to be blank 
             $scope.options.bboxInput = '';
         };
 
