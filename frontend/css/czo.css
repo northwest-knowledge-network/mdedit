@@ -67,3 +67,8 @@ div#upload {
 #records-table > span.badge {
     font-size: .8em;
 }
+
+.header-button {
+    border: 0;
+    text-align: left;
+}

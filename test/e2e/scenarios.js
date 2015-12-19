@@ -8,22 +8,23 @@ var MD_COLLECTION = 'metadata';
 var MD_TEST_DB = 'mdedit_test';
 var MONGO_HOST = 'mongodb://localhost:27017/';
 
+var clearCollection = function () {
+    mongocl.connect(MONGO_HOST + MD_TEST_DB, function (err, db) {
 
-mongocl.connect('mongodb://localhost:27017/' + MD_TEST_DB, function (err, db) {
+        console.log('Connected to server');
 
-    console.log('Connected to server');
+        var coll = db.collection(MD_COLLECTION);
 
-    var coll = db.collection(MD_COLLECTION);
+        coll.drop({});
 
-
-    coll.drop({});
-
-    coll.find({}).toArray(function(err, docs) {
-        console.log("\n**** This should be empty: ****\n");
-        console.dir(docs);
+        coll.find({}).toArray(function(err, docs) {
+            console.log("\n**** This should be empty: ****\n");
+            console.dir(docs);
+        });
     });
+};
 
-});
+clearCollection();
 
 describe('ISO and Dublin Core editing views', function () {
 
@@ -122,7 +123,6 @@ describe('Adding and removing contacts using buttons', function () {
         removeContact.click();
 
         expect(citationContacts.count()).toEqual(1);
-
     });
 });
 
@@ -161,155 +161,255 @@ describe('Manage your metadata dropdown', function () {
           'city': 'Moscow', 'state': 'Idaho', 'zipcode': '83844', 'country': 'USA', 'phone': '208-555-5555'
         }],
 
-        west_lon: '-116.0',
-        east_lon: '-110.0',
+        west_lon: '-116.15',
+        east_lon: '-110.675',
         north_lat: '46.5',
-        south_lat: '35.0',
+        south_lat: '35.44',
 
-        start_date: {$date: new Date(2010, 0, 1)},
+        start_date: {$date: new Date(2002, 0, 1)},
         end_date: {$date: new Date(2012, 11, 31)}
     };
 
-    describe('Create New and Edit existing record', function () {
 
-        beforeEach(function () {
+    beforeEach(function () {
 
-            browser.get('/frontend/index.html');
+        browser.get('/frontend/index.html');
 
-            // add data to contacts
-            var addCitationButton =
-                element(by.css('[ng-click="addContactCitation()"]'));
+        // add data to contacts
+        var addCitationButton =
+            element(by.css('[ng-click="addContactCitation()"]'));
 
-            var citationContacts =
-                element.all(by.repeater('contact in currentRecord.citation'));
+        var citationContacts =
+            element.all(by.repeater('contact in currentRecord.citation'));
 
-            var accessContacts =
-                element.all(by.repeater('contact in currentRecord.access'));
+        var accessContacts =
+            element.all(by.repeater('contact in currentRecord.access'));
 
-            for (var i = 0; i < 2; i++)
+        for (var i = 0; i < 2; i++)
+        {
+            var c = newRecord.citation[i];
+            var contactFieldIdx = 0;
+            for (var k in c)
             {
-                var c = newRecord.citation[i];
-                var contactFieldIdx = 0;
-                for (var k in c)
-                {
-                    element(by.id('citation-' + k + '-' + i)).sendKeys(c[k]);
+                element(by.id('citation-' + k + '-' + i)).sendKeys(c[k]);
 
-                }
-                if (i === 0)
-                {
-                    addCitationButton.click();
-                }
             }
-
-            var ca = newRecord.access[0];
-            for (var ka in ca)
+            if (i === 0)
             {
-                element(by.id('access-' + ka + '-0')).sendKeys(ca[ka]);
+                addCitationButton.click();
             }
+        }
 
-            for (var key in newRecord)
+        var ca = newRecord.access[0];
+        for (var ka in ca)
+        {
+            element(by.id('access-' + ka + '-0')).sendKeys(ca[ka]);
+        }
+
+        for (var key in newRecord)
+        {
+            if (['access', 'citation'].indexOf(key) === -1)
             {
-                if (['access', 'citation'].indexOf(key) === -1)
+                if (['topic_category', 'data_format', 'online', 'last_mod_date'].indexOf(key) === -1)
                 {
-                    if (['topic_category', 'data_format', 'online', 'last_mod_date'].indexOf(key) === -1)
+                    var model = 'currentRecord.' + key;
+                    var data;
+                    if (['first_pub_date', 'start_date',
+                         'end_date'].indexOf(key) === -1)
                     {
-                        var model = 'currentRecord.' + key;
-                        if (['first_pub_date', 'start_date', 'end_date'].indexOf(key) > -1)
-                        {
-                            model = model + '.$date';
-                        }
                         element(by.model(model)).sendKeys(newRecord[key]);
                     }
                 }
             }
-        });
+        }
 
-        afterEach(function() {
-            // remove records from the database
-        });
+        element(by.css('[label="netCDF"]')).click();
 
-        it('should have two citation contacts from beforeEach', function () {
+        //element(by.model('currentRecord.start_date.$date')).sendKeys('01-01-2002');
+        element(by.id('start-date')).clear().sendKeys('01/01/2002').sendKeys(protractor.Key.TAB);
+        // search.sendKeys(protractor.Key.TAB);
+        element(by.id('end-date')).clear().sendKeys('12/31/2012').sendKeys(protractor.Key.TAB);
+
+        element(by.id('record-options-dropdown')).click();
+        element(by.css('[ng-click="submitDraftRecord()"')).click();
+    });
+
+        afterEach(clearCollection);
+
+        it('should have two citation contacts and one access contact from beforeEach', function () {
+
             var citationContacts =
                 element.all(by.repeater('(contactIdx, contact) in currentRecord.citation'));
             expect(citationContacts.count()).toEqual(2);
-        });
 
-        it('should have two citation contacts from beforeEach', function () {
             var accessContacts =
                 element.all(by.repeater('(contactIdx, contact) in currentRecord.access'));
 
             expect(accessContacts.count()).toEqual(1);
         });
 
-        it('should save the new record when the save option is selected', function () {
+        it('should save the new record when the save option is selected, then faithfully re-load', function () {
 
-            element(by.id('record-options-dropdown')).click();
-            element(by.css('[ng-click="submitDraftRecord()"')).click();
 
             element(by.id('manage-your-metadata-dropdown')).click();
 
-            var recRows = element.all(by.css('.record-dropdown-list-element'));
+            var recRows = element.all(by.repeater('record in allRecords'));
             expect(recRows.count()).toEqual(1);
 
-            expect(element(by.css('.record-list-title')).getText())
-                .toEqual('Record One');
-        });
-
-        it('should faithfully re-load all of Record One\'s data when selected for edit', function () {
-            browser.get('/frontend/index.html');
-
             element(by.id('manage-your-metadata-dropdown')).click();
 
-            element(by.id('edit-record-0')).click();
+            expect(element(by.id('record-list-title-0')).getAttribute("innerText"))
+                .toEqual('Record One');
 
-            expect(element(by.css('#record-title[ng-show="!newRecord"]')).getText())
-                .toEqual('Editing Existing: Record One');
-        });
+            // get a list of metadata records
+            element(by.id('manage-your-metadata-dropdown')).click();
+            // click the first one in the list
+            element(by.id('edit-record-0')).click();
+            // check the title
+            expect(
+                element(by.css('#record-title[ng-show="!newRecord"]'))
+                    .getText()
+            )
+            .toEqual('Editing Existing: Record One');
+
+            // check contacts
+            var ccExpected = newRecord.citation;
+            var caExpected = newRecord.access;
+
+            for (var ccIdx = 0; ccIdx < 2; ccIdx++)
+            {
+                for (var ccKey in ccExpected[ccIdx])
+                {
+                    expect(
+                        element(by.id('citation-' + ccKey + '-' + ccIdx))
+                            .getAttribute('value')
+                    )
+                    .toEqual(ccExpected[ccIdx][ccKey]);
+                }
+            }
+            for (var caKey in caExpected[0])
+            {
+                expect(element(by.id('access-' + caKey + '-0')).getAttribute('value'))
+                    .toEqual(caExpected[0][caKey]);
+            }
+
+            // check spatial extent
+            expect(element(by.model('currentRecord.north_lat')).getAttribute('value'))
+                .toEqual(newRecord.north_lat);
+            expect(element(by.model('currentRecord.south_lat')).getAttribute('value'))
+                .toEqual(newRecord.south_lat);
+            expect(element(by.model('currentRecord.east_lon')).getAttribute('value'))
+                .toEqual(newRecord.east_lon);
+            expect(element(by.model('currentRecord.west_lon')).getAttribute('value'))
+                .toEqual(newRecord.west_lon);
+
+            // check dates
+            expect(element(by.model('currentRecord.start_date.$date')).getAttribute('value'))
+                .toEqual('01/01/2002');
+
+            expect(element(by.model('currentRecord.end_date.$date')).getAttribute('value'))
+                .toEqual('12/31/2012');
+
+            // check the rest
+            expect(element(by.id('format-selector')).getAttribute('value'))
+                .toEqual('string:netCDF');
+        // });
+
+        // it('should faithfully re-load all of Record One\'s data when selected for edit', function () {
+
+        //     // get a list of metadata records
+        //     element(by.id('manage-your-metadata-dropdown')).click();
+        //     // click the first one in the list
+        //     element(by.id('edit-record-0')).click();
+        //     // check the title
+        //     expect(
+        //         element(by.css('#record-title[ng-show="!newRecord"]'))
+        //             .getText()
+        //     )
+        //     .toEqual('Editing Existing: Record One');
+
+        //     // check contacts
+        //     var ccExpected = newRecord.citation;
+        //     var caExpected = newRecord.access;
+
+        //     for (var ccIdx = 0; ccIdx < 2; ccIdx++)
+        //     {
+        //         for (var ccKey in ccExpected[ccIdx])
+        //         {
+        //             expect(
+        //                 element(by.id('citation-' + ccKey + '-' + ccIdx))
+        //                     .getAttribute('value')
+        //             )
+        //             .toEqual(ccExpected[ccIdx][ccKey]);
+        //         }
+        //     }
+        //     for (var caKey in caExpected[0])
+        //     {
+        //         expect(element(by.id('access-' + caKey + '-0')).getAttribute('value'))
+        //             .toEqual(caExpected[0][caKey]);
+        //     }
+
+        //     // check spatial extent
+        //     expect(element(by.model('currentRecord.north_lat')).getAttribute('value'))
+        //         .toEqual(newRecord.north_lat);
+        //     expect(element(by.model('currentRecord.south_lat')).getAttribute('value'))
+        //         .toEqual(newRecord.south_lat);
+        //     expect(element(by.model('currentRecord.east_lon')).getAttribute('value'))
+        //         .toEqual(newRecord.east_lon);
+        //     expect(element(by.model('currentRecord.west_lon')).getAttribute('value'))
+        //         .toEqual(newRecord.west_lon);
+
+        //     // check dates
+        //     expect(element(by.model('currentRecord.start_date.$date')).getAttribute('value'))
+        //         .toEqual('01/01/2002');
+
+        //     expect(element(by.model('currentRecord.end_date.$date')).getAttribute('value'))
+        //         .toEqual('12/18/2015');
+
+        //     // check the rest
+        //     expect(element(by.id('format-selector')).getAttribute('value'))
+        //         .toEqual('string:netCDF');
+        // });
     });
 
-        //it('should show the records that have been saved as draft', function () {
-            //var recordListElements = element.all(by.css('.record-list-actions'));
+    // describe('Create new metadata record', function () {
 
-            //expect(recordListElements.count()).toEqual(2);
-        //});
+        // it('should clear any information that has been input', function () {
 
-        //it('should load the appropriate record when Edit is clicked', function () {
-            //var editRecordButtons = element.all(by.css('a.record-list-edit'));
+        //     element(by.model('currentRecord.title')).sendKeys('Record Two');
+        //     element(by.model('currentRecord.summary')).sendKeys('Another record of some other stuff');
 
-            //editRecordButtons.get(0).click();
+        //     element(by.model('currentRecord.north_lat')).sendKeys('46.8');
+        //     element(by.model('currentRecord.south_lat')).sendKeys('35.5');
+        //     element(by.model('currentRecord.east_lon')).sendKeys('-115.0');
+        //     element(by.model('currentRecord.west_lon')).sendKeys('-120.0');
 
-            //expect(element(by.id('record-title')).getText()).toEqual('Editing Existing: Record One');
+        //     element(by.id('record-options-dropdown')).click();
+        //     element(by.css('[ng-click="submitDraftRecord()"]')).click();
 
-            //editRecordButtons.get(1).click();
+        //     var recordListElements = element.all(by.css('.record-list-actions'));
 
-            //expect(element(by.id('record-title')).getText()).toEqual('Editing Existing: Record Two');
-        //});
-    //});
+        //     expect(recordListElements.count()).toEqual(2);
 
-    //describe('Create new metadata record', function () {
-        //it('should clear any information that has been input', function () {
+        //     element(by.id('record-options-dropdown')).click();
+        //     element(by.css('[ng-click="createNewRecord()"]')).click();
 
-            //element(by.model('currentRecord.title')).sendKeys('Record One');
-            //element(by.model('currentRecord.summary')).sendKeys('A record of some stuff');
+        //     expect(element(by.model('currentRecord.title')).getText).toEqual('');
 
-            //element(by.model('currentRecord.north_lat')).sendKeys('46.8');
-            //element(by.model('currentRecord.south_lat')).sendKeys('35.5');
-            //element(by.model('currentRecord.east_lon')).sendKeys('-115.0');
-            //element(by.model('currentRecord.west_lon')).sendKeys('-120.0');
+        //     expect(element(by.model('currentRecord.north_lat')).getText()).toEqual('');
+        //     expect(element(by.model('currentRecord.south_lat')).getText()).toEqual('');
+        //     expect(element(by.model('currentRecord.east_lon')).getText()).toEqual('');
+        //     expect(element(by.model('currentRecord.west_lon')).getText()).toEqual('');
+        // });
 
-            //element(by.css('[ng-click="submitDraftRecord()"]')).click();
-
-            //element(by.css('[ng-click="createNewRecord()"]')).click();
-
-            //element(by.model('currentRecord.title')).toEqual('');
-            //element(by.model('currentRecord.summary')).sendKeys('A record of some stuff');
-
-            //expect(element(by.model('currentRecord.north_lat')).getText()).toEqual('');
-            //expect(element(by.model('currentRecord.south_lat')).getText()).toEqual('');
-            //expect(element(by.model('currentRecord.east_lon')).getText()).toEqual('');
-            //expect(element(by.model('currentRecord.west_lon')).getText()).toEqual('');
-        //});
-    //});
+        // it('should change the Create New... before the title to Editing...',
+        //     function () {
+        //         element(by.id('record-options-dropdown')).click();
+        //         element(by.id('create-new-dataset')).click();
+        //         expect(element(by.id('record-title')).getText())
+        //             .toContain('New Metadata Record');
+        // });
+    // });
 });
 
 //describe('MILES Defaults', function () {
@@ -342,26 +442,9 @@ describe('Manage your metadata dropdown', function () {
 
     //describe('save record as draft', function () {
 
-        //it('should create a new entry in the database if it\'s a a new record',
-            //function () {
 
-            //expect(true).toBe(false);
 
-        //});
 
-        //it('should update fields in the database if it\'s an existing record',
-            //function (){
-
-            //expect(true).toBe(false);
-
-        //});
-
-        //it('should change the Create New... before the title to Editing...',
-            //function () {
-
-            //expect(true).toBe(false);
-
-        //});
     //});
 
     //describe('publish dataset', function () {

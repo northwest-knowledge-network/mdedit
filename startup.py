@@ -11,9 +11,9 @@ from flask_mongoengine import MongoEngine
 
 def _kill_servers():
 
-    Popen('kill -9 `lsof -ti :8000`', shell=True, stderr=None)
+    Popen('kill -9 `lsof -ti :8000` > /dev/null', shell=True, stderr=None)
 
-    Popen('kill -9 `lsof -ti :4000`', shell=True, stderr=None)
+    Popen('kill -9 `lsof -ti :4000` > /dev/null', shell=True, stderr=None)
 
 
 def start_servers(test):
@@ -45,7 +45,6 @@ def start_servers(test):
 
     Popen("python -m SimpleHTTPServer",
           shell=True, stdout=None, stderr=None, preexec_fn=os.setsid)
-
 
     if not test:
 

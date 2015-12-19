@@ -121,6 +121,7 @@ def get_single_metadata(_oid):
                 return Response('Bad or missing id', 400)
 
         else:
+                # import ipdb; ipdb.set_trace()
                 record = Metadata.objects.get_or_404(
                     pk=_oid, username=username
                 )

@@ -5,11 +5,9 @@
      Temporal Extent</h4>
    <h6>What is the time period represented by the data?</h6>
 
-<!--    <div ng-repeat="key_title in [['start_date','Start Date'],
-                           ['end_date', 'End Date']]"> -->
      <h4>Start Date</h4>
 
-     <input type="text" tabindex="20" ui-date="dateOptions" ng-model="currentRecord.start_date.$date">
+     <input type="text" tabindex="20" ui-date="dateOptions" ng-model="currentRecord.start_date.$date" id="start-date">
 
     H:
       <select tabindex=20 id="" name="" ng-model="currentRecord.start_date.$date.hours"
@@ -29,7 +27,8 @@
 
      <h4>End Date</h4>
 
-     <input type="text" tabindex="20" ui-date="dateOptions" ng-model="currentRecord.end_date.$date">
+     <input type="text" tabindex="20" ui-date="dateOptions"
+            id="end-date" ng-model="currentRecord.end_date.$date">
 
       <select tabindex=20 id="" name="" ng-model="currentRecord.end_date.$date.hours"
           ng-options="hour for hour in hours">
@@ -46,5 +45,4 @@
       </select>
     </div>
 
-  <!-- </div> -->
 </div>

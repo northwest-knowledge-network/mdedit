@@ -46,8 +46,8 @@
                     </li>
 
                     <li>
-                        <tr class="record-dropdown-list-element" ng-repeat="record in allRecords">
-                            <td class="record-list-title">{{record.title | limitTo:20}}</td>
+                        <tr ng-repeat="record in allRecords">
+                            <td ng-attr-id="{{'record-list-title-' + $index}}">{{record.title | limitTo:20}}</td>
                             <td class="record-list-summary">{{record.summary | limitTo:30}}</td>
                             <td class="record-list-last-saved">{{record.last_mod_date.$date | date:'short'}}</td>
                             <td class="record-list-last-published">Never</td>
@@ -79,21 +79,33 @@
 
           <ul class="dropdown-menu">
 
-            <li><a ng-click="createNewRecord()">Create new dataset record</a></li>
+            <li><a class="btn btn-sm btn-default navbar-btn header-button"
+                   id="create-new-dataset"
+                   ng-click="createNewRecord()">
+                Create new dataset record
+            </a></li>
 
-            <li><a href="#/dublin">Create new non-dataset record</a></li>
+            <li><a class="btn btn-sm btn-default navbar-btn header-button"
+                   id="create-new-non-dataset" href="#/dublin">
+                Create new non-dataset record
+            </a></li>
 
             <li><a ng-click="submitDraftRecord()"
-                   class="btn btn-small btn-default navbar-btn"
+                   class="btn btn-sm btn-default navbar-btn header-button"
                    style="border:0;text-align:left">
                 Save this record as a draft
             </a></li>
 
             <li ng-show="metadataForm.$valid">
-                <a ng-click="publishRecord()">Publish record to share with other CZOs</a>
+                <a id="publish" ng-click="publishRecord()"
+                   class="btn btn-sm btn-default navbar-btn header-button">
+                Publish record to share with other CZOs</a>
             </li>
 
-            <li ng-hide="metadataForm.$valid" class="disabled"><a href="#/iso">
+            <li ng-hide="metadataForm.$valid"
+                class="disabled">
+                <a class="btn btn-sm btn-default navbar-btn header-button"
+                   href="#/iso">
                 Please complete the record to publish data
             </a></li>
 
