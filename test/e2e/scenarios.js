@@ -313,103 +313,47 @@ describe('Manage your metadata dropdown', function () {
             // check the rest
             expect(element(by.id('format-selector')).getAttribute('value'))
                 .toEqual('string:netCDF');
-        // });
-
-        // it('should faithfully re-load all of Record One\'s data when selected for edit', function () {
-
-        //     // get a list of metadata records
-        //     element(by.id('manage-your-metadata-dropdown')).click();
-        //     // click the first one in the list
-        //     element(by.id('edit-record-0')).click();
-        //     // check the title
-        //     expect(
-        //         element(by.css('#record-title[ng-show="!newRecord"]'))
-        //             .getText()
-        //     )
-        //     .toEqual('Editing Existing: Record One');
-
-        //     // check contacts
-        //     var ccExpected = newRecord.citation;
-        //     var caExpected = newRecord.access;
-
-        //     for (var ccIdx = 0; ccIdx < 2; ccIdx++)
-        //     {
-        //         for (var ccKey in ccExpected[ccIdx])
-        //         {
-        //             expect(
-        //                 element(by.id('citation-' + ccKey + '-' + ccIdx))
-        //                     .getAttribute('value')
-        //             )
-        //             .toEqual(ccExpected[ccIdx][ccKey]);
-        //         }
-        //     }
-        //     for (var caKey in caExpected[0])
-        //     {
-        //         expect(element(by.id('access-' + caKey + '-0')).getAttribute('value'))
-        //             .toEqual(caExpected[0][caKey]);
-        //     }
-
-        //     // check spatial extent
-        //     expect(element(by.model('currentRecord.north_lat')).getAttribute('value'))
-        //         .toEqual(newRecord.north_lat);
-        //     expect(element(by.model('currentRecord.south_lat')).getAttribute('value'))
-        //         .toEqual(newRecord.south_lat);
-        //     expect(element(by.model('currentRecord.east_lon')).getAttribute('value'))
-        //         .toEqual(newRecord.east_lon);
-        //     expect(element(by.model('currentRecord.west_lon')).getAttribute('value'))
-        //         .toEqual(newRecord.west_lon);
-
-        //     // check dates
-        //     expect(element(by.model('currentRecord.start_date.$date')).getAttribute('value'))
-        //         .toEqual('01/01/2002');
-
-        //     expect(element(by.model('currentRecord.end_date.$date')).getAttribute('value'))
-        //         .toEqual('12/18/2015');
-
-        //     // check the rest
-        //     expect(element(by.id('format-selector')).getAttribute('value'))
-        //         .toEqual('string:netCDF');
-        // });
     });
 
-    // describe('Create new metadata record', function () {
+    it('should clear any information that has been input when creating a new record', function () {
 
-        // it('should clear any information that has been input', function () {
+        element(by.id('record-options-dropdown')).click();
+        element(by.css('[ng-click="createNewRecord()"]')).click();
 
-        //     element(by.model('currentRecord.title')).sendKeys('Record Two');
-        //     element(by.model('currentRecord.summary')).sendKeys('Another record of some other stuff');
+        element(by.model('currentRecord.title')).sendKeys('Record Two');
+        element(by.model('currentRecord.summary')).sendKeys('Another record of some other stuff');
 
-        //     element(by.model('currentRecord.north_lat')).sendKeys('46.8');
-        //     element(by.model('currentRecord.south_lat')).sendKeys('35.5');
-        //     element(by.model('currentRecord.east_lon')).sendKeys('-115.0');
-        //     element(by.model('currentRecord.west_lon')).sendKeys('-120.0');
+        element(by.model('currentRecord.north_lat')).sendKeys('46.8');
+        element(by.model('currentRecord.south_lat')).sendKeys('35.5');
+        element(by.model('currentRecord.east_lon')).sendKeys('-115.0');
+        element(by.model('currentRecord.west_lon')).sendKeys('-120.0');
 
-        //     element(by.id('record-options-dropdown')).click();
-        //     element(by.css('[ng-click="submitDraftRecord()"]')).click();
+        element(by.id('record-options-dropdown')).click();
+        element(by.css('[ng-click="submitDraftRecord()"]')).click();
 
-        //     var recordListElements = element.all(by.css('.record-list-actions'));
+        var recordListElements = element.all(by.css('.record-list-actions'));
 
-        //     expect(recordListElements.count()).toEqual(2);
+        expect(recordListElements.count()).toEqual(2);
 
-        //     element(by.id('record-options-dropdown')).click();
-        //     element(by.css('[ng-click="createNewRecord()"]')).click();
+        element(by.id('record-options-dropdown')).click();
+        element(by.css('[ng-click="createNewRecord()"]')).click();
 
-        //     expect(element(by.model('currentRecord.title')).getText).toEqual('');
+        expect(element(by.model('currentRecord.title')).getText()).toEqual('');
 
-        //     expect(element(by.model('currentRecord.north_lat')).getText()).toEqual('');
-        //     expect(element(by.model('currentRecord.south_lat')).getText()).toEqual('');
-        //     expect(element(by.model('currentRecord.east_lon')).getText()).toEqual('');
-        //     expect(element(by.model('currentRecord.west_lon')).getText()).toEqual('');
-        // });
+        expect(element(by.model('currentRecord.north_lat')).getText()).toEqual('');
+        expect(element(by.model('currentRecord.south_lat')).getText()).toEqual('');
+        expect(element(by.model('currentRecord.east_lon')).getText()).toEqual('');
+        expect(element(by.model('currentRecord.west_lon')).getText()).toEqual('');
+    });
 
-        // it('should change the Create New... before the title to Editing...',
-        //     function () {
-        //         element(by.id('record-options-dropdown')).click();
-        //         element(by.id('create-new-dataset')).click();
-        //         expect(element(by.id('record-title')).getText())
-        //             .toContain('New Metadata Record');
-        // });
-    // });
+    it('should change the Create New... before the title to Editing...',
+        function () {
+            element(by.id('record-options-dropdown')).click();
+            element(by.id('create-new-dataset')).click();
+            expect(element(by.id('record-title')).getText())
+                .toContain('New Metadata Record');
+    });
+
 });
 
 //describe('MILES Defaults', function () {
@@ -421,46 +365,20 @@ describe('Manage your metadata dropdown', function () {
     //});
 //});
 
+//describe('publish dataset', function () {
 
-//describe('Manipulating whole records: ', function() {
+    //it('should add a record of being published to its database representation',
+        //function () {
 
-    //describe('create a new record', function () {
-
-        //it('should overwrite any data currently in the form', function () {
-
-            //expect(true).toBe(false);
-
-        //});
-
-        //it('should display \'Create new...\' and the title of the new record',
-            //function () {
-
-            //expect(true).toBe(false);
-
-        //});
-    //});
-
-    //describe('save record as draft', function () {
-
-
-
+        //expect(true).toBe(false);
 
     //});
 
-    //describe('publish dataset', function () {
+    //it('should save its metadata to file in specified standard ' +
+       //'(Dublin Core or ISO 19115)', function () {
 
-        //it('should add a record of being published to its database representation',
-            //function () {
+        //expect(true).toBe(false);
 
-            //expect(true).toBe(false);
-
-        //});
-
-        //it('should save its metadata to file in specified standard ' +
-           //'(Dublin Core or ISO 19115)', function () {
-
-            //expect(true).toBe(false);
-
-        //});
     //});
+//});
 //});
