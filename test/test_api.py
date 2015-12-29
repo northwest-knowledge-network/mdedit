@@ -108,14 +108,24 @@ class TestAPI(unittest.TestCase):
 
     def test_retrieve_record(self):
 
-        res = self.client.get('/api/metadata/' + str(self.md1_id))
+        res = self.client.post(
+            '/api/metadata/' + str(self.md1_id),
+            data={'username': 'local_user'},
+            content_type='application/json',
+            headers={'Content-Type': '*', 'Origin': '*'}
+        )
 
         data = json.loads(res.data)['record']
 
         assert data['title'] == 'Dabke on the Moon'
         assert data['summary'] == 'Some good music'
 
-        res = self.client.get('/api/metadata/' + str(self.md2_id))
+        res = self.client.post(
+            '/api/metadata/' + str(self.md2_id),
+            data={'username': 'local_user'},
+            content_type='application/json',
+            headers={'Content-Type': '*', 'Origin': '*'}
+        )
 
         data = json.loads(res.data)['record']
 

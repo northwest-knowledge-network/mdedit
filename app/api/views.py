@@ -1,4 +1,28 @@
-"""API"""
+"""
+Metadata API
+
+Workflow proceeds as follows:
+    * All interactions with metadata records, aside from exporting particular
+    records in a particular format (dublin core, iso, etc) are done with PUT,
+    POST, or DELETE. POST is used so that user credentials can be sent along
+    with request to, say, view all metadata records. If the user is an admin
+    they will be able to see all records in the database. If not, the user
+    will only be able to see their own records.
+
+    * To submit a new record, the user makes a PUT request to `api/metadata`;
+    to see all metadata records, the user makes a POST request to
+    `api/metadata`. The response from the PUT request contains the record's
+    ID.
+
+    * To get a particular record, POST to `api/metadata/<string:_oid>`. To
+    update a particular record, PUT to `api/metadata/<string:_oid>`.
+
+    * To publish a particular record,
+    POST to `/api/metadata/<string:_oid>/publish`. It is the client's
+    responsibility to make sure a draft version of the record has been
+    initialized on the server, for example, by first making a PUT request
+    with complete metadata to `api/metadata`.
+"""
 import json
 import lxml.etree as ET
 import geocoder
@@ -97,10 +121,9 @@ def get_single_metadata(_oid):
     username = _authenticate_user_from_session(request)
 
     try:
-
         if request.method == 'PUT':
 
-            if ('record' in request.json and '_id' in request.json['record']):
+            if ('record' in request.json and 'id' in request.json['record']):
 
                 existing_record = \
                     Metadata.objects.get_or_404(pk=_oid,
@@ -121,7 +144,6 @@ def get_single_metadata(_oid):
                 return Response('Bad or missing id', 400)
 
         else:
-                # import ipdb; ipdb.set_trace()
                 record = Metadata.objects.get_or_404(
                     pk=_oid, username=username
                 )
@@ -279,7 +301,7 @@ def get_single_xml_metadata(_oid):
 
 
 @api.route('/api/contacts/<string:type_>')
-@cross_origin(origin="*", methods=['GET'])
+@cross_origin(origin="*", methods=['POST'])
 def get_citation_contacts(type_):
     """
     Return contacts that have previously been used for Citation contacts
