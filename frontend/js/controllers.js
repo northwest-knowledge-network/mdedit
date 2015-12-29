@@ -61,14 +61,11 @@ metadataEditorApp.controller('BaseController',
 
         $scope.createNewRecord = function() {
 
-            console.log($scope.currentRecord);
             var fresh = recordService.getFreshRecord();
 
             $scope.newRecord = true;
-            console.log(fresh);
             $scope.currentRecord = fresh;
 
-            $log.log($scope.currentRecord);
             // iso data formats come from a pre-defined list to from ISO std
             $scope.dataFormats = {
               iso: [''],

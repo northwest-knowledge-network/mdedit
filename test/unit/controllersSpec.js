@@ -248,7 +248,17 @@ describe('Save record as draft', function () {
         spyOn(recordService, 'saveDraft').andReturn({
 
                 success: function(callback) {
-                    var data = {};
+                    var data = {
+                        record: {
+                            start_date: new Date(2010, 0, 1),
+                            end_date: new Date(2011, 11, 31),
+                            last_mod_date: new Date(),
+                            first_pub_date: new Date(2012, 10, 1),
+                            data_format: ['docx', 'netcdf'],
+                            place_keywords: ['Idaho', 'Dry Creek'],
+                            thematic_keywords: ['hydrology', 'rain-snow transition']
+                        }
+                    };
 
                     callback(data);
 

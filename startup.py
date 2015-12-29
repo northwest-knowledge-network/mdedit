@@ -1,12 +1,10 @@
 #!venv/bin/python
+
 import argparse
 import os
 import time
 
-from subprocess import Popen, PIPE
-
-from app import create_app
-from flask_mongoengine import MongoEngine
+from subprocess import Popen
 
 
 def _kill_servers():
@@ -28,11 +26,7 @@ def start_servers(test):
         None
     """
 
-    print test
-
     if test:
-        print "setting testing..."
-        print test
         os.environ['FLASKCONFIG'] = 'testing'
 
     print "\n*** starting metadata server at localhost:4000 ***\n"
@@ -65,11 +59,13 @@ if __name__ == '__main__':
     run_choices = ['e2e', 'ngSpec', 'pyTest', 'testAll', 'run']
 
     parser.add_argument(
-        'type', choices=run_choices,
+        'type',
+        choices=run_choices,
         help='You can run end-to-end tests (e2e), Angular Jasmine tests of ' +
         'the controllers and services (ngSpec), Python server tests ' +
         '(pyTest), or testAll will run all those tests. Can also run demo ' +
-        'servers with a persistent local database using the run command.')
+        'servers with a persistent local database using the run command.'
+    )
 
     args = parser.parse_args()
 
@@ -89,9 +85,9 @@ if __name__ == '__main__':
 
         start_servers(test=True)
 
-        proTest = Popen('npm run protractor', shell=True)
+        pro_test = Popen('npm run protractor', shell=True)
 
-        proTest.communicate()[0]
+        pro_test.communicate()[0]
 
         if runType == 'testAll':
 
