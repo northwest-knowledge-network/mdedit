@@ -77,48 +77,50 @@
           <a id="record-options-dropdown" href="#/iso" class="dropdown-toggle" data-toggle="dropdown"
              role="button" aria-haspopup="true" aria-expanded="false">Record Options <span class="caret"></span></a>
 
-          <ul class="dropdown-menu">
+            <ul class="dropdown-menu">
 
-            <li><a class="btn btn-sm btn-default navbar-btn header-button"
-                   id="create-new-dataset"
-                   ng-click="createNewRecord()">
-                Create new dataset record
-            </a></li>
+                <li><a class="btn btn-sm btn-default navbar-btn header-button"
+                       id="create-new-dataset"
+                       ng-click="createNewRecord()">
+                    Create new dataset record
+                </a></li>
 
-            <li><a class="btn btn-sm btn-default navbar-btn header-button"
-                   id="create-new-non-dataset" href="#/dublin">
-                Create new non-dataset record
-            </a></li>
+                <li><a class="btn btn-sm btn-default navbar-btn header-button"
+                       id="create-new-non-dataset" href="#/dublin">
+                    Create new non-dataset record
+                </a></li>
 
-            <li><a ng-click="submitDraftRecord()"
-                   class="btn btn-sm btn-default navbar-btn header-button"
-                   style="border:0;text-align:left">
-                Save this record as a draft
-            </a></li>
+                <li><a ng-click="submitDraftRecord()"
+                       class="btn btn-sm btn-default navbar-btn header-button"
+                       style="border:0;text-align:left">
+                    Save this record as a draft
+                </a></li>
 
-            <li ng-show="metadataForm.$valid">
-                <a id="publish" ng-click="publishRecord()"
-                   class="btn btn-sm btn-default navbar-btn header-button">
-                Publish record to share with other CZOs</a>
-            </li>
+                <li ng-show="metadataForm.$valid">
+                    <a id="publish" ng-click="publishRecord()"
+                       class="btn btn-sm btn-default navbar-btn header-button">
+                    Publish record to share with other CZOs</a>
+                </li>
 
-            <li ng-hide="metadataForm.$valid"
-                class="disabled">
-                <a class="btn btn-sm btn-default navbar-btn header-button"
-                   href="#/iso">
-                Please complete the record to publish data
-            </a></li>
-
-          </ul>
+                <li ng-hide="metadataForm.$valid"
+                    class="disabled">
+                    <a class="btn btn-sm btn-default navbar-btn header-button"
+                       href="#/iso">
+                    Please complete the record to publish data
+                    </a>
+                </li>
+            </ul>
 
         </li>
 
         <li class="dropdown">
-            <a href="#/iso" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            <a href="#/iso" id="defaults-dropdown" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                 Load Defaults <span class="caret"></span>
             </a>
             <ul class="dropdown-menu">
-                <li><a href="#/iso">MILES</a></li>
+                <li><a id="default-miles" ng-click="loadDefaultMILES()"
+                       class="btn btn-sm btn-default navbar-btn header-button">
+                    MILES</a></li>
                 <li><a href="#/iso">NKN as Distributor</a></li>
             </ul>
         </li>

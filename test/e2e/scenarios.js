@@ -11,16 +11,14 @@ var MONGO_HOST = 'mongodb://localhost:27017/';
 var clearCollection = function () {
     mongocl.connect(MONGO_HOST + MD_TEST_DB, function (err, db) {
 
-        console.log('Connected to server');
-
         var coll = db.collection(MD_COLLECTION);
 
         coll.drop({});
 
-        coll.find({}).toArray(function(err, docs) {
-            console.log("\n**** This should be empty: ****\n");
-            console.dir(docs);
-        });
+        // coll.find({}).toArray(function(err, docs) {
+        //     console.log("\n**** This should be empty: ****\n");
+        //     console.dir(docs);
+        // });
     });
 };
 
@@ -345,40 +343,71 @@ describe('Manage your metadata dropdown', function () {
         expect(element(by.model('currentRecord.east_lon')).getText()).toEqual('');
         expect(element(by.model('currentRecord.west_lon')).getText()).toEqual('');
     });
-
-    it('should change the Create New... before the title to Editing...',
-        function () {
-            element(by.id('record-options-dropdown')).click();
-            element(by.id('create-new-dataset')).click();
-            expect(element(by.id('record-title')).getText())
-                .toContain('New Metadata Record');
-    });
-
 });
 
-//describe('MILES Defaults', function () {
 
-    //it('should load the correct fields with correct data', function () {
+describe('MILES Defaults', function () {
 
-        //expect(true).toBe(false);
+    it('should load the correct fields with correct data', function () {
 
-    //});
-//});
+        element(by.id('defaults-dropdown')).click();
+        element(by.css('[ng-click="loadDefaultMILES()"]')).click();
 
-//describe('publish dataset', function () {
+        expect(element(by.model('currentRecord.place_keywords')).getAttribute('value'))
+            .toBe('USA, Idaho');
 
-    //it('should add a record of being published to its database representation',
-        //function () {
+        expect(element(by.model('currentRecord.thematic_keywords')).getAttribute('value'))
+            .toBe('IIA-1301792, MILES, EPSCoR');
 
-        //expect(true).toBe(false);
+        expect(element(by.model('currentRecord.north_lat')).getAttribute('value'))
+            .toBe('49.0011461');
+        expect(element(by.model('currentRecord.south_lat')).getAttribute('value'))
+            .toBe('41.9880051');
+        expect(element(by.model('currentRecord.east_lon')).getAttribute('value'))
+            .toBe('-111.043495');
+        expect(element(by.model('currentRecord.west_lon')).getAttribute('value'))
+            .toBe('-117.2413657');
 
-    //});
+        expect(element(by.id('access-name-0')).getAttribute('value'))
+            .toBe('Northwest Knowledge Network');
 
-    //it('should save its metadata to file in specified standard ' +
-       //'(Dublin Core or ISO 19115)', function () {
+        expect(element(by.id('access-email-0')).getAttribute('value'))
+            .toBe('info@northwestknowledge.net');
 
-        //expect(true).toBe(false);
+        expect(element(by.id('access-org-0')).getAttribute('value'))
+            .toBe('University of Idaho');
 
-    //});
-//});
-//});
+        expect(element(by.id('access-address-0')).getAttribute('value'))
+            .toBe('875 Perimeter Dr. MS 2358');
+
+        expect(element(by.id('access-city-0')).getAttribute('value'))
+            .toBe('Moscow');
+
+        expect(element(by.id('access-state-0')).getAttribute('value'))
+            .toBe('Idaho');
+
+        expect(element(by.id('access-zipcode-0')).getAttribute('value'))
+            .toBe('83844-2358');
+
+        expect(element(by.id('access-country-0')).getAttribute('value'))
+            .toBe('USA');
+
+        expect(element(by.id('access-phone-0')).getAttribute('value'))
+            .toBe('208-885-2080');
+    });
+
+    it('should not overwrite fields that are already present in a new record', function () {
+
+        element(by.model('currentRecord.title')).sendKeys('Record Two');
+        element(by.model('currentRecord.summary')).sendKeys('Another record of some other stuff');
+
+        element(by.id('defaults-dropdown')).click();
+        element(by.css('[ng-click="loadDefaultMILES()"]')).click();
+
+        expect(element(by.model('currentRecord.title')).getAttribute('value'))
+            .toBe('Record Two');
+
+        expect(element(by.model('currentRecord.summary')).getAttribute('value'))
+            .toBe('Another record of some other stuff');
+    });
+});

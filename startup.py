@@ -14,7 +14,7 @@ def _kill_servers():
     Popen('kill -9 `lsof -ti :4000` > /dev/null', shell=True, stderr=None)
 
 
-def start_servers(test):
+def start_servers(test=False):
     """
     Start the backend and client side servers. If test is True, set up
     the backend for end-to-end testing.
@@ -71,8 +71,6 @@ if __name__ == '__main__':
 
     # if the servers were already running (could be zombie) kill them
     _kill_servers()
-
-    test = False
 
     runType = args.type
 
