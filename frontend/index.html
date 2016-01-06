@@ -43,7 +43,7 @@
 <div  id="bodyDiv">
 <div id="ngMain" ng-app="metadataEditor">
 
-<div ng-controller="BaseController">
+<div ng-controller="BaseController as baseCtrl">
 
 <div ng-include="'partials/header.html'"></div>
 
@@ -58,9 +58,9 @@
 
 <div id="main-container" class="container">
 
-    <ul>
+<!--     <ul>
         <li ng-repeat="err in errors">{{err}}</li>
-    </ul>
+    </ul> -->
 
     <div ng-view></div>
 

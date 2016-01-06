@@ -32,6 +32,7 @@ import requests
 from .. import config
 from dicttoxml import dicttoxml
 from flask import request, jsonify, Response
+from flask import current_app as app
 from flask_cors import cross_origin
 from mongoengine import ValidationError
 
@@ -119,11 +120,11 @@ def get_single_metadata(_oid):
     because their session_id sent with the request.
     """
     username = _authenticate_user_from_session(request)
-
+    # import ipdb; ipdb.set_trace();
     try:
         if request.method == 'PUT':
 
-            if ('record' in request.json and 'id' in request.json['record']):
+            if ('record' in request.json and '_id' in request.json['record']):
 
                 existing_record = \
                     Metadata.objects.get_or_404(pk=_oid,
@@ -178,7 +179,15 @@ def publish_metadata_record(_oid):
     iso = get_single_iso_metadata(str_id).data
 
     # save iso string to {_oid}/{_oid}.xml
-    save_path = os.path.join(config['default'].PREPROD_DIRECTORY,
+    # if app.config['testing']:
+    #     save_dir = config['testing'].PREPROD_DIRECTORY
+    # else:
+    #     save_dir = config['default'].PREPROD_DIRECTORY
+
+    # print app.config
+    save_dir = app.config['PREPROD_DIRECTORY']
+
+    save_path = os.path.join(save_dir,
                              str_id,
                              str_id + '.xml')
 

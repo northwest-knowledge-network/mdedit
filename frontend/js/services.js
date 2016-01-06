@@ -352,23 +352,24 @@ metadataEditorApp
             // there are two promises to work with:
             var draftQ;  // save draft promise
             var publishQ;  // publish promise, returned from `publish` call
+            var q;
 
             draftQ = saveDraft(scope);
 
             // this is a little wasteful to send the record back to server,
             // but probably not consequential
-            draftQ
-                .success(() => {
+            // draftQ
+            //     .success(() => {
                     var currentId = scope.currentRecord._id.$oid;
 
-                    publishQ = $http.post(
+                    q = $http.post(
                         '//' + hostname + '/api/metadata/' +
                             currentId + '/publish',
                         current);
-                })
-                .error(() => { publishQ = draftQ; });
+                // });
+                // .error(() => { $log.log('error!!!'); publishQ = draftQ; });
 
-            return publishQ;
+            return q;
         };
 
         return {

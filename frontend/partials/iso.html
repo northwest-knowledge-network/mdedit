@@ -1,4 +1,4 @@
-<form name="metadataForm" id="metadataForm">
+<form name="baseCtrl.metadataForm" id="metadataForm">
 
      <!--    <p>title: {{$root.currentRecord.title}}</p>
 
@@ -9,6 +9,14 @@
         </button> -->
 
         <!-- <div ng-include="'partials/header.html'"></div> -->
+
+    <!-- <ul>
+  <li ng-repeat="(key, errors) in metadataForm.$error track by $index"> <strong>{{ key }}</strong> errors
+    <ul>
+      <li ng-repeat="e in errors">{{ e.$name }} has an error: <strong>{{ key }}</strong>.</li>
+    </ul>
+  </li>
+</ul> -->
 
       <!-- form header contains title and submit to portal button -->
       <div ng-include="'partials/formHeader.html'"></div>

@@ -344,7 +344,7 @@ describe('Initiate publishing process request to server', function () {
         $httpBackend.flush();
     });
 
-    it('should make two PUT request and one POST request if updating an existing record', function () {
+    it('should make two PUT request and one POST request if publishing an existing record', function () {
         scope.newRecord = false;
 
         $httpBackend.expectPUT(/api\/metadata\/xxxo/).respond(200,

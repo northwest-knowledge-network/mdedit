@@ -2,6 +2,7 @@
 
 import argparse
 import os
+import shutil
 import time
 
 from subprocess import Popen
@@ -28,6 +29,11 @@ def start_servers(test=False):
 
     if test:
         os.environ['FLASKCONFIG'] = 'testing'
+        # remove any pre-existing data in the test "preprod" directory
+        test_preprod_dir = 'mdedit_preprod_test'
+
+        if os.path.exists(test_preprod_dir):
+            shutil.rmtree('mdedit_preprod_test')
 
     print "\n*** starting metadata server at localhost:4000 ***\n"
 
