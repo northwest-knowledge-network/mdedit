@@ -13,6 +13,8 @@ metadataEditorApp.controller('BaseController',
         // initialize list of existing metadata records
         $scope.allRecords = [];
 
+        $scope.options = {};
+
         $scope.hostname = hostname;
 
         $scope.updateRecordsList = () => {
@@ -65,6 +67,9 @@ metadataEditorApp.controller('BaseController',
 
             $scope.newRecord = true;
             $scope.currentRecord = fresh;
+
+            //set geocode write-in box to be blank
+            $scope.options.bboxInput ='';
 
             // iso data formats come from a pre-defined list to from ISO std
             $scope.dataFormats = {
@@ -135,7 +140,7 @@ metadataEditorApp.controller('BaseController',
                 }
                 );
 
-             //set geocode write-in box to be blank (not sure yet if this works b/c edit is giving error)   
+             //set geocode write-in box to be blank 
             $scope.options.bboxInput = '';
         };
 
@@ -260,7 +265,6 @@ metadataEditorApp.controller('BaseController',
           $scope.currentRecord.online.push("");
         };
 
-        $scope.options = {};
         $scope.getBbox = function()
         {
             Geoprocessing.getBbox($scope.options.bboxInput)
@@ -294,10 +298,13 @@ metadataEditorApp.controller('BaseController',
     vm.ne, vm.sw, vm.center;
     NgMap.getMap().then(function(map) {
         vm.map = map;
-        $scope.currentRecord.north_lat = vm.ne.lat();
-        $scope.currentRecord.south_lat = vm.sw.lat();
-        $scope.currentRecord.east_lon = vm.ne.lng();
-        $scope.currentRecord.west_lon = vm.sw.lng();
+        if (vm.ne !== undefined)
+        {
+            $scope.currentRecord.north_lat = vm.ne.lat();
+            $scope.currentRecord.south_lat = vm.sw.lat();
+            $scope.currentRecord.east_lon = vm.ne.lng();
+            $scope.currentRecord.west_lon = vm.sw.lng();
+        }
   });
     vm.boundsChanged = function() {
         vm.ne = this.getBounds().getNorthEast();
