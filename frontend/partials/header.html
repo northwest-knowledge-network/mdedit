@@ -1,0 +1,138 @@
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div id="navbar-custom" class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+       <!--  <li><a>Cr</a></li>
+        <li><a href="#/iso">Link</a></li> -->
+        <li class="dropdown">
+            <a href="#/iso" id="manage-your-metadata-dropdown" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                Manage your metadata <span class="caret"></span>
+            </a>
+            <ul id="records-table" class="dropdown-menu">
+
+                <table class="table" style="width:1000px;margin-bottom:-5px">
+
+                    <li>
+                        <thead>
+                            <tr>
+                                <td>
+                                    <b>Title</b>
+                                </td>
+                                <td>
+                                    <b>Summary</b>
+                                </td>
+                                <td>
+                                    <b>Last Edited</b>
+                                </td>
+                                <td>
+                                    <b>Last Published</b>
+                                </td>
+                                <td>
+                                    <b>Actions</b>
+                                </td>
+                            </tr>
+                        </thead>
+                    </li>
+
+                    <li>
+                        <tr ng-repeat="record in allRecords">
+                            <td ng-attr-id="{{'record-list-title-' + $index}}">{{record.title | limitTo:20}}</td>
+                            <td class="record-list-summary">{{record.summary | limitTo:30}}</td>
+                            <td class="record-list-last-saved">{{record.last_mod_date.$date | date:'short'}}</td>
+                            <td class="record-list-last-published">Never</td>
+                            <td class="record-list-actions">
+                                <a ng-click="editRecord(record._id.$oid)"
+                                   class="btn btn-xs record-list-edit"
+                                   id="{{'edit-record-' + $index}}">
+                                   Edit
+                                </a> |
+                                <a href="#/iso" ng-click="publishRecord()"
+                                   class="btn btn-xs record-list-publish">Publish
+                                </a> |
+                                <a href="#/iso" class="btn btn-xs record-list-delete">
+                                    Delete
+                                </a>
+                            </td>
+                        </tr>
+                    </li>
+
+                </table>
+
+            </ul>
+        </li>
+
+        <li class="dropdown">
+
+          <a id="record-options-dropdown" href="#/iso" class="dropdown-toggle" data-toggle="dropdown"
+             role="button" aria-haspopup="true" aria-expanded="false">Record Options <span class="caret"></span></a>
+
+            <ul class="dropdown-menu">
+
+                <li><a class="btn btn-sm btn-default navbar-btn header-button"
+                       id="create-new-dataset"
+                       ng-click="createNewRecord()">
+                    Create new dataset record
+                </a></li>
+
+                <li><a class="btn btn-sm btn-default navbar-btn header-button"
+                       id="create-new-non-dataset" href="#/dublin">
+                    Create new non-dataset record
+                </a></li>
+
+                <li><a ng-click="submitDraftRecord()"
+                       class="btn btn-sm btn-default navbar-btn header-button"
+                       style="border:0;text-align:left">
+                    Save this record as a draft
+                </a></li>
+
+                <li ng-show="baseCtrl.metadataForm.$valid">
+                    <a id="record-options-publish" ng-click="publishRecord()"
+                       class="btn btn-sm btn-default navbar-btn header-button">
+                    Publish record to NKN's portal</a>
+                </li>
+
+                <li ng-hide="baseCtrl.metadataForm.$valid"
+                    class="disabled">
+                    <a class="btn btn-sm btn-default navbar-btn header-button"
+                       href="#/iso">
+                    Please complete the record to publish data
+                    </a>
+                </li>
+            </ul>
+
+        </li>
+
+        <li class="dropdown">
+            <a href="#/iso" id="defaults-dropdown" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                Load Defaults <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+                <li><a id="default-miles" ng-click="loadDefaultMILES()"
+                       class="btn btn-sm btn-default navbar-btn header-button">
+                    MILES</a></li>
+                <li><a href="#/iso">NKN as Distributor</a></li>
+            </ul>
+        </li>
+      </ul>
+
+      <form class="navbar-form navbar-right" role="search">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Search">
+        </div>
+        <button type="submit" class="btn btn-default">Help</button>
+      </form>
+
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>

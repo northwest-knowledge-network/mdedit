@@ -22,7 +22,7 @@ class Metadata(db.Document):
     """MongoDB Document representation of metadata"""
     # basic info
     title = db.StringField(max_length=255)
-    last_mod_date = db.DateTimeField()
+    last_mod_date = db.DateTimeField(default=datetime.now)
     first_pub_date = db.DateTimeField()
     summary = db.StringField(max_length=3000)
     username = db.StringField(max_length=255, default="anonymous")
@@ -77,3 +77,10 @@ class Metadata(db.Document):
         for el in [self.start_date, self.end_date, self.first_pub_date]:
             if type(el) is datetime:
                 el = el.isoformat()
+
+    def __str__(self):
+
+        return \
+            '\n'.join(["{}: {}".format(k, self[k])
+                       for k in self._fields_ordered])
+

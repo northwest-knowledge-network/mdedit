@@ -3,72 +3,69 @@
 <head>
   <meta charset="utf-8">
   <title>NKN Metadata Editor</title>
-  <link rel="stylesheet" 
-      href="/frontend/bower_components/bootstrap/dist/css/bootstrap.css">
-  <link rel="stylesheet" 
-      href="/frontend/css/metadata.css">
-  <link rel="stylesheet" 
-      href="/frontend/bower_components/octicons/octicons/octicons.css">
-  <link rel="stylesheet" 
-      href="/frontend/bower_components/jquery-ui/themes/smoothness/jquery-ui.css"/>
-  <script type="text/javascript" 
-      src="/frontend/bower_components/jquery/dist/jquery.min.js">
+
+  <link rel="stylesheet"
+        href="/frontend/bower_components/bootstrap/dist/css/bootstrap.css">
+  <link rel="stylesheet"
+        href="/frontend/css/metadata.css">
+  <link rel="stylesheet"
+        href="/frontend/bower_components/octicons/octicons/octicons.css">
+  <link rel="stylesheet"
+        href="/frontend/bower_components/jquery-ui/themes/smoothness/jquery-ui.css"/>
+    <link href='https://fonts.googleapis.com/css?family=PT+Mono' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/frontend/css/czo.css"/>
+  <script type="text/javascript"
+          src="/frontend/bower_components/jquery/dist/jquery.min.js">
   </script>
-  <script type="text/javascript" 
-      src="/frontend/bower_components/jquery-ui/jquery-ui.min.js">
+  <script type="text/javascript"
+          src="/frontend/bower_components/jquery-ui/jquery-ui.min.js">
   </script>
-  <script type="text/javascript" 
+  <script type="text/javascript"
           src="/frontend/bower_components/bootstrap/dist/js/bootstrap.min.js">
   </script>
-  <script type="text/javascript" 
-      src="/frontend/bower_components/angular/angular.js"></script>
-  <script type="text/javascript" 
-      src="/frontend/bower_components/angular-ui-date/src/date.js"></script>
-  <script type="text/javascript" 
-      src="/frontend/bower_components/angular-route/angular-route.min.js"></script>
-  <script type="text/javascript" 
-      src="/frontend/bower_components/underscore/underscore-min.js"></script>
+  <script type="text/javascript"
+          src="/frontend/bower_components/angular/angular.js"></script>
+  <script type="text/javascript"
+          src="/frontend/bower_components/angular-ui-date/src/date.js"></script>
+  <script type="text/javascript"
+          src="/frontend/bower_components/angular-route/angular-route.min.js"></script>
+  <script src="/frontend/js/app.js"></script>
+  <script src="/frontend/js/routes.js"></script>
+  <script src="/frontend/js/services.js"></script>
   <script src="/frontend/js/controllers.js"></script>
+  <script type="text/javascript"
+          src="http://maps.google.com/maps/api/js"></script>
+  <script type="text/javascript"
+          src="/frontend/bower_components/ngmap/build/scripts/ng-map.min.js"></script>
 </head>
 
 <body>
 <div  id="bodyDiv">
-<div ng-app="metadataEditor" ng-controller="FormCtrl">
+<div id="ngMain" ng-app="metadataEditor">
 
-<div ng-include="'partials/nav.html'"></div>
+<div ng-controller="BaseController as baseCtrl">
+
+<div ng-include="'partials/header.html'"></div>
+
+<!-- <p>title: {{currentRecord.title}}</p>
+
+    <button tabindex=25 ng-show="newRecord"
+          class="btn btn-small btn-primary navbar-btn"
+          type="submit" ng-click="submitDraftRecord()">
+        Save Draft
+    </button> -->
+
 
 <div id="main-container" class="container">
 
-  <!-- Show/Hide Instructions -->
-  <button ng-hide="showInstructions" ng-click="showInstructions = true"
-          class="btn">
-   <span class="octicon octicon-question"></span> Show Instructions
-  </button>
+<!--     <ul>
+        <li ng-repeat="err in errors">{{err}}</li>
+    </ul> -->
 
-  <button ng-show="showInstructions" ng-click="showInstructions = false"
-          class="btn">
-  <span class="octicon octicon-x"></span> Hide Instructions
-  </button>
+    <div ng-view></div>
 
-  <div ng-show="showInstructions" 
-       ng-include="'partials/instructions.html'">
-  </div>
-  <!-- End Show/Hide Instructions -->
 
-  <hr>
-
-  <!-- Display Current Record Title -->
-  <h2 id="record-title" ng-show="newRecord">New Metadata Record: {{currentRecord.title}}</h2>
-
-  <h2 id="record-title" ng-show="!newRecord">Editing Existing: {{currentRecord.title}}</h2>
-  
-  <br>
-
-  <div ng-include="'partials/iso.html'" ng-show="isISO" autoscroll></div>
-  <div ng-include="'partials/dublin.html'" ng-show="isDublin" autoscroll></div>
-
-  <div ng-include="'partials/recordsList.html'"></div>
-
+</div>
 </div>
 </body>
 </html>
