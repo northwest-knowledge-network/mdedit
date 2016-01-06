@@ -37,7 +37,7 @@ def start_servers(test=False):
 
     print "\n*** starting metadata server at localhost:4000 ***\n"
 
-    Popen("python manage.py runserver --port=4000",
+    Popen("python manage.py runserver --port=4000 --threaded",
           shell=True, stdout=None, stderr=None,
           preexec_fn=os.setsid)
 

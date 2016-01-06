@@ -67,7 +67,7 @@ class TestAPI(unittest.TestCase):
                     "summary": "Some good music",
                     "place_keywords": ["California", "Delta"],
                     "username": "local_user",
-                    "id": "{}"
+                    "_id": "{}"
                 }}
             }}
             """

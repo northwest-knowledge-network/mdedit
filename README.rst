@@ -163,6 +163,21 @@ End-to-end:
 
     ./startup.py e2e
 
+This particular test will produce a lot of output, but you'll know
+if it passes if at the bottom of all the output you see
+something like
+
+.. code-block::
+
+    10 specs, 0 failures
+    Finished in 32.821 seconds
+    Shutting down selenium standalone server.
+    [launcher] 0 instance(s) of WebDriver still running
+    [launcher] chrome #1 passed
+
+There may be a different number of specs and a different time to
+finish. The key is ``0 failures``.
+
 Angular Specifications:
 
 .. code-block:: bash
