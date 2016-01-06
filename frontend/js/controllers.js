@@ -71,11 +71,12 @@ metadataEditorApp.controller('BaseController',
               iso: [''],
               // aux, ie auxiliary, is a single text input write-in
               aux: ''
-            };
+            }
         };
 
         // initialize form with placeholder data for creating a new record
         $scope.createNewRecord();
+
 
         /**
          * On click of Load MILES Defaults button,
@@ -111,6 +112,8 @@ metadataEditorApp.controller('BaseController',
                     }
                 }
             }
+            //set geocode write-in box to be Idaho
+            $scope.options.bboxInput ='Idaho';
         };
 
 
@@ -123,12 +126,17 @@ metadataEditorApp.controller('BaseController',
             recordService.getRecordToEdit(recordId)
                 .success( (data) => {
                     $scope.newRecord = false;
+                    $log.log('in success callback')
 
                     updateForms($scope, data.record);
                 })
-                .error( error =>
-                    $scope.errors.push("Error in loading record to edit")
+                .error( (error) => {
+                    $scope.errors.push("Error in loading record to edit");
+                }
                 );
+
+             //set geocode write-in box to be blank (not sure yet if this works b/c edit is giving error)   
+            $scope.options.bboxInput = '';
         };
 
 
