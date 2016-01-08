@@ -48,7 +48,7 @@
 
                     <li>
                         <tr ng-repeat="record in allRecords">
-                            <td ng-attr-id="{{'record-list-type_' + $index}}">{{record.type | limitTo:10}}</td>
+                            <td ng-attr-id="{{'record-list-type_' + $index}}">{{record.schema_type | limitTo:20}}</td>
                             <td ng-attr-id="{{'record-list-title-' + $index}}">{{record.title | limitTo:20}}</td>
                             <td class="record-list-summary">{{record.summary | limitTo:30}}</td>
                             <td class="record-list-last-saved">{{record.last_mod_date.$date | date:'short'}}</td>
