@@ -61,7 +61,7 @@ metadataEditorApp.controller('BaseController',
 
         $scope.hierarchyLevels = formOptions.hierarchyLevels;
 
-        $scope.createNewISORecord = function() {
+        $scope.createNewRecord = function() {
 
             var freshISO = recordService.getFreshISORecord();
 
@@ -80,7 +80,7 @@ metadataEditorApp.controller('BaseController',
         };
 
         // initialize form with placeholder data for creating a new record
-        $scope.createNewISORecord();
+        $scope.createNewRecord();
 
         $scope.createNewDublinRecord = function() {
             var freshDC = recordService.getFreshDCRecord();
