@@ -178,6 +178,10 @@ def publish_metadata_record(_oid):
     str_id = str(record.id)
     iso = get_single_iso_metadata(str_id).data
 
+    # generate dc string
+    str_id_dc = str(record.id)
+    dc = get_single_dc_metadata(str_id_dc).data
+
     # save iso string to {_oid}/{_oid}.xml
     # if app.config['testing']:
     #     save_dir = config['testing'].PREPROD_DIRECTORY
