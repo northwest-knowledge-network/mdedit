@@ -27,6 +27,9 @@ class Metadata(db.Document):
     summary = db.StringField(max_length=3000)
     username = db.StringField(max_length=255, default="anonymous")
 
+    #to capture type of metadata record - right now iso or dublin core
+    schema_type = db.StringField(max_length=100)
+
     ## detailed info
     # detailed info lists
     topic_category = db.ListField(db.StringField(max_length=255))
