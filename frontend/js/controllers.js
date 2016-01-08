@@ -61,12 +61,12 @@ metadataEditorApp.controller('BaseController',
 
         $scope.hierarchyLevels = formOptions.hierarchyLevels;
 
-        $scope.createNewRecord = function() {
+        $scope.createNewISORecord = function() {
 
-            var fresh = recordService.getFreshRecord();
+            var freshISO = recordService.getFreshISORecord();
 
             $scope.newRecord = true;
-            $scope.currentRecord = fresh;
+            $scope.currentRecord = freshISO;
 
             //set geocode write-in box to be blank
             $scope.options.bboxInput ='';
@@ -80,7 +80,20 @@ metadataEditorApp.controller('BaseController',
         };
 
         // initialize form with placeholder data for creating a new record
-        $scope.createNewRecord();
+        $scope.createNewISORecord();
+
+        $scope.createNewDublinRecord = function() {
+            var freshDC = recordService.getFreshDCRecord();
+
+            $scope.newRecord = true;
+            $scope.currentRecord = freshDC;
+
+            //set geocode write-in box to be blank
+            $scope.options.bboxInput ='';
+
+        };
+
+        $scope.createNewDublinRecord();
 
 
         /**

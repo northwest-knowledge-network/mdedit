@@ -99,8 +99,9 @@ metadataEditorApp
         scope.currentRecord.thematic_keywords = record.thematic_keywords.join(', ');
     };
 }])
-.value('emptyRecord',
+.value('emptyISORecord',
 {
+    schema_type: 'iso',
     title: '',
     summary: '',
     last_mod_date: {$date: new Date(2010, 0, 1)},
@@ -135,6 +136,41 @@ metadataEditorApp
 
     start_date: {$date: new Date(2010, 0, 1)},
     end_date: {$date: new Date()}
+})
+.value('emptyDCRecord',
+{
+    schema_type: 'dc',
+    title: '',
+    summary: '',
+    last_mod_date: {$date: new Date(2010, 0, 1)},
+    first_pub_date: {$date: new Date()},
+
+    topic_category: [''],
+    place_keywords: '',
+    thematic_keywords: '',
+
+    data_format: [''],
+    compression_technique: '',
+    online: [''],
+    use_restrictions: '',
+
+    citation: [{
+      'name': '', 'email': '', 'org': '', 'address': '',
+      'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': ''
+    }],
+    access: [{
+      'name': '', 'email': '', 'org': '', 'address': '',
+      'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': ''
+    }],
+
+    west_lon: '',
+    east_lon: '',
+    north_lat: '',
+    south_lat: '',
+    
+    start_date: {$date: new Date(2010, 0, 1)},
+    end_date: {$date: new Date()}
+
 })
 .value('milesFields',
 {
@@ -178,9 +214,9 @@ metadataEditorApp
 })
 .service('recordService',
     ['$http', '$q', '$log', 'hostname', 'sessionId',
-            'emptyRecord', 'milesFields',
+            'emptyISORecord', 'emptyDCRecord', 'milesFields',
     function($http, $q, $log, hostname, sessionId,
-             emptyRecord, milesFields)
+             emptyISORecord, emptyDCRecord, milesFields)
     {
         /**
          * Private functions that will not be exposed to controller
@@ -245,11 +281,18 @@ metadataEditorApp
          * Return a cleared, newly instantiated
          * @return {[type]} [description]
          */
-        var getFreshRecord = function() {
+        var getFreshISORecord = function() {
 
-            var freshy = angular.copy(emptyRecord);
+            var freshyISO = angular.copy(emptyISORecord);
 
-            return freshy;
+            return freshyISO;
+        };
+
+        var getFreshDCRecord = function() {
+
+            var freshyDC = angular.copy(emptyDCRecord);
+
+            return freshyDC;
         };
 
         var getMilesDefaults = function() {
@@ -373,7 +416,8 @@ metadataEditorApp
         };
 
         return {
-            getFreshRecord: getFreshRecord,
+            getFreshISORecord: getFreshISORecord,
+            getFreshDCRecord: getFreshDCRecord,
             getMilesDefaults: getMilesDefaults,
             getRecordToEdit: getRecordToEdit,
             saveDraft: saveDraft,
