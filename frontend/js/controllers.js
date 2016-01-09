@@ -121,6 +121,16 @@ metadataEditorApp.controller('BaseController',
             $scope.options.bboxInput ='Idaho';
         };
 
+        /**
+         * Load NKN as the only data access contact
+         */
+        $scope.loadDefaultNKNAsDistributor = function () {
+
+            var nknContact = recordService.getNKNAsDistributor();
+
+            $scope.currentRecord.access[0] = nknContact;
+        };
+
 
         /**
          * Load a record that from the server and display fields in form
@@ -140,7 +150,7 @@ metadataEditorApp.controller('BaseController',
                 }
                 );
 
-             //set geocode write-in box to be blank 
+             //set geocode write-in box to be blank
             $scope.options.bboxInput = '';
         };
 

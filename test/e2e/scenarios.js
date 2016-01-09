@@ -15,15 +15,12 @@ var clearCollection = function () {
         var coll = db.collection(MD_COLLECTION);
 
         coll.drop({});
-
-        // coll.find({}).toArray(function(err, docs) {
-        //     console.log("\n**** This should be empty: ****\n");
-        //     console.dir(docs);
-        // });
     });
 };
 
+
 clearCollection();
+
 
 describe('ISO and Dublin Core editing views', function () {
 
@@ -435,6 +432,62 @@ describe('MILES Defaults', function () {
 
         expect(element(by.model('currentRecord.summary')).getAttribute('value'))
             .toBe('Another record of some other stuff');
+    });
+});
+
+
+describe('NKN as distributor', function () {
+
+    beforeEach(function () {
+        browser.get('/frontend/index.html');
+    });
+
+    it('should fill in the distributor as NKN', function() {
+
+        element(by.id('defaults-dropdown')).click();
+        element(by.css('[ng-click="loadDefaultNKNAsDistributor()"]')).click();
+
+        expect(element(by.id('access-name-0')).getAttribute('value'))
+            .toBe('Northwest Knowledge Network');
+
+        expect(element(by.id('access-email-0')).getAttribute('value'))
+            .toBe('info@northwestknowledge.net');
+
+        expect(element(by.id('access-org-0')).getAttribute('value'))
+            .toBe('University of Idaho');
+
+        expect(element(by.id('access-address-0')).getAttribute('value'))
+            .toBe('875 Perimeter Dr. MS 2358');
+
+        expect(element(by.id('access-city-0')).getAttribute('value'))
+            .toBe('Moscow');
+
+        expect(element(by.id('access-state-0')).getAttribute('value'))
+            .toBe('Idaho');
+
+        expect(element(by.id('access-zipcode-0')).getAttribute('value'))
+            .toBe('83844-2358');
+
+        expect(element(by.id('access-country-0')).getAttribute('value'))
+            .toBe('USA');
+
+        expect(element(by.id('access-phone-0')).getAttribute('value'))
+            .toBe('208-885-2080');
+    });
+
+    it('should not overwrite fields already present in a new record', function () {
+
+        element(by.model('currentRecord.title')).sendKeys('A new record');
+        element(by.model('currentRecord.summary')).sendKeys('the summary');
+
+        element(by.id('defaults-dropdown')).click();
+        element(by.css('[ng-click="loadDefaultNKNAsDistributor()"]')).click();
+
+        expect(element(by.model('currentRecord.title')).getAttribute('value'))
+            .toBe('A new record');
+
+        expect(element(by.model('currentRecord.summary')).getAttribute('value'))
+            .toBe('the summary');
     });
 });
 
