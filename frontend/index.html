@@ -40,6 +40,10 @@
 </head>
 
 <body>
+<div style="margin-left: 8em; margin-right: 6em">
+  <h4>With NKN's Metdata Editor you can create a valid ISO 19115 metadata record for your dataset or dataset series or a Dublin Core metadata record for your non-data research product (tool, visualization product, model, script, etc.). To get started, select the type of metadata record you would like to create in the dropdown Record Options above.</h4>
+</div>
+
 <div  id="bodyDiv">
 <div id="ngMain" ng-app="metadataEditor">
 
@@ -48,10 +52,9 @@
 <div ng-include="'partials/header.html'"></div>
 
 
-<div id="main-container" class="container">
-
-
-    <div ng-view></div>
+<!-- Below shows the metadata editor form, commented out so users have to select which type of record they want to create to get started. This code is now at the bottom of the header.html file
+  <div id="main-container" class="container">
+    <div ng-view></div>-->
 
 
 </div>
