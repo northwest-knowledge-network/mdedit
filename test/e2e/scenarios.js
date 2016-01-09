@@ -291,14 +291,21 @@ describe('Manage your metadata dropdown', function () {
         }
 
         // check spatial extent
-        expect(element(by.model('currentRecord.north_lat')).getAttribute('value'))
-            .toEqual(newRecord.north_lat);
-        expect(element(by.model('currentRecord.south_lat')).getAttribute('value'))
-            .toEqual(newRecord.south_lat);
-        expect(element(by.model('currentRecord.east_lon')).getAttribute('value'))
-            .toEqual(newRecord.east_lon);
-        expect(element(by.model('currentRecord.west_lon')).getAttribute('value'))
-            .toEqual(newRecord.west_lon);
+        var compareBboxVal = function (dir) {
+            var valPromise =
+                element(by.model('currentRecord.' + dir)).getAttribute('value');
+
+            valPromise.then(el => {
+
+                var val = parseFloat(el);
+                expect(val - parseFloat(newRecord[dir]))
+                    .toBeLessThan(0.000001);
+            });
+        };
+        compareBboxVal('north_lat');
+        compareBboxVal('south_lat');
+        compareBboxVal('east_lon');
+        compareBboxVal('west_lon');
 
         // check dates
         expect(element(by.model('currentRecord.start_date.$date')).getAttribute('value'))
@@ -345,40 +352,6 @@ describe('Manage your metadata dropdown', function () {
         expect(element(by.model('currentRecord.east_lon')).getText()).toEqual('');
         expect(element(by.model('currentRecord.west_lon')).getText()).toEqual('');
     });
-
-    it('should publish a record to the server with a valid form after save', function () {
-        element(by.id('record-options-dropdown')).click();
-        element(by.css('[ng-click="submitDraftRecord()"')).click();
-
-        element(by.id('record-options-dropdown')).click();
-        element(by.id('record-options-publish')).click().then( function() {
-            // this passes, but shouldn't!
-            setTimeout( () => {
-                var targetDir = __dirname + '/../../mdedit_preprod_test';
-                fs.readdir(targetDir, (err, files) => {
-                    // console.log('\n***** list target dir: ' + files + ' *****\n')
-                    expect(files.length).toBe(1);
-                    // expect(true).toBe(false);
-                });
-            }, 1000);
-        });
-    });
-
-    // it('should publish an unsaved record to the server', function () {
-    //     element(by.id('record-options-dropdown')).click();
-    //     element(by.css('[ng-click="publishRecord()"')).click();
-
-    //     // check that the file has been saved to the mdedit_preprod_test dir
-    //     fs.readdir('mdedit_preprod_test', (err, files) => {
-    //         console.log(files);
-    //         expect(files.length).toBe(1);
-    //         fs.readdir('mdedit_preprod_test/' + files[0],
-    //             (nextErr, nextFiles) => {
-
-    //             expect(files.length).toBe(1);
-    //         });
-    //     });
-    // });
 });
 
 
@@ -395,14 +368,28 @@ describe('MILES Defaults', function () {
         expect(element(by.model('currentRecord.thematic_keywords')).getAttribute('value'))
             .toBe('IIA-1301792, MILES, EPSCoR');
 
-        expect(element(by.model('currentRecord.north_lat')).getAttribute('value'))
-            .toBe('49.0011461');
-        expect(element(by.model('currentRecord.south_lat')).getAttribute('value'))
-            .toBe('41.9880051');
-        expect(element(by.model('currentRecord.east_lon')).getAttribute('value'))
-            .toBe('-111.043495');
-        expect(element(by.model('currentRecord.west_lon')).getAttribute('value'))
-            .toBe('-117.2413657');
+        // check spatial extent
+        var expectedBboxValues = {
+            north_lat: 49.0011461,
+            south_lat: 41.9880051,
+            west_lon: -117.2413657,
+            east_lon: -111.043495
+        };
+        var compareBboxVal = function (dir) {
+            var valPromise =
+                element(by.model('currentRecord.' + dir)).getAttribute('value');
+
+            valPromise.then(el => {
+
+                var val = parseFloat(el);
+                expect(val - expectedBboxValues[dir])
+                    .toBeLessThan(0.000001);
+            });
+        };
+        compareBboxVal('north_lat');
+        compareBboxVal('south_lat');
+        compareBboxVal('east_lon');
+        compareBboxVal('west_lon');
 
         expect(element(by.id('access-name-0')).getAttribute('value'))
             .toBe('Northwest Knowledge Network');
@@ -448,5 +435,43 @@ describe('MILES Defaults', function () {
 
         expect(element(by.model('currentRecord.summary')).getAttribute('value'))
             .toBe('Another record of some other stuff');
+    });
+});
+
+describe('Show/hide help', function () {
+
+    beforeEach(function () {
+        browser.get('/frontend/index.html');
+    });
+
+    it('should show \'Show Help', function () {
+        expect(element(by.buttonText('Show Help')).isPresent()).toBe(true);
+    });
+
+    it('should show the help when \'Show Help\' is clicked', function () {
+        element(by.id('showHelp')).click();
+
+        var help = element(by.id('help'));
+
+        var helpH5s = help.all(by.tagName('h5'));
+        expect(helpH5s.count()).toBe(2);
+
+        var helpDivs = help.all(by.tagName('div'));
+        // includes the help div itself
+        expect(helpDivs.count()).toBe(2);
+
+        expect(element(by.buttonText('Hide Help')).isPresent()).toBe(true);
+    });
+
+    it('should hide help after \'Hide Help\' is clicked', function () {
+
+        element(by.id('showHelp')).click();
+
+        element(by.id('hideHelp')).click();
+
+        var help = element(by.id('help'));
+        expect(help.isDisplayed()).toBe(false);
+
+        expect(element(by.buttonText('Show Help')).isPresent()).toBe(true);
     });
 });

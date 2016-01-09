@@ -126,12 +126,18 @@
         </li>
       </ul>
 
-      <form class="navbar-form navbar-right" role="search">
-        <div class="form-group">
-          <input type="text" class="form-control" placeholder="Search">
-        </div>
-        <button type="submit" class="btn btn-default">Help</button>
-      </form>
+    <div class="navbar-form navbar-right" role="search">
+        <button id="showHelp" ng-hide="baseCtrl.showHelp"
+                ng-click="baseCtrl.showHelp=true"
+                class="btn btn-default">
+            Show Help
+        </button>
+        <button id="hideHelp" ng-show="baseCtrl.showHelp"
+                ng-click="baseCtrl.showHelp=false"
+                class="btn btn-default">
+            Hide Help
+        </button>
+    </div>
 
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
