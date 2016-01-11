@@ -157,7 +157,6 @@ metadataEditorApp.controller('BaseController',
             $scope.options.bboxInput = '';
         };
 
-
         /**
          * On submit of metadata form, submitRecord. This both updates the server
          * and makes sure the form is current. Not sure how it wouldn't be, todo?
@@ -182,6 +181,13 @@ metadataEditorApp.controller('BaseController',
                 .error( function (data) {
                     // TODO
                 });
+        };
+
+        $scope.isISO = function(schemaType){
+            if (schemaType == 'Dataset (ISO)')
+                return true;
+            else
+                return false;
         };
 
 

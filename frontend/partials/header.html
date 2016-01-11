@@ -54,9 +54,18 @@
                             <td class="record-list-last-saved">{{record.last_mod_date.$date | date:'short'}}</td>
                             <td class="record-list-last-published">Never</td>
                             <td class="record-list-actions">
-                                <a ng-click="editRecord(record._id.$oid)"
+                                <a ng-show="isISO(record.schema_type)"
+                                   ng-click="editRecord(record._id.$oid)"
                                    class="btn btn-xs record-list-edit"
-                                   id="{{'edit-record-' + $index}}">
+                                   id="{{'edit-record-' + $index}}"
+                                   href="#/iso">
+                                   Edit
+                                </a>
+                                <a ng-show="!isISO(record.schema_type)"
+                                   ng-click="editRecord(record._id.$oid)"
+                                   class="btn btn-xs record-list-edit"
+                                   id="{{'edit-record-' + $index}}"
+                                   href="#/dublin">
                                    Edit
                                 </a> |
                                 <a href="#/iso" ng-click="publishRecord()"
