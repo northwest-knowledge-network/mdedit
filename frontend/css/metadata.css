@@ -34,6 +34,32 @@
     font-size: .7em;
 }
 
+input {
+  border-width: 3px;
+  border-style: solid;
+}
+
+textarea {
+  border-width: 3px;
+  border-style: solid;
+}
+
+input.ng-pristine {
+  border-style: none;
+}
+
+textarea.pristine {
+  border-style: none;
+}
+
+input.ng-touched.ng-valid {
+  border-color: #78C785;
+}
+
+textarea.ng-touched.ng-invalid {
+  border-color: #FA787E;
+}
+
 .attribute-label {
   color: #007acc;
 }

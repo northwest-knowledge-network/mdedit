@@ -68,7 +68,12 @@
                                    href="#/dublin">
                                    Edit
                                 </a> |
-                                <a href="#/iso" ng-click="publishRecord()"
+                                <a ng-show="isISO(record.schema_type)"
+                                   ng-click="publishRecord()"
+                                   class="btn btn-xs record-list-publish">Publish
+                                </a>
+                                <a ng-show="!isISO(record.schema_type)"
+                                   ng-click="publishRecord()"
                                    class="btn btn-xs record-list-publish">Publish
                                 </a>
                             </td>
@@ -89,7 +94,7 @@
 
                 <li><a class="btn btn-sm btn-default navbar-btn header-button"
                        id="create-new-dataset"
-                       ng-click="createNewRecord()"
+                       ng-click="createNewISORecord()"
                        href="#/iso">
                     Create new dataset record
                 </a></li>
