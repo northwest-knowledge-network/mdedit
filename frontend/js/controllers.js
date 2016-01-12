@@ -186,6 +186,7 @@ metadataEditorApp.controller('BaseController',
         /** Function to identify if the record is ISO or Dublin based on schema_type field
         used to execute same function but set condition before hand, using for Edit
         */
+        
         $scope.isISO = function(schemaType){
             if (schemaType == 'Dataset (ISO)')
                 return true;
