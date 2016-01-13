@@ -15,10 +15,10 @@ metadataEditorApp.controller('BaseController',
 
         $scope.options = {};
 
+        // export to XML
         var exportAddr = function(oid, xmlType) {
             return hostname + '/api/metadata/' + oid + '/' + xmlType;
         };
-
         $scope.export_ = function(type) {
             var oid = $scope.currentRecord._id.$oid;
 
@@ -94,7 +94,6 @@ metadataEditorApp.controller('BaseController',
 
         // initialize form with placeholder data for creating a new record
         $scope.createNewRecord();
-
 
         /**
          * On click of Load MILES Defaults button,

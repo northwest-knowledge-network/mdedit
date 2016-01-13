@@ -528,3 +528,41 @@ describe('Show/hide help', function () {
         expect(element(by.buttonText('Show Help')).isPresent()).toBe(true);
     });
 });
+
+
+describe('Export ISO', function () {
+
+    afterEach(() => {
+        clearCollection();
+    });
+
+    it('should open a new window properly', function () {
+
+        browser.get('/frontend/index.html');
+
+        element(by.model('currentRecord.title')).sendKeys('¡Pollo Loco!');
+        element(by.model('currentRecord.summary')).sendKeys('The craziest tasting Chicken!');
+
+        element(by.id('record-options-dropdown')).click().then( () =>
+            element(by.css('[ng-click="submitDraftRecord()"')).click()
+        );
+
+        element(by.id('export-dropdown')).click();
+        element(by.css('[ng-click="export_(\'iso\')"]')).click();
+        expect(browser.driver.getCurrentUrl()).toMatch(/iso/);
+    });
+});
+
+describe('Export options should show after a record has been saved', function () {
+    it('\'Export as...\' should be visible', function () {
+        browser.get('/frontend/index.html');
+
+        element(by.model('currentRecord.title')).sendKeys('¡Pollo Loco!');
+        element(by.model('currentRecord.summary')).sendKeys('The craziest tasting Chicken!');
+
+        element(by.id('record-options-dropdown')).click().then( () => {
+            element(by.css('[ng-click="submitDraftRecord()"')).click();
+            expect(element(by.id('export-dropdown')).isDisplayed()).toBeTruthy();
+        });
+    });
+});
