@@ -48,16 +48,48 @@ input.ng-pristine {
   border-style: none;
 }
 
-textarea.pristine {
+textarea.ng-pristine {
   border-style: none;
 }
 
-input.ng-touched.ng-valid {
-  border-color: #78C785;
+select.ng-pristine {
+  border-style: none;
+}
+
+input.ng-touched.ng-invalid {
+  border-color: #FA787E;
+  border-width: 3px;
+  border-style: solid;
 }
 
 textarea.ng-touched.ng-invalid {
   border-color: #FA787E;
+  border-width: 3px;
+  border-style: solid;
+}
+
+select.ng-touched.ng-invalid {
+  border-color: #FA787E;
+  border-width: 3px;
+  border-style: solid;
+}
+
+input.ng-not-empty.ng-valid {
+  border-color: #78C785;
+  border-width: 3px;
+  border-style: solid;
+}
+
+textarea.ng-not-empty.ng-valid {
+  border-color: #78C785;
+  border-width: 3px;
+  border-style: solid;
+}
+
+select.ng-dirty.ng-valid {
+  border-color: #78C785;
+  border-width: 3px;
+  border-style: solid;
 }
 
 .attribute-label {
