@@ -44,6 +44,10 @@ textarea {
   border-style: solid;
 }
 
+.ng-pristine.ng-invalid-required {
+    box-shadow: none;
+}
+
 input.ng-pristine {
   border-style: none;
 }
