@@ -369,7 +369,7 @@
                     <RoleCd value="002"/>
                 </role>
             </mdContact>
-            <mdDateSt><xsl:value-of select="/root/record/last_mod_date"/></mdDateSt>
+            <mdDateSt><xsl:value-of select="/root/record/md_pub_date"/></mdDateSt>
             <mdStanName>"ESRI-ISO"</mdStanName>
         </metadata>
     </xsl:template>
