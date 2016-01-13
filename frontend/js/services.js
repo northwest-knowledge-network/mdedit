@@ -26,6 +26,7 @@ metadataEditorApp
     if (typeof(window.hostname) === 'undefined')
     {
         hostname = 'localhost:4000';
+        // hostname = 'http://localhost:4000';
     }
     else
     {

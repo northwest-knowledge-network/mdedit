@@ -4,18 +4,31 @@
 // for minification, explicitly declare dependencies $scope and $http
 metadataEditorApp.controller('BaseController',
 
-    ['$scope', '$http', '$log', 'formOptions', 'updateForms', 'recordService',
-        'Geoprocessing', 'hostname',
+    ['$scope', '$http', '$log', '$window', 'formOptions', 'updateForms', 'recordService',
+        'Geoprocessing', 'hostname', 'sessionId',
 
-    function($scope, $http, $log, formOptions, updateForms,
-        recordService, Geoprocessing, hostname)
+    function($scope, $http, $log, $window, formOptions, updateForms,
+        recordService, Geoprocessing, hostname, sessionId)
     {
         // initialize list of existing metadata records
         $scope.allRecords = [];
 
         $scope.options = {};
 
-        $scope.hostname = hostname;
+        var exportAddr = function(oid, xmlType) {
+            return hostname + '/api/metadata/' + oid + '/' + xmlType;
+        };
+
+        $scope.export_ = function(type) {
+            var oid = $scope.currentRecord._id.$oid;
+
+            var prefix = '';
+            if (sessionId === 'local')
+            {
+                prefix = 'http://';
+            }
+            $window.open(prefix + exportAddr(oid, type));
+        };
 
         $scope.updateRecordsList = () => {
             recordService.list()
