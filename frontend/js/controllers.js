@@ -61,7 +61,7 @@ metadataEditorApp.controller('BaseController',
 
         $scope.hierarchyLevels = formOptions.hierarchyLevels;
 
-        $scope.createNewRecord = function() {
+        $scope.createNewISORecord = function() {
 
             var freshISO = recordService.getFreshISORecord();
 
