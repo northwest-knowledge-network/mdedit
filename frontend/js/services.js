@@ -106,6 +106,7 @@ metadataEditorApp
     summary: '',
     last_mod_date: {$date: new Date(2010, 0, 1)},
     first_pub_date: {$date: new Date()},
+    md_pub_date: {$date: new Date()},
 
     update_frequency: '',
     status: '',
@@ -137,6 +138,7 @@ metadataEditorApp
     start_date: {$date: new Date(2010, 0, 1)},
     end_date: {$date: new Date()}
 })
+
 .value('emptyDCRecord',
 {
     schema_type: 'Non-Dataset (Dublin Core)',
@@ -166,10 +168,7 @@ metadataEditorApp
     west_lon: '',
     east_lon: '',
     north_lat: '',
-    south_lat: '',
-
-    start_date: {$date: new Date(2010, 0, 1)},
-    end_date: {$date: new Date()}
+    south_lat: ''
 
 })
 .value('milesFields',
@@ -267,7 +266,8 @@ metadataEditorApp
                 record.first_pub_date.$date.getTime();
 
             serverReady.last_mod_date.$date = new Date().getTime();
-                // record.last_mod_date.$date.getTime();
+
+            serverReady.md_pub_date.$date = new Date().getTime();
 
             return serverReady;
         };
@@ -317,18 +317,6 @@ metadataEditorApp
                     .success(function(data)
                     {
                         record = data.record;
-                        if (typeof record.start_date == "undefined") {
-                            record.start_date = {$date: new Date(2010, 1, 1)};
-                        }
-                        if (typeof record.end_date == "undefined") {
-                            record.end_date = {$date: new Date()};
-                        }
-                        if (typeof record.last_mod_date == "undefined") {
-                            record.last_mod_date = {$date: new Date()};
-                        }
-                        if (typeof record.first_pub_date == "undefined") {
-                            record.first_pub_date = {$date: new Date()};
-                        }
                     }
             );
         };

@@ -35,6 +35,7 @@ from flask import request, jsonify, Response
 from flask import current_app as app
 from flask_cors import cross_origin
 from mongoengine import ValidationError
+from datetime import datetime
 
 from . import api
 from ..models import Metadata
@@ -175,6 +176,10 @@ def publish_metadata_record(_oid):
         record.save()
 
     if record.schema_type == 'Dataset (ISO)':
+        
+        #date published button last pressed
+        record.md_pub_date = datetime.now    
+
         # generate iso string
         str_id = str(record.id)
         iso = get_single_iso_metadata(str_id).data
@@ -198,6 +203,9 @@ def publish_metadata_record(_oid):
         return jsonify(record=record)
 
     else:
+        #date published button last pressed
+        record.md_pub_date = datetime.now    
+
         str_id = str(record.id)
         dc = get_single_dc_metadata(str_id).data
 

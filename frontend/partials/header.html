@@ -52,7 +52,7 @@
                             <td ng-attr-id="{{'record-list-title-' + $index}}">{{record.title | limitTo:20}}</td>
                             <td class="record-list-summary">{{record.summary | limitTo:30}}</td>
                             <td class="record-list-last-saved">{{record.last_mod_date.$date | date:'short'}}</td>
-                            <td class="record-list-last-published">Never</td>
+                            <td class="record-list-last-published">{{record.md_pub_date.$date | date:'short'}}</td>
                             <td class="record-list-actions">
                                 <a ng-show="isISO(record.schema_type)"
                                    ng-click="editRecord(record._id.$oid)"
