@@ -61,7 +61,7 @@ metadataEditorApp.controller('BaseController',
 
         $scope.hierarchyLevels = formOptions.hierarchyLevels;
 
-        $scope.createNewISORecord = function() {
+        $scope.createNewRecord = function() {
 
             var freshISO = recordService.getFreshISORecord();
 
@@ -318,7 +318,7 @@ metadataEditorApp.controller('BaseController',
 .controller('MapController',function($scope, $compile, NgMap)
   {
     var vm = this;
-    vm.ne, vm.sw, vm.center;
+    vm.ne, vm.sw, vm.center, vm.map;
     NgMap.getMap().then(function(map) {
         vm.map = map;
         if (vm.ne !== undefined)
