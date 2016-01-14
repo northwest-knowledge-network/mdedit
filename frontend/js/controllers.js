@@ -89,7 +89,7 @@ metadataEditorApp.controller('BaseController',
               iso: [''],
               // aux, ie auxiliary, is a single text input write-in
               aux: ''
-            }
+            };
         };
 
         // initialize form with placeholder data for creating a new record
@@ -169,7 +169,7 @@ metadataEditorApp.controller('BaseController',
 
         /**
          * On submit of metadata form, submitRecord. This both updates the server
-         * and makes sure the form is current. Not sure how it wouldn't be, todo?
+         * and makes sure the form is current.
          */
         $scope.submitDraftRecord = function() {
 
@@ -190,6 +190,31 @@ metadataEditorApp.controller('BaseController',
                 })
                 .error( function (data) {
                     // TODO
+                });
+        };
+
+
+        /**
+         * Delete a draft record.
+         *
+         * TODO: Currently there is no restriction on deleting
+         * published records, but we should restrict that in the future.
+         */
+        $scope.deleteById = function(recordId) {
+
+            if ($scope.currentRecord._id !== undefined) {
+                var currentRecordId = $scope.currentRecord._id.$oid;
+            }
+
+            // delete record, then if the currently loaded record's ID is
+            // identical to the one deleted, clear form and re-initialize
+            recordService.delete(recordId)
+                .success( function (res) {
+                    if (currentRecordId === recordId) {
+                        $scope.createNewRecord();
+                    }
+
+                    $scope.updateRecordsList();
                 });
         };
 
