@@ -71,8 +71,8 @@ textarea.ng-touched.ng-invalid {
   border-width: 3px;
   border-style: solid;
 }
-/* this one doesn't work */
-select.ng-untouched.ng-invalid {
+
+select.ng-touched.ng-invalid {
   border-color: #FA787E;
   border-width: 3px;
   border-style: solid;

@@ -105,8 +105,8 @@ metadataEditorApp
     title: '',
     summary: '',
     last_mod_date: {$date: new Date()},
-    first_pub_date: {$date: new Date(null)},
-    md_pub_date: {$date: new Date(null)},
+    first_pub_date: {$date:''},
+    md_pub_date: {$date:''},
 
     update_frequency: '',
     status: '',
@@ -135,8 +135,8 @@ metadataEditorApp
     north_lat: '',
     south_lat: '',
 
-    start_date: {$date: new Date(2010, 0, 1)},
-    end_date: {$date: new Date()}
+    start_date: {$date:''},
+    end_date: {$date:''}
 })
 
 .value('emptyDCRecord',
@@ -144,9 +144,9 @@ metadataEditorApp
     schema_type: 'Non-Dataset (Dublin Core)',
     title: '',
     summary: '',
-    last_mod_date: {$date: new Date(null)},
-    first_pub_date: {$date: new Date(null)},
-    md_pub_date: {$date: new Date(null)},
+    last_mod_date: {$date: new Date()},
+    first_pub_date: {$date:''},
+    md_pub_date: {$date:''},
 
     topic_category: [''],
     place_keywords: '',
