@@ -122,6 +122,65 @@ describe('Adding and removing contacts using buttons', function () {
     });
 });
 
+
+describe('Delete a metadata record', function() {
+
+    beforeEach( function () {
+        browser.get('/frontend/index.html');
+
+        element(by.model('currentRecord.title')).sendKeys('¡Pollo Loco!');
+        element(by.model('currentRecord.summary')).sendKeys('mmmm....chicken');
+
+        element(by.id('record-options-dropdown')).click();
+        element(by.css('[ng-click="submitDraftRecord()"]')).click();
+    });
+
+    afterEach(clearCollection);
+
+    it('should delete the saved record even if current record has no id (i.e. has not yet been saved as draft)',
+        function () {
+
+        var recordsList = element.all(by.repeater('record in allRecords'));
+        expect(recordsList.count()).toEqual(1);
+
+        element(by.id('manage-your-metadata-dropdown')).click();
+        element(by.id('delete-record-0')).click();
+
+        recordsList = element.all(by.repeater('record in allRecords'));
+        expect(recordsList.count()).toEqual(0);
+    });
+
+    it('should delete current record and load fresh form when record deleted', function() {
+        element(by.id('manage-your-metadata-dropdown')).click();
+        element(by.id('delete-record-0')).click();
+
+        element(by.model('currentRecord.title')).getAttribute('value').then( (val) => {
+            expect(val.trim()).toBe('');
+        });
+        element(by.model('currentRecord.summary')).getAttribute('value').then( (val) => {
+            expect(val.trim()).toBe('');
+        });
+    });
+
+    it('should delete non-current record while leaving currently loaded record intact', function () {
+        element(by.id('record-options-dropdown')).click();
+        element(by.id('create-new-dataset')).click();
+
+        element(by.model('currentRecord.title')).sendKeys('KFC');
+        var summary = 'Trust the colonel, you\'ll need a colonoscopy after a lifetime of eating KFC';
+        element(by.model('currentRecord.summary')).sendKeys(summary);
+
+        element(by.id('manage-your-metadata-dropdown')).click();
+        element(by.id('delete-record-0')).click();
+
+        expect(element(by.model('currentRecord.title')).getAttribute('value'))
+            .toBe('KFC');
+        expect(element(by.model('currentRecord.summary')).getAttribute('value'))
+            .toBe(summary);
+    });
+});
+
+
 describe('Manage your metadata dropdown', function () {
 
     var newRecord = {

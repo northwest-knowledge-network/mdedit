@@ -153,7 +153,6 @@ metadataEditorApp.controller('BaseController',
             recordService.getRecordToEdit(recordId)
                 .success( (data) => {
                     $scope.newRecord = false;
-                    $log.log('in success callback')
 
                     updateForms($scope, data.record);
                 })
@@ -215,6 +214,9 @@ metadataEditorApp.controller('BaseController',
                     }
 
                     $scope.updateRecordsList();
+                })
+                .error( function (res) {
+                    $log.log('yo in erroring out');
                 });
         };
 
