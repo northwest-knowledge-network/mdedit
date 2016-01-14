@@ -287,6 +287,52 @@ describe('Submit draft record to server', function () {
 });
 
 
+describe('Delete a record', function() {
+    var recordToEdit_noDates, recordToEdit_someFields, $httpBackend, $rootScope;
+
+    beforeEach(module('metadataEditor'));
+
+    beforeEach(
+        inject(function($injector) {
+            recordService = $injector.get('recordService');
+
+            // recordId will point the mock to the proper data to return
+            var recordId = 'noDates';
+
+
+            $httpBackend = $injector.get('$httpBackend');
+            // $rootScope = $injector.get('$rootScope');
+        })
+    );
+
+    afterEach(function() {
+        $httpBackend.verifyNoOutstandingExpectation();
+        $httpBackend.verifyNoOutstandingRequest();
+    });
+
+    it('should replace missing dates with default dates',
+    function()
+    {
+        var fieldsArr = ['start_date', 'end_date', 'last_mod_date', 'first_pub_date'];
+
+        $httpBackend.expectPOST(/delete/).respond(200,
+            {
+                message: 'Record successfully removed',
+                status: 'success'
+            }
+        );
+
+        recordService.delete('fakeOne')
+            .then( function (res) {
+                expect(res.data.message).toBe('Record successfully removed');
+                expect(res.data.status).toBe('success');
+            });
+
+        $httpBackend.flush();
+    });
+});
+
+
 describe('Initiate publishing process request to server', function () {
 
     var recordService, scope, emptyRecord, $httpBackend, $rootScope;
@@ -365,7 +411,7 @@ describe('Initiate publishing process request to server', function () {
 describe('Geoprocessing service', function () {
 
     var $httpBackend, $rootScope, Geoprocessing;
-    beforeEach(module('metadataEditor'))
+    beforeEach(module('metadataEditor'));
     beforeEach(
             inject(function($injector) {
 

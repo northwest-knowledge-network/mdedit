@@ -157,6 +157,18 @@ def get_single_metadata(_oid):
         return Response('Bad request for record with id ' + _oid, 400)
 
 
+@api.route('/api/metadata/<string:_oid>/delete', methods=['POST'])
+@cross_origin(origin='*', methods=['POST'],
+              headers=['X-Requested-With', 'Content-Type', 'Origin'])
+def delete_metadata_record(_oid):
+
+    md = Metadata.objects.get_or_404(pk=_oid)
+    md.delete()
+
+    return jsonify({'message': 'Record successfully removed',
+                    'status': 'success'})
+
+
 @api.route('/api/metadata/<string:_oid>/publish', methods=['POST'])
 @cross_origin(origin='*', methods=['POST'],
               headers=['X-Requested-With', 'Content-Type', 'Origin'])
@@ -178,13 +190,6 @@ def publish_metadata_record(_oid):
     str_id = str(record.id)
     iso = get_single_iso_metadata(str_id).data
 
-    # save iso string to {_oid}/{_oid}.xml
-    # if app.config['testing']:
-    #     save_dir = config['testing'].PREPROD_DIRECTORY
-    # else:
-    #     save_dir = config['default'].PREPROD_DIRECTORY
-
-    # print app.config
     save_dir = app.config['PREPROD_DIRECTORY']
 
     save_path = os.path.join(save_dir,

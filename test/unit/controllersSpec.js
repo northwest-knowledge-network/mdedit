@@ -8,6 +8,7 @@ var testScope = {
     }
 };
 
+
 describe('createNewRecord', function() {
 
     beforeEach(module('metadataEditor'));
@@ -131,6 +132,7 @@ describe('MILES defaults', function() {
         );
     });
 });
+
 
 describe('Edit existing record', function() {
     beforeEach(module('metadataEditor'));
@@ -298,6 +300,11 @@ describe('Save record as draft', function () {
         expect(testScope.newRecord).toEqual(false);
     });
 });
+
+
+describe('Delete existing record', function () {
+    // body...
+})
 
 
 describe('Publish record', function () {

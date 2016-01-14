@@ -133,24 +133,30 @@ class TestAPI(unittest.TestCase):
         assert data['place_keywords'] == ['Idaho', 'Pacific Northwest']
         assert data['thematic_keywords'] == ['limnology', 'batholith']
 
+    def test_delete(self):
+        """
+        Delete existing record successfully
+        """
+        md_to_delete = Metadata.from_json(
+            """
+                {"title": "Another one",
+                 "thematic_keywords": ["limnology", "batholith"],
+                 "place_keywords": ["Idaho", "Pacific Northwest"],
+                 "username": "local_user"}
+            """
+        )
+        md_to_delete.save()
 
-    # def test_get_user_contacts(self):
-    #     assert False
+        md_id = str(md_to_delete.id)
 
-    # def test_geocode(self):
-    #     assert False
+        assert md_id is not None
 
-    # def test_publish_record(self):
-    #     assert False
+        docList = Metadata.objects(__raw__={'_id': md_to_delete.id})
 
-    # def test_generic_xml(self):
-    #     assert False
+        assert len(docList) == 1
 
-    # def test_generate_iso(self):
-    #     assert False
+        self.client.post('/api/metadata/' + md_id + '/delete')
 
-    # def test_generate_dublin_core(self):
-    #     assert False
+        docList = Metadata.objects(__raw__={'_id': md_to_delete.id})
 
-    # def test_generate_esri(self):
-    #     assert False
+        assert len(docList) == 0

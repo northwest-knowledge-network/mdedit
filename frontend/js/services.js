@@ -309,6 +309,19 @@ metadataEditorApp
 
 
         /**
+         * Remove a draft record from the server. Does not effect published
+         * records.
+         *
+         * @param {String} _oid ObjectID of the record to be removed
+         * @returns {Promise}
+         */
+        var delete_ = function (recordId) {
+            return $http.post(
+                '//' + hostname + '/api/metadata/' + recordId + '/delete',
+                {'session_id': sessionId});
+        };
+
+        /**
          * Save a draft record to the server.
          *
          * @param {Object} scope Scope object from the controller. No
@@ -395,6 +408,7 @@ metadataEditorApp
             getNKNAsDistributor: getNKNAsDistributor,
             getRecordToEdit: getRecordToEdit,
             saveDraft: saveDraft,
+            delete: delete_,
             list: list,
             publish: publish
         };
