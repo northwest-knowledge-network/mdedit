@@ -64,14 +64,19 @@ metadataEditorApp
         }
 
         // these hours, minutes, seconds get put into broken out select boxes
-        record.start_date.hours = record.start_date.$date.getHours();
-        record.end_date.hours = record.end_date.$date.getHours();
+        if (record.start_date.$date != '')
+        {
+            record.start_date.hours = record.start_date.$date.getHours();
+            record.end_date.hours = record.end_date.$date.getHours();
 
-        record.start_date.minutes = record.start_date.$date.getMinutes();
-        record.end_date.minutes = record.end_date.$date.getMinutes();
+            record.start_date.minutes = record.start_date.$date.getMinutes();
+            record.end_date.minutes = record.end_date.$date.getMinutes();
 
-        record.start_date.seconds = record.start_date.$date.getSeconds();
-        record.end_date.seconds = record.end_date.$date.getSeconds();
+            record.start_date.seconds = record.start_date.$date.getSeconds();
+            record.end_date.seconds = record.end_date.$date.getSeconds();
+        }
+
+        
 
         scope.currentRecord = record;
         // This seems to be only for loading from the server.
@@ -257,12 +262,15 @@ metadataEditorApp
             }
 
             // getTime returns Unix epoch seconds (or ms, don't remember)
-            serverReady.start_date.$date =
-                record.start_date.$date.getTime();
+            if (record.start_date.$date != '')
+            {
+                serverReady.start_date.$date =
+                    record.start_date.$date.getTime();
 
-            serverReady.end_date.$date =
-                record.end_date.$date.getTime();
-
+                serverReady.end_date.$date =
+                    record.end_date.$date.getTime();
+            }
+            
             serverReady.first_pub_date.$date =
                 record.first_pub_date.$date.getTime();
 
