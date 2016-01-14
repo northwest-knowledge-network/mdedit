@@ -143,7 +143,7 @@ describe('Delete a metadata record', function() {
         var recordsList = element.all(by.repeater('record in allRecords'));
         expect(recordsList.count()).toEqual(1);
 
-        element(by.id('manage-your-metadata-dropdown')).click();
+        element(by.id('load-delete-record-dropdown')).click();
         element(by.id('delete-record-0')).click();
 
         recordsList = element.all(by.repeater('record in allRecords'));
@@ -151,7 +151,7 @@ describe('Delete a metadata record', function() {
     });
 
     it('should delete current record and load fresh form when record deleted', function() {
-        element(by.id('manage-your-metadata-dropdown')).click();
+        element(by.id('load-delete-record-dropdown')).click();
         element(by.id('delete-record-0')).click();
 
         element(by.model('currentRecord.title')).getAttribute('value').then( (val) => {
@@ -170,7 +170,7 @@ describe('Delete a metadata record', function() {
         var summary = 'Trust the colonel, you\'ll need a colonoscopy after a lifetime of eating KFC';
         element(by.model('currentRecord.summary')).sendKeys(summary);
 
-        element(by.id('manage-your-metadata-dropdown')).click();
+        element(by.id('load-delete-record-dropdown')).click();
         element(by.id('delete-record-0')).click();
 
         expect(element(by.model('currentRecord.title')).getAttribute('value'))
@@ -304,18 +304,18 @@ describe('Manage your metadata dropdown', function () {
         element(by.id('record-options-dropdown')).click();
         element(by.css('[ng-click="submitDraftRecord()"')).click();
 
-        element(by.id('manage-your-metadata-dropdown')).click();
+        element(by.id('load-delete-record-dropdown')).click();
 
         var recRows = element.all(by.repeater('record in allRecords'));
         expect(recRows.count()).toEqual(1);
 
-        element(by.id('manage-your-metadata-dropdown')).click();
+        element(by.id('load-delete-record-dropdown')).click();
 
         expect(element(by.id('record-list-title-0')).getAttribute("innerText"))
             .toEqual('Record One');
 
         // get a list of metadata records
-        element(by.id('manage-your-metadata-dropdown')).click();
+        element(by.id('load-delete-record-dropdown')).click();
         // click the first one in the list
         element(by.id('edit-record-0')).click();
         // check the title
