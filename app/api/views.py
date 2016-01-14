@@ -176,9 +176,6 @@ def publish_metadata_record(_oid):
         record.save()
 
     if record.schema_type == 'Dataset (ISO)':
-        
-        #date published button last pressed
-        record.md_pub_date = datetime.now    
 
         # generate iso string
         str_id = str(record.id)
@@ -203,8 +200,6 @@ def publish_metadata_record(_oid):
         return jsonify(record=record)
 
     else:
-        #date published button last pressed
-        record.md_pub_date = datetime.now    
 
         str_id = str(record.id)
         dc = get_single_dc_metadata(str_id).data
@@ -300,10 +295,13 @@ def get_single_xml_metadata(_oid):
 
     d_fmt = '%Y-%m-%d'
 
+    d_fmt1 = '%Y-%m-%d %I:%M %p GMT'
+
     json_rec['start_date'] = record.start_date.isoformat() + '.000Z'
     json_rec['end_date'] = record.end_date.isoformat() + '.000Z'
-    json_rec['last_mod_date'] = record.last_mod_date.strftime(d_fmt)
+    json_rec['last_mod_date'] = record.last_mod_date.strftime(d_fmt1)
     json_rec['first_pub_date'] = record.first_pub_date.strftime(d_fmt)
+    json_rec['md_pub_date'] = record.md_pub_date.strftime(d_fmt1)
 
     # for XSLT, need something inside of each <item> in this generic XML
     _enclose_word = lambda k: {'word': k}

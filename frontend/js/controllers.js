@@ -43,6 +43,7 @@ metadataEditorApp.controller('BaseController',
         };
 
         // create time picker vars
+
         $scope.hours = [];
         for (var i = 0; i < 24; i++)
         {

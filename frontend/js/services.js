@@ -104,9 +104,9 @@ metadataEditorApp
     schema_type: 'Dataset (ISO)',
     title: '',
     summary: '',
-    last_mod_date: {$date: new Date(2010, 0, 1)},
-    first_pub_date: {$date: new Date()},
-    md_pub_date: {$date: new Date()},
+    last_mod_date: {$date: new Date()},
+    first_pub_date: {$date: new Date(null)},
+    md_pub_date: {$date: new Date(null)},
 
     update_frequency: '',
     status: '',
@@ -144,8 +144,9 @@ metadataEditorApp
     schema_type: 'Non-Dataset (Dublin Core)',
     title: '',
     summary: '',
-    last_mod_date: {$date: new Date(2010, 0, 1)},
-    first_pub_date: {$date: new Date()},
+    last_mod_date: {$date: new Date(null)},
+    first_pub_date: {$date: new Date(null)},
+    md_pub_date: {$date: new Date(null)},
 
     topic_category: [''],
     place_keywords: '',
@@ -267,7 +268,7 @@ metadataEditorApp
 
             serverReady.last_mod_date.$date = new Date().getTime();
 
-            serverReady.md_pub_date.$date = new Date().getTime();
+            serverReady.md_pub_date.$date = new Date().getTime()
 
             return serverReady;
         };
@@ -379,6 +380,12 @@ metadataEditorApp
         var publish = function(scope)
         {
             var current = prepareRecordForSave(scope);
+
+            var record = current;
+
+            var serverReady = angular.copy(record);
+
+            serverReady.md_pub_date.$date = new Date().getTime();
 
             // there are two promises to work with:
             var draftQ;  // save draft promise
