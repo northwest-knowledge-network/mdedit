@@ -58,7 +58,9 @@
                                    id="{{'edit-record-' + $index}}">
                                    Load
                                 </a> |
-                                <a href="#/iso" class="btn btn-xs record-list-delete">
+                                <a ng-click="deleteById(record._id.$oid)"
+                                   class="btn btn-xs record-list-delete"
+                                   id="{{'delete-record-' + $index}}">
                                     Delete
                                 </a>
                             </td>

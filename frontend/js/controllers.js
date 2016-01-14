@@ -215,6 +215,9 @@ metadataEditorApp.controller('BaseController',
                     }
 
                     $scope.updateRecordsList();
+                })
+                .error( function (res) {
+                    $log.log('yo in erroring out');
                 });
         };
 

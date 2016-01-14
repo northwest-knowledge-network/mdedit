@@ -316,6 +316,7 @@ metadataEditorApp
          * @returns {Promise}
          */
         var delete_ = function (recordId) {
+            $log.log('ya, in delete');
             return $http.post(
                 '//' + hostname + '/api/metadata/' + recordId + '/delete',
                 {'session_id': sessionId});
