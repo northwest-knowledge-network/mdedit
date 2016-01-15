@@ -447,10 +447,11 @@ metadataEditorApp
 
             var serverReady = angular.copy(record);
 
-            if (record.hasOwnProperty('md_pub_date'))
+            if (serverReady.hasOwnProperty('md_pub_date'))
             {
                 serverReady.md_pub_date.$date = new Date().getTime();
             }
+            return serverReady;
 
             // there are two promises to work with:
             var draftQ;  // save draft promise
