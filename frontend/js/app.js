@@ -2,6 +2,9 @@
 
 var metadataEditorApp = angular
 .module('metadataEditor', ['ngRoute', 'ui.date', 'ngMap'])
+.config(function($compileProvider) {
+    // $compileProvider.aHrefSanitizationWhitelist(/localhost:/);
+})
 .constant('formOptions',  {
 
  	topicCategoryChoices: ['biota', 'boundaries',
@@ -71,5 +74,5 @@ var metadataEditorApp = angular
 ).constant('emptyContact', {
       'name': '', 'email': '', 'org': '', 'address': '',
       'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': ''
-    })
+})
 ;

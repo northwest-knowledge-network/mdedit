@@ -8,6 +8,7 @@ var testScope = {
     }
 };
 
+
 describe('createNewRecord', function() {
 
     beforeEach(module('metadataEditor'));
@@ -131,6 +132,7 @@ describe('MILES defaults', function() {
         );
     });
 });
+
 
 describe('Edit existing record', function() {
     beforeEach(module('metadataEditor'));
@@ -296,6 +298,74 @@ describe('Save record as draft', function () {
 
         expect(recordService.saveDraft).toHaveBeenCalled();
         expect(testScope.newRecord).toEqual(false);
+    });
+});
+
+
+ddescribe('Delete existing record', function () {
+    beforeEach(module('metadataEditor'));
+
+    var recordService, testCtrl, createController;
+    beforeEach(
+        inject(function($controller, $q, $rootScope, _recordService_) {
+            $rootScope = $rootScope;
+            recordService = _recordService_;
+
+            testCtrl = $controller('BaseController',
+                {$scope: testScope, recordService: recordService});
+
+            testScope.currentRecord.title = '¡Pollo Loco!';
+            testScope.currentRecord.summary = 'finger lickin good chicken, better than KFC?';
+        })
+    );
+
+    beforeEach(function() {
+        spyOn(recordService, 'delete').andReturn({
+
+            success: function(callback) {
+                var data = {};
+
+                callback(data);
+
+                return {
+                    error: function(callback) { return callback({}); }
+                };
+            }
+        });
+
+        // since createNew and updateRecords are tested, we can be confident
+        // they work properly; we only need to check that the delete service
+        // calls these as expected in the following scenarios
+        spyOn(testScope, 'createNewRecord');
+
+        spyOn(testScope, 'updateRecordsList');
+    });
+
+    it('should call recordService.delete even if currentRecord\'s id doesn\'t exist', function () {
+        testScope.deleteById('recordId');
+        expect(recordService.delete).toHaveBeenCalledWith('recordId');
+    });
+
+    it('should clear existing fields and create new record if the currently loaded recorded is the one deleted',
+        function () {
+        testScope.currentRecord._id = {$oid: 'pollo'};
+
+        testScope.deleteById('pollo');
+
+        expect(recordService.delete).toHaveBeenCalledWith('pollo');
+        expect(testScope.createNewRecord).toHaveBeenCalled();
+        expect(testScope.updateRecordsList).toHaveBeenCalled();
+    });
+
+    it('should remove the record from the list of records whether it\'s the current record or not',
+        function () {
+        testScope.currentRecord._id = {$oid: 'pollo'};
+
+        testScope.deleteById('al pastor');
+
+        expect(recordService.delete).toHaveBeenCalledWith('al pastor');
+        expect(testScope.updateRecordsList).toHaveBeenCalled();
+        expect(testScope.createNewRecord).not.toHaveBeenCalled();
     });
 });
 

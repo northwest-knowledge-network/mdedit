@@ -4,18 +4,31 @@
 // for minification, explicitly declare dependencies $scope and $http
 metadataEditorApp.controller('BaseController',
 
-    ['$scope', '$http', '$log', 'formOptions', 'updateForms', 'recordService',
-        'Geoprocessing', 'hostname',
+    ['$scope', '$http', '$log', '$window', 'formOptions', 'updateForms', 'recordService',
+        'Geoprocessing', 'hostname', 'sessionId',
 
-    function($scope, $http, $log, formOptions, updateForms,
-        recordService, Geoprocessing, hostname)
+    function($scope, $http, $log, $window, formOptions, updateForms,
+        recordService, Geoprocessing, hostname, sessionId)
     {
         // initialize list of existing metadata records
         $scope.allRecords = [];
 
         $scope.options = {};
 
-        $scope.hostname = hostname;
+        // export to XML
+        var exportAddr = function(oid, xmlType) {
+            return hostname + '/api/metadata/' + oid + '/' + xmlType;
+        };
+        $scope.export_ = function(type) {
+            var oid = $scope.currentRecord._id.$oid;
+
+            var prefix = '';
+            if (sessionId === 'local')
+            {
+                prefix = 'http://';
+            }
+            $window.open(prefix + exportAddr(oid, type));
+        };
 
         $scope.updateRecordsList = () => {
             recordService.list()
@@ -76,12 +89,11 @@ metadataEditorApp.controller('BaseController',
               iso: [''],
               // aux, ie auxiliary, is a single text input write-in
               aux: ''
-            }
+            };
         };
 
         // initialize form with placeholder data for creating a new record
         $scope.createNewRecord();
-
 
         /**
          * On click of Load MILES Defaults button,
@@ -121,6 +133,16 @@ metadataEditorApp.controller('BaseController',
             $scope.options.bboxInput ='Idaho';
         };
 
+        /**
+         * Load NKN as the only data access contact
+         */
+        $scope.loadDefaultNKNAsDistributor = function () {
+
+            var nknContact = recordService.getNKNAsDistributor();
+
+            $scope.currentRecord.access[0] = nknContact;
+        };
+
 
         /**
          * Load a record that from the server and display fields in form
@@ -131,7 +153,6 @@ metadataEditorApp.controller('BaseController',
             recordService.getRecordToEdit(recordId)
                 .success( (data) => {
                     $scope.newRecord = false;
-                    $log.log('in success callback')
 
                     updateForms($scope, data.record);
                 })
@@ -140,14 +161,14 @@ metadataEditorApp.controller('BaseController',
                 }
                 );
 
-             //set geocode write-in box to be blank 
+             //set geocode write-in box to be blank
             $scope.options.bboxInput = '';
         };
 
 
         /**
          * On submit of metadata form, submitRecord. This both updates the server
-         * and makes sure the form is current. Not sure how it wouldn't be, todo?
+         * and makes sure the form is current.
          */
         $scope.submitDraftRecord = function() {
 
@@ -168,6 +189,34 @@ metadataEditorApp.controller('BaseController',
                 })
                 .error( function (data) {
                     // TODO
+                });
+        };
+
+
+        /**
+         * Delete a draft record.
+         *
+         * TODO: Currently there is no restriction on deleting
+         * published records, but we should restrict that in the future.
+         */
+        $scope.deleteById = function(recordId) {
+
+            if ($scope.currentRecord._id !== undefined) {
+                var currentRecordId = $scope.currentRecord._id.$oid;
+            }
+
+            // delete record, then if the currently loaded record's ID is
+            // identical to the one deleted, clear form and re-initialize
+            recordService.delete(recordId)
+                .success( function (res) {
+                    if (currentRecordId === recordId) {
+                        $scope.createNewRecord();
+                    }
+
+                    $scope.updateRecordsList();
+                })
+                .error( function (res) {
+                    $log.log('yo in erroring out');
                 });
         };
 
