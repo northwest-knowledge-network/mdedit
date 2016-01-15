@@ -67,7 +67,8 @@ metadataEditorApp
         }
 
         // these hours, minutes, seconds get put into broken out select boxes
-        if (record.start_date.$date != '')
+
+        if (record.hasOwnProperty('start_date') && record.start_date.$date != '')
         {
             record.start_date.hours = record.start_date.$date.getHours();
        
@@ -76,7 +77,7 @@ metadataEditorApp
             record.start_date.seconds = record.start_date.$date.getSeconds();
         }
 
-        if (record.end_date.$date != '')
+        if (record.hasOwnProperty('end_date') &&record.end_date.$date != '')
         {
             record.end_date.hours = record.end_date.$date.getHours();
 
