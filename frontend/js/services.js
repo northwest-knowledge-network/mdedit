@@ -253,27 +253,35 @@ metadataEditorApp
             var serverReady = angular.copy(record);
 
             // server requires list of strings
-            serverReady.place_keywords =
-                serverReady.place_keywords.split(',')
-                    .map(el => el.trim());
 
-            serverReady.thematic_keywords =
-                serverReady.thematic_keywords.split(',')
-                    .map(el => el.trim());
+            if (typeof record.place_keywords !== "undefined")
+            
+                serverReady.place_keywords =
+                    serverReady.place_keywords.split(',')
+                        .map(el => el.trim());
 
-            serverReady.data_format = scope.dataFormats.iso;
+            if (typeof record.thematic_keywords !== "undefined")
 
-            if (scope.dataFormats.aux)
+                serverReady.thematic_keywords =
+                    serverReady.thematic_keywords.split(',')
+                        .map(el => el.trim());
+
+            if (typeof record.data_format !== "undefined")
+
+                serverReady.data_format = scope.dataFormats.iso;
+
+            if (scope.dataFormats.aux && typeof record.dateFormats !== "undefined")
             {
-              var auxList = scope.dataFormats.aux.split(',')
+                var auxList = scope.dataFormats.aux.split(',')
                                  .map(el => el.trim());
 
-              serverReady.data_format =
-                serverReady.data_format.concat(auxList);
+                serverReady.data_format =
+                    serverReady.data_format.concat(auxList);
             }
 
             // getTime returns Unix epoch seconds (or ms, don't remember)
-            if (record.start_date.$date != '' && typeof record.start_pub_date.$date !== "undefined")
+            if (record.hasOwnProperty('start_date') && record.start_date.$date != '' 
+                && typeof record.start_date.$date !== "undefined")
             {
                 serverReady.start_date.$date =
                     record.start_date.$date.getTime();
@@ -284,7 +292,8 @@ metadataEditorApp
                 delete serverReady.start_date;
             }
             
-            if (record.end_date.$date != '' && typeof record.end_pub_date.$date !== "undefined")
+            if (record.hasOwnProperty('end_date') && record.end_date.$date != '' 
+                && typeof record.end_date.$date !== "undefined")
             {
 
                 serverReady.end_date.$date =
@@ -293,10 +302,11 @@ metadataEditorApp
 
             else
             {
-                delete serverReady.start_date;
                 delete serverReady.end_date;
             }
-            if (record.first_pub_date.$date != '' && typeof record.first_pub_date.$date !== "undefined")
+
+            if (record.hasOwnProperty('first_pub_date') && record.first_pub_date.$date != '' 
+                && typeof record.first_pub_date.$date !== "undefined")
             {
                 serverReady.first_pub_date.$date =
                     record.first_pub_date.$date.getTime();
@@ -306,20 +316,9 @@ metadataEditorApp
             {
                 delete serverReady.first_pub_date;
             }
-                
-            if (record.md_pub_date.$date !='' && typeof record.md_pub_date.$date !== "undefined")
-            {
-                serverReady.md_pub_date.$date = record.md_pub_date.$date;
-            }
-
-            else
-            {
-                delete serverReady.md_pub_date;
-            }
 
 
             serverReady.last_mod_date.$date = new Date().getTime();
-
 
             return serverReady;
         };
@@ -436,7 +435,10 @@ metadataEditorApp
 
             var serverReady = angular.copy(record);
 
-            serverReady.md_pub_date.$date = new Date().getTime();
+            if (record.hasOwnProperty('md_pub_date'))
+            {
+                serverReady.md_pub_date.$date = new Date().getTime();
+            }
 
             // there are two promises to work with:
             var draftQ;  // save draft promise
