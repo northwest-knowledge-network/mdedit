@@ -63,7 +63,7 @@ metadataEditorApp
             {
                 record[dateFields[idx]].$date =
                     new Date(record[dateFields[idx]].$date);
-            }                
+            }
         }
 
         // these hours, minutes, seconds get put into broken out select boxes
@@ -71,9 +71,9 @@ metadataEditorApp
         if (record.hasOwnProperty('start_date') && record.start_date.$date != '')
         {
             record.start_date.hours = record.start_date.$date.getHours();
-       
+
             record.start_date.minutes = record.start_date.$date.getMinutes();
-            
+
             record.start_date.seconds = record.start_date.$date.getSeconds();
         }
 
@@ -255,7 +255,7 @@ metadataEditorApp
             // server requires list of strings
 
             if (typeof record.place_keywords !== "undefined")
-            
+
                 serverReady.place_keywords =
                     serverReady.place_keywords.split(',')
                         .map(el => el.trim());
@@ -280,7 +280,7 @@ metadataEditorApp
             }
 
             // getTime returns Unix epoch seconds (or ms, don't remember)
-            if (record.hasOwnProperty('start_date') && record.start_date.$date != '' 
+            if (record.hasOwnProperty('start_date') && record.start_date.$date != ''
                 && typeof record.start_date.$date !== "undefined")
             {
                 serverReady.start_date.$date =
@@ -291,8 +291,8 @@ metadataEditorApp
             {
                 delete serverReady.start_date;
             }
-            
-            if (record.hasOwnProperty('end_date') && record.end_date.$date != '' 
+
+            if (record.hasOwnProperty('end_date') && record.end_date.$date != ''
                 && typeof record.end_date.$date !== "undefined")
             {
 
@@ -305,7 +305,7 @@ metadataEditorApp
                 delete serverReady.end_date;
             }
 
-            if (record.hasOwnProperty('first_pub_date') && record.first_pub_date.$date != '' 
+            if (record.hasOwnProperty('first_pub_date') && record.first_pub_date.$date != ''
                 && typeof record.first_pub_date.$date !== "undefined")
             {
                 serverReady.first_pub_date.$date =
@@ -317,7 +317,7 @@ metadataEditorApp
                 delete serverReady.first_pub_date;
             }
 
-            if (record.hasOwnProperty('md_pub_date') && record.md_pub_date.$date != '' 
+            if (record.hasOwnProperty('md_pub_date') && record.md_pub_date.$date != ''
                 && typeof record.md_pub_date.$date !== "undefined")
             {
                 serverReady.md_pub_date.$date =
@@ -447,33 +447,24 @@ metadataEditorApp
 
             var serverReady = angular.copy(record);
 
-            if (serverReady.hasOwnProperty('md_pub_date'))
+            if (current.hasOwnProperty('md_pub_date'))
             {
-                serverReady.md_pub_date.$date = new Date().getTime();
+                current.md_pub_date.$date = new Date().getTime();
             }
-            return serverReady;
+            else
+            {
+                current.md_pub_date = {$date: new Date().getTime()};
+            }
 
-            // there are two promises to work with:
-            var draftQ;  // save draft promise
-            var publishQ;  // publish promise, returned from `publish` call
-            var q;
+            // do this sync
+            saveDraft(scope);
 
-            draftQ = saveDraft(scope);
+            var currentId = scope.currentRecord._id.$oid;
 
-            // this is a little wasteful to send the record back to server,
-            // but probably not consequential
-            // draftQ
-            //     .success(() => {
-                    var currentId = scope.currentRecord._id.$oid;
-
-                    q = $http.post(
-                        '//' + hostname + '/api/metadata/' +
-                            currentId + '/publish',
-                        current);
-                // });
-                // .error(() => { $log.log('error!!!'); publishQ = draftQ; });
-
-            return q;
+            return $http.post(
+                '//' + hostname + '/api/metadata/' +
+                    currentId + '/publish',
+                current);
         };
 
         return {
