@@ -55,28 +55,35 @@ metadataEditorApp
         * epoch seconds.
         */
         var dateFields =
-            ['start_date', 'end_date', 'last_mod_date', 'first_pub_date'];
+            ['start_date', 'end_date', 'last_mod_date', 'first_pub_date', 'md_pub_date'];
 
         for (var idx = 0; idx < dateFields.length; idx++)
         {
-            record[dateFields[idx]].$date =
-                new Date(record[dateFields[idx]].$date);
+            if (record.hasOwnProperty(dateFields[idx]))
+            {
+                record[dateFields[idx]].$date =
+                    new Date(record[dateFields[idx]].$date);
+            }                
         }
 
         // these hours, minutes, seconds get put into broken out select boxes
         if (record.start_date.$date != '')
         {
             record.start_date.hours = record.start_date.$date.getHours();
-            record.end_date.hours = record.end_date.$date.getHours();
-
+       
             record.start_date.minutes = record.start_date.$date.getMinutes();
-            record.end_date.minutes = record.end_date.$date.getMinutes();
-
+            
             record.start_date.seconds = record.start_date.$date.getSeconds();
-            record.end_date.seconds = record.end_date.$date.getSeconds();
         }
 
-        
+        if (record.end_date.$date != '')
+        {
+            record.end_date.hours = record.end_date.$date.getHours();
+
+            record.end_date.minutes = record.end_date.$date.getMinutes();
+
+            record.end_date.seconds = record.end_date.$date.getSeconds();
+        }
 
         scope.currentRecord = record;
         // This seems to be only for loading from the server.
@@ -174,7 +181,10 @@ metadataEditorApp
     west_lon: '',
     east_lon: '',
     north_lat: '',
-    south_lat: ''
+    south_lat: '',
+
+    start_date: {$date:''},
+    end_date: {$date:''}
 
 })
 .value('milesFields',
@@ -262,21 +272,53 @@ metadataEditorApp
             }
 
             // getTime returns Unix epoch seconds (or ms, don't remember)
-            if (record.start_date.$date != '')
+            if (record.start_date.$date != '' && typeof record.start_pub_date.$date !== "undefined")
             {
                 serverReady.start_date.$date =
                     record.start_date.$date.getTime();
+            }
+
+            else
+            {
+                delete serverReady.start_date;
+            }
+            
+            if (record.end_date.$date != '' && typeof record.end_pub_date.$date !== "undefined")
+            {
 
                 serverReady.end_date.$date =
                     record.end_date.$date.getTime();
             }
-            
-            serverReady.first_pub_date.$date =
-                record.first_pub_date.$date.getTime();
+
+            else
+            {
+                delete serverReady.start_date;
+                delete serverReady.end_date;
+            }
+            if (record.first_pub_date.$date != '' && typeof record.first_pub_date.$date !== "undefined")
+            {
+                serverReady.first_pub_date.$date =
+                    record.first_pub_date.$date.getTime();
+            }
+
+            else
+            {
+                delete serverReady.first_pub_date;
+            }
+                
+            if (record.md_pub_date.$date !='' && typeof record.md_pub_date.$date !== "undefined")
+            {
+                serverReady.md_pub_date.$date = record.md_pub_date.$date;
+            }
+
+            else
+            {
+                delete serverReady.md_pub_date;
+            }
+
 
             serverReady.last_mod_date.$date = new Date().getTime();
 
-            serverReady.md_pub_date.$date = new Date().getTime()
 
             return serverReady;
         };
