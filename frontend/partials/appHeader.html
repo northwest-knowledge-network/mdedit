@@ -8,11 +8,18 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
+
+      <div class="container-fluid">
+        <!--<div class="navbar-form navbar-right" role="search">-->
+            <a class="navbar-brand" style="position:absolute;">NKN Metadata Editor</a>
+        <!--</div>-->
+      </div>
+
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav">
+      <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
             <a id="load-delete-record-dropdown" class="dropdown-toggle"
                data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
@@ -166,19 +173,6 @@
         </li>
 
       </ul>
-
-    <div class="navbar-form navbar-right" role="search">
-        <button id="showHelp" ng-hide="baseCtrl.showHelp"
-                ng-click="baseCtrl.showHelp=true"
-                class="btn btn-default">
-            Show Help
-        </button>
-        <button id="hideHelp" ng-show="baseCtrl.showHelp"
-                ng-click="baseCtrl.showHelp=false"
-                class="btn btn-default">
-            Hide Help
-        </button>
-    </div>
 
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
