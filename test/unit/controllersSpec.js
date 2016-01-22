@@ -302,7 +302,7 @@ describe('Save record as draft', function () {
 });
 
 
-ddescribe('Delete existing record', function () {
+describe('Delete existing record', function () {
     beforeEach(module('metadataEditor'));
 
     var recordService, testCtrl, createController;
