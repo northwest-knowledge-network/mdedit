@@ -211,14 +211,11 @@ div.centered-container>div {
   margin-right: -50%;
   transform: translate(-50%, -50%);
 }
+
 div.centered-container>div>h4 {
   margin-top: 50px;
 }
-/*div.centered-container>input {*/
-  /*margin: 0;*/
-  /*position: absolute;*/
-  /*top: 50%;*/
-  /*left: 50%;*/
-  /*margin-right: -50%;*/
-  /*transform: translate(-50%, -50%);*/
-/*}*/
+
+a.dropdown-toggle, a.btn {
+    cursor: pointer;
+}

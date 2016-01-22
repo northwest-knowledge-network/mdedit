@@ -38,26 +38,35 @@
 </head>
 
 <body>
-<div style="margin-left: 8em; margin-right: 6em">
-  <h4><p>With NKN's Metdata Editor you can create a valid ISO 19115 metadata record for your dataset or dataset series or a Dublin Core metadata record for your non-data research product (tool, visualization product, model, script, etc.). To get started, select the type of metadata record you would like to create in the dropdown Record Options above.</p>
-    <p><strong>NOTE:</strong> You must complete all requred fields and will need to Save your record before you can Publish it.</p>
-  </h4>
-</div>
 
-<div  id="bodyDiv">
-<div id="ngMain" ng-app="metadataEditor">
+    <div style="margin-left: 8em; margin-right: 6em">
+      <h4>
+        <p>
+            With NKN's Metdata Editor you can create a valid ISO 19115 
+            metadata record for your dataset or dataset series or a Dublin Core 
+            metadata record for your non-data research product (tool, 
+            visualization product, model, script, etc.). To get started, 
+            select the type of metadata record you would like to create in the 
+            dropdown Record Options above.
+        </p>
+        <p>
+            <strong>NOTE:</strong> You must complete all requred fields and 
+            will need to Save your record before you can Publish it.
+        </p>
+      </h4>
+    </div>
 
-<div ng-controller="BaseController as baseCtrl">
+    <div  id="bodyDiv">
+        <div id="ngMain" ng-app="metadataEditor">
 
-<div ng-include="'partials/header.html'"></div>
+        <div ng-controller="BaseController as baseCtrl">
 
-
-<!-- Below shows the metadata editor form, commented out so users have to select which type of record they want to create to get started. This code is now at the bottom of the header.html file
-  <div id="main-container" class="container">
-    <div ng-view></div>-->
+        <div ng-include="'partials/appHeader.html'"></div>
 
 
-</div>
-</div>
+        <div id="main-container" class="container">
+            <div ng-view></div>
+        </div>
+    </div>
 </body>
 </html>
