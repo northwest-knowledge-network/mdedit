@@ -13,7 +13,7 @@ class Config:
     MONGODB_SETTINGS = {'db': 'mdedit'}
 
     PREPROD_DIRECTORY = (os.environ.get('MDEDIT_PREPROD_DIRECTORY') or
-                          'local-preprod-directory')
+                         'local-preprod-directory')
 
     if not os.path.exists(PREPROD_DIRECTORY):
         os.makedirs(PREPROD_DIRECTORY)

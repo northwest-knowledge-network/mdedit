@@ -1,6 +1,6 @@
 'use strict';
 
-var recordService, freshness, yo, emptyContact, emptyRecord;
+var recordService, freshness, yo, emptyContact, emptyISORecord;
 
 describe('inspect correctness of a fresh record from recordService', function () {
 
@@ -11,18 +11,18 @@ describe('inspect correctness of a fresh record from recordService', function ()
             recordService = $injector.get('recordService');
             emptyContact = $injector.get('emptyContact');
 
-            emptyRecord = recordService.getFreshRecord();
+            emptyISORecord = recordService.getFreshISORecord();
         })
     );
 
     it('should have a single, empty contact for access and citation contacts',
         function()
         {
-            expect(emptyRecord.access.length).toEqual(1);
-            expect(emptyRecord.access[0]).toEqual(emptyContact);
+            expect(emptyISORecord.access.length).toEqual(1);
+            expect(emptyISORecord.access[0]).toEqual(emptyContact);
 
-            expect(emptyRecord.citation.length).toEqual(1);
-            expect(emptyRecord.citation[0]).toEqual(emptyContact);
+            expect(emptyISORecord.citation.length).toEqual(1);
+            expect(emptyISORecord.citation[0]).toEqual(emptyContact);
         }
     );
 
@@ -38,7 +38,7 @@ describe('inspect correctness of a fresh record from recordService', function ()
 
             for (var i=0; i < fieldsArr.length; i++)
             {
-                expect(emptyRecord[fieldsArr[i]]).toEqual(['']);
+                expect(emptyISORecord[fieldsArr[i]]).toEqual(['']);
                 j++;
             }
 
@@ -61,7 +61,7 @@ describe('inspect correctness of a fresh record from recordService', function ()
             var j = 0;
             for (var i=0; i < fieldsArr.length; i++)
             {
-                expect(emptyRecord[fieldsArr[i]]).toEqual('');
+                expect(emptyISORecord[fieldsArr[i]]).toEqual('');
                 j++;
             }
 
@@ -77,14 +77,15 @@ describe('inspect correctness of a fresh record from recordService', function ()
             var expDate = new Date(2010, 0, 1);
             // expDate = expDate.toISOString();
 
-            expect(emptyRecord.last_mod_date.$date).toEqual(expDate);
-
-            expect(emptyRecord.first_pub_date.$date.getTime() -
-                   new Date().getTime() <
-                   100)
+            expect(emptyISORecord.last_mod_date.$date.getTime() -
+                   new Date().getTime() < 100)
                 .toBeTruthy();
 
-            expect(emptyRecord.start_date.$date).toEqual(new Date(2010, 0, 1));
+
+            expect(emptyISORecord.first_pub_date.$date).toEqual('');
+
+            expect(emptyISORecord.start_date.$date).toEqual('');
+            expect(emptyISORecord.end_date.$date).toEqual('');
         }
     );
 }
@@ -145,45 +146,6 @@ describe('Service to provide an existing record for editing', function() {
         $httpBackend.verifyNoOutstandingRequest();
     });
 
-    it('should replace missing dates with default dates',
-    function()
-    {
-        var fieldsArr = ['start_date', 'end_date', 'last_mod_date', 'first_pub_date'];
-
-        $httpBackend.expectPOST(/noDates/).respond(200,
-            {
-                record:
-                {
-                    title: "Title of something",
-                    description: "A description"
-                }
-            }
-        );
-
-        $rootScope.$digest();
-
-        var j = 0;
-        recordService.getRecordToEdit('noDates')
-            .then(function(data)
-            {
-                recordToEdit_noDates = data.data.record;
-
-                for (var i = 0; i < fieldsArr.length; i++)
-                {
-                    expect(recordToEdit_noDates[fieldsArr[i]].$date)
-                        .toEqual(jasmine.any(Date));
-
-                    j++;
-                }
-                expect(j).toEqual(fieldsArr.length);
-
-                expect(recordToEdit_noDates.title).toEqual('Title of something');
-                expect(recordToEdit_noDates.description).toEqual('A description');
-            });
-
-        $httpBackend.flush();
-    });
-
     it('should not overwrite non-MILES fields', function()
     {
         $httpBackend.expectPOST(/someFields/).respond(200,
@@ -222,7 +184,7 @@ describe('Service to provide an existing record for editing', function() {
 
 describe('Submit draft record to server', function () {
 
-    var recordService, scope, emptyRecord, $httpBackend, $rootScope;
+    var recordService, scope, emptyISORecord, $httpBackend, $rootScope;
 
     beforeEach(module('metadataEditor'));
 
@@ -237,7 +199,7 @@ describe('Submit draft record to server', function () {
             $rootScope = $injector.get('$rootScope');
 
             scope = {
-                currentRecord: $injector.get('emptyRecord'),
+                currentRecord: $injector.get('emptyISORecord'),
                 dataFormats: {
                     iso: ['ASCII', 'GML', 'HDF'],
                     aux: 'snoop, lion, dogg'
@@ -245,7 +207,7 @@ describe('Submit draft record to server', function () {
             };
 
             // coming from the scope, the place and thematic keywords are
-            // comma-separated lists, unlike the emptyRecord `value`
+            // comma-separated lists, unlike the emptyISORecord `value`
             scope.currentRecord.thematic_keywords = 'rocks, jocks';
             scope.currentRecord.place_keywords = 'idaho, moscow';
             scope.currentRecord.west_lon = -118.12;
@@ -287,9 +249,55 @@ describe('Submit draft record to server', function () {
 });
 
 
+describe('Delete a record', function() {
+    var recordToEdit_noDates, recordToEdit_someFields, $httpBackend, $rootScope;
+
+    beforeEach(module('metadataEditor'));
+
+    beforeEach(
+        inject(function($injector) {
+            recordService = $injector.get('recordService');
+
+            // recordId will point the mock to the proper data to return
+            var recordId = 'noDates';
+
+
+            $httpBackend = $injector.get('$httpBackend');
+            // $rootScope = $injector.get('$rootScope');
+        })
+    );
+
+    afterEach(function() {
+        $httpBackend.verifyNoOutstandingExpectation();
+        $httpBackend.verifyNoOutstandingRequest();
+    });
+
+    it('should replace missing dates with default dates',
+    function()
+    {
+        var fieldsArr = ['start_date', 'end_date', 'last_mod_date', 'first_pub_date'];
+
+        $httpBackend.expectPOST(/delete/).respond(200,
+            {
+                message: 'Record successfully removed',
+                status: 'success'
+            }
+        );
+
+        recordService.delete('fakeOne')
+            .then( function (res) {
+                expect(res.data.message).toBe('Record successfully removed');
+                expect(res.data.status).toBe('success');
+            });
+
+        $httpBackend.flush();
+    });
+});
+
+
 describe('Initiate publishing process request to server', function () {
 
-    var recordService, scope, emptyRecord, $httpBackend, $rootScope;
+    var recordService, scope, emptyISORecord, $httpBackend, $rootScope;
 
     beforeEach(module('metadataEditor'));
 
@@ -304,7 +312,7 @@ describe('Initiate publishing process request to server', function () {
             $rootScope = $injector.get('$rootScope');
 
             scope = {
-                currentRecord: $injector.get('emptyRecord'),
+                currentRecord: $injector.get('emptyISORecord'),
                 dataFormats: {
                     iso: ['ASCII', 'GML', 'HDF'],
                     aux: 'snoop, lion, dogg'
@@ -312,7 +320,7 @@ describe('Initiate publishing process request to server', function () {
             };
 
             // coming from the scope, the place and thematic keywords are
-            // comma-separated lists, unlike the emptyRecord `value`
+            // comma-separated lists, unlike the emptyISORecord `value`
             scope.currentRecord.thematic_keywords = 'rocks, jocks';
             scope.currentRecord.place_keywords = 'idaho, moscow';
             scope.currentRecord.west_lon = -118.12;
@@ -365,7 +373,7 @@ describe('Initiate publishing process request to server', function () {
 describe('Geoprocessing service', function () {
 
     var $httpBackend, $rootScope, Geoprocessing;
-    beforeEach(module('metadataEditor'))
+    beforeEach(module('metadataEditor'));
     beforeEach(
             inject(function($injector) {
 

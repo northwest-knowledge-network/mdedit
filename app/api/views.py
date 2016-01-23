@@ -158,6 +158,18 @@ def get_single_metadata(_oid):
         return Response('Bad request for record with id ' + _oid, 400)
 
 
+@api.route('/api/metadata/<string:_oid>/delete', methods=['POST'])
+@cross_origin(origin='*', methods=['POST'],
+              headers=['X-Requested-With', 'Content-Type', 'Origin'])
+def delete_metadata_record(_oid):
+
+    md = Metadata.objects.get_or_404(pk=_oid)
+    md.delete()
+
+    return jsonify({'message': 'Record successfully removed',
+                    'status': 'success'})
+
+
 @api.route('/api/metadata/<string:_oid>/publish', methods=['POST'])
 @cross_origin(origin='*', methods=['POST'],
               headers=['X-Requested-With', 'Content-Type', 'Origin'])
@@ -304,7 +316,7 @@ def get_single_xml_metadata(_oid):
         json_rec['first_pub_date'] = record.first_pub_date.strftime(d_fmt)
         json_rec['md_pub_date'] = record.md_pub_date.strftime(d_fmt1)
     except AttributeError:
-        # if we get an attribute error, continue; any other error will still 
+        # if we get an attribute error, continue; any other error will still
         #cause the program to fail
         pass
 
