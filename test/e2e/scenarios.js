@@ -22,69 +22,83 @@ var clearCollection = function () {
 clearCollection();
 
 
-// describe('ISO and Dublin Core editing views', function () {
+testNknAsDistributor('iso');
+testNknAsDistributor('dublin');
 
-//     it('should go to #/dublin when the dublin core button is pressed', function () {
+testExportISO('iso');
+testExportISO('dublin');
 
-//         browser.get('/frontend/index.html');
+testLoadDeleteDropdown('iso');
+testLoadDeleteDropdown('dublin');
 
-//         element(by.id('record-options-dropdown')).click();
-//         element(by.css('[href="#/dublin"]')).click();
-
-//         browser.getLocationAbsUrl().then(function(url) {
-//             expect(url).toEqual('/dublin');
-//         });
-//     });
-// });
+testMilesDefaults('iso');
+testMilesDefaults('dublin');
 
 
-// describe('Adding and removing contacts using buttons', function () {
 
-//     var addRemoveContacts = function () {
+ describe('ISO and Dublin Core editing views', function () {
 
-//         element.all(by.css('.contact-input')).sendKeys('aaaaa');
-//         element.all(by.css('.contact-email')).sendKeys('a@aaaa.com');
+     it('should go to #/dublin when the dublin core button is pressed', function () {
 
-//         var addContact = element(by.css('[ng-click="addContactAccess()"]'));
+         browser.get('/frontend/index.html');
 
-//         addContact.click();
+         element(by.id('record-options-dropdown')).click();
+         element(by.css('[href="#/dublin"]')).click();
 
-//         var accessContacts =
-//             element.all(by.repeater('(contactIdx, contact) in currentRecord.access'));
+         browser.getLocationAbsUrl().then(function(url) {
+             expect(url).toEqual('/dublin');
+         });
+     });
+ });
 
-//         expect(accessContacts.count()).toEqual(2);
 
-//         addContact.click();
+ describe('Adding and removing contacts using buttons', function () {
 
-//         expect(accessContacts.count()).toEqual(3);
+     var addRemoveContacts = function () {
 
-//         var removeContact = element(by.css('[ng-click="cancelAddContactAccess()"]'));
+         element.all(by.css('.contact-input')).sendKeys('aaaaa');
+         element.all(by.css('.contact-email')).sendKeys('a@aaaa.com');
 
-//         removeContact.click();
+         var addContact = element(by.css('[ng-click="addContactAccess()"]'));
 
-//         expect(accessContacts.count()).toEqual(2);
+         addContact.click();
 
-//         removeContact.click();
+         var accessContacts =
+             element.all(by.repeater('(contactIdx, contact) in currentRecord.access'));
 
-//         expect(accessContacts.count()).toEqual(1);
+         expect(accessContacts.count()).toEqual(2);
 
-//         removeContact.click();
+         addContact.click();
 
-//         expect(accessContacts.count()).toEqual(1);
-//     };
+         expect(accessContacts.count()).toEqual(3);
 
-//     it('should add/remove access contacts when the add/remove citation ' +
-//        'button is pressed for iso and dublin', function () {
+         var removeContact = element(by.css('[ng-click="cancelAddContactAccess()"]'));
 
-//         browser.get('/frontend/#/iso');
+         removeContact.click();
 
-//         addRemoveContacts();
+         expect(accessContacts.count()).toEqual(2);
 
-//         browser.get('/frontend/#/dublin');
+         removeContact.click();
 
-//         addRemoveContacts();
-//     });
-// });
+         expect(accessContacts.count()).toEqual(1);
+
+         removeContact.click();
+
+         expect(accessContacts.count()).toEqual(1);
+     };
+
+     it('should add/remove access contacts when the add/remove citation ' +
+        'button is pressed for iso and dublin', function () {
+
+         browser.get('/frontend/#/iso');
+
+         addRemoveContacts();
+
+         browser.get('/frontend/#/dublin');
+
+         addRemoveContacts();
+     });
+ });
 
 function deleteRecordTest(schemaType) {
 
@@ -160,17 +174,10 @@ function testLoadDeleteDropdown(schemaType) {
             last_mod_date: {$date: new Date(2010, 0, 1)},
             first_pub_date: {$date: new Date(2014, 10, 15)},
 
-            //*** TODO fix tests so we can include these for iso ***//
-
-            // status: 'stored in an offline facility',
-            // spatial_dtype: 'grid',
-            // hierarchy_level: 'dataset',
-            // topic_category: ['biota', 'economy'],
             place_keywords: 'Idaho, Treasure Valley',
             thematic_keywords: 'Agriculture, Water',
 
             data_format: ['netCDF'],
-            // compression_technique: 'zlib',
             online: ['http://example.com/mynetcdfs/33422525'],
             use_restrictions: 'None',
 
@@ -414,220 +421,215 @@ function testLoadDeleteDropdown(schemaType) {
     });
 }
 
-testLoadDeleteDropdown('iso');
-testLoadDeleteDropdown('dublin');
+function testMilesDefaults(schemaType) {
+    describe('MILES Defaults', function () {
 
-// describe('MILES Defaults', function () {
+        beforeEach(function() {
 
-//     it('should load the correct fields with correct data', function () {
+            browser.get('/frontend');
 
-//         element(by.id('defaults-dropdown')).click();
-//         element(by.css('[ng-click="loadDefaultMILES()"]')).click();
+            element(by.id('record-options-dropdown')).click();
+            if (schemaType === 'iso')
+                element(by.id('create-new-dataset')).click();
+            else if (schemaType === 'dublin')
+                element(by.id('create-new-non-dataset')).click();
+        });
 
-//         expect(element(by.model('currentRecord.place_keywords')).getAttribute('value'))
-//             .toBe('USA, Idaho');
+         it('should load the correct fields with correct data', function () {
 
-//         expect(element(by.model('currentRecord.thematic_keywords')).getAttribute('value'))
-//             .toBe('IIA-1301792, MILES, EPSCoR');
+             element(by.id('defaults-dropdown')).click();
+             element(by.css('[ng-click="loadDefaultMILES()"]')).click();
 
-//         // check spatial extent
-//         var expectedBboxValues = {
-//             north_lat: 49.0011461,
-//             south_lat: 41.9880051,
-//             west_lon: -117.2413657,
-//             east_lon: -111.043495
-//         };
-//         var compareBboxVal = function (dir) {
-//             var valPromise =
-//                 element(by.model('currentRecord.' + dir)).getAttribute('value');
+             expect(element(by.model('currentRecord.place_keywords')).getAttribute('value'))
+                 .toBe('USA, Idaho');
 
-//             valPromise.then(el => {
+             expect(element(by.model('currentRecord.thematic_keywords')).getAttribute('value'))
+                 .toBe('IIA-1301792, MILES, EPSCoR');
 
-//                 var val = parseFloat(el);
-//                 expect(val - expectedBboxValues[dir])
-//                     .toBeLessThan(0.000001);
-//             });
-//         };
-//         compareBboxVal('north_lat');
-//         compareBboxVal('south_lat');
-//         compareBboxVal('east_lon');
-//         compareBboxVal('west_lon');
+             // check spatial extent
+             var expectedBboxValues = {
+                 north_lat: 49.0011461,
+                 south_lat: 41.9880051,
+                 west_lon: -117.2413657,
+                 east_lon: -111.043495
+             };
+             var compareBboxVal = function (dir) {
+                 var valPromise =
+                     element(by.model('currentRecord.' + dir)).getAttribute('value');
 
-//         expect(element(by.id('access-name-0')).getAttribute('value'))
-//             .toBe('Northwest Knowledge Network');
+                 valPromise.then(el => {
 
-//         expect(element(by.id('access-email-0')).getAttribute('value'))
-//             .toBe('info@northwestknowledge.net');
+                     var val = parseFloat(el);
+                     expect(val - expectedBboxValues[dir])
+                         .toBeLessThan(0.000001);
+                 });
+             };
+             compareBboxVal('north_lat');
+             compareBboxVal('south_lat');
+             compareBboxVal('east_lon');
+             compareBboxVal('west_lon');
 
-//         expect(element(by.id('access-org-0')).getAttribute('value'))
-//             .toBe('University of Idaho');
+             expect(element(by.id('access-name-0')).getAttribute('value'))
+                 .toBe('Northwest Knowledge Network');
 
-//         expect(element(by.id('access-address-0')).getAttribute('value'))
-//             .toBe('875 Perimeter Dr. MS 2358');
+             expect(element(by.id('access-email-0')).getAttribute('value'))
+                 .toBe('info@northwestknowledge.net');
 
-//         expect(element(by.id('access-city-0')).getAttribute('value'))
-//             .toBe('Moscow');
+             expect(element(by.id('access-org-0')).getAttribute('value'))
+                 .toBe('University of Idaho');
 
-//         expect(element(by.id('access-state-0')).getAttribute('value'))
-//             .toBe('Idaho');
+             expect(element(by.id('access-address-0')).getAttribute('value'))
+                 .toBe('875 Perimeter Dr. MS 2358');
 
-//         expect(element(by.id('access-zipcode-0')).getAttribute('value'))
-//             .toBe('83844-2358');
+             expect(element(by.id('access-city-0')).getAttribute('value'))
+                 .toBe('Moscow');
 
-//         expect(element(by.id('access-country-0')).getAttribute('value'))
-//             .toBe('USA');
+             expect(element(by.id('access-state-0')).getAttribute('value'))
+                 .toBe('Idaho');
 
-//         expect(element(by.id('access-phone-0')).getAttribute('value'))
-//             .toBe('208-885-2080');
-//     });
+             expect(element(by.id('access-zipcode-0')).getAttribute('value'))
+                 .toBe('83844-2358');
 
-//     it('should not overwrite fields that are already present in a new record', function () {
+             expect(element(by.id('access-country-0')).getAttribute('value'))
+                 .toBe('USA');
 
-//         element(by.id('record-options-dropdown')).click();
-//         element(by.id('create-new-dataset')).click();
+             expect(element(by.id('access-phone-0')).getAttribute('value'))
+                 .toBe('208-885-2080');
+         });
 
-//         element(by.model('currentRecord.title')).sendKeys('Record Two');
-//         element(by.model('currentRecord.summary')).sendKeys('Another record of some other stuff');
+         it('should not overwrite fields that are already present in a new record', function () {
 
-//         element(by.id('defaults-dropdown')).click();
-//         element(by.css('[ng-click="loadDefaultMILES()"]')).click();
+             element(by.id('record-options-dropdown')).click();
+             element(by.id('create-new-dataset')).click();
 
-//         expect(element(by.model('currentRecord.title')).getAttribute('value'))
-//             .toBe('Record Two');
+             element(by.model('currentRecord.title')).sendKeys('Record Two');
+             element(by.model('currentRecord.summary')).sendKeys('Another record of some other stuff');
 
-//         expect(element(by.model('currentRecord.summary')).getAttribute('value'))
-//             .toBe('Another record of some other stuff');
-//     });
-// });
+             element(by.id('defaults-dropdown')).click();
+             element(by.css('[ng-click="loadDefaultMILES()"]')).click();
 
+             expect(element(by.model('currentRecord.title')).getAttribute('value'))
+                 .toBe('Record Two');
 
-// describe('NKN as distributor', function () {
+             expect(element(by.model('currentRecord.summary')).getAttribute('value'))
+                 .toBe('Another record of some other stuff');
+         });
+     });
+ }
 
-//     beforeEach(function () {
-//         browser.get('/frontend/index.html');
-//     });
 
-//     it('should fill in the distributor as NKN', function() {
 
-//         element(by.id('defaults-dropdown')).click();
-//         element(by.css('[ng-click="loadDefaultNKNAsDistributor()"]')).click();
+function testNknAsDistributor(schemaType) {
+    describe('NKN as distributor', function () {
 
-//         expect(element(by.id('access-name-0')).getAttribute('value'))
-//             .toBe('Northwest Knowledge Network');
+        beforeEach(function () {
+            browser.get('/frontend');
 
-//         expect(element(by.id('access-email-0')).getAttribute('value'))
-//             .toBe('info@northwestknowledge.net');
+            element(by.id('record-options-dropdown')).click();
+            if (schemaType === 'iso')
+                element(by.id('create-new-dataset')).click();
+            else if (schemaType === 'dublin')
+                element(by.id('create-new-non-dataset')).click();
+        });
 
-//         expect(element(by.id('access-org-0')).getAttribute('value'))
-//             .toBe('University of Idaho');
+        it('should fill in the distributor as NKN', function() {
 
-//         expect(element(by.id('access-address-0')).getAttribute('value'))
-//             .toBe('875 Perimeter Dr. MS 2358');
+            element(by.id('defaults-dropdown')).click();
+            element(by.css('[ng-click="loadDefaultNKNAsDistributor()"]')).click();
 
-//         expect(element(by.id('access-city-0')).getAttribute('value'))
-//             .toBe('Moscow');
+            expect(element(by.id('access-name-0')).getAttribute('value'))
+                .toBe('Northwest Knowledge Network');
 
-//         expect(element(by.id('access-state-0')).getAttribute('value'))
-//             .toBe('Idaho');
+            expect(element(by.id('access-email-0')).getAttribute('value'))
+                .toBe('info@northwestknowledge.net');
 
-//         expect(element(by.id('access-zipcode-0')).getAttribute('value'))
-//             .toBe('83844-2358');
+            expect(element(by.id('access-org-0')).getAttribute('value'))
+                .toBe('University of Idaho');
 
-//         expect(element(by.id('access-country-0')).getAttribute('value'))
-//             .toBe('USA');
+            expect(element(by.id('access-address-0')).getAttribute('value'))
+                .toBe('875 Perimeter Dr. MS 2358');
 
-//         expect(element(by.id('access-phone-0')).getAttribute('value'))
-//             .toBe('208-885-2080');
-//     });
+            expect(element(by.id('access-city-0')).getAttribute('value'))
+                .toBe('Moscow');
 
-//     it('should not overwrite fields already present in a new record', function () {
+            expect(element(by.id('access-state-0')).getAttribute('value'))
+                .toBe('Idaho');
 
-//         element(by.model('currentRecord.title')).sendKeys('A new record');
-//         element(by.model('currentRecord.summary')).sendKeys('the summary');
+            expect(element(by.id('access-zipcode-0')).getAttribute('value'))
+                .toBe('83844-2358');
 
-//         element(by.id('defaults-dropdown')).click();
-//         element(by.css('[ng-click="loadDefaultNKNAsDistributor()"]')).click();
+            expect(element(by.id('access-country-0')).getAttribute('value'))
+                .toBe('USA');
 
-//         expect(element(by.model('currentRecord.title')).getAttribute('value'))
-//             .toBe('A new record');
+            expect(element(by.id('access-phone-0')).getAttribute('value'))
+                .toBe('208-885-2080');
+        });
 
-//         expect(element(by.model('currentRecord.summary')).getAttribute('value'))
-//             .toBe('the summary');
-//     });
-// });
+        it('should not overwrite fields already present in a new record', function () {
 
-// describe('Show/hide help', function () {
+            element(by.model('currentRecord.title')).sendKeys('A new record');
+            element(by.model('currentRecord.summary')).sendKeys('the summary');
 
-//     beforeEach(function () {
-//         browser.get('/frontend/index.html');
-//     });
+            element(by.id('defaults-dropdown')).click();
+            element(by.css('[ng-click="loadDefaultNKNAsDistributor()"]')).click();
 
-//     it('should show \'Show Help', function () {
-//         expect(element(by.buttonText('Show Help')).isPresent()).toBe(true);
-//     });
+            expect(element(by.model('currentRecord.title')).getAttribute('value'))
+                .toBe('A new record');
 
-//     it('should show the help when \'Show Help\' is clicked', function () {
-//         element(by.id('showHelp')).click();
+            expect(element(by.model('currentRecord.summary')).getAttribute('value'))
+                .toBe('the summary');
+        });
+    });
+}
 
-//         var help = element(by.id('help'));
+function testExportISO(schemaType) {
+    describe('Export ISO', function () {
 
-//         var helpH5s = help.all(by.tagName('h5'));
-//         expect(helpH5s.count()).toBe(2);
+        beforeEach(function() {
 
-//         var helpDivs = help.all(by.tagName('div'));
-//         // includes the help div itself
-//         expect(helpDivs.count()).toBe(2);
+            browser.get('/frontend');
 
-//         expect(element(by.buttonText('Hide Help')).isPresent()).toBe(true);
-//     });
+            element(by.id('record-options-dropdown')).click();
+            if (schemaType === 'iso')
+                element(by.id('create-new-dataset')).click();
+            else if (schemaType === 'dublin')
+                element(by.id('create-new-non-dataset')).click();
+        });
 
-//     it('should hide help after \'Hide Help\' is clicked', function () {
 
-//         element(by.id('showHelp')).click();
+         afterEach(() => {
+             clearCollection();
+         });
 
-//         element(by.id('hideHelp')).click();
+         it('should open a new window properly', function () {
 
-//         var help = element(by.id('help'));
-//         expect(help.isDisplayed()).toBe(false);
+             //browser.get('/frontend/index.html');
 
-//         expect(element(by.buttonText('Show Help')).isPresent()).toBe(true);
-//     });
-// });
+             element(by.model('currentRecord.title')).sendKeys('¡Pollo Loco!');
+             element(by.model('currentRecord.summary')).sendKeys('The craziest tasting Chicken!');
 
+             element(by.id('record-options-dropdown')).click().then( () =>
+                 element(by.css('[ng-click="submitDraftRecord()"')).click()
+             );
 
-// describe('Export ISO', function () {
+             element(by.id('export-dropdown')).click();
+             element(by.css('[ng-click="export_(\'iso\')"]')).click();
+             expect(browser.driver.getCurrentUrl()).toMatch(/iso/);
+         });
+        });
 
-//     afterEach(() => {
-//         clearCollection();
-//     });
+        describe('Export options should show after a record has been saved', function () {
+         it('\'Export as...\' should be visible', function () {
+             //browser.get('/frontend/index.html');
 
-//     it('should open a new window properly', function () {
+             element(by.model('currentRecord.title')).sendKeys('¡Pollo Loco!');
+             element(by.model('currentRecord.summary')).sendKeys('The craziest tasting Chicken!');
 
-//         browser.get('/frontend/index.html');
+             element(by.id('record-options-dropdown')).click().then( () => {
+                 element(by.css('[ng-click="submitDraftRecord()"')).click();
+                 expect(element(by.id('export-dropdown')).isDisplayed()).toBeTruthy();
+             });
+         });
+    });
+}
 
-//         element(by.model('currentRecord.title')).sendKeys('¡Pollo Loco!');
-//         element(by.model('currentRecord.summary')).sendKeys('The craziest tasting Chicken!');
-
-//         element(by.id('record-options-dropdown')).click().then( () =>
-//             element(by.css('[ng-click="submitDraftRecord()"')).click()
-//         );
-
-//         element(by.id('export-dropdown')).click();
-//         element(by.css('[ng-click="export_(\'iso\')"]')).click();
-//         expect(browser.driver.getCurrentUrl()).toMatch(/iso/);
-//     });
-// });
-
-// describe('Export options should show after a record has been saved', function () {
-//     it('\'Export as...\' should be visible', function () {
-//         browser.get('/frontend/index.html');
-
-//         element(by.model('currentRecord.title')).sendKeys('¡Pollo Loco!');
-//         element(by.model('currentRecord.summary')).sendKeys('The craziest tasting Chicken!');
-
-//         element(by.id('record-options-dropdown')).click().then( () => {
-//             element(by.css('[ng-click="submitDraftRecord()"')).click();
-//             expect(element(by.id('export-dropdown')).isDisplayed()).toBeTruthy();
-//         });
-//     });
-// });
