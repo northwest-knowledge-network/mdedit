@@ -188,7 +188,7 @@ metadataEditorApp.controller('BaseController',
 
             recordService.saveDraft($scope)
                 .success( function (data) {
-
+                    $log.log($scope.currentRecord.schema_type);
                     // need to update the sheet with the ID
                     updateForms($scope, data.record);
 
@@ -209,7 +209,7 @@ metadataEditorApp.controller('BaseController',
         /** Function to identify if the record is ISO or Dublin based on schema_type field
         used to execute same function but set condition before hand, using for Edit
         */
-        
+
         $scope.isISO = function(schemaType){
             if (schemaType == 'Dataset (ISO)')
                 return true;

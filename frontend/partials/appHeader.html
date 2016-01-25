@@ -14,10 +14,10 @@
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
         <li class="dropdown">
-            <a id="manage-your-metadata-dropdown" class="dropdown-toggle" 
-               data-toggle="dropdown" role="button" aria-haspopup="true" 
+            <a id="load-delete-record-dropdown" class="dropdown-toggle"
+               data-toggle="dropdown" role="button" aria-haspopup="true"
                aria-expanded="false">
-                Manage your metadata <span class="caret"></span>
+                Load or delete an existing record <span class="caret"></span>
             </a>
             <ul id="records-table" class="dropdown-menu">
 
@@ -59,14 +59,14 @@
                                 <a ng-show="isISO(record.schema_type)"
                                    ng-click="editRecord(record._id.$oid)"
                                    class="btn btn-xs record-list-edit"
-                                   id="{{'edit-record-' + $index}}"
+                                   id="{{'edit-record-iso-' + $index}}"
                                    href="#/iso">
                                    Load
                                 </a>
                                 <a ng-show="!isISO(record.schema_type)"
                                    ng-click="editRecord(record._id.$oid)"
                                    class="btn btn-xs record-list-edit"
-                                   id="{{'edit-record-' + $index}}"
+                                   id="{{'edit-record-dublin-' + $index}}"
                                    href="#/dublin">
                                    Load
                                 </a> |
