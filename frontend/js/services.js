@@ -55,23 +55,36 @@ metadataEditorApp
         * epoch seconds.
         */
         var dateFields =
-            ['start_date', 'end_date', 'last_mod_date', 'first_pub_date'];
+            ['start_date', 'end_date', 'last_mod_date', 'first_pub_date', 'md_pub_date'];
 
         for (var idx = 0; idx < dateFields.length; idx++)
         {
-            record[dateFields[idx]].$date =
-                new Date(record[dateFields[idx]].$date);
+            if (record.hasOwnProperty(dateFields[idx]))
+            {
+                record[dateFields[idx]].$date =
+                    new Date(record[dateFields[idx]].$date);
+            }
         }
 
         // these hours, minutes, seconds get put into broken out select boxes
-        record.start_date.hours = record.start_date.$date.getHours();
-        record.end_date.hours = record.end_date.$date.getHours();
 
-        record.start_date.minutes = record.start_date.$date.getMinutes();
-        record.end_date.minutes = record.end_date.$date.getMinutes();
+        if (record.hasOwnProperty('start_date') && record.start_date.$date != '')
+        {
+            record.start_date.hours = record.start_date.$date.getHours();
 
-        record.start_date.seconds = record.start_date.$date.getSeconds();
-        record.end_date.seconds = record.end_date.$date.getSeconds();
+            record.start_date.minutes = record.start_date.$date.getMinutes();
+
+            record.start_date.seconds = record.start_date.$date.getSeconds();
+        }
+
+        if (record.hasOwnProperty('end_date') &&record.end_date.$date != '')
+        {
+            record.end_date.hours = record.end_date.$date.getHours();
+
+            record.end_date.minutes = record.end_date.$date.getMinutes();
+
+            record.end_date.seconds = record.end_date.$date.getSeconds();
+        }
 
         scope.currentRecord = record;
         // This seems to be only for loading from the server.
@@ -99,12 +112,14 @@ metadataEditorApp
         scope.currentRecord.thematic_keywords = record.thematic_keywords.join(', ');
     };
 }])
-.value('emptyRecord',
+.value('emptyISORecord',
 {
+    schema_type: 'Dataset (ISO)',
     title: '',
     summary: '',
-    last_mod_date: {$date: new Date(2010, 0, 1)},
-    first_pub_date: {$date: new Date()},
+    last_mod_date: {$date: new Date()},
+    first_pub_date: {$date:''},
+    md_pub_date: {$date:''},
 
     update_frequency: '',
     status: '',
@@ -133,8 +148,45 @@ metadataEditorApp
     north_lat: '',
     south_lat: '',
 
-    start_date: {$date: new Date(2010, 0, 1)},
-    end_date: {$date: new Date()}
+    start_date: {$date:''},
+    end_date: {$date:''}
+})
+
+.value('emptyDCRecord',
+{
+    schema_type: 'Non-Dataset (Dublin Core)',
+    title: '',
+    summary: '',
+    last_mod_date: {$date: new Date()},
+    first_pub_date: {$date:''},
+    md_pub_date: {$date:''},
+
+    topic_category: [''],
+    place_keywords: '',
+    thematic_keywords: '',
+
+    data_format: [''],
+    compression_technique: '',
+    online: [''],
+    use_restrictions: '',
+
+    citation: [{
+      'name': '', 'email': '', 'org': '', 'address': '',
+      'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': ''
+    }],
+    access: [{
+      'name': '', 'email': '', 'org': '', 'address': '',
+      'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': ''
+    }],
+
+    west_lon: '',
+    east_lon: '',
+    north_lat: '',
+    south_lat: '',
+
+    start_date: {$date:''},
+    end_date: {$date:''}
+
 })
 .value('milesFields',
 {
@@ -189,9 +241,9 @@ metadataEditorApp
 })
 .service('recordService',
     ['$http', '$q', '$log', 'hostname', 'sessionId',
-            'emptyRecord', 'milesFields', 'nkn',
+            'emptyISORecord', 'emptyDCRecord', 'milesFields', 'nkn',
     function($http, $q, $log, hostname, sessionId,
-             emptyRecord, milesFields, nkn)
+             emptyISORecord, emptyDCRecord, milesFields, nkn)
     {
         /**
          * Private functions that will not be exposed to controller
@@ -212,37 +264,84 @@ metadataEditorApp
             var serverReady = angular.copy(record);
 
             // server requires list of strings
-            serverReady.place_keywords =
-                serverReady.place_keywords.split(',')
-                    .map(el => el.trim());
 
-            serverReady.thematic_keywords =
-                serverReady.thematic_keywords.split(',')
-                    .map(el => el.trim());
+            if (typeof record.place_keywords !== "undefined")
 
-            serverReady.data_format = scope.dataFormats.iso;
+                serverReady.place_keywords =
+                    serverReady.place_keywords.split(',')
+                        .map(el => el.trim());
 
-            if (scope.dataFormats.aux)
+            if (typeof record.thematic_keywords !== "undefined")
+
+                serverReady.thematic_keywords =
+                    serverReady.thematic_keywords.split(',')
+                        .map(el => el.trim());
+
+            if (typeof record.data_format !== "undefined")
+
+                serverReady.data_format = scope.dataFormats.iso;
+
+            if (scope.dataFormats.aux && typeof record.dateFormats !== "undefined")
             {
-              var auxList = scope.dataFormats.aux.split(',')
+                var auxList = scope.dataFormats.aux.split(',')
                                  .map(el => el.trim());
 
-              serverReady.data_format =
-                serverReady.data_format.concat(auxList);
+                serverReady.data_format =
+                    serverReady.data_format.concat(auxList);
             }
 
             // getTime returns Unix epoch seconds (or ms, don't remember)
-            serverReady.start_date.$date =
-                record.start_date.$date.getTime();
+            if (record.hasOwnProperty('start_date') && record.start_date.$date != ''
+                && typeof record.start_date.$date !== "undefined")
+            {
+                serverReady.start_date.$date =
+                    record.start_date.$date.getTime();
+            }
 
-            serverReady.end_date.$date =
-                record.end_date.$date.getTime();
+            else
+            {
+                delete serverReady.start_date;
+            }
 
-            serverReady.first_pub_date.$date =
-                record.first_pub_date.$date.getTime();
+            if (record.hasOwnProperty('end_date') && record.end_date.$date != ''
+                && typeof record.end_date.$date !== "undefined")
+            {
+
+                serverReady.end_date.$date =
+                    record.end_date.$date.getTime();
+            }
+
+            else
+            {
+                delete serverReady.end_date;
+            }
+
+            if (record.hasOwnProperty('first_pub_date') && record.first_pub_date.$date != ''
+                && typeof record.first_pub_date.$date !== "undefined")
+            {
+                serverReady.first_pub_date.$date =
+                    record.first_pub_date.$date.getTime();
+            }
+
+            else
+            {
+                delete serverReady.first_pub_date;
+            }
+
+            if (record.hasOwnProperty('md_pub_date') && record.md_pub_date.$date != ''
+                && typeof record.md_pub_date.$date !== "undefined")
+            {
+                serverReady.md_pub_date.$date =
+                    record.md_pub_date.$date.getTime();
+            }
+
+            else
+            {
+                delete serverReady.md_pub_date;
+            }
+
 
             serverReady.last_mod_date.$date = new Date().getTime();
-                // record.last_mod_date.$date.getTime();
 
             return serverReady;
         };
@@ -256,11 +355,18 @@ metadataEditorApp
          * Return a cleared, newly instantiated
          * @return {[type]} [description]
          */
-        var getFreshRecord = function() {
+        var getFreshISORecord = function() {
 
-            var freshy = angular.copy(emptyRecord);
+            var freshyISO = angular.copy(emptyISORecord);
 
-            return freshy;
+            return freshyISO;
+        };
+
+        var getFreshDCRecord = function() {
+
+            var freshyDC = angular.copy(emptyDCRecord);
+
+            return freshyDC;
         };
 
         var getMilesDefaults = function() {
@@ -291,18 +397,6 @@ metadataEditorApp
                     .success(function(data)
                     {
                         record = data.record;
-                        if (typeof record.start_date == "undefined") {
-                            record.start_date = {$date: new Date(2010, 1, 1)};
-                        }
-                        if (typeof record.end_date == "undefined") {
-                            record.end_date = {$date: new Date()};
-                        }
-                        if (typeof record.last_mod_date == "undefined") {
-                            record.last_mod_date = {$date: new Date()};
-                        }
-                        if (typeof record.first_pub_date == "undefined") {
-                            record.first_pub_date = {$date: new Date()};
-                        }
                     }
             );
         };
@@ -380,31 +474,33 @@ metadataEditorApp
         {
             var current = prepareRecordForSave(scope);
 
-            // there are two promises to work with:
-            var draftQ;  // save draft promise
-            var publishQ;  // publish promise, returned from `publish` call
-            var q;
+            var record = current;
 
-            draftQ = saveDraft(scope);
+            var serverReady = angular.copy(record);
 
-            // this is a little wasteful to send the record back to server,
-            // but probably not consequential
-            // draftQ
-            //     .success(() => {
-                    var currentId = scope.currentRecord._id.$oid;
+            if (current.hasOwnProperty('md_pub_date'))
+            {
+                current.md_pub_date.$date = new Date().getTime();
+            }
+            else
+            {
+                current.md_pub_date = {$date: new Date().getTime()};
+            }
 
-                    q = $http.post(
-                        '//' + hostname + '/api/metadata/' +
-                            currentId + '/publish',
-                        current);
-                // });
-                // .error(() => { $log.log('error!!!'); publishQ = draftQ; });
+            // do this sync
+            saveDraft(scope);
 
-            return q;
+            var currentId = scope.currentRecord._id.$oid;
+
+            return $http.post(
+                '//' + hostname + '/api/metadata/' +
+                    currentId + '/publish',
+                current);
         };
 
         return {
-            getFreshRecord: getFreshRecord,
+            getFreshISORecord: getFreshISORecord,
+            getFreshDCRecord: getFreshDCRecord,
             getMilesDefaults: getMilesDefaults,
             getNKNAsDistributor: getNKNAsDistributor,
             getRecordToEdit: getRecordToEdit,

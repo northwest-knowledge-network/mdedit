@@ -35,6 +35,7 @@ from flask import request, jsonify, Response
 from flask import current_app as app
 from flask_cors import cross_origin
 from mongoengine import ValidationError
+from datetime import datetime
 
 from . import api
 from ..models import Metadata
@@ -186,27 +187,52 @@ def publish_metadata_record(_oid):
         record.placeholder = False
         record.save()
 
-    # generate iso string
-    str_id = str(record.id)
-    iso = get_single_iso_metadata(str_id).data
+    if record.schema_type == 'Dataset (ISO)':
 
-    save_dir = app.config['PREPROD_DIRECTORY']
+        # generate iso string
+        str_id = str(record.id)
+        iso = get_single_iso_metadata(str_id).data
 
-    save_path = os.path.join(save_dir,
+        # print app.config
+        save_dir = app.config['PREPROD_DIRECTORY']
+
+        save_path = os.path.join(save_dir,
                              str_id,
                              str_id + '.xml')
 
-    if not os.path.exists(os.path.dirname(save_path)):
-        os.mkdir(os.path.dirname(save_path))
+        if not os.path.exists(os.path.dirname(save_path)):
+            os.mkdir(os.path.dirname(save_path))
 
-    with open(save_path, 'w+') as f:
-        f.write(iso)
+        with open(save_path, 'w+') as f:
+            f.write(iso)
 
-    if 'localhost' not in request.base_url:
-        gptInsert.gptInsertRecord(iso, record.title)
+        if 'localhost' not in request.base_url:
+            gptInsert.gptInsertRecord(iso, record.title)
 
-    return jsonify(record=record)
+        return jsonify(record=record)
 
+    else:
+
+        str_id = str(record.id)
+        dc = get_single_dc_metadata(str_id).data
+
+        # print app.config
+        save_dir = app.config['PREPROD_DIRECTORY']
+
+        save_path = os.path.join(save_dir,
+                             str_id,
+                             str_id + '.xml')
+
+        if not os.path.exists(os.path.dirname(save_path)):
+            os.mkdir(os.path.dirname(save_path))
+
+        with open(save_path, 'w+') as f:
+            f.write(dc)
+
+        if 'localhost' not in request.base_url:
+            gptInsert.gptInsertRecord(dc, record.title)
+
+        return jsonify(record=record)
 
 @api.route('/api/metadata/<string:_oid>/iso')
 @cross_origin(origin="*", methods=['GET'])
@@ -281,10 +307,21 @@ def get_single_xml_metadata(_oid):
 
     d_fmt = '%Y-%m-%d'
 
-    json_rec['start_date'] = record.start_date.isoformat() + '.000Z'
-    json_rec['end_date'] = record.end_date.isoformat() + '.000Z'
-    json_rec['last_mod_date'] = record.last_mod_date.strftime(d_fmt)
-    json_rec['first_pub_date'] = record.first_pub_date.strftime(d_fmt)
+    d_fmt1 = '%Y-%m-%d %I:%M %p GMT'
+
+    try:
+        #start/end date might not exist yet
+        json_rec['start_date'] = record.start_date.isoformat() + '.000Z'
+        json_rec['end_date'] = record.end_date.isoformat() + '.000Z'
+        json_rec['first_pub_date'] = record.first_pub_date.strftime(d_fmt)
+        json_rec['md_pub_date'] = record.md_pub_date.strftime(d_fmt1)
+    except AttributeError:
+        # if we get an attribute error, continue; any other error will still
+        #cause the program to fail
+        pass
+
+    json_rec['last_mod_date'] = record.last_mod_date.strftime(d_fmt1)
+
 
     # for XSLT, need something inside of each <item> in this generic XML
     _enclose_word = lambda k: {'word': k}

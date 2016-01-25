@@ -1,13 +1,13 @@
-<form name="metadataForm" id="metadataForm">
-
-  <!-- form header contains title and submit to portal button -->
+<form name="baseCtrl.metadataForm" id="metadataForm" class="css-form" novalidate>
+      
+  <!-- form header contains title -->
   <div ng-include="'partials/formHeader.html'"></div>
 
-  <div class="row">
+  <div class="row" ng-controller="DCController as dc">
     <!---------------Left Divider-------------->
     <div class="col-xs-6 col-sm-6 col-md-6">
         
-
+  <!--Basic Information: Title and Summary-->
         <div ng-include="'partials/form/basic.html'"></div>
          
          <h2 class="section-header">

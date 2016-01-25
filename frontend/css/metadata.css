@@ -1,10 +1,112 @@
+.navbar {
+    border-bottom: 2px groove #595959;
+    background-color: #78C785;
+}
+
+.navbar-default {
+    color: white;
+}
+
+.panel-default > .panel-heading {
+    color: #333;
+    background-color: #000;
+    border-color: #ddd;
+}
+
+.navbar {
+    font-family: Verdana,Arial,Helvetica,sans-serif;
+}
+
+.navbar-default .navbar-brand {
+    color: white;
+}
+
+.navbar-default .navbar-nav > li > a {
+    color: white;
+}
+
+#records-table {
+    font-size: .7em;
+    color: #333;
+}
+
+#records-table > span.badge {
+    font-size: .7em;
+}
+
+input {
+  border-width: 3px;
+  border-style: solid;
+}
+
+textarea {
+  border-width: 3px;
+  border-style: solid;
+}
+
+.ng-pristine.ng-invalid-required {
+    box-shadow: none;
+}
+
+input.ng-pristine {
+  border-style: none;
+}
+
+textarea.ng-pristine {
+  border-style: none;
+}
+
+select.ng-pristine {
+  border-style: none;
+}
+
+input.ng-touched.ng-invalid {
+  border-color: #FA787E;
+  border-width: 3px;
+  border-style: solid;
+}
+
+textarea.ng-touched.ng-invalid {
+  border-color: #FA787E;
+  border-width: 3px;
+  border-style: solid;
+}
+
+select.ng-touched.ng-invalid {
+  border-color: #FA787E;
+  border-width: 3px;
+  border-style: solid;
+}
+
+input.ng-not-empty.ng-valid {
+  border-color: #78C785;
+  border-width: 3px;
+  border-style: solid;
+}
+
+textarea.ng-not-empty.ng-valid {
+  border-color: #78C785;
+  border-width: 3px;
+  border-style: solid;
+}
+
+select.ng-dirty.ng-valid {
+  border-color: #78C785;
+  border-width: 3px;
+  border-style: solid;
+}
+
 .attribute-label {
-  color:red;
+  color: #007acc;
 }
 
 .section-header {
-  color: dodgerblue;
+  color: #080;
   margin: 15px 10px;
+}
+
+.btn-danger {
+    background-color: #D15B59
 }
 
 .subform {
@@ -12,7 +114,7 @@
   /*border-width:1px;*/
   /*border-color: lightgrey;*/
   padding: 5px 15px 10px;
-  background-color: #D3D3D3;
+  background-color: #cccccc;
   margin: 10px;
 }
 
@@ -21,12 +123,17 @@ h6 {
 }
 
 .btn-primary {
-  background-color: dodgerblue;
+  background-color: #4d94ff;
 }
 
 .btn-primary:hover {
   background-color: #eaeaea;
-  color: dodgerblue;
+  color: #333;
+}
+
+.btn-cancel-contact {
+    background-color: #cd4e4b;
+    color: white;
 }
 
 #access-contacts {
@@ -87,6 +194,11 @@ h3#brand {
   width: 80%;
 }
 
+.header-button {
+    border: 0;
+    text-align: left;
+}
+
 div.centered-container {
   position: relative;
 }
@@ -99,14 +211,11 @@ div.centered-container>div {
   margin-right: -50%;
   transform: translate(-50%, -50%);
 }
+
 div.centered-container>div>h4 {
   margin-top: 50px;
 }
-/*div.centered-container>input {*/
-  /*margin: 0;*/
-  /*position: absolute;*/
-  /*top: 50%;*/
-  /*left: 50%;*/
-  /*margin-right: -50%;*/
-  /*transform: translate(-50%, -50%);*/
-/*}*/
+
+a.dropdown-toggle, a.btn {
+    cursor: pointer;
+}

@@ -12,8 +12,6 @@
         href="/frontend/bower_components/octicons/octicons/octicons.css">
   <link rel="stylesheet"
         href="/frontend/bower_components/jquery-ui/themes/smoothness/jquery-ui.css"/>
-    <link href='https://fonts.googleapis.com/css?family=PT+Mono' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="/frontend/css/czo.css"/>
   <script type="text/javascript"
           src="/frontend/bower_components/jquery/dist/jquery.min.js">
   </script>
@@ -40,23 +38,36 @@
 </head>
 
 <body>
-<div  id="bodyDiv">
-<div id="ngMain" ng-app="metadataEditor">
 
-<div ng-controller="BaseController as baseCtrl">
+    <div style="margin-left: 8em; margin-right: 6em">
+      <h4>
+        <p>
+            With NKN's Metdata Editor you can create a valid ISO 19115 
+            metadata record for your dataset or dataset series or a Dublin Core 
+            metadata record for your non-data research product (tool, 
+            visualization product, model, script, etc.). To get started, 
+            select the type of metadata record you would like to create in the 
+            dropdown Record Options above.
+        </p>
+        <p>
+            <strong>NOTE:</strong> You must complete all requred fields and 
+            will need to Save your record before you can Publish it.
+        </p>
+      </h4>
+    </div>
 
-<div ng-include="'partials/appHeader.html'"></div>
+    <div  id="bodyDiv">
 
-<div id="main-container" class="container">
+        <div id="ngMain" ng-app="metadataEditor">
 
-<!--     <ul>
-        <li ng-repeat="err in errors">{{err}}</li>
-    </ul> -->
+        <div ng-controller="BaseController as baseCtrl">
 
-    <div ng-view></div>
+        <div ng-include="'partials/appHeader.html'"></div>
 
+        <div id="main-container" class="container">
+            <div ng-view></div>
+        </div>
 
-</div>
-</div>
+    </div>
 </body>
 </html>

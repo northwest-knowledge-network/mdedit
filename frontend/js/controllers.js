@@ -56,6 +56,7 @@ metadataEditorApp.controller('BaseController',
         };
 
         // create time picker vars
+
         $scope.hours = [];
         for (var i = 0; i < 24; i++)
         {
@@ -76,10 +77,10 @@ metadataEditorApp.controller('BaseController',
 
         $scope.createNewRecord = function() {
 
-            var fresh = recordService.getFreshRecord();
+            var freshISO = recordService.getFreshISORecord();
 
             $scope.newRecord = true;
-            $scope.currentRecord = fresh;
+            $scope.currentRecord = freshISO;
 
             //set geocode write-in box to be blank
             $scope.options.bboxInput ='';
@@ -94,6 +95,20 @@ metadataEditorApp.controller('BaseController',
 
         // initialize form with placeholder data for creating a new record
         $scope.createNewRecord();
+
+        $scope.createNewDublinRecord = function() {
+            var freshDC = recordService.getFreshDCRecord();
+
+            $scope.newRecord = true;
+            $scope.currentRecord = freshDC;
+
+            //set geocode write-in box to be blank
+            $scope.options.bboxInput ='';
+
+        };
+
+        $scope.createNewDublinRecord();
+
 
         /**
          * On click of Load MILES Defaults button,
@@ -165,7 +180,6 @@ metadataEditorApp.controller('BaseController',
             $scope.options.bboxInput = '';
         };
 
-
         /**
          * On submit of metadata form, submitRecord. This both updates the server
          * and makes sure the form is current.
@@ -174,7 +188,7 @@ metadataEditorApp.controller('BaseController',
 
             recordService.saveDraft($scope)
                 .success( function (data) {
-
+                    $log.log($scope.currentRecord.schema_type);
                     // need to update the sheet with the ID
                     updateForms($scope, data.record);
 
@@ -190,6 +204,17 @@ metadataEditorApp.controller('BaseController',
                 .error( function (data) {
                     // TODO
                 });
+        };
+
+        /** Function to identify if the record is ISO or Dublin based on schema_type field
+        used to execute same function but set condition before hand, using for Edit
+        */
+
+        $scope.isISO = function(schemaType){
+            if (schemaType == 'Dataset (ISO)')
+                return true;
+            else
+                return false;
         };
 
 

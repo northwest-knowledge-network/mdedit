@@ -1,24 +1,6 @@
-<form name="baseCtrl.metadataForm" id="metadataForm">
+<form name="baseCtrl.metadataForm" id="metadataForm" class="css-form" novalidate>
 
-     <!--    <p>title: {{$root.currentRecord.title}}</p>
-
-        <button tabindex=25 ng-show="newRecord"
-              class="btn btn-small btn-primary navbar-btn"
-              type="submit" ng-click="submitDraftRecord()">
-            Save Draft
-        </button> -->
-
-        <!-- <div ng-include="'partials/header.html'"></div> -->
-
-    <!-- <ul>
-  <li ng-repeat="(key, errors) in metadataForm.$error track by $index"> <strong>{{ key }}</strong> errors
-    <ul>
-      <li ng-repeat="e in errors">{{ e.$name }} has an error: <strong>{{ key }}</strong>.</li>
-    </ul>
-  </li>
-</ul> -->
-
-      <!-- form header contains title and submit to portal button -->
+      <!-- form header contains title -->
       <div ng-include="'partials/formHeader.html'"></div>
 
       <div class="row" ng-controller="ISOController as iso">
@@ -66,13 +48,13 @@
 
           <select tabindex=6 id="" name=""
                   ng-options="s for (s, iso) in iso.statusChoicesIsoMap"
-                  ng-model="currentRecord.status">
+                  ng-model="currentRecord.status" required>
           </select>
           <h4 class="attribute-label">Update Frequency</h4>
           <h6>Please select the frequency with which changes (any modifications and deletions) are or will be made to your data after it is produced. Please select a value from below. Options are available if you do not plan to update your data or do not know the specific frequency of updates.</h6>
           <select tabindex=7 id="" name=""
                   ng-options="f for (f, iso) in iso.updateFrequencyChoicesMap"
-                  ng-model="currentRecord.update_frequency">
+                  ng-model="currentRecord.update_frequency" required>
           </select>
 
           <h4 class="attribute-label">Data Type</h4>
@@ -82,7 +64,7 @@
           </h6>
           <select tabindex=8 id="" name=""
                   ng-options="f for f in spatialDataOptions"
-                  ng-model="currentRecord.spatial_dtype">
+                  ng-model="currentRecord.spatial_dtype" required>
           </select>
 
           <h4 class="attribute-label">Hierarchy Level</h4>
@@ -91,7 +73,7 @@
           </h6>
           <select tabindex=9 id="" name=""
                   ng-options="f for f in hierarchyLevels"
-                  ng-model="currentRecord.hierarchy_level">
+                  ng-model="currentRecord.hierarchy_level" required>
           </select>
 
            </div>

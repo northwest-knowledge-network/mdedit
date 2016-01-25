@@ -56,21 +56,15 @@ describe('createNewRecord', function() {
             // createNewRecord has cleared all fields that had been assigned
             expect(testScope.currentRecord.title).toEqual('');
 
-            expect(testScope.currentRecord.start_date.$date)
-                .toEqual(new Date(2010, 0, 1));
+            expect(testScope.currentRecord.start_date.$date).toEqual('');
 
-            expect(testScope.currentRecord.last_mod_date.$date)
-                .toEqual(new Date(2010, 0, 1));
-
-            expect(testScope.currentRecord.end_date.$date.getTime() -
-                   new Date().getTime() <
-                   100)
+            expect(testScope.currentRecord.last_mod_date.$date.getTime() -
+                   new Date().getTime() < 100)
                 .toBeTruthy();
 
-            expect(testScope.currentRecord.first_pub_date.$date.getTime() -
-                   new Date().getTime()
-                   < 100)
-                .toBeTruthy();
+            expect(testScope.currentRecord.end_date.$date).toEqual('');
+
+            expect(testScope.currentRecord.first_pub_date.$date).toEqual('');
         }
     );
 });

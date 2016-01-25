@@ -13,12 +13,11 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-       <!--  <li><a>Cr</a></li>
-        <li><a href="#/iso">Link</a></li> -->
         <li class="dropdown">
-            <a href="#/iso" id="load-delete-record-dropdown" class="dropdown-toggle"
-               data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                Manage records <span class="caret"></span>
+            <a id="load-delete-record-dropdown" class="dropdown-toggle"
+               data-toggle="dropdown" role="button" aria-haspopup="true"
+               aria-expanded="false">
+                Load or delete an existing record <span class="caret"></span>
             </a>
             <ul id="records-table" class="dropdown-menu">
 
@@ -27,6 +26,9 @@
                     <li>
                         <thead>
                             <tr>
+                                <td>
+                                    <b>Record Type<b>
+                                </td>
                                 <td>
                                     <b>Title</b>
                                 </td>
@@ -48,14 +50,24 @@
 
                     <li>
                         <tr ng-repeat="record in allRecords">
+                            <td ng-attr-id="{{'record-list-type_' + $index}}">{{record.schema_type}}</td>
                             <td ng-attr-id="{{'record-list-title-' + $index}}">{{record.title | limitTo:20}}</td>
                             <td class="record-list-summary">{{record.summary | limitTo:30}}</td>
                             <td class="record-list-last-saved">{{record.last_mod_date.$date | date:'short'}}</td>
-                            <td class="record-list-last-published">Never</td>
-                            <td class="record-list-actions dropdown-submenu">
-                                <a ng-click="editRecord(record._id.$oid)"
+                            <td class="record-list-last-published">{{record.md_pub_date.$date | date:'short'}}</td>
+                            <td class="record-list-actions">
+                                <a ng-show="isISO(record.schema_type)"
+                                   ng-click="editRecord(record._id.$oid)"
                                    class="btn btn-xs record-list-edit"
-                                   id="{{'edit-record-' + $index}}">
+                                   id="{{'edit-record-iso-' + $index}}"
+                                   href="#/iso">
+                                   Load
+                                </a>
+                                <a ng-show="!isISO(record.schema_type)"
+                                   ng-click="editRecord(record._id.$oid)"
+                                   class="btn btn-xs record-list-edit"
+                                   id="{{'edit-record-dublin-' + $index}}"
+                                   href="#/dublin">
                                    Load
                                 </a> |
                                 <a ng-click="deleteById(record._id.$oid)"
@@ -74,19 +86,22 @@
 
         <li class="dropdown">
 
-          <a id="record-options-dropdown" href="#/iso" class="dropdown-toggle" data-toggle="dropdown"
+          <a id="record-options-dropdown" class="dropdown-toggle" data-toggle="dropdown"
              role="button" aria-haspopup="true" aria-expanded="false">Record Options <span class="caret"></span></a>
 
             <ul class="dropdown-menu" role="menu">
 
                 <li><a class="btn btn-sm btn-default navbar-btn header-button"
                        id="create-new-dataset"
-                       ng-click="createNewRecord()">
+                       ng-click="createNewRecord()"
+                       href="#/iso">
                     Create new dataset record
                 </a></li>
 
                 <li><a class="btn btn-sm btn-default navbar-btn header-button"
-                       id="create-new-non-dataset" href="#/dublin">
+                       id="create-new-non-dataset"
+                       ng-click="createNewDublinRecord()"
+                       href="#/dublin">
                     Create new non-dataset record
                 </a></li>
 
@@ -104,8 +119,7 @@
 
                 <li ng-hide="baseCtrl.metadataForm.$valid"
                     class="disabled">
-                    <a class="btn btn-sm btn-default navbar-btn header-button"
-                       href="#/iso">
+                    <a class="btn btn-sm btn-default navbar-btn header-button">
                     Please complete the record to publish data
                     </a>
                 </li>
@@ -137,8 +151,7 @@
         </li>
 
         <li class="dropdown">
-
-            <a href="#/iso" id="defaults-dropdown" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            <a id="defaults-dropdown" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                 Load Defaults <span class="caret"></span>
             </a>
             <ul class="dropdown-menu">
@@ -153,19 +166,6 @@
         </li>
 
       </ul>
-
-    <div class="navbar-form navbar-right" role="search">
-        <button id="showHelp" ng-hide="baseCtrl.showHelp"
-                ng-click="baseCtrl.showHelp=true"
-                class="btn btn-default">
-            Show Help
-        </button>
-        <button id="hideHelp" ng-show="baseCtrl.showHelp"
-                ng-click="baseCtrl.showHelp=false"
-                class="btn btn-default">
-            Hide Help
-        </button>
-    </div>
 
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
