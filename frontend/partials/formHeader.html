@@ -1,26 +1,28 @@
-<div id="formHeader">
-    <div class="row">
+<br>
+<div id="formHeader" class="row">
         <!-- Display Current Record Title -->
        <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
             <h2 id="record-title" ng-show="newRecord">New Metadata Record: {{currentRecord.title}}</h2>
 
             <h2 id="record-title" ng-show="!newRecord">Editing Existing: {{currentRecord.title}}</h2>
         </div>
-    </div>
 
-    <div class="row">
+<!--     <div class="row">
         <div id="help" ng-show="baseCtrl.showHelp"
              ng-include="'partials/help.html'">
         </div>
-    </div>
-</div>
+    </div> -->
 
-<!-- <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" id="upload">
-        <input type="button" class="btn btn-primary btn-contact" value="Upload Data">
+
+    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" id="upload">
+
         <h4>Associated Data</h4>
         <ol>
             <li>gauge_data.csv (<span style="color:red">remove</span>)</li>
             <li>spatially_inferenced.nc (<span style="color:red">remove</span>)</li>
         </ol>
-    </div> -->
 
+        <input type="button" class="btn btn-primary btn-contact"
+               value="Upload Data">
+    </div>
+</div>
