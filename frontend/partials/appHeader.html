@@ -95,7 +95,7 @@
                                 <a ng-click="deleteById(record._id.$oid)"
                                    class="btn btn-xs record-list-delete"
                                    id="{{'delete-record-' + $index}}"
-                                   href="/">
+                                   href="#">
                                     Delete
                                 </a>
                             </td>
@@ -130,13 +130,15 @@
 
                 <li><a ng-click="submitDraftRecord()"
                        class="btn btn-sm btn-default navbar-btn header-button"
-                       style="border:0;text-align:left">
+                       style="border:0;text-align:left"
+                       href="#">
                     Save this record as a draft
                 </a></li>
 
                 <li ng-show="baseCtrl.metadataForm.$valid">
                     <a id="record-options-publish" ng-click="publishRecord()"
                        class="btn btn-sm btn-default navbar-btn header-button"
+                       href="#"
                        data-toggle="modal" data-target="#submitModal">
                     Publish record to NKN's portal</a>
                 </li>
