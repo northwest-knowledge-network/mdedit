@@ -181,7 +181,13 @@ def publish_metadata_record(_oid):
         for f in record._fields:
             record[f] = updater[f]
 
+        record.md_pub_date = datetime.utcnow()
+        print record.md_pub_date
+
+        record.save()
+
     except ValidationError:
+
         record = Metadata.from_json(request.data)
         record.id = None
         record.placeholder = False

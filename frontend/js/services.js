@@ -478,24 +478,15 @@ metadataEditorApp
 
             var serverReady = angular.copy(record);
 
-            if (current.hasOwnProperty('md_pub_date'))
-            {
-                current.md_pub_date.$date = new Date().getTime();
-            }
-            else
-            {
-                current.md_pub_date = {$date: new Date().getTime()};
-            }
-
-            // do this sync
+            // do this sync (1/26 um.. what? -mt)
             saveDraft(scope);
 
             var currentId = scope.currentRecord._id.$oid;
 
             return $http.post(
-                '//' + hostname + '/api/metadata/' +
-                    currentId + '/publish',
-                current);
+                '//' + hostname + '/api/metadata/' + currentId + '/publish',
+                current
+            );
         };
 
         return {
