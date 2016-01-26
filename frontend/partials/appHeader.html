@@ -1,3 +1,25 @@
+
+  <!-- Modal -->
+<div class="modal fade" id="submitModal" tabindex="-1" role="dialog" aria-labelledby="submitModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="submitModalLabel">Metadata Record Submitted</h4>
+      </div>
+      <div class="modal-body">
+        <p>Your metadata record has been submitted to NKN for publication and we have been alerted of
+          your submission. Once we review and approve your record, you will be able to search 
+          for it on our <a href="https://www.northwestknowledge.net" target="_blank">home page</a>. If modifications 
+          need to be made before your record can be approved, NKN will contact you.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+    <!--NavBar -->
 <nav class="navbar navbar-default navbar-fixed-top" style="border-style: none">
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
@@ -72,7 +94,8 @@
                                 </a> |
                                 <a ng-click="deleteById(record._id.$oid)"
                                    class="btn btn-xs record-list-delete"
-                                   id="{{'delete-record-' + $index}}">
+                                   id="{{'delete-record-' + $index}}"
+                                   href="/">
                                     Delete
                                 </a>
                             </td>
@@ -113,7 +136,8 @@
 
                 <li ng-show="baseCtrl.metadataForm.$valid">
                     <a id="record-options-publish" ng-click="publishRecord()"
-                       class="btn btn-sm btn-default navbar-btn header-button">
+                       class="btn btn-sm btn-default navbar-btn header-button"
+                       data-toggle="modal" data-target="#submitModal">
                     Publish record to NKN's portal</a>
                 </li>
 
@@ -167,6 +191,18 @@
 
       </ul>
 
+    <div class="navbar-form navbar-right" role="help">
+      <button id="showHelp" ng-hide="baseCtrl.showHelp"
+              ng-click="baseCtrl.showHelp=true"
+              class="btn btn-default">
+                Show Help
+      </button>
+      <button id="hideHelp" ng-show="baseCtrl.showHelp"
+               ng-click="baseCtrl.showHelp=false"
+              class="btn btn-default">
+                Hide Help
+      </button>
+    </div>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
