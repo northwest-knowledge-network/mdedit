@@ -371,9 +371,11 @@ def attach_file(_oid, attachmentId=None):
         elif request.method == 'DELETE':
             try:
                 # don't need to save after this since we're updating existing
-                md = Metadata.objects(id=_oid).update_one(
+                Metadata.objects(id=_oid).update_one(
                     pull__attachments__id=attachmentId
                 )
+
+                md = Metadata.objects.get(id=_oid)
 
             # we'll just go ahead and not care if it doesn't exist
             except ValueError:

@@ -354,7 +354,7 @@ metadataEditorApp.controller('BaseController',
         $scope.attachFile = function(file) {
             // first upload file, then in success callback, attach to record
             AttachmentService.uploadFile(file)
-                .success(function(data) {
+                .success(function (data) {
                     var url = data.url;
                     var recordId;
                     if ($scope.currentRecord.hasOwnProperty('_id'))
@@ -364,7 +364,6 @@ metadataEditorApp.controller('BaseController',
                     else
                     {
                         $scope.submitDraftRecord();
-                        // console.log($scope.currentRecord._id);
                         recordId = $scope.currentRecord._id.$oid;
                     }
 
@@ -374,8 +373,17 @@ metadataEditorApp.controller('BaseController',
 
                             $scope.updateRecordsList();
                         });
-                })
-        }
+                });
+        };
+
+        $scope.detachFile = function(attachmentId) {
+            // the attachmentId needs to be fetched from the attachments
+            var recordId = $scope.currentRecord._id.$oid;
+            AttachmentService.detachFile(attachmentId, recordId)
+                .success(function (data) {
+                    updateForms($scope, data.record);
+                });
+        };
   } // end of callback for controller initialization
 ])
 .controller('ISOController', ['formOptions', function(formOptions) {
