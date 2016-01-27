@@ -1,3 +1,4 @@
+from bson.objectid import ObjectId
 from datetime import datetime
 
 from . import db
@@ -69,7 +70,7 @@ class Metadata(db.Document):
     end_date = db.DateTimeField()
 
     # files associated with the metadata record
-    attachments = db.ListField(db.StringField())
+    attachments = db.EmbeddedDocumentListField('Attachment')
 
     meta = {'allow_inheritance': True}
 
@@ -87,3 +88,13 @@ class Metadata(db.Document):
             '\n'.join(["{}: {}".format(k, self[k])
                        for k in self._fields_ordered])
 
+
+class Attachment(db.EmbeddedDocument):
+    id = db.ObjectIdField(required=True, default=ObjectId)
+    url = db.URLField(required=True)
+
+    def __str__(self):
+
+        return \
+            '\n'.join(["{}: {}".format(k, self[k])
+                       for k in self._fields_ordered])

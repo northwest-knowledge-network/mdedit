@@ -29,7 +29,6 @@ import geocoder
 import os
 import requests
 
-from .. import config
 from dicttoxml import dicttoxml
 from flask import request, jsonify, Response
 from flask import current_app as app
@@ -38,7 +37,7 @@ from mongoengine import ValidationError
 from datetime import datetime
 
 from . import api
-from ..models import Metadata
+from ..models import Metadata, Attachment
 
 import gptInsert
 
@@ -348,12 +347,14 @@ def get_single_xml_metadata(_oid):
 
     return Response(xml_str, 200, mimetype='application/xml')
 
-
-@api.route('/api/metadata/<string:_oid>/attachments',
-           methods=['POST', 'DELETE'])
+# create a new attachment on the record _oid with a POST or delete
+# an attachment by its attachmentId on the record with id _oid using DELETE
+@api.route('/api/metadata/<string:_oid>/attachments', methods=['POST'])
+@api.route('/api/metadata/<string:_oid>/attachments/<attachmentId>',
+           methods=['DELETE'])
 @cross_origin(origin="*",  methods=['POST', 'DELETE'],
               headers=['X-Requested-With', 'Content-Type', 'Origin'])
-def attach_file(_oid):
+def attach_file(_oid, attachmentId=None):
     """
     Add attachment URLs to a metadata record.
     """
@@ -362,13 +363,18 @@ def attach_file(_oid):
 
     try:
         if request.method == 'POST':
+            import ipdb; ipdb.set_trace()
             attachment = request.json['attachment']
-            md.attachments.append(attachment)
+            md.attachments.append(Attachment(url=attachment))
+            md.save()
 
         elif request.method == 'DELETE':
             try:
-                attachment = request.json['attachment']
-                md.attachments.remove(attachment)
+                # don't need to save after this since we're updating existing
+                md = Metadata.objects(id=_oid).update_one(
+                    pull__attachments__id=attachmentId
+                )
+
             # we'll just go ahead and not care if it doesn't exist
             except ValueError:
                 pass
@@ -390,7 +396,6 @@ def attach_file(_oid):
             status=400
         )
 
-    md.save()
     return jsonify({'message': attachment + ' successfully (at/de)tached!'})
 
 

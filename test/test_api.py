@@ -8,7 +8,7 @@ import json
 import unittest
 
 from ..manage import app
-from ..app.models import Metadata
+from ..app.models import Metadata, Attachment
 
 
 class TestAPI(unittest.TestCase):
@@ -200,12 +200,15 @@ class TestAPI(unittest.TestCase):
         )
 
         updated_md = Metadata.objects.get(pk=md_id)
-        # assert updated_md.attachments == [fake_data_url]
-        assert updated_md.attachments[0] == fake_data_url
 
-        self.client.delete('/api/metadata/' + md_id + '/attachments',
-                           data=json.dumps(dict(attachment=fake_data_url)),
-                           content_type='application/json')
+        att = updated_md.attachments[0]
+        assert att.url == fake_data_url
+
+        assert att.id is not None
+
+        self.client.delete(
+            '/api/metadata/' + md_id + '/attachments/' + str(att.id)
+        )
 
         updated_md = Metadata.objects.get(pk=md_id)
         assert len(updated_md.attachments) == 0
