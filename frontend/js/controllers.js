@@ -5,10 +5,10 @@
 metadataEditorApp.controller('BaseController',
 
     ['$scope', '$http', '$log', '$window', 'formOptions', 'updateForms', 'recordService',
-        'Geoprocessing', 'hostname', 'sessionId',
+        'AttachmentService', 'Geoprocessing', 'hostname', 'sessionId',
 
     function($scope, $http, $log, $window, formOptions, updateForms,
-        recordService, Geoprocessing, hostname, sessionId)
+        recordService, AttachmentService, Geoprocessing, hostname, sessionId)
     {
         // initialize list of existing metadata records
         $scope.allRecords = [];
@@ -188,8 +188,8 @@ metadataEditorApp.controller('BaseController',
 
             recordService.saveDraft($scope)
                 .success( function (data) {
-                    $log.log($scope.currentRecord.schema_type);
                     // need to update the sheet with the ID
+
                     updateForms($scope, data.record);
 
                     $scope.newRecord = false;
@@ -350,6 +350,32 @@ metadataEditorApp.controller('BaseController',
                 })
                 .error( function(error) { $log.log(error); });
         };
+
+        $scope.attachFile = function(file) {
+            // first upload file, then in success callback, attach to record
+            AttachmentService.uploadFile(file)
+                .success(function(data) {
+                    var url = data.url;
+                    var recordId;
+                    if ($scope.currentRecord.hasOwnProperty('_id'))
+                    {
+                        recordId = $scope.currentRecord._id.$oid;
+                    }
+                    else
+                    {
+                        $scope.submitDraftRecord();
+                        // console.log($scope.currentRecord._id);
+                        recordId = $scope.currentRecord._id.$oid;
+                    }
+
+                    AttachmentService.attachFile(url, recordId)
+                        .success(function (attachData) {
+                            updateForms($scope, attachData.record);
+
+                            $scope.updateRecordsList();
+                        });
+                })
+        }
   } // end of callback for controller initialization
 ])
 .controller('ISOController', ['formOptions', function(formOptions) {

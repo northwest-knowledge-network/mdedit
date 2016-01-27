@@ -149,7 +149,9 @@ metadataEditorApp
     south_lat: '',
 
     start_date: {$date:''},
-    end_date: {$date:''}
+    end_date: {$date:''},
+
+    attachments: []
 })
 
 .value('emptyDCRecord',
@@ -185,8 +187,9 @@ metadataEditorApp
     south_lat: '',
 
     start_date: {$date:''},
-    end_date: {$date:''}
+    end_date: {$date:''},
 
+    attachments: []
 })
 .value('milesFields',
 {
@@ -512,6 +515,7 @@ metadataEditorApp
 
     var downloadBaseUrl =
         'http://www.northwestknowledge.net/data/download.php?uuid=';
+
 
     var attachBaseRoute = hostname + '/api/metadata/';
 

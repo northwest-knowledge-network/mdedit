@@ -110,7 +110,7 @@ describe('MILES default generation', function () {
     function()
     {
         var fields =
-            'citation, access, online, west_lon, east_lon, south_lat, north_lat, ' +
+            'citation, online, west_lon, east_lon, south_lat, north_lat, ' +
             'place_keywords, thematic_keywords, use_restrictions';
 
         var fieldsArr = fields.split(', ');
@@ -405,7 +405,7 @@ describe('Geoprocessing service', function () {
 });
 
 
-ddescribe('Publish metadata record and attach files', function () {
+describe('Publish metadata record and attach files', function () {
 
     var attachmentUrl = 'http://data.example/foo.nc';
 

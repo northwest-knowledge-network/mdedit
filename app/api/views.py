@@ -396,7 +396,8 @@ def attach_file(_oid, attachmentId=None):
             status=400
         )
 
-    return jsonify({'message': attachment + ' successfully (at/de)tached!'})
+    return jsonify(dict(message=attachment + ' successfully (at/de)tached!',
+                        record=md))
 
 
 @api.route('/api/contacts/<string:type_>')
