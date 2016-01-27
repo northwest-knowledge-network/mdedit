@@ -5,7 +5,7 @@
 # (NKN), and is copyrighted by NKN. For more information on NKN, see our
 # web site at http://www.northwestknowledge.net
 #
-#   Copyright 20015 Northwest Knowledge Network
+#   Copyright 2016 Northwest Knowledge Network
 #
 # Licensed under the Creative Commons CC BY 4.0 License (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,6 +27,10 @@ import sys
 import psycopg2
 import uuid
 
+class Geoportal(object):
+    def __init__(self, downloadURL = None, uuid = None):
+        self.downloadURL = downloadURL
+        self.uuid = uuid
 
 def gptInsertRecord(xml, title):
     # Config file is 'gptInsert.conf' located in the current directory
@@ -34,6 +38,10 @@ def gptInsertRecord(xml, title):
     try:
         config = get_config(config_file)
         conn_param = dict(config.items('default'))
+
+        # We want the downloadURL out of the dictionary before sending
+        # the dictionary to the SQL server
+        downloadURL = conn_param.pop('downloadurl')
     except:
         print >> sys.stderr, 'Failed to get config'
 
@@ -55,7 +63,8 @@ def gptInsertRecord(xml, title):
     gpt_sequence_num = rows[0][0]
 
     # Generate a UUID and format it in geoportal style
-    docuuid = '{' + str(uuid.uuid4()) + '}'
+    bareuuid = str(uuid.uuid4())
+    docuuid = '{' + bareuuid + '}'
 
     print >> sys.stderr, 'Inserting geoportal record uuid=' + docuuid + ' id=' + str(gpt_sequence_num)
 
@@ -101,15 +110,19 @@ def gptInsertRecord(xml, title):
     # Commit all SQL inserts
     conn.commit()
 
+    # Return the Geoportal object with enough information to construct
+    # a download link for the dataset
+    output = Geoportal(downloadURL = downloadURL, uuid = bareuuid)
+    return output
 
 # The function for reading the config file
 def get_config(config_file):
-        """Provide user with a ConfigParser that has read the `config_file`
-            Returns:
-                (ConfigParser) Config parser with a section for each config
-        """
-        assert os.path.isfile(config_file), "Config file %s does not exist!" \
-            % os.path.abspath(config_file)
-        config = ConfigParser.ConfigParser()
-        config.read(config_file)
-        return config
+    """Provide user with a ConfigParser that has read the `config_file`
+        Returns:
+            (ConfigParser) Config parser with a section for each config
+    """
+    assert os.path.isfile(config_file), "Config file %s does not exist!" \
+        % os.path.abspath(config_file)
+    config = ConfigParser.ConfigParser()
+    config.read(config_file)
+    return config

@@ -206,18 +206,6 @@ metadataEditorApp
         "state": "Idaho"
     }],
 
-    access: [{
-        "address": "875 Perimeter Dr. MS 2358",
-        "city": "Moscow",
-        "country": "USA",
-        "name": "Northwest Knowledge Network",
-        "email": "info@northwestknowledge.net",
-        "org": "University of Idaho",
-        "phone": "208-885-2080",
-        "state": "Idaho",
-        "zipcode": "83844-2358"
-    }],
-
     online: [
         "https://www.idahoecosystems.org"
     ],

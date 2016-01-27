@@ -39,35 +39,57 @@
 
 <body>
 
-    <div style="margin-left: 8em; margin-right: 6em">
-      <h4>
+    <div style="margin-left: 4em; margin-right: 4em; font-size: large">
         <p>
-            With NKN's Metdata Editor you can create a valid ISO 19115 
-            metadata record for your dataset or dataset series or a Dublin Core 
-            metadata record for your non-data research product (tool, 
-            visualization product, model, script, etc.). To get started, 
-            select the type of metadata record you would like to create in the 
-            dropdown Record Options above.
+            With NKN's Metdata Editor you can create a valid ISO 19115
+            metadata record for your dataset or dataset series or a Dublin Core
+            metadata record for your non-data research product (tool,
+            visualization product, model, script, etc.). To get started,
+            select the type of metadata record you would like to create in the
+            <strong><i>Record Options </strong></i> dropdown above.
+        </p>
+    </div>
+    <div style="margin-left: 8em; margin-right: 6em; font-size: medium">
+        <p>
+            If you are using NKN to store your data, select <strong> NKN as
+            Data Manager</strong> from the <strong><i>Load Defaults</strong></i>
+            dropdown.
         </p>
         <p>
-            <strong>NOTE:</strong> You must complete all requred fields and 
+            <strong>NOTE:</strong> You must complete all requred fields and
             will need to Save your record before you can Publish it.
         </p>
-      </h4>
+        <p>
+            Please contact <a href="mailto:publish@northwestknowledge.net"> NKN</a>
+            if you have additional questions or if the data associated with your
+            record are larger than 10GB.
+
     </div>
 
-    <div  id="bodyDiv">
-
-        <div id="ngMain" ng-app="metadataEditor">
-
+    <div ng-app="metadataEditor">
         <div ng-controller="BaseController as baseCtrl">
 
-        <div ng-include="'partials/appHeader.html'"></div>
+            <div ng-show="baseCtrl.showHelp">
+                <div ng-include="'partials/help.html'"></div>
+            </div>
 
-        <div id="main-container" class="container">
-            <div ng-view></div>
+
+            <div  id="bodyDiv">
+
+                <div id="ngMain">
+
+            <!-- <div ng-controller="BaseController as baseCtrl"> -->
+
+                    <div ng-include="'partials/appHeader.html'"></div>
+
+                    <div id="main-container" class="container">
+                        <div ng-view></div>
+                    </div>
+
+                </div>
+
+            </div>
         </div>
-
     </div>
 </body>
 </html>
