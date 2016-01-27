@@ -66,12 +66,8 @@ def metadata():
         if request.method == 'POST':
 
             # execute raw MongoDB query and return all of the user's records
-            recs = Metadata.objects(
-                __raw__={'placeholder': False,
-                         'default': None,
-                         'username': username}
-            )
-
+            recs = Metadata.objects(__raw__={'username': username})
+            # import ipdb; ipdb.set_trace();
             return jsonify(dict(results=recs))
 
         if request.method == 'PUT':
@@ -179,19 +175,20 @@ def publish_metadata_record(_oid):
         record = Metadata.objects.get_or_404(pk=_oid)
         updater = Metadata.from_json(request.data)
         for f in record._fields:
-            record[f] = updater[f]
-
-        record.md_pub_date = datetime.utcnow()
-        print record.md_pub_date
-
-        record.save()
+            if f != 'id':
+                record[f] = updater[f]
 
     except ValidationError:
 
         record = Metadata.from_json(request.data)
         record.id = None
         record.placeholder = False
-        record.save()
+
+    # import ipdb; ipdb.set_trace()
+    record.md_pub_date = datetime.utcnow()
+    record.save()
+
+    # import ipdb; ipdb.set_trace()
 
     if record.schema_type == 'Dataset (ISO)':
 
@@ -357,6 +354,51 @@ def get_single_xml_metadata(_oid):
     return Response(xml_str, 200, mimetype='application/xml')
 
 
+@api.route('/api/metadata/<string:_oid>/attachments',
+           methods=['POST', 'DELETE'])
+@cross_origin(origin="*",  methods=['POST', 'DELETE'],
+              headers=['X-Requested-With', 'Content-Type', 'Origin'])
+def attach_file(_oid):
+    """
+    Add attachment URLs to a metadata record. These may
+    """
+    md = Metadata.objects.get_or_404(pk=_oid)
+    attachment = ''
+
+    try:
+        if request.method == 'POST':
+            attachment = request.json['attachment']
+            md.attachments.append(attachment)
+
+        elif request.method == 'DELETE':
+            try:
+                attachment = request.json['attachment']
+                md.attachments.remove(attachment)
+            # we'll just go ahead and not care if it doesn't exist
+            except ValueError:
+                pass
+
+        else:
+            return jsonify({'message': 'HTTP Method must be DELETE or POST'},
+                           status=405)
+
+    except KeyError:
+
+        keys = request.json.keys()
+        keys_str = ', '.join(keys)
+        return jsonify(
+            {
+                'message':
+                    'Key(s) ' + keys_str + ' not recognized. ' +
+                    'Must contain \'attachment\''
+            },
+            status=400
+        )
+
+    md.save()
+    return jsonify({'message': attachment + ' successfully attached!'})
+
+
 @api.route('/api/contacts/<string:type_>')
 @cross_origin(origin="*", methods=['POST'])
 def get_citation_contacts(type_):
@@ -404,7 +446,7 @@ def _authenticate_user_from_session(request):
     # TODO remove the default setting here. This is saying use a service.
     username_url = (os.getenv('GETUSER_URL') or
                     'https://nkn-dev.nkn.uidaho.edu/getUsername/')
-
+    # import ipdb; ipdb.set_trace();
     try:
         session_id = request.json['session_id']
     except:

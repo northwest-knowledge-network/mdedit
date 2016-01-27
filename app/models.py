@@ -68,11 +68,8 @@ class Metadata(db.Document):
     start_date = db.DateTimeField()
     end_date = db.DateTimeField()
 
-    placeholder = db.BooleanField(default=False)
-
-    # used if the record is a default for a particular group,
-    # e.g. 'miles' or 'nkn'
-    default = db.StringField(max_length=20)
+    # files associated with the metadata record
+    attachments = db.ListField(db.StringField())
 
     meta = {'allow_inheritance': True}
 

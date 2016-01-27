@@ -7,13 +7,6 @@
             <h2 id="record-title" ng-show="!newRecord">Editing Existing: {{currentRecord.title}}</h2>
         </div>
 
-<!--     <div class="row">
-        <div id="help" ng-show="baseCtrl.showHelp"
-             ng-include="'partials/help.html'">
-        </div>
-    </div> -->
-
-
     <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" id="upload">
 
         <h4>Associated Data</h4>
@@ -22,7 +15,9 @@
             <li>spatially_inferenced.nc (<span style="color:red">remove</span>)</li>
         </ol>
 
+        <input type="button" class="btn btn-primary btn-contact disabled"
+               value="Publish Record to Add Files" ng-hide="currentRecord.md_pub_date.$date">
         <input type="button" class="btn btn-primary btn-contact"
-               value="Upload Data">
+               value="Upload Data" ng-show="currentRecord.md_pub_date.$date">
     </div>
 </div>
