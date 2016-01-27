@@ -403,3 +403,64 @@ describe('Geoprocessing service', function () {
         $httpBackend.flush();
     });
 });
+
+
+ddescribe('Publish metadata record and attach files', function () {
+
+    var attachmentUrl = 'http://data.example/foo.nc';
+
+    beforeEach(module('metadataEditor'));
+
+    var AttachmentService, $httpBackend;
+    beforeEach(inject(function($injector) {
+        AttachmentService = $injector.get('AttachmentService');
+
+        $httpBackend = $injector.get('$httpBackend');
+    }));
+
+    afterEach(function () {
+        $httpBackend.verifyNoOutstandingExpectation();
+        $httpBackend.verifyNoOutstandingRequest();
+    });
+
+    it('should send post request to upload server on uploading a file', function () {
+
+        $httpBackend.expectPOST(/portal\/simpleUpload\/upload.php/)
+            .respond(200, {
+                    "message": "The file yo has been uploaded",
+                    "source": "yo",
+                    "target_path": "tempData/dc-foaf.png",
+                    "size": 84203
+            });
+
+        AttachmentService.uploadFile({'name': 'yo', 'payload': 'xxdfawefawf'})
+            ;
+
+        $httpBackend.flush();
+    });
+
+    it('should send post request to metadata server on attaching file', function () {
+
+        $httpBackend.expectPOST(
+            /api\/metadata\/x556\/attachments/,
+            {'attachment': attachmentUrl}
+        ).respond(200, {
+            message: attachmentUrl + ' successfully (de/at)tached!'
+        });
+
+        AttachmentService.attachFile(attachmentUrl, 'x556');
+
+        $httpBackend.flush();
+    });
+
+    it('should send delete request when removing an attachment', function () {
+        $httpBackend.expectDELETE(/api\/metadata\/x556\/attachments\/553534/)
+            .respond(200, {
+                message: 'File with UUID: 553534 successfully (de/at)tached!'
+            });
+
+        AttachmentService.detachFile('553534', 'x556');
+
+        $httpBackend.flush();
+    });
+});

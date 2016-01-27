@@ -67,7 +67,6 @@ def metadata():
 
             # execute raw MongoDB query and return all of the user's records
             recs = Metadata.objects(__raw__={'username': username})
-            # import ipdb; ipdb.set_trace();
             return jsonify(dict(results=recs))
 
         if request.method == 'PUT':
@@ -117,7 +116,6 @@ def get_single_metadata(_oid):
     because their session_id sent with the request.
     """
     username = _authenticate_user_from_session(request)
-    # import ipdb; ipdb.set_trace();
     try:
         if request.method == 'PUT':
 
@@ -184,11 +182,8 @@ def publish_metadata_record(_oid):
         record.id = None
         record.placeholder = False
 
-    # import ipdb; ipdb.set_trace()
     record.md_pub_date = datetime.utcnow()
     record.save()
-
-    # import ipdb; ipdb.set_trace()
 
     if record.schema_type == 'Dataset (ISO)':
 
@@ -360,7 +355,7 @@ def get_single_xml_metadata(_oid):
               headers=['X-Requested-With', 'Content-Type', 'Origin'])
 def attach_file(_oid):
     """
-    Add attachment URLs to a metadata record. These may
+    Add attachment URLs to a metadata record.
     """
     md = Metadata.objects.get_or_404(pk=_oid)
     attachment = ''
@@ -396,7 +391,7 @@ def attach_file(_oid):
         )
 
     md.save()
-    return jsonify({'message': attachment + ' successfully attached!'})
+    return jsonify({'message': attachment + ' successfully (at/de)tached!'})
 
 
 @api.route('/api/contacts/<string:type_>')
@@ -446,7 +441,6 @@ def _authenticate_user_from_session(request):
     # TODO remove the default setting here. This is saying use a service.
     username_url = (os.getenv('GETUSER_URL') or
                     'https://nkn-dev.nkn.uidaho.edu/getUsername/')
-    # import ipdb; ipdb.set_trace();
     try:
         session_id = request.json['session_id']
     except:

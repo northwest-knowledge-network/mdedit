@@ -513,4 +513,50 @@ metadataEditorApp
     return {
         getBbox: getBbox
     };
+}])
+/**
+ * The attachment service must do two things: upload data to the datastore
+ * and
+ */
+.service('AttachmentService', ['$http', 'hostname', function($http, hostname) {
+    var uploadUrl =
+        'http://nknportal-dev.nkn.uidaho.edu/portal/simpleUpload/upload.php';
+
+    var downloadBaseUrl =
+        'http://www.northwestknowledge.net/data/download.php?uuid=';
+
+    var attachBaseRoute = hostname + '/api/metadata/';
+
+    var uploadFile = function(file) {
+
+        var fd = new FormData();
+
+        fd.append('userFile', file);
+
+        return $http.post(uploadUrl, fd, {
+            transformRequest: angular.identity,
+            headers: {'Content-Type': undefined}
+        });
+    };
+
+    var attachFile = function(attachmentUrl, recordId) {
+        var attachRoute = attachBaseRoute + recordId + '/attachments';
+        return $http.post(attachRoute, {attachment: attachmentUrl});
+    };
+
+    /**
+     * Detach a file with the given attachmentId. Once an attachment has
+     * been created we create a URI for it, which can then be accessed for
+     * DELETE
+     */
+    var detachFile = function(attachmentId, recordId) {
+        var attachRoute = attachBaseRoute + recordId + '/attachments/553534';
+        return $http.delete(attachRoute);
+    };
+
+    return {
+        uploadFile: uploadFile,
+        attachFile: attachFile,
+        detachFile: detachFile
+    };
 }]);
