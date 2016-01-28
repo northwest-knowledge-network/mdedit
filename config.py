@@ -31,7 +31,7 @@ class TestingConfig(Config):
     TESTING = True
 
     MONGODB_SETTINGS = {'db': 'mdedit_test'}
-    PREPROD_DIRECTORY = 'mdedit_preprod_test'
+    PREPROD_DIRECTORY = os.getcwd() + '/mdedit_preprod_test'
 
     if not os.path.exists(PREPROD_DIRECTORY):
         os.makedirs(PREPROD_DIRECTORY)
