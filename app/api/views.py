@@ -453,40 +453,6 @@ def upload():
             return jsonify({'message': 'Error: file with css name ' +
                                        '\'uploadedfile\' not found'})
 
-
-
-    else:
-        return jsonify({'message': 'Error: must upload with POST'},
-                       status=405)
-
-
-# Not actually used in mdedit production at NKN, only for testing.
-# Return values mirror those returned by NKN simpleUpload server
-@api.route('/api/upload', methods=['POST'])
-@cross_origin(origin='*', methods=['POST'],
-              headers=['X-Requested-With', 'Content-Type', 'Origin'])
-def upload():
-
-    if request.method == 'POST' and 'uploadedfile' in request.files:
-
-        try:
-            f = request.files['uploadedfile']
-            uploadedfiles.save(f)
-            # import ipdb; ipdb.set_trace()
-            ret = {
-                "message": "Upload successful",
-                "source": f.filename,
-                "url": 'http://localhost:4000/static/uploads/uploadedfiles/' +
-                       f.filename
-            }
-            return jsonify(ret)
-
-        except KeyError:
-            return jsonify({'message': 'Error: file with css name ' +
-                                       '\'uploadedfile\' not found'})
-
-
-
     else:
         return jsonify({'message': 'Error: must upload with POST'},
                        status=405)
