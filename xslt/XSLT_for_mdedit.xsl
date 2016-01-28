@@ -765,6 +765,20 @@
                                             </gmd:CI_OnlineResource>
                                         </gmd:onLine>
                                         </xsl:for-each>
+                                        <xsl:for-each select="/root/record/attachments/item">
+                                            <gmd:onLine>
+                                                <gmd:CI_OnlineResource>
+                                                    <gmd:linkage>
+                                                        <gmd:URL>
+                                                            <xsl:value-of select="url"/>
+                                                        </gmd:URL>
+                                                    </gmd:linkage>
+                                                    <gmd:function>
+                                                        <gmd:CI_OnLineFunctionCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode" codeListValue="download">download</gmd:CI_OnLineFunctionCode>
+                                                    </gmd:function>
+                                                </gmd:CI_OnlineResource>
+                                            </gmd:onLine>
+                                        </xsl:for-each>
                                     </gmd:MD_DigitalTransferOptions>
                                 </gmd:distributorTransferOptions>
                             </gmd:MD_Distributor>
