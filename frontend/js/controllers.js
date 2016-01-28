@@ -351,8 +351,18 @@ metadataEditorApp.controller('BaseController',
                 .error( function(error) { $log.log(error); });
         };
 
-        $scope.attachFile = function(file) {
+        $scope.attachmentInfo = {
+            newAttachment: ''
+        };
+        $scope.attachFile = function() {
             // first upload file, then in success callback, attach to record
+
+            var file = $scope.attachmentInfo.newAttachment;
+
+            // $log.log($scope);
+
+            $log.log(file);
+
             AttachmentService.uploadFile(file)
                 .success(function (data) {
                     var url = data.url;
@@ -377,8 +387,10 @@ metadataEditorApp.controller('BaseController',
         };
 
         $scope.detachFile = function(attachmentId) {
+
             // the attachmentId needs to be fetched from the attachments
             var recordId = $scope.currentRecord._id.$oid;
+
             AttachmentService.detachFile(attachmentId, recordId)
                 .success(function (data) {
                     updateForms($scope, data.record);

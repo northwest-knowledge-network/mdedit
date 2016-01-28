@@ -28,15 +28,17 @@ import lxml.etree as ET
 import geocoder
 import os
 import requests
+import urllib
 
+from datetime import datetime
 from dicttoxml import dicttoxml
 from flask import request, jsonify, Response
 from flask import current_app as app
 from flask_cors import cross_origin
 from mongoengine import ValidationError
-from datetime import datetime
 
 from . import api
+from .. import uploadedfiles
 from ..models import Metadata, Attachment
 
 import gptInsert
@@ -363,9 +365,13 @@ def attach_file(_oid, attachmentId=None):
 
     try:
         if request.method == 'POST':
-            import ipdb; ipdb.set_trace()
+
             attachment = request.json['attachment']
+            if 'localhost' in request.url_root:
+                attachment = attachment.replace(' ', '_')
+
             md.attachments.append(Attachment(url=attachment))
+
             md.save()
 
         elif request.method == 'DELETE':
@@ -437,6 +443,38 @@ def get_citation_contacts(type_):
     ]
 
     return jsonify(dict({'citation_contacts': nonempty_contacts}))
+
+
+# Not actually used in mdedit production at NKN, only for testing.
+# Return values mirror those returned by NKN simpleUpload server
+@api.route('/api/upload', methods=['POST'])
+@cross_origin(origin='*', methods=['POST'],
+              headers=['X-Requested-With', 'Content-Type', 'Origin'])
+def upload():
+
+    if request.method == 'POST' and 'uploadedfile' in request.files:
+
+        try:
+            f = request.files['uploadedfile']
+            uploadedfiles.save(f)
+            # import ipdb; ipdb.set_trace()
+            ret = {
+                "message": "Upload successful",
+                "source": f.filename,
+                "url": 'http://localhost:4000/static/uploads/uploadedfiles/' +
+                       f.filename
+            }
+            return jsonify(ret)
+
+        except KeyError:
+            return jsonify({'message': 'Error: file with css name ' +
+                                       '\'uploadedfile\' not found'})
+
+
+
+    else:
+        return jsonify({'message': 'Error: must upload with POST'},
+                       status=405)
 
 
 def _authenticate_user_from_session(request):
