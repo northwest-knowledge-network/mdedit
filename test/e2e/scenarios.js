@@ -34,6 +34,9 @@ testLoadDeleteDropdown('dublin');
 testMilesDefaults('iso');
 testMilesDefaults('dublin');
 
+deleteRecordTest('iso');
+deleteRecordTest('dublin');
+
 
 
  describe('ISO and Dublin Core editing views', function () {
@@ -105,7 +108,13 @@ function deleteRecordTest(schemaType) {
     describe('Delete a metadata record', function() {
 
         beforeEach( function () {
-            browser.get('/frontend/#/' + schemaType);
+            browser.get('/frontend');
+
+            element(by.id('record-options-dropdown')).click();
+            if (schemaType === 'iso')
+                element(by.id('create-new-dataset')).click();
+            else if (schemaType === 'dublin')
+                element(by.id('create-new-non-dataset')).click();
 
             element(by.model('currentRecord.title')).sendKeys('¡Pollo Loco!');
             element(by.model('currentRecord.summary')).sendKeys('mmmm....chicken');
@@ -132,7 +141,7 @@ function deleteRecordTest(schemaType) {
         it('should delete current record and load fresh form when record deleted', function() {
             element(by.id('load-delete-record-dropdown')).click();
             element(by.id('delete-record-0')).click();
-
+            // browser.pause();
             element(by.model('currentRecord.title')).getAttribute('value').then( (val) => {
                 expect(val.trim()).toBe('');
             });
@@ -160,9 +169,7 @@ function deleteRecordTest(schemaType) {
     });
 }
 
-// deleteRecordTest('iso');
 
-// deleteRecordTest('dublin');
 function testLoadDeleteDropdown(schemaType) {
 
     describe('Manage your metadata dropdown', function () {
@@ -215,7 +222,7 @@ function testLoadDeleteDropdown(schemaType) {
 
             for (var field in isoFields)
             {
-                newRecord[field] = isoFields[field]; 
+                newRecord[field] = isoFields[field];
             }
         }
 
@@ -468,33 +475,6 @@ function testMilesDefaults(schemaType) {
              compareBboxVal('south_lat');
              compareBboxVal('east_lon');
              compareBboxVal('west_lon');
-
-             expect(element(by.id('access-name-0')).getAttribute('value'))
-                 .toBe('Northwest Knowledge Network');
-
-             expect(element(by.id('access-email-0')).getAttribute('value'))
-                 .toBe('info@northwestknowledge.net');
-
-             expect(element(by.id('access-org-0')).getAttribute('value'))
-                 .toBe('University of Idaho');
-
-             expect(element(by.id('access-address-0')).getAttribute('value'))
-                 .toBe('875 Perimeter Dr. MS 2358');
-
-             expect(element(by.id('access-city-0')).getAttribute('value'))
-                 .toBe('Moscow');
-
-             expect(element(by.id('access-state-0')).getAttribute('value'))
-                 .toBe('Idaho');
-
-             expect(element(by.id('access-zipcode-0')).getAttribute('value'))
-                 .toBe('83844-2358');
-
-             expect(element(by.id('access-country-0')).getAttribute('value'))
-                 .toBe('USA');
-
-             expect(element(by.id('access-phone-0')).getAttribute('value'))
-                 .toBe('208-885-2080');
          });
 
          it('should not overwrite fields that are already present in a new record', function () {
