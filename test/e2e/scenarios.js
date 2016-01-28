@@ -22,24 +22,26 @@ var clearCollection = function () {
 clearCollection();
 
 
-testNknAsDistributor('iso');
-testNknAsDistributor('dublin');
+// testNknAsDistributor('iso');
+// testNknAsDistributor('dublin');
 
-testExportISO('iso');
-testExportISO('dublin');
+// testExportISO('iso');
+// testExportISO('dublin');
 
-testLoadDeleteDropdown('iso');
-testLoadDeleteDropdown('dublin');
+// testLoadDeleteDropdown('iso');
+// testLoadDeleteDropdown('dublin');
 
-testMilesDefaults('iso');
-testMilesDefaults('dublin');
+// testMilesDefaults('iso');
+// testMilesDefaults('dublin');
 
-deleteRecordTest('iso');
-deleteRecordTest('dublin');
+// deleteRecordTest('iso');
+// deleteRecordTest('dublin');
+
+attachFileTest('iso');
+attachFileTest('dublin');
 
 
-
- describe('ISO and Dublin Core editing views', function () {
+describe('ISO and Dublin Core editing views', function () {
 
      it('should go to #/dublin when the dublin core button is pressed', function () {
 
@@ -55,7 +57,7 @@ deleteRecordTest('dublin');
  });
 
 
- describe('Adding and removing contacts using buttons', function () {
+describe('Adding and removing contacts using buttons', function () {
 
      var addRemoveContacts = function () {
 
@@ -428,7 +430,40 @@ function testLoadDeleteDropdown(schemaType) {
     });
 }
 
+
+function attachFileTest(schemaType) {
+
+    describe('File attachment', function () {
+
+        beforeEach(function () {
+            browser.get('/frontend');
+
+            element(by.id('record-options-dropdown')).click();
+            if (schemaType === 'iso')
+                element(by.id('create-new-dataset')).click();
+            else if (schemaType === 'dublin')
+                element(by.id('create-new-non-dataset')).click();
+        });
+
+        it('should show a new file in the attachments list when file added then remove when deleted', function () {
+            element(by.model('currentRecord.title')).sendKeys('¡olé!™');
+
+            // send keys to give the file name desired
+
+            // click upload
+            expect(true).toBe(false);
+
+            // check that http://example.com/data/tempData/example.png
+            // has been added to the attachment list
+
+            // now click delete and ensure the attachment is removed from list
+        });
+    });
+}
+
+
 function testMilesDefaults(schemaType) {
+
     describe('MILES Defaults', function () {
 
         beforeEach(function() {
@@ -582,8 +617,6 @@ function testExportISO(schemaType) {
          });
 
          it('should open a new window properly', function () {
-
-             //browser.get('/frontend/index.html');
 
              element(by.model('currentRecord.title')).sendKeys('¡Pollo Loco!');
              element(by.model('currentRecord.summary')).sendKeys('The craziest tasting Chicken!');

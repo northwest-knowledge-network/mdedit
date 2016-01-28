@@ -91,7 +91,7 @@ class Metadata(db.Document):
 
 class Attachment(db.EmbeddedDocument):
     id = db.ObjectIdField(required=True, default=ObjectId)
-    url = db.URLField(required=True)
+    url = db.StringField(required=True)
 
     def __str__(self):
 

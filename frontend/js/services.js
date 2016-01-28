@@ -507,26 +507,47 @@ metadataEditorApp
 }])
 /**
  * The attachment service must do two things: upload data to the datastore
- * and
+ * and, if successful, request the download URL be added to the
  */
-.service('AttachmentService', ['$http', 'hostname', function($http, hostname) {
-    var uploadUrl =
-        'http://nknportal-dev.nkn.uidaho.edu/portal/simpleUpload/upload.php';
+.service('AttachmentService', ['$http', '$log', 'hostname',
+    function($http, $log, hostname) {
+
+    /* use a test uploadUrl for e2e tests.
+        comment out following block and uncomment the next block to
+        test with NKN resources
+    */
+    var uploadUrl;
+    if (hostname === 'localhost:4000') {
+        uploadUrl = 'http://localhost:4000/api/upload';
+    }
+    else {
+        uploadUrl =
+            'http://nknportal-dev.nkn.uidaho.edu/portal/simpleUpload/upload.php';
+    }
+    // var uploadUrl =
+            // 'http://nknportal-dev.nkn.uidaho.edu/portal/simpleUpload/upload.php';
 
     var downloadBaseUrl =
-        'http://www.northwestknowledge.net/data/download.php?uuid=';
+        'https://www.northwestknowledge.net/data/download.php?uuid=';
 
-
-    var attachBaseRoute = hostname + '/api/metadata/';
+    var attachBaseRoute;
+    if (hostname !== 'localhost:4000') {
+        attachBaseRoute = hostname + '/api/metadata/';
+    }
+    else {
+        attachBaseRoute = 'http://' + hostname + '/api/metadata/';
+    }
 
     var uploadFile = function(file) {
 
         var fd = new FormData();
 
-        fd.append('userFile', file);
+        fd.append('uploadedfile', file);
+
+        $log.log('appended, now on to posting...');
 
         return $http.post(uploadUrl, fd, {
-            transformRequest: angular.identity,
+            // transformRequest: angular.identity,
             headers: {'Content-Type': undefined}
         });
     };
@@ -542,7 +563,8 @@ metadataEditorApp
      * DELETE
      */
     var detachFile = function(attachmentId, recordId) {
-        var attachRoute = attachBaseRoute + recordId + '/attachments/553534';
+        var attachRoute =
+            attachBaseRoute + recordId + '/attachments/' + attachmentId;
         return $http.delete(attachRoute);
     };
 

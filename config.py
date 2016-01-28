@@ -26,12 +26,16 @@ class Config:
 class DevelopmentConfig(Config):
     DEBUG = True
 
+    UPLOADS_DEFAULT_DEST = 'app/static/uploads'
+
 
 class TestingConfig(Config):
     TESTING = True
 
     MONGODB_SETTINGS = {'db': 'mdedit_test'}
     PREPROD_DIRECTORY = 'mdedit_preprod_test'
+
+    UPLOADS_DEFAULT_DEST = 'app/static/test-uploads'
 
     if not os.path.exists(PREPROD_DIRECTORY):
         os.makedirs(PREPROD_DIRECTORY)

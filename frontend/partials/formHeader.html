@@ -11,13 +11,24 @@
 
         <h4>Associated Data</h4>
         <ol>
-            <li>gauge_data.csv (<span style="color:red">remove</span>)</li>
-            <li>spatially_inferenced.nc (<span style="color:red">remove</span>)</li>
+            <li ng-repeat="att in currentRecord.attachments">
+                <a ng-href="{{att.url}}">{{att.url}}</a>
+                (<a ng-click="detachFile(att.id.$oid)" style="color:red">remove</a>)
+            </li>
         </ol>
 
         <input type="button" class="btn btn-primary btn-contact disabled"
-               value="Publish Record to Add Files" ng-hide="currentRecord.md_pub_date.$date">
-        <input type="button" class="btn btn-primary btn-contact"
-               value="Upload Data" ng-show="currentRecord.md_pub_date.$date">
+               value="Please save a draft to add files"
+               ng-hide="currentRecord._id"/>
+
+        <!-- <label for="fileSelect">Select file:</label> -->
+        <input type="file"
+               value="Attach File" ng-show="currentRecord._id"
+               file-model="attachmentInfo.newAttachment"/>
+        <button id="attachFile" class="btn btn-primary btn-contact"
+                ng-show="attachmentInfo.newAttachment"
+                ng-click="attachFile()">
+            Attach File
+        </button>
     </div>
 </div>

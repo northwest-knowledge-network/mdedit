@@ -29,14 +29,15 @@ import geocoder
 import os
 import requests
 
+from datetime import datetime
 from dicttoxml import dicttoxml
 from flask import request, jsonify, Response
 from flask import current_app as app
 from flask_cors import cross_origin
 from mongoengine import ValidationError
-from datetime import datetime
 
 from . import api
+from .. import uploadedfiles
 from ..models import Metadata, Attachment
 
 import gptInsert
@@ -362,18 +363,42 @@ def attach_file(_oid, attachmentId=None):
     attachment = ''
 
     try:
+
         if request.method == 'POST':
-            import ipdb; ipdb.set_trace()
+
             attachment = request.json['attachment']
+            if 'localhost' in request.url_root:
+                attachment = attachment.replace(' ', '_')
+
             md.attachments.append(Attachment(url=attachment))
+
             md.save()
 
         elif request.method == 'DELETE':
+
             try:
+                md = Metadata.objects.get(id=_oid)
+
+                try:
+                    # if developing locally we'll also want to remove file
+                    url = filter(
+                            lambda a: str(a.id) == attachmentId, md.attachments
+                        ).pop().url
+
+                    os.remove(
+                        os.path.join(
+                            app.config['UPLOADS_DEFAULT_DEST'],
+                            os.path.basename(url)
+                        )
+                    )
+                except (OSError, IndexError):
+                    pass
+
                 # don't need to save after this since we're updating existing
                 Metadata.objects(id=_oid).update_one(
                     pull__attachments__id=attachmentId
                 )
+
 
                 md = Metadata.objects.get(id=_oid)
 
@@ -402,41 +427,36 @@ def attach_file(_oid, attachmentId=None):
                         record=md))
 
 
-@api.route('/api/contacts/<string:type_>')
-@cross_origin(origin="*", methods=['POST'])
-def get_citation_contacts(type_):
-    """
-    Return contacts that have previously been used for Citation contacts
-    by the user.
-    """
-    username = _authenticate_user_from_session(request)
+# Not actually used in mdedit production at NKN, only for testing.
+# Return values mirror those returned by NKN simpleUpload server
+@api.route('/api/upload', methods=['POST'])
+@cross_origin(origin='*', methods=['POST'],
+              headers=['X-Requested-With', 'Content-Type', 'Origin'])
+def upload():
 
-    if username is None:
-        return Response(status=401)
+    if request.method == 'POST' and 'uploadedfile' in request.files:
 
-    if type_ not in ('citation', 'access'):
+        try:
+            f = request.files['uploadedfile']
+            uploadedfiles.save(f)
 
-        return Response(response='Type {} not recognized'
-                                 ' <img src="https://http.cat/404"/>'.format(
-                                     type_
-                                 ),
-                        status=404)
+            ret = {
+                "message": "Upload successful",
+                "source": f.filename,
+                "url": 'http://localhost:4000/static/uploads/uploadedfiles/' +
+                       f.filename
+            }
+            return jsonify(ret)
 
-    user_recs = Metadata.objects(username=username)
+        except KeyError:
+            return jsonify({'message': 'Error: file with css name ' +
+                                       '\'uploadedfile\' not found'})
 
-    citation_contacts = reduce(
-        lambda a, b: a + b, [rec[type_] for rec in user_recs]
-    )
 
-    # filter out totally empty contacts
-    nonempty_contacts = [
-        c for c in citation_contacts
-        if not all(
-            (val == "" for val in json.loads(c.to_json()).values())
-        )
-    ]
 
-    return jsonify(dict({'citation_contacts': nonempty_contacts}))
+    else:
+        return jsonify({'message': 'Error: must upload with POST'},
+                       status=405)
 
 
 def _authenticate_user_from_session(request):
