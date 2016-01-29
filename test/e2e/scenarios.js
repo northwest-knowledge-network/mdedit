@@ -2,6 +2,7 @@
 
 var mongo = require('mongodb');
 var extend = require('node.extend');
+var path = require('path');
 
 var mongocl = mongo.MongoClient;
 
@@ -22,23 +23,25 @@ var clearCollection = function () {
 clearCollection();
 
 
-// testNknAsDistributor('iso');
-// testNknAsDistributor('dublin');
+testNknAsDistributor('iso');
+testNknAsDistributor('dublin');
 
-// testExportISO('iso');
-// testExportISO('dublin');
+testExportISO('iso');
+testExportISO('dublin');
 
-// testLoadDeleteDropdown('iso');
-// testLoadDeleteDropdown('dublin');
+testLoadDeleteDropdown('iso');
+testLoadDeleteDropdown('dublin');
 
-// testMilesDefaults('iso');
-// testMilesDefaults('dublin');
+testMilesDefaults('iso');
+testMilesDefaults('dublin');
 
-// deleteRecordTest('iso');
-// deleteRecordTest('dublin');
+deleteRecordTest('iso');
+deleteRecordTest('dublin');
 
 attachFileTest('iso');
 attachFileTest('dublin');
+
+contactsTest();
 
 
 describe('ISO and Dublin Core editing views', function () {
@@ -48,7 +51,7 @@ describe('ISO and Dublin Core editing views', function () {
          browser.get('/frontend/index.html');
 
          element(by.id('record-options-dropdown')).click();
-         element(by.css('[href="#/dublin"]')).click();
+         element(by.id('create-new-non-dataset')).click();
 
          browser.getLocationAbsUrl().then(function(url) {
              expect(url).toEqual('/dublin');
@@ -57,53 +60,60 @@ describe('ISO and Dublin Core editing views', function () {
  });
 
 
-describe('Adding and removing contacts using buttons', function () {
+function contactsTest() {
 
-     var addRemoveContacts = function () {
+    describe('Adding and removing contacts using buttons', function () {
 
-         element.all(by.css('.contact-input')).sendKeys('aaaaa');
-         element.all(by.css('.contact-email')).sendKeys('a@aaaa.com');
+        var addRemoveContacts = function () {
 
-         var addContact = element(by.css('[ng-click="addContactAccess()"]'));
+            element.all(by.css('.contact-input')).sendKeys('aaaaa');
+            element.all(by.css('.contact-email')).sendKeys('a@aaaa.com');
 
-         addContact.click();
+            var addContact = element(by.css('[ng-click="addContactAccess()"]'));
 
-         var accessContacts =
-             element.all(by.repeater('(contactIdx, contact) in currentRecord.access'));
+            addContact.click();
 
-         expect(accessContacts.count()).toEqual(2);
+            var accessContacts =
+                element.all(by.repeater('(contactIdx, contact) in currentRecord.access'));
 
-         addContact.click();
+            expect(accessContacts.count()).toEqual(2);
 
-         expect(accessContacts.count()).toEqual(3);
+            addContact.click();
 
-         var removeContact = element(by.css('[ng-click="cancelAddContactAccess()"]'));
+            expect(accessContacts.count()).toEqual(3);
 
-         removeContact.click();
+            var removeContact = element(by.css('[ng-click="cancelAddContactAccess()"]'));
 
-         expect(accessContacts.count()).toEqual(2);
+            removeContact.click();
 
-         removeContact.click();
+            expect(accessContacts.count()).toEqual(2);
 
-         expect(accessContacts.count()).toEqual(1);
+            removeContact.click();
 
-         removeContact.click();
+            expect(accessContacts.count()).toEqual(1);
 
-         expect(accessContacts.count()).toEqual(1);
-     };
+            removeContact.click();
 
-     it('should add/remove access contacts when the add/remove citation ' +
-        'button is pressed for iso and dublin', function () {
+            expect(accessContacts.count()).toEqual(1);
+         };
 
-         browser.get('/frontend/#/iso');
+        it('should add/remove access contacts when the add/remove citation ' +
+            'button is pressed for iso and dublin', function () {
 
-         addRemoveContacts();
+            browser.get('/frontend');
+            element(by.id('record-options-dropdown')).click();
+            element(by.id('create-new-dataset')).click();
 
-         browser.get('/frontend/#/dublin');
+            addRemoveContacts();
 
-         addRemoveContacts();
+            element(by.id('record-options-dropdown')).click();
+            element(by.id('create-new-non-dataset')).click();
+
+            addRemoveContacts();
+        });
      });
- });
+}
+
 
 function deleteRecordTest(schemaType) {
 
@@ -446,17 +456,48 @@ function attachFileTest(schemaType) {
         });
 
         it('should show a new file in the attachments list when file added then remove when deleted', function () {
+
             element(by.model('currentRecord.title')).sendKeys('¡olé!™');
 
+            element(by.id('record-options-dropdown')).click();
+
+            element(by.css('[ng-click="submitDraftRecord()"')).click();
+
             // send keys to give the file name desired
+            var fname1 = 'file1.txt',
+                f1 = path.resolve(__dirname, fname1),
+                fname2 = 'file2.nc',
+                f2 = path.resolve(__dirname, fname2);
 
-            // click upload
-            expect(true).toBe(false);
+            // upload 1
+            element(by.id('attachment-select')).sendKeys(f1);
+            element(by.id('attach-file-button')).click();
 
-            // check that http://example.com/data/tempData/example.png
-            // has been added to the attachment list
+            var checkUploadLenIs = function (n) {
+                var uploadList =
+                    element.all(by.repeater('att in currentRecord.attachments'));
+
+                expect(uploadList.count()).toBe(n);
+            }
+
+            checkUploadLenIs(1);
+
+            // upload 2
+            element(by.id('attachment-select')).sendKeys(f2);
+            element(by.id('attach-file-button')).click().then(function() {
+
+                checkUploadLenIs(2);
+                // browser.pause();
+                element(by.id('remove-attachment-1')).click();
+                checkUploadLenIs(1);
+
+                element(by.id('remove-attachment-0')).click();
+                checkUploadLenIs(0);
+
+            });
 
             // now click delete and ensure the attachment is removed from list
+
         });
     });
 }

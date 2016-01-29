@@ -510,7 +510,7 @@ describe('Attach a file to a record', function () {
         var f = new File(["data line 1", "data line 2"], "test.txt");
         testScope.attachFile(f);
 
-        expect(AttachmentService.uploadFile).toHaveBeenCalledWith(f);
+        expect(AttachmentService.uploadFile).toHaveBeenCalled();
 
         expect(AttachmentService.attachFile)
             .toHaveBeenCalledWith(

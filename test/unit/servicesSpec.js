@@ -425,7 +425,7 @@ describe('Publish metadata record and attach files', function () {
 
     it('should send post request to upload server on uploading a file', function () {
 
-        $httpBackend.expectPOST(/portal\/simpleUpload\/upload.php/)
+        $httpBackend.expectPOST(/upload/)
             .respond(200, {
                     "message": "The file yo has been uploaded",
                     "source": "yo",
