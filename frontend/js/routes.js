@@ -10,6 +10,10 @@ metadataEditorApp.config(['$routeProvider',
       when('/iso', {
         templateUrl: 'partials/iso.html',
         controller: 'ISOController'
+      }).
+      otherwise({
+        redirectTo: '/',
+        controller: 'BaseController'
       });
   }
 ]);
