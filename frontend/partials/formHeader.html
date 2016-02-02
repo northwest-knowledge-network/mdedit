@@ -12,7 +12,7 @@
         <h4>Associated Data</h4>
         <ol>
             <li ng-repeat="att in currentRecord.attachments">
-                <a ng-href="{{att.url}}">{{att.url}}</a>
+                <a ng-href="{{att.url}}">{{att.url | filename}}</a>
                 (<a id="{{'remove-attachment-' + $index}}" ng-click="detachFile(att.id.$oid)" style="color:red">remove</a>)
             </li>
         </ol>
