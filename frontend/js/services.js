@@ -523,13 +523,11 @@ metadataEditorApp
     }
     else {
         uploadUrl =
-            'http://nknportal-dev.nkn.uidaho.edu/portal/simpleUpload/upload.php';
+            'https://nknportal-dev.nkn.uidaho.edu/portal/simpleUpload/upload.php';
     }
-    // var uploadUrl =
-            // 'http://nknportal-dev.nkn.uidaho.edu/portal/simpleUpload/upload.php';
-
-    var downloadBaseUrl =
-        'https://www.northwestknowledge.net/data/download.php?uuid=';
+    /**** COMMENT OUT ABOVE, UNCOMMENT BELOW TO TEST YOUR REMOTE SERVER ***/
+    //var uploadUrl =
+        //'https://nknportal-dev.nkn.uidaho.edu/portal/simpleUpload/upload.php';
 
     var attachBaseRoute;
     if (hostname !== 'localhost:4000') {
