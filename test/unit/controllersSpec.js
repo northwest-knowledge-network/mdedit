@@ -100,20 +100,6 @@ describe('MILES defaults', function() {
             }]
         );
 
-        expect(rec.access).toEqual(
-            [{
-                'address': '875 Perimeter Dr. MS 2358',
-                'city': 'Moscow',
-                'country': 'USA',
-                'name': 'Northwest Knowledge Network',
-                'email': 'info@northwestknowledge.net',
-                'org': 'University of Idaho',
-                'phone': '208-885-2080',
-                'state': 'Idaho',
-                'zipcode': '83844-2358'
-            }]
-        );
-
         expect(rec.online).toEqual(['https://www.idahoecosystems.org']);
 
         expect(rec.west_lon).toEqual(-117.2413657);
@@ -423,6 +409,179 @@ describe('Publish record', function () {
 
         expect(recordService.publish).toHaveBeenCalled();
         expect(testScope.newRecord).toEqual(false);
+    });
+});
+
+
+describe('Attach a file to a record', function () {
+    beforeEach(module('metadataEditor'));
+
+    var recordService, AttachmentService, $rootScope, testCtrl, createController;
+    beforeEach(
+        inject(function($controller, $q, $rootScope, _recordService_,
+                        _AttachmentService_) {
+            // $rootScope = $rootScope;
+            AttachmentService = _AttachmentService_;
+            recordService = _recordService_;
+
+            testCtrl = $controller('BaseController',
+                {
+                    $scope: testScope,
+                    AttachmentService: AttachmentService,
+                    recordService: recordService
+                });
+        }
+    ));
+
+    it('should upload a file then attach file to metadata record', function () {
+
+        testScope._id = {$oid: 'x64a-82b'};
+
+        spyOn(recordService, 'saveDraft').andReturn({
+
+            success: function(callback) {
+                    var data = {
+                        record: {
+                            _id: {$oid: 'x64a-82b'},
+                            start_date: new Date(2010, 0, 1),
+                            end_date: new Date(2011, 11, 31),
+                            last_mod_date: new Date(),
+                            first_pub_date: new Date(2012, 10, 1),
+                            data_format: ['docx', 'netcdf'],
+                            place_keywords: ['Idaho', 'Dry Creek'],
+                            thematic_keywords: ['hydrology']
+                        }
+                    };
+
+                    callback(data);
+
+                    return {
+                        error: function(callback) { return callback({}); }
+                    };
+                }
+        });
+
+        spyOn(AttachmentService, 'uploadFile').andReturn({
+            success: function(callback) {
+                var data = {
+                    "message": "The file xx5rz.txt has been uploaded",
+                    "source": "xx5rz.txt",
+                    "url": "https://nknportal-dev.nkn.uidaho.edu/portal/simpleUpload/tempData/xx5rz.txt",
+                    "target_path": "tempData/xx5rz.txt",
+                    "size": 84203
+                };
+
+                callback(data);
+
+                return {
+                    error: function() { return callback({}); }
+                };
+            }
+        });
+
+        spyOn(AttachmentService, 'attachFile').andReturn({
+
+                success: function(callback) {
+                    var data = {
+                        record: {
+                            _id: {$oid: 'x64a-82b'},
+                            start_date: new Date(2010, 0, 1),
+                            end_date: new Date(2011, 11, 31),
+                            last_mod_date: new Date(),
+                            first_pub_date: new Date(2012, 10, 1),
+                            data_format: ['docx', 'netcdf'],
+                            place_keywords: ['Idaho', 'Dry Creek'],
+                            thematic_keywords: ['hydrology'],
+                            attachments: [{
+                                url: 'https://nknportal-dev.nkn.uidaho.edu/portal/simpleUpload/tempData/xx5rz.txt',
+                                id: 'ab566a'
+                            }]
+                        }
+                    };
+
+                    callback(data);
+
+                    return {
+                        error: function(callback) { return callback({}); }
+                    };
+                }
+        });
+
+        var f = new File(["data line 1", "data line 2"], "test.txt");
+        testScope.attachFile(f);
+
+        expect(AttachmentService.uploadFile).toHaveBeenCalled();
+
+        expect(AttachmentService.attachFile)
+            .toHaveBeenCalledWith(
+                'https://nknportal-dev.nkn.uidaho.edu/portal/simpleUpload/tempData/xx5rz.txt', 'x64a-82b'
+            );
+
+        expect(testScope.currentRecord.attachments.length).toBe(1);
+    });
+
+});
+
+
+describe('Remove an existing attachment from the record', function () {
+    beforeEach(module('metadataEditor'));
+
+    var recordService, AttachmentService, $rootScope, testCtrl, createController;
+    beforeEach(
+        inject(function($controller, $q, $rootScope, _recordService_,
+                        _AttachmentService_) {
+
+            AttachmentService = _AttachmentService_;
+            recordService = _recordService_;
+
+            testCtrl = $controller('BaseController',
+                {
+                    $scope: testScope,
+                    AttachmentService: AttachmentService,
+                    recordService: recordService
+                });
+        }
+    ));
+
+    it('should call AttachmentService.detachFile and update scope', function () {
+        testScope.currentRecord._id = {$oid: 'jimjam'};
+        testScope.currentRecord.title = 'yo';
+        testScope.currentRecord.attachments = [{
+            url: 'http://example.com/yo.txt',
+            id: 'yo42'
+        }];
+
+        spyOn(AttachmentService, 'detachFile').andReturn({
+            success: function(callback) {
+                var data = {
+                    record: {
+                        _id: {$oid: 'jimjam'},
+                        title: 'yo',
+                        start_date: new Date(2010, 0, 1),
+                        end_date: new Date(2011, 11, 31),
+                        last_mod_date: new Date(),
+                        first_pub_date: new Date(2012, 10, 1),
+                        data_format: ['docx', 'netcdf'],
+                        place_keywords: ['Idaho', 'Dry Creek'],
+                        thematic_keywords: ['hydrology'],
+                        attachments: []
+                    }
+                };
+
+                callback(data);
+
+                return {
+                    error: function(callback) { return callback({}); }
+                };
+            }
+        });
+
+        testScope.detachFile('yo42');
+
+        expect(AttachmentService.detachFile)
+            .toHaveBeenCalledWith('yo42', 'jimjam');
+
+        expect(testScope.currentRecord.attachments.length).toBe(0);
     });
 });
 

@@ -8,7 +8,7 @@ import json
 import unittest
 
 from ..manage import app
-from ..app.models import Metadata
+from ..app.models import Metadata, Attachment
 
 
 class TestAPI(unittest.TestCase):
@@ -49,12 +49,14 @@ class TestAPI(unittest.TestCase):
 
     def test_metadata(self):
 
-        res = self.client.post('/api/metadata')
+        res = self.client.post(
+            '/api/metadata', data='{"session_id": "local"}',
+            content_type='application/json'
+        )
 
         res_json = json.loads(res.data)
 
         record_list = res_json['results']
-
         assert len(record_list) == 2
 
     def test_savedraft_update(self):
@@ -160,3 +162,53 @@ class TestAPI(unittest.TestCase):
         docList = Metadata.objects(__raw__={'_id': md_to_delete.id})
 
         assert len(docList) == 0
+
+    def test_publish_and_attach(self):
+        """
+        Publish should enable attaching files that have been uploaded as well as deleting existing attachments
+        """
+        data =\
+            """
+                {"title": "Another one",
+                 "thematic_keywords": ["limnology", "batholith"],
+                 "place_keywords": ["Idaho", "Pacific Northwest"],
+                 "username": "local_user"}
+            """
+        md_to_publish = Metadata.from_json(data)
+
+        md_to_publish.save()
+
+        md_id = str(md_to_publish.id)
+
+        assert md_id is not None
+
+        docList = Metadata.objects(__raw__={'_id': md_to_publish.id})
+
+        assert len(docList) == 1
+
+        self.client.post('/api/metadata/' + md_id + '/publish', data=data)
+
+        updated_md = Metadata.objects.get(pk=md_id)
+        assert updated_md.md_pub_date is not None
+
+        fake_data_url = 'http://example.com/x5534ffaf/fakeFile.txt'
+
+        self.client.post(
+            '/api/metadata/' + md_id + '/attachments',
+            data=json.dumps(dict(attachment=fake_data_url)),
+            content_type='application/json'
+        )
+
+        updated_md = Metadata.objects.get(pk=md_id)
+
+        att = updated_md.attachments[0]
+        assert att.url == fake_data_url
+
+        assert att.id is not None
+
+        self.client.delete(
+            '/api/metadata/' + md_id + '/attachments/' + str(att.id)
+        )
+
+        updated_md = Metadata.objects.get(pk=md_id)
+        assert len(updated_md.attachments) == 0

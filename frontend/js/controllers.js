@@ -5,10 +5,10 @@
 metadataEditorApp.controller('BaseController',
 
     ['$scope', '$http', '$log', '$window', 'formOptions', 'updateForms', 'recordService',
-        'Geoprocessing', 'hostname', 'sessionId',
+        'AttachmentService', 'Geoprocessing', 'hostname', 'sessionId',
 
     function($scope, $http, $log, $window, formOptions, updateForms,
-        recordService, Geoprocessing, hostname, sessionId)
+        recordService, AttachmentService, Geoprocessing, hostname, sessionId)
     {
         // initialize list of existing metadata records
         $scope.allRecords = [];
@@ -30,9 +30,11 @@ metadataEditorApp.controller('BaseController',
             $window.open(prefix + exportAddr(oid, type));
         };
 
-        $scope.updateRecordsList = () => {
+        $scope.updateRecordsList = function() {
             recordService.list()
-                .success(data => $scope.allRecords = data.results);
+                .success(function(data) { 
+                    $scope.allRecords = data.results;
+                });
         };
 
         $scope.updateRecordsList();
@@ -166,15 +168,14 @@ metadataEditorApp.controller('BaseController',
         $scope.editRecord = function (recordId) {
 
             recordService.getRecordToEdit(recordId)
-                .success( (data) => {
+                .success(function (data) {
                     $scope.newRecord = false;
 
                     updateForms($scope, data.record);
                 })
-                .error( (error) => {
+                .error(function (error) {
                     $scope.errors.push("Error in loading record to edit");
-                }
-                );
+                });
 
              //set geocode write-in box to be blank
             $scope.options.bboxInput = '';
@@ -188,8 +189,8 @@ metadataEditorApp.controller('BaseController',
 
             recordService.saveDraft($scope)
                 .success( function (data) {
-                    $log.log($scope.currentRecord.schema_type);
                     // need to update the sheet with the ID
+
                     updateForms($scope, data.record);
 
                     $scope.newRecord = false;
@@ -349,6 +350,54 @@ metadataEditorApp.controller('BaseController',
                     $scope.currentRecord.west_lon = data.west;
                 })
                 .error( function(error) { $log.log(error); });
+        };
+
+        $scope.attachmentInfo = {
+            newAttachment: ''
+        };
+        $scope.attachFile = function() {
+            // first upload file, then in success callback, attach to record
+
+            var file = $scope.attachmentInfo.newAttachment;
+
+            // $log.log($scope);
+
+            $log.log(file);
+
+            AttachmentService.uploadFile(file)
+                .success(function (data) {
+                    var url = data.url;
+                    var recordId;
+                    if ($scope.currentRecord.hasOwnProperty('_id'))
+                    {
+                        recordId = $scope.currentRecord._id.$oid;
+                    }
+                    else
+                    {
+                        $scope.submitDraftRecord();
+                        recordId = $scope.currentRecord._id.$oid;
+                    }
+
+                    AttachmentService.attachFile(url, recordId)
+                        .success(function (attachData) {
+
+                            $scope.currentRecord.attachments = 
+                                attachData.record.attachments;
+
+                            $scope.updateRecordsList();
+                        });
+                });
+        };
+
+        $scope.detachFile = function(attachmentId) {
+
+            // the attachmentId needs to be fetched from the attachments
+            var recordId = $scope.currentRecord._id.$oid;
+
+            AttachmentService.detachFile(attachmentId, recordId)
+                .success(function (data) {
+                    updateForms($scope, data.record);
+                });
         };
   } // end of callback for controller initialization
 ])

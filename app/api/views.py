@@ -28,17 +28,18 @@ import lxml.etree as ET
 import geocoder
 import os
 import requests
+import urllib
 
-from .. import config
+from datetime import datetime
 from dicttoxml import dicttoxml
 from flask import request, jsonify, Response
 from flask import current_app as app
 from flask_cors import cross_origin
 from mongoengine import ValidationError
-from datetime import datetime
 
 from . import api
-from ..models import Metadata
+from .. import uploadedfiles
+from ..models import Metadata, Attachment
 
 import gptInsert
 
@@ -66,12 +67,7 @@ def metadata():
         if request.method == 'POST':
 
             # execute raw MongoDB query and return all of the user's records
-            recs = Metadata.objects(
-                __raw__={'placeholder': False,
-                         'default': None,
-                         'username': username}
-            )
-
+            recs = Metadata.objects(__raw__={'username': username})
             return jsonify(dict(results=recs))
 
         if request.method == 'PUT':
@@ -121,7 +117,6 @@ def get_single_metadata(_oid):
     because their session_id sent with the request.
     """
     username = _authenticate_user_from_session(request)
-    # import ipdb; ipdb.set_trace();
     try:
         if request.method == 'PUT':
 
@@ -179,19 +174,17 @@ def publish_metadata_record(_oid):
         record = Metadata.objects.get_or_404(pk=_oid)
         updater = Metadata.from_json(request.data)
         for f in record._fields:
-            record[f] = updater[f]
-
-        record.md_pub_date = datetime.utcnow()
-        print record.md_pub_date
-
-        record.save()
+            if f != 'id':
+                record[f] = updater[f]
 
     except ValidationError:
 
         record = Metadata.from_json(request.data)
         record.id = None
         record.placeholder = False
-        record.save()
+
+    record.md_pub_date = datetime.utcnow()
+    record.save()
 
     if record.schema_type == 'Dataset (ISO)':
 
@@ -356,42 +349,113 @@ def get_single_xml_metadata(_oid):
 
     return Response(xml_str, 200, mimetype='application/xml')
 
-
-@api.route('/api/contacts/<string:type_>')
-@cross_origin(origin="*", methods=['POST'])
-def get_citation_contacts(type_):
+# create a new attachment on the record _oid with a POST or delete
+# an attachment by its attachmentId on the record with id _oid using DELETE
+@api.route('/api/metadata/<string:_oid>/attachments', methods=['POST'])
+@api.route('/api/metadata/<string:_oid>/attachments/<attachmentId>',
+           methods=['DELETE'])
+@cross_origin(origin="*",  methods=['POST', 'DELETE'],
+              headers=['X-Requested-With', 'Content-Type', 'Origin'])
+def attach_file(_oid, attachmentId=None):
     """
-    Return contacts that have previously been used for Citation contacts
-    by the user.
+    Add attachment URLs to a metadata record.
     """
-    username = _authenticate_user_from_session(request)
+    md = Metadata.objects.get_or_404(pk=_oid)
+    attachment = ''
 
-    if username is None:
-        return Response(status=401)
+    try:
 
-    if type_ not in ('citation', 'access'):
+        if request.method == 'POST':
 
-        return Response(response='Type {} not recognized'
-                                 ' <img src="https://http.cat/404"/>'.format(
-                                     type_
-                                 ),
-                        status=404)
+            attachment = request.json['attachment']
+            if 'localhost' in request.url_root:
+                attachment = attachment.replace(' ', '_')
 
-    user_recs = Metadata.objects(username=username)
+            md.attachments.append(Attachment(url=attachment))
 
-    citation_contacts = reduce(
-        lambda a, b: a + b, [rec[type_] for rec in user_recs]
-    )
+            md.save()
 
-    # filter out totally empty contacts
-    nonempty_contacts = [
-        c for c in citation_contacts
-        if not all(
-            (val == "" for val in json.loads(c.to_json()).values())
+        elif request.method == 'DELETE':
+
+            try:
+                md = Metadata.objects.get(id=_oid)
+
+                try:
+                    # if developing locally we'll also want to remove file
+                    url = filter(
+                            lambda a: str(a.id) == attachmentId, md.attachments
+                        ).pop().url
+
+                    os.remove(
+                        os.path.join(
+                            app.config['UPLOADS_DEFAULT_DEST'],
+                            os.path.basename(url)
+                        )
+                    )
+                except (OSError, IndexError):
+                    pass
+
+                # don't need to save after this since we're updating existing
+                Metadata.objects(id=_oid).update_one(
+                    pull__attachments__id=attachmentId
+                )
+
+
+                md = Metadata.objects.get(id=_oid)
+
+            # we'll just go ahead and not care if it doesn't exist
+            except ValueError:
+                pass
+
+        else:
+            return jsonify({'message': 'HTTP Method must be DELETE or POST'},
+                           status=405)
+
+    except KeyError:
+
+        keys = request.json.keys()
+        keys_str = ', '.join(keys)
+        return jsonify(
+            {
+                'message':
+                    'Key(s) ' + keys_str + ' not recognized. ' +
+                    'Must contain \'attachment\''
+            },
+            status=400
         )
-    ]
 
-    return jsonify(dict({'citation_contacts': nonempty_contacts}))
+    return jsonify(dict(message=attachment + ' successfully (at/de)tached!',
+                        record=md))
+
+
+# Not actually used in mdedit production at NKN, only for testing.
+# Return values mirror those returned by NKN simpleUpload server
+@api.route('/api/upload', methods=['POST'])
+@cross_origin(origin='*', methods=['POST'],
+              headers=['X-Requested-With', 'Content-Type', 'Origin'])
+def upload():
+
+    if request.method == 'POST' and 'uploadedfile' in request.files:
+
+        try:
+            f = request.files['uploadedfile']
+            uploadedfiles.save(f)
+
+            ret = {
+                "message": "Upload successful",
+                "source": f.filename,
+                "url": 'http://localhost:4000/static/uploads/uploadedfiles/' +
+                       f.filename
+            }
+            return jsonify(ret)
+
+        except KeyError:
+            return jsonify({'message': 'Error: file with css name ' +
+                                       '\'uploadedfile\' not found'})
+
+    else:
+        return jsonify({'message': 'Error: must upload with POST'},
+                       status=405)
 
 
 def _authenticate_user_from_session(request):
@@ -404,7 +468,6 @@ def _authenticate_user_from_session(request):
     # TODO remove the default setting here. This is saying use a service.
     username_url = (os.getenv('GETUSER_URL') or
                     'https://nkn-dev.nkn.uidaho.edu/getUsername/')
-
     try:
         session_id = request.json['session_id']
     except:

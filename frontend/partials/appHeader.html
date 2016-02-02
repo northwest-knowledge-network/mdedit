@@ -9,8 +9,8 @@
       </div>
       <div class="modal-body">
         <p>Your metadata record has been submitted to NKN for publication and we have been alerted of
-          your submission. Once we review and approve your record, you will be able to search 
-          for it on our <a href="https://www.northwestknowledge.net" target="_blank">home page</a>. If modifications 
+          your submission. Once we review and approve your record, you will be able to search
+          for it on our <a href="https://www.northwestknowledge.net" target="_blank">home page</a>. If modifications
           need to be made before your record can be approved, NKN will contact you.</p>
       </div>
       <div class="modal-footer">
@@ -95,7 +95,7 @@
                                 <a ng-click="deleteById(record._id.$oid)"
                                    class="btn btn-xs record-list-delete"
                                    id="{{'delete-record-' + $index}}"
-                                   href="#">
+                                   >
                                     Delete
                                 </a>
                             </td>
@@ -131,7 +131,7 @@
                 <li><a ng-click="submitDraftRecord()"
                        class="btn btn-sm btn-default navbar-btn header-button"
                        style="border:0;text-align:left"
-                       href="#">
+                       >
                     Save this record as a draft
                 </a></li>
 
@@ -155,7 +155,7 @@
 
         <li class="dropdown" ng-show="currentRecord._id.$oid">
 
-            <a href="#/iso" id="export-dropdown" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            <a id="export-dropdown" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                 View XML as... <span class="caret"></span>
             </a>
             <ul class="dropdown-menu">

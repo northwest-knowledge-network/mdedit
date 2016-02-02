@@ -93,15 +93,17 @@ metadataEditorApp
         // the server, but we must first set record.data_format above
         scope.dataFormats.aux =
             record.data_format.filter(
-                format =>
-                    scope.knownDataFormats.indexOf(format) === -1
+                function(format) {
+                    return scope.knownDataFormats.indexOf(format) === -1;
+                }
             )
             .join(', ');
 
         scope.dataFormats.iso =
             record.data_format.filter(
-                format =>
-                    scope.knownDataFormats.indexOf(format) > -1
+                function (format) {
+                    return scope.knownDataFormats.indexOf(format) > -1;
+                }
         );
 
         if (!scope.currentRecord.online) {
@@ -149,7 +151,9 @@ metadataEditorApp
     south_lat: '',
 
     start_date: {$date:''},
-    end_date: {$date:''}
+    end_date: {$date:''},
+
+    attachments: []
 })
 
 .value('emptyDCRecord',
@@ -185,8 +189,9 @@ metadataEditorApp
     south_lat: '',
 
     start_date: {$date:''},
-    end_date: {$date:''}
+    end_date: {$date:''},
 
+    attachments: []
 })
 .value('milesFields',
 {
@@ -257,13 +262,12 @@ metadataEditorApp
 
                 serverReady.place_keywords =
                     serverReady.place_keywords.split(',')
-                        .map(el => el.trim());
+                        .map(function(el) { return el.trim(); });
 
             if (typeof record.thematic_keywords !== "undefined")
 
                 serverReady.thematic_keywords =
-                    serverReady.thematic_keywords.split(',')
-                        .map(el => el.trim());
+                    serverReady.thematic_keywords.split(',');
 
             if (typeof record.data_format !== "undefined")
 
@@ -272,7 +276,7 @@ metadataEditorApp
             if (scope.dataFormats.aux && typeof record.dateFormats !== "undefined")
             {
                 var auxList = scope.dataFormats.aux.split(',')
-                                 .map(el => el.trim());
+                                .map(function(el) { return el.trim(); });
 
                 serverReady.data_format =
                     serverReady.data_format.concat(auxList);
@@ -500,5 +504,72 @@ metadataEditorApp
 
     return {
         getBbox: getBbox
+    };
+}])
+/**
+ * The attachment service must do two things: upload data to the datastore
+ * and, if successful, request the download URL be added to the
+ */
+.service('AttachmentService', ['$http', '$log', 'hostname',
+    function($http, $log, hostname) {
+
+    /* use a test uploadUrl for e2e tests.
+        comment out following block and uncomment the next block to
+        test with NKN resources
+    */
+    var uploadUrl;
+    if (hostname === 'localhost:4000') {
+        uploadUrl = 'http://localhost:4000/api/upload';
+    }
+    else {
+        uploadUrl =
+            'https://nknportal-dev.nkn.uidaho.edu/portal/simpleUpload/upload.php';
+    }
+    /**** COMMENT OUT ABOVE, UNCOMMENT BELOW TO TEST YOUR REMOTE SERVER ***/
+    //var uploadUrl =
+        //'https://nknportal-dev.nkn.uidaho.edu/portal/simpleUpload/upload.php';
+
+    var attachBaseRoute;
+    if (hostname !== 'localhost:4000') {
+        attachBaseRoute = hostname + '/api/metadata/';
+    }
+    else {
+        attachBaseRoute = '//' + hostname + '/api/metadata/';
+    }
+
+    var uploadFile = function(file) {
+
+        var fd = new FormData();
+
+        fd.append('uploadedfile', file);
+
+        $log.log('appended, now on to posting...');
+
+        return $http.post(uploadUrl, fd, {
+            // transformRequest: angular.identity,
+            headers: {'Content-Type': undefined}
+        });
+    };
+
+    var attachFile = function(attachmentUrl, recordId) {
+        var attachRoute = attachBaseRoute + recordId + '/attachments';
+        return $http.post(attachRoute, {attachment: attachmentUrl});
+    };
+
+    /**
+     * Detach a file with the given attachmentId. Once an attachment has
+     * been created we create a URI for it, which can then be accessed for
+     * DELETE
+     */
+    var detachFile = function(attachmentId, recordId) {
+        var attachRoute =
+            attachBaseRoute + recordId + '/attachments/' + attachmentId;
+        return $http.delete(attachRoute);
+    };
+
+    return {
+        uploadFile: uploadFile,
+        attachFile: attachFile,
+        detachFile: detachFile
     };
 }]);
