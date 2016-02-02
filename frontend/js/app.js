@@ -74,5 +74,4 @@ var metadataEditorApp = angular
 ).constant('emptyContact', {
       'name': '', 'email': '', 'org': '', 'address': '',
       'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': ''
-})
-;
+});

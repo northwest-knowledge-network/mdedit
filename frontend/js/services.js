@@ -93,15 +93,17 @@ metadataEditorApp
         // the server, but we must first set record.data_format above
         scope.dataFormats.aux =
             record.data_format.filter(
-                format =>
-                    scope.knownDataFormats.indexOf(format) === -1
+                function(format) {
+                    return scope.knownDataFormats.indexOf(format) === -1;
+                }
             )
             .join(', ');
 
         scope.dataFormats.iso =
             record.data_format.filter(
-                format =>
-                    scope.knownDataFormats.indexOf(format) > -1
+                function (format) {
+                    return scope.knownDataFormats.indexOf(format) > -1;
+                }
         );
 
         if (!scope.currentRecord.online) {
@@ -260,13 +262,12 @@ metadataEditorApp
 
                 serverReady.place_keywords =
                     serverReady.place_keywords.split(',')
-                        .map(el => el.trim());
+                        .map(function(el) { return el.trim(); });
 
             if (typeof record.thematic_keywords !== "undefined")
 
                 serverReady.thematic_keywords =
-                    serverReady.thematic_keywords.split(',')
-                        .map(el => el.trim());
+                    serverReady.thematic_keywords.split(',');
 
             if (typeof record.data_format !== "undefined")
 
@@ -275,7 +276,7 @@ metadataEditorApp
             if (scope.dataFormats.aux && typeof record.dateFormats !== "undefined")
             {
                 var auxList = scope.dataFormats.aux.split(',')
-                                 .map(el => el.trim());
+                                .map(function(el) { return el.trim(); });
 
                 serverReady.data_format =
                     serverReady.data_format.concat(auxList);

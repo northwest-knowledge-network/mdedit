@@ -455,13 +455,18 @@ function attachFileTest(schemaType) {
                 element(by.id('create-new-non-dataset')).click();
         });
 
-        it('should show a new file in the attachments list when file added then remove when deleted', function () {
+        it('should show a new file in the attachments list when file added then ' +
+           'remove when deleted and not overwrite any user-entered but not saved data', 
+        function () {
 
             element(by.model('currentRecord.title')).sendKeys('¡olé!™');
 
             element(by.id('record-options-dropdown')).click();
 
             element(by.css('[ng-click="submitDraftRecord()"')).click();
+
+            // now add a summary that we will check is not overwritten
+            element(by.model('currentRecord.summary')).sendKeys('Heyyyy');
 
             // send keys to give the file name desired
             var fname1 = 'file1.txt',
@@ -471,14 +476,15 @@ function attachFileTest(schemaType) {
 
             // upload 1
             element(by.id('attachment-select')).sendKeys(f1);
-            element(by.id('attach-file-button')).click();
+            browser.executeScript('window.scrollTo(0,0);');
+            element(by.css('[ng-click="attachFile()"]')).click();
 
             var checkUploadLenIs = function (n) {
                 var uploadList =
                     element.all(by.repeater('att in currentRecord.attachments'));
 
                 expect(uploadList.count()).toBe(n);
-            }
+            };
 
             checkUploadLenIs(1);
 
@@ -495,9 +501,6 @@ function attachFileTest(schemaType) {
                 checkUploadLenIs(0);
 
             });
-
-            // now click delete and ensure the attachment is removed from list
-
         });
     });
 }

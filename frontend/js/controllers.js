@@ -30,9 +30,11 @@ metadataEditorApp.controller('BaseController',
             $window.open(prefix + exportAddr(oid, type));
         };
 
-        $scope.updateRecordsList = () => {
+        $scope.updateRecordsList = function() {
             recordService.list()
-                .success(data => $scope.allRecords = data.results);
+                .success(function(data) { 
+                    $scope.allRecords = data.results;
+                });
         };
 
         $scope.updateRecordsList();
@@ -166,15 +168,14 @@ metadataEditorApp.controller('BaseController',
         $scope.editRecord = function (recordId) {
 
             recordService.getRecordToEdit(recordId)
-                .success( (data) => {
+                .success(function (data) {
                     $scope.newRecord = false;
 
                     updateForms($scope, data.record);
                 })
-                .error( (error) => {
+                .error(function (error) {
                     $scope.errors.push("Error in loading record to edit");
-                }
-                );
+                });
 
              //set geocode write-in box to be blank
             $scope.options.bboxInput = '';
@@ -379,7 +380,9 @@ metadataEditorApp.controller('BaseController',
 
                     AttachmentService.attachFile(url, recordId)
                         .success(function (attachData) {
-                            updateForms($scope, attachData.record);
+
+                            $scope.currentRecord.attachments = 
+                                attachData.record.attachments;
 
                             $scope.updateRecordsList();
                         });
