@@ -66,7 +66,7 @@ metadataEditorApp.controller('BaseController',
         }
 
         $scope.minute_seconds = [];
-        for (var i = 0; i < 60; i++)
+        for (i = 0; i < 60; i++)
         {
           $scope.minute_seconds.push(i);
         }
@@ -92,6 +92,10 @@ metadataEditorApp.controller('BaseController',
               iso: [''],
               // aux, ie auxiliary, is a single text input write-in
               aux: ''
+            };
+
+            $scope.attachmentInfo = {
+                newAttachment: ''
             };
         };
 
