@@ -146,6 +146,8 @@ function deleteRecordTest(schemaType) {
             element(by.id('load-delete-record-dropdown')).click();
             element(by.id('delete-record-0')).click();
 
+            browser.switchTo().alert().accept();
+
             recordsList = element.all(by.repeater('record in allRecords'));
             expect(recordsList.count()).toEqual(0);
         });
@@ -153,7 +155,9 @@ function deleteRecordTest(schemaType) {
         it('should delete current record and load fresh form when record deleted', function() {
             element(by.id('load-delete-record-dropdown')).click();
             element(by.id('delete-record-0')).click();
-            // browser.pause();
+
+            browser.switchTo().alert().accept();
+
             element(by.model('currentRecord.title')).getAttribute('value').then( (val) => {
                 expect(val.trim()).toBe('');
             });
@@ -172,6 +176,8 @@ function deleteRecordTest(schemaType) {
 
             element(by.id('load-delete-record-dropdown')).click();
             element(by.id('delete-record-0')).click();
+
+            browser.switchTo().alert().accept();
 
             expect(element(by.model('currentRecord.title')).getAttribute('value'))
                 .toBe('KFC');
