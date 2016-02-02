@@ -218,6 +218,13 @@ metadataEditorApp.controller('BaseController',
                 return false;
         };
 
+        $scope.isPublished = function(pubDate){
+            if (pubDate > 0)
+                return true;
+            else
+                return false;
+        };
+
 
         /**
          * Delete a draft record.
