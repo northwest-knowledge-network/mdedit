@@ -1,5 +1,5 @@
 
-  <!-- Modal -->
+  <!-- Modals -->
 <div class="modal fade" id="submitModal" tabindex="-1" role="dialog" aria-labelledby="submitModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -93,6 +93,7 @@
                                    Load
                                 </a> |
                                 <a ng-click="deleteById(record._id.$oid)"
+                                   ng-confirm-click="Are you sure you want to delete?"
                                    class="btn btn-xs record-list-delete"
                                    id="{{'delete-record-' + $index}}"
                                    >
