@@ -44,6 +44,8 @@ metadataEditorApp.controller('BaseController',
         /** load up formOptions constants (defined in app.js) **/
         $scope.topicCategoryChoices = formOptions.topicCategoryChoices;
 
+        $scope.schemaChoices = formOptions.schemaChoices;
+
         // order for contact fields
         $scope.orderedContactFields = formOptions.orderedContactFields;
 
@@ -222,6 +224,9 @@ metadataEditorApp.controller('BaseController',
                 return false;
         };
 
+        /** Function to enable restriction on deleting published records.
+        */
+
         $scope.isPublished = function(pubDate){
             if (pubDate > 0)
                 return true;
@@ -229,12 +234,19 @@ metadataEditorApp.controller('BaseController',
                 return false;
         };
 
+        /** Function for setting schema type based on url... working on this now
+        */
+
+        $scope.urlISO = function(path){
+            if (path == '#/iso')
+                return true;
+            else
+                return false;
+        };
 
         /**
          * Delete a draft record.
          *
-         * TODO: Currently there is no restriction on deleting
-         * published records, but we should restrict that in the future.
          */
         $scope.deleteById = function(recordId) {
 
@@ -366,6 +378,7 @@ metadataEditorApp.controller('BaseController',
         $scope.attachmentInfo = {
             newAttachment: ''
         };
+
         $scope.attachFile = function() {
             // first upload file, then in success callback, attach to record
 
@@ -420,7 +433,7 @@ metadataEditorApp.controller('BaseController',
     this.updateFrequencyChoicesMap = formOptions.updateFrequencyChoicesMap;
   }
 ])
-.controller('DCController', [function()
+.controller('DCController', ['formOptions', function(formOptions)
   {
     this.standard = 'dc';
   }

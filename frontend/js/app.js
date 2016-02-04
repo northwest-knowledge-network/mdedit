@@ -39,6 +39,8 @@ var metadataEditorApp = angular
         'no longer valid': 'obsolete'
     },
 
+  schemaChoices: ["Dataset (ISO)","Non-Dataset (Dublin Core)"],
+
 	updateFrequencyChoicesMap:
     {
         'continual': 'continual',

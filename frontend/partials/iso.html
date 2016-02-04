@@ -5,12 +5,25 @@
 
       <div class="row" ng-controller="ISOController as iso">
         <!---------------Left Divider-------------->
+   <!--Basic Information: Title and Summary-->
         <div class="col-xs-6 col-sm-6 col-md-6">
+            <h2 class="section-header">
+              <span class="glyphicon glyphicon-list-alt"></span> Basic Information
+            </h2>
 
-        <!--Basic Information: Title and Summary-->
+        <div class="subform">
 
            <div ng-include="'partials/form/basic.html'"></div>
 
+            <h5 class="attribute-label">Record Type</h5>
+            
+            <select tabindex=9 id="" name=""
+                  ng-options="j for j in schemaChoices"
+                  ng-model="currentRecord.schema_type" 
+                  required>
+            </select>
+        </div>
+               
                <h2 class="section-header">
                <span class="mega-octicon octicon-tools"></span>
                Data Format Details
@@ -26,7 +39,8 @@
                 in standard ZIP format"
                </h6>
 
-               <input tabindex=20 type="text" ng-model="currentRecord.compression_technique" style="width:95%">
+               <input tabindex=20 type="text" 
+               ng-model="currentRecord.compression_technique" style="width:95%">
 
              </div>
           </div>

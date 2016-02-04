@@ -393,7 +393,6 @@ metadataEditorApp
             );
         };
 
-
         /**
          * Remove a draft record from the server. Does not effect published
          * records.
@@ -494,6 +493,7 @@ metadataEditorApp
         };
     }
 ])
+
 .service('Geoprocessing', ['$http', '$q', 'hostname', function($http, $q, hostname) {
     var getBbox = function(placeName) {
         var baseUrl = '//' + hostname + '/api/geocode/';
