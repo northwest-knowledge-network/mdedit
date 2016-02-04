@@ -44,8 +44,6 @@ metadataEditorApp.controller('BaseController',
         /** load up formOptions constants (defined in app.js) **/
         $scope.topicCategoryChoices = formOptions.topicCategoryChoices;
 
-        $scope.schemaChoices = formOptions.schemaChoices;
-
         // order for contact fields
         $scope.orderedContactFields = formOptions.orderedContactFields;
 
@@ -229,16 +227,6 @@ metadataEditorApp.controller('BaseController',
 
         $scope.isPublished = function(pubDate){
             if (pubDate > 0)
-                return true;
-            else
-                return false;
-        };
-
-        /** Function for setting schema type based on url... working on this now
-        */
-
-        $scope.urlISO = function(path){
-            if (path == '#/iso')
                 return true;
             else
                 return false;
@@ -428,6 +416,7 @@ metadataEditorApp.controller('BaseController',
 .controller('ISOController', ['formOptions', function(formOptions) {
     this.standard = 'iso';
     this.statusChoicesIsoMap = formOptions.statusChoicesIsoMap;
+    this.schemaChoicesISO = formOptions.schemaChoicesISO;
 
     // our more human-readable update frequency choices need trans to ISO 19115
     this.updateFrequencyChoicesMap = formOptions.updateFrequencyChoicesMap;
@@ -436,6 +425,7 @@ metadataEditorApp.controller('BaseController',
 .controller('DCController', ['formOptions', function(formOptions)
   {
     this.standard = 'dc';
+    this.schemaChoicesDC = formOptions.schemaChoicesDC;
   }
 ])
 //map work

@@ -13,15 +13,15 @@
 
         <div class="subform">
 
-           <div ng-include="'partials/form/basic.html'"></div>
-
             <h5 class="attribute-label">Record Type</h5>
             
-            <select tabindex=9 id="" name=""
-              ng-options="j for j in schemaChoices"
+            <input tabindex=3 id="" name="" style="width:35%" type="text"
               ng-model="currentRecord.schema_type" 
-              required>
-            </select>
+              ng-init="currentRecord.schema_type='Non-Dataset (Dublin Core)'"
+              ng-readonly="true"/>
+
+          <div ng-include="'partials/form/basic.html'"></div>
+
         </div>
          
          <h2 class="section-header">

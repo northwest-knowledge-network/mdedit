@@ -116,7 +116,7 @@ metadataEditorApp
 }])
 .value('emptyISORecord',
 {
-    schema_type: 'Dataset (ISO)',
+    schema_type: '',
     title: '',
     summary: '',
     last_mod_date: {$date: new Date()},
@@ -158,7 +158,7 @@ metadataEditorApp
 
 .value('emptyDCRecord',
 {
-    schema_type: 'Non-Dataset (Dublin Core)',
+    schema_type: '',
     title: '',
     summary: '',
     last_mod_date: {$date: new Date()},
