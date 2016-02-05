@@ -416,16 +416,14 @@ metadataEditorApp.controller('BaseController',
 .controller('ISOController', ['formOptions', function(formOptions) {
     this.standard = 'iso';
     this.statusChoicesIsoMap = formOptions.statusChoicesIsoMap;
-    this.schemaChoicesISO = formOptions.schemaChoicesISO;
 
     // our more human-readable update frequency choices need trans to ISO 19115
     this.updateFrequencyChoicesMap = formOptions.updateFrequencyChoicesMap;
   }
 ])
-.controller('DCController', ['formOptions', function(formOptions)
+.controller('DCController', [, function()
   {
     this.standard = 'dc';
-    this.schemaChoicesDC = formOptions.schemaChoicesDC;
   }
 ])
 //map work
