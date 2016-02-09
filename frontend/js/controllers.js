@@ -32,7 +32,7 @@ metadataEditorApp.controller('BaseController',
 
         $scope.updateRecordsList = function() {
             recordService.list()
-                .success(function(data) { 
+                .success(function(data) {
                     $scope.allRecords = data.results;
                 });
         };
@@ -112,8 +112,6 @@ metadataEditorApp.controller('BaseController',
             $scope.options.bboxInput ='';
 
         };
-
-        $scope.createNewDublinRecord();
 
 
         /**
@@ -393,7 +391,7 @@ metadataEditorApp.controller('BaseController',
                     AttachmentService.attachFile(url, recordId)
                         .success(function (attachData) {
 
-                            $scope.currentRecord.attachments = 
+                            $scope.currentRecord.attachments =
                                 attachData.record.attachments;
 
                             $scope.updateRecordsList();
@@ -421,7 +419,7 @@ metadataEditorApp.controller('BaseController',
     this.updateFrequencyChoicesMap = formOptions.updateFrequencyChoicesMap;
   }
 ])
-.controller('DCController', [, function()
+.controller('DCController', [function()
   {
     this.standard = 'dc';
   }

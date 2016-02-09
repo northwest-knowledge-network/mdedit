@@ -254,7 +254,6 @@ function testLoadDeleteDropdown(schemaType) {
             else if (schemaType === 'dublin')
                 element(by.id('create-new-non-dataset')).click();
 
-            // browser.pause();
             // add data to contacts
             var addCitationButton =
                 element(by.css('[ng-click="addContactCitation()"]'));
@@ -348,7 +347,6 @@ function testLoadDeleteDropdown(schemaType) {
             element(by.id('load-delete-record-dropdown')).click();
 
             // click the first one in the list
-            // browser.pause();
             element(by.id('edit-record-' + schemaType + '-0')).click();
             // check the title
             expect(
@@ -462,7 +460,7 @@ function attachFileTest(schemaType) {
         });
 
         it('should show a new file in the attachments list when file added then ' +
-           'remove when deleted and not overwrite any user-entered but not saved data', 
+           'remove when deleted and not overwrite any user-entered but not saved data',
         function () {
 
             element(by.model('currentRecord.title')).sendKeys('¡olé!™');
@@ -499,7 +497,6 @@ function attachFileTest(schemaType) {
             element(by.id('attach-file-button')).click().then(function() {
 
                 checkUploadLenIs(2);
-                // browser.pause();
                 element(by.id('remove-attachment-1')).click();
                 checkUploadLenIs(1);
 
@@ -677,9 +674,9 @@ function testExportISO(schemaType) {
 
              element(by.id('export-dropdown')).click();
              element(by.css('[ng-click="export_(\'iso\')"]')).click();
-             
-             // TODO fix this to actually test export works. 
-             // for now we are just testing whether or not the button is 
+
+             // TODO fix this to actually test export works.
+             // for now we are just testing whether or not the button is
              // clickable without error
              //browser.pause();
              //expect(browser.driver.getCurrentUrl()).toMatch(/iso/);
