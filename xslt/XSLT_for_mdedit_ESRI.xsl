@@ -335,6 +335,9 @@
                         <linkage><xsl:value-of select="url"/></linkage>
                     </onLineSrc>
                     </xsl:for-each>
+                    <onlineSrc>
+                        <linkage><xsl:value-of select="/root/record/download_url"/></linkage>
+                    </onlineSrc>
                 </distTranOps>
             </distInfo>
             <mdFileID>nkn:<xsl:value-of select="/root/record/_id/key"/></mdFileID>

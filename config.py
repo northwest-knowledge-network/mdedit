@@ -15,8 +15,12 @@ class Config:
     PREPROD_DIRECTORY = (os.environ.get('MDEDIT_PREPROD_DIRECTORY') or
                          'local-preprod-directory')
 
+    UPLOADS_DEFAULT_DEST = 'app/static/test-uploads'
+
     if not os.path.exists(PREPROD_DIRECTORY):
         os.makedirs(PREPROD_DIRECTORY)
+
+    ATTACHMENT_DOWNLOAD_BASE_URL = 'http://example.com/downloads?uuid='
 
     @staticmethod
     def init_app(app):
@@ -26,8 +30,6 @@ class Config:
 class DevelopmentConfig(Config):
     DEBUG = True
 
-    UPLOADS_DEFAULT_DEST = 'app/static/uploads'
-
 
 class TestingConfig(Config):
     TESTING = True
@@ -35,14 +37,14 @@ class TestingConfig(Config):
     MONGODB_SETTINGS = {'db': 'mdedit_test'}
     PREPROD_DIRECTORY = os.getcwd() + '/mdedit_preprod_test'
 
-    UPLOADS_DEFAULT_DEST = 'app/static/test-uploads'
-
     if not os.path.exists(PREPROD_DIRECTORY):
         os.makedirs(PREPROD_DIRECTORY)
 
 
 class ProductionConfig(Config):
-    pass
+
+    ATTACHMENT_DOWNLOAD_BASE_URL = \
+        'https://www.northwestknowledge.net/data/download.php?uuid='
 
 
 config = {
