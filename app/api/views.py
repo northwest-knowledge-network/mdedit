@@ -326,12 +326,6 @@ def get_single_xml_metadata(_oid):
     _enclose_word = lambda k: {'word': k}
     _enclose_words = lambda words: map(_enclose_word, words)
 
-    # def _enclose_word(word):
-    #         return {'word': word}
-
-    # def _enclose_words(words):
-    #     return [_enclose_word(word) for word in words]
-
     json_rec['thematic_keywords'] = _enclose_words(
                                         json_rec['thematic_keywords'])
 
@@ -344,6 +338,9 @@ def get_single_xml_metadata(_oid):
     _enclose_url = lambda url: {'url': url}
 
     json_rec['online'] = map(_enclose_url, json_rec['online'])
+
+    json_rec['download_url'] = \
+        app.config['ATTACHMENT_DOWNLOAD_BASE_URL'] + str(record.id)
 
     xml_str = dicttoxml(dict(record=json_rec))  # , attr_type=False)
 
