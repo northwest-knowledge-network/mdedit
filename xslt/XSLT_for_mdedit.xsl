@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
+o<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
     xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:gmd="http://www.isotc211.org/2005/gmd"
     xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:gts="http://www.isotc211.org/2005/gts"
     xmlns:gmi="http://www.isotc211.org/2005/gmi" xmlns:gmx="http://www.isotc211.org/2005/gmx"
@@ -765,20 +765,18 @@
                                             </gmd:CI_OnlineResource>
                                         </gmd:onLine>
                                         </xsl:for-each>
-                                        <xsl:for-each select="/root/record/attachments/item">
-                                            <gmd:onLine>
-                                                <gmd:CI_OnlineResource>
-                                                    <gmd:linkage>
-                                                        <gmd:URL>
-                                                            <xsl:value-of select="url"/>
-                                                        </gmd:URL>
-                                                    </gmd:linkage>
-                                                    <gmd:function>
-                                                        <gmd:CI_OnLineFunctionCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode" codeListValue="download">download</gmd:CI_OnLineFunctionCode>
-                                                    </gmd:function>
-                                                </gmd:CI_OnlineResource>
-                                            </gmd:onLine>
-                                        </xsl:for-each>
+                                        <gmd:onLine>
+                                            <gmd:CI_OnlineResource>
+                                                <gmd:linkage>
+                                                    <gmd:URL>
+                                                        <xsl:value-of select="/root/record/download_url"/>
+                                                    </gmd:URL>
+                                                </gmd:linkage>
+                                                <gmd:function>
+                                                    <gmd:CI_OnLineFunctionCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode" codeListValue="download">download</gmd:CI_OnLineFunctionCode>
+                                                </gmd:function>
+                                            </gmd:CI_OnlineResource>
+                                        </gmd:onLine>
                                     </gmd:MD_DigitalTransferOptions>
                                 </gmd:distributorTransferOptions>
                             </gmd:MD_Distributor>

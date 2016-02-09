@@ -25,11 +25,9 @@
                         <xsl:value-of select="url"/>
                     </dct:references>
                 </xsl:for-each>
-                <xsl:for-each select="/root/record/attachments/item">
                     <dct:references>
-                        <xsl:value-of select="url"/>
+                        <xsl:value-of select="/root/record/download_url"/>
                     </dct:references>
-                </xsl:for-each>
                 <xsl:for-each select="/root/record/citation/item">
                     <dc:creator><xsl:value-of select="name"/>, <xsl:value-of select="org"/>,
                             <xsl:value-of select="email"/>, <xsl:value-of select="address"/>,
