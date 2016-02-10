@@ -310,10 +310,15 @@ def get_single_xml_metadata(_oid):
 
     try:
         #start/end date might not exist yet
-        json_rec['start_date'] = record.start_date.isoformat() + '.000Z'
-        json_rec['end_date'] = record.end_date.isoformat() + '.000Z'
-        json_rec['first_pub_date'] = record.first_pub_date.strftime(d_fmt)
-        json_rec['md_pub_date'] = record.md_pub_date.strftime(d_fmt1)
+        if record.start_date is not None:
+            json_rec['start_date'] = record.start_date.isoformat() + '.000Z'
+        if record.end_date is not None:
+            json_rec['end_date'] = record.end_date.isoformat() + '.000Z'
+        if record.first_pub_date is not None:
+            json_rec['first_pub_date'] = record.first_pub_date.strftime(d_fmt)
+        if record.md_pub_date is not None:
+            json_rec['md_pub_date'] = record.md_pub_date.strftime(d_fmt1)
+
     except AttributeError:
         # if we get an attribute error, continue; any other error will still
         #cause the program to fail
