@@ -517,17 +517,17 @@ metadataEditorApp
         comment out following block and uncomment the next block to
         test with NKN resources
     */
-    var uploadUrl;
-    if (hostname === 'localhost:4000') {
-        uploadUrl = 'http://localhost:4000/api/upload';
-    }
-    else {
-        uploadUrl =
-            'https://nknportal-dev.nkn.uidaho.edu/portal/simpleUpload/upload.php';
-    }
+    //var uploadUrl;
+    //if (hostname === 'localhost:4000') {
+        //uploadUrl = 'http://localhost:4000/api/upload';
+    //}
+    //else {
+        //uploadUrl =
+            //'https://nknportal-dev.nkn.uidaho.edu/portal/simpleUpload/upload.php';
+    //}
     /**** COMMENT OUT ABOVE, UNCOMMENT BELOW TO TEST YOUR REMOTE SERVER ***/
-    //var uploadUrl =
-        //'https://nknportal-dev.nkn.uidaho.edu/portal/simpleUpload/upload.php';
+    var uploadUrl =
+        'https://nknportal-dev.nkn.uidaho.edu/portal/simpleUpload/upload.php';
 
     var attachBaseRoute;
     if (hostname !== 'localhost:4000') {
