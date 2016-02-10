@@ -370,24 +370,22 @@ metadataEditorApp.controller('BaseController',
 
             var file = $scope.attachmentInfo.newAttachment;
 
-            // $log.log($scope);
+            // in order to attach files we need an identifier
+            var recordId;
+            if ($scope.currentRecord.hasOwnProperty('_id'))
+            {
+                recordId = $scope.currentRecord._id.$oid;
+            }
+            else
+            {
+                $scope.submitDraftRecord();
+                recordId = $scope.currentRecord._id.$oid;
+            }
 
-            $log.log(file);
-
-            AttachmentService.uploadFile(file)
+            // if upload is successful, sync upload with the metadata
+            AttachmentService.uploadFile(file, recordId)
                 .success(function (data) {
                     var url = data.url;
-                    var recordId;
-                    if ($scope.currentRecord.hasOwnProperty('_id'))
-                    {
-                        recordId = $scope.currentRecord._id.$oid;
-                    }
-                    else
-                    {
-                        $scope.submitDraftRecord();
-                        recordId = $scope.currentRecord._id.$oid;
-                    }
-
                     AttachmentService.attachFile(url, recordId)
                         .success(function (attachData) {
 

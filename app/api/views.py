@@ -436,13 +436,14 @@ def upload():
 
         try:
             f = request.files['uploadedfile']
-            uploadedfiles.save(f)
+            uuid = request.form['uuid']
+            uploadedfiles.save(f, folder=uuid)
 
             ret = {
                 "message": "Upload successful",
                 "source": f.filename,
                 "url": 'http://localhost:4000/static/uploads/uploadedfiles/' +
-                       f.filename
+                       uuid + '/' + f.filename
             }
             return jsonify(ret)
 

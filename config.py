@@ -15,7 +15,7 @@ class Config:
     PREPROD_DIRECTORY = (os.environ.get('MDEDIT_PREPROD_DIRECTORY') or
                          'local-preprod-directory')
 
-    UPLOADS_DEFAULT_DEST = 'app/static/test-uploads'
+    UPLOADS_DEFAULT_DEST = 'app/static/uploads'
 
     if not os.path.exists(PREPROD_DIRECTORY):
         os.makedirs(PREPROD_DIRECTORY)
@@ -36,6 +36,8 @@ class TestingConfig(Config):
 
     MONGODB_SETTINGS = {'db': 'mdedit_test'}
     PREPROD_DIRECTORY = os.getcwd() + '/mdedit_preprod_test'
+
+    UPLOADS_DEFAULT_DEST = 'app/static/test-uploads'
 
     if not os.path.exists(PREPROD_DIRECTORY):
         os.makedirs(PREPROD_DIRECTORY)

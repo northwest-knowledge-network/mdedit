@@ -537,13 +537,12 @@ metadataEditorApp
         attachBaseRoute = '//' + hostname + '/api/metadata/';
     }
 
-    var uploadFile = function(file) {
+    var uploadFile = function(file, recordId) {
 
         var fd = new FormData();
 
         fd.append('uploadedfile', file);
-
-        $log.log('appended, now on to posting...');
+        fd.append('uuid', recordId);
 
         return $http.post(uploadUrl, fd, {
             // transformRequest: angular.identity,
