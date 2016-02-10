@@ -9,6 +9,7 @@ PREPROD_DIRECTORY = (os.environ.get('MDEDIT_PREPROD_DIRECTORY') or
                          'local-preprod-directory')
 
 class Config:
+    PRODUCTION = False
 
     MONGODB_SETTINGS = {'db': 'mdedit'}
 
@@ -44,6 +45,7 @@ class TestingConfig(Config):
 
 
 class ProductionConfig(Config):
+    PRODUCTION = True
 
     ATTACHMENT_DOWNLOAD_BASE_URL = \
         'https://www.northwestknowledge.net/data/download.php?uuid='
