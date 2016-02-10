@@ -194,16 +194,24 @@ def publish_metadata_record(_oid):
 
         # print app.config
         save_dir = app.config['PREPROD_DIRECTORY']
-
         save_path = os.path.join(save_dir,
                              str_id,
-                             str_id + '.xml')
+                             'metadata.xml')
 
         if not os.path.exists(os.path.dirname(save_path)):
             os.mkdir(os.path.dirname(save_path))
 
         with open(save_path, 'w+') as f:
             f.write(iso)
+        if app.config['PRODUCTION']:
+
+            nkn_upload_url = \
+               "https://nknportal-dev.nkn.uidaho.edu" + \
+               "/portal/simpleUpload/upload.php"
+
+            rep = requests.post(nkn_upload_url,
+                                {'uuid': str_id},
+                                files={'uploadedfile': open(save_path, 'rb')})
 
         if 'localhost' not in request.base_url:
             gptInsert.gptInsertRecord(iso, record.title)
@@ -220,13 +228,24 @@ def publish_metadata_record(_oid):
 
         save_path = os.path.join(save_dir,
                              str_id,
-                             str_id + '.xml')
+                             'metadata.xml')
 
         if not os.path.exists(os.path.dirname(save_path)):
             os.mkdir(os.path.dirname(save_path))
 
         with open(save_path, 'w+') as f:
             f.write(dc)
+            f.close()
+
+        if app.config['PRODUCTION']:
+
+            nkn_upload_url = \
+               "https://nknportal-dev.nkn.uidaho.edu" + \
+               "/portal/simpleUpload/upload.php"
+
+            rep = requests.post(nkn_upload_url,
+                                {'uuid': str_id},
+                                files={'uploadedfile': open(save_path, 'rb')})
 
         if 'localhost' not in request.base_url:
             gptInsert.gptInsertRecord(dc, record.title)
@@ -441,13 +460,14 @@ def upload():
 
         try:
             f = request.files['uploadedfile']
-            uploadedfiles.save(f)
+            uuid = request.form['uuid']
+            uploadedfiles.save(f, folder=uuid)
 
             ret = {
                 "message": "Upload successful",
                 "source": f.filename,
                 "url": 'http://localhost:4000/static/uploads/uploadedfiles/' +
-                       f.filename
+                       uuid + '/' + f.filename
             }
             return jsonify(ret)
 
