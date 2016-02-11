@@ -77,8 +77,10 @@ metadataEditorApp.controller('BaseController',
 
         $scope.hierarchyLevels = formOptions.hierarchyLevels;
 
+        //for user sorting and filtering of records list, sets defaults
         $scope.sortType = '-last_mod_date';
         $scope.sortReverse = false;
+        $scope.searchTitle = ''; 
 
         $scope.createNewRecord = function() {
 

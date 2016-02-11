@@ -49,19 +49,39 @@
                         <thead>
                             <tr>
                                 <td>
-                                    <b>Record Type<b>
+                                    <a ng-click="sortType = '-schema_type'; sortReverse = !sortReverse">
+                                      <b>Record Type</b>
+                                        <span ng-show="sortType =='-schema_type' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType =='-schema_type' && sortReverse" class="fa fa-caret-up"></span>
+                                    </a>
                                 </td>
                                 <td>
-                                    <b>Title</b>
+                                    <a ng-click="sortType = '-title'; sortReverse = !sortReverse">
+                                      <b>Title</b>
+                                        <span ng-show="sortType =='-title' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType =='-title' && sortReverse" class="fa fa-caret-up"></span>
+                                    </a>
                                 </td>
                                 <td>
-                                    <b>Summary</b>
+                                    <a ng-click="sortType = '-summary'; sortReverse = !sortReverse">
+                                      <b>Summary</b>
+                                        <span ng-show="sortType =='-summary' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType =='-summary' && sortReverse" class="fa fa-caret-up"></span>
+                                    </a>
                                 </td>
                                 <td>
-                                    <b>Last Edited</b>
+                                    <a ng-click="sortType = '-last_mod_date'; sortReverse = !sortReverse">
+                                      <b>Last Edited</b>
+                                        <span ng-show="sortType =='-last_mod_date' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType =='-last_mod_date' && sortReverse" class="fa fa-caret-up"></span>
+                                    </a>
                                 </td>
                                 <td>
-                                    <b>Last Published</b>
+                                    <a ng-click="sortType = '-md_pub_date'; sortReverse = !sortReverse">
+                                      <b>Last Published</b>
+                                        <span ng-show="sortType =='-md_pub_date' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType =='-md_pub_date' && sortReverse" class="fa fa-caret-up"></span>
+                                    </a>
                                 </td>
                                 <td>
                                     <b>Load/Delete</b>
