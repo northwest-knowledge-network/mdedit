@@ -71,7 +71,7 @@
                     </li>
 
                     <li>
-                        <tr ng-repeat="record in allRecords | orderBy:'-last_mod_date'">
+                        <tr ng-repeat="record in allRecords | orderBy:sortType:sortReverse">
                             <td ng-attr-id="{{'record-list-type_' + $index}}">{{record.schema_type}}</td>
                             <td ng-attr-id="{{'record-list-title-' + $index}}">{{record.title | limitTo:20}}</td>
                             <td class="record-list-summary">{{record.summary | limitTo:30}}</td>

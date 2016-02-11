@@ -77,6 +77,9 @@ metadataEditorApp.controller('BaseController',
 
         $scope.hierarchyLevels = formOptions.hierarchyLevels;
 
+        $scope.sortType = '-last_mod_date';
+        $scope.sortReverse = false;
+
         $scope.createNewRecord = function() {
 
             var freshISO = recordService.getFreshISORecord();
