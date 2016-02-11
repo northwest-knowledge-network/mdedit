@@ -23,6 +23,7 @@
 import ConfigParser
 import datetime
 import os
+import smtplib
 import sys
 import psycopg2
 import uuid
@@ -113,7 +114,28 @@ def gptInsertRecord(xml, title):
     # Return the Geoportal object with enough information to construct
     # a download link for the dataset
     output = Geoportal(downloadURL = downloadURL, uuid = bareuuid)
+    send_email()
     return output
+
+# The function to send the notification email
+def send_email():
+    sender = 'portal@northwestknowledge.net'
+    receivers = ['publish@northwestknowledge.net']
+    message =
+"""From: NKN Geoportal <portal@northwestknowledge.net>
+To: NKN Publisher Group <publish@northwestknowledge.net>
+Subject: Dataset submitted for publication
+
+Hi, NKN data publishers.  A new dataset has been approved for publication
+in the geoportal interface.  Please take a look.
+"""
+    try:
+        smtpObj = smtplib.SMTP('localhost')
+        smtpObj.sendmail(sender, receivers, message)
+        print "Successfully sent email"
+    except SMTPException:
+        print "Error: unable to send email"
+
 
 # The function for reading the config file
 def get_config(config_file):
