@@ -47,6 +47,7 @@
 
                     <li>
                         <thead>
+                           <input type="text" class="form-control" placeholder="Search Your Records" ng-model="searchRecords">
                             <tr>
                                 <td>
                                     <a ng-click="sortType = '-schema_type'; sortReverse = !sortReverse">
@@ -91,7 +92,7 @@
                     </li>
 
                     <li>
-                        <tr ng-repeat="record in allRecords | orderBy:sortType:sortReverse">
+                        <tr ng-repeat="record in allRecords | orderBy:sortType:sortReverse | filter:searchRecords">
                             <td ng-attr-id="{{'record-list-type_' + $index}}">{{record.schema_type}}</td>
                             <td ng-attr-id="{{'record-list-title-' + $index}}">{{record.title | limitTo:20}}</td>
                             <td class="record-list-summary">{{record.summary | limitTo:30}}</td>
