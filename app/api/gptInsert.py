@@ -121,8 +121,7 @@ def gptInsertRecord(xml, title):
 def send_email():
     sender = 'portal@northwestknowledge.net'
     receivers = ['publish@northwestknowledge.net']
-    message =
-"""From: NKN Geoportal <portal@northwestknowledge.net>
+    message = """From: NKN Geoportal <portal@northwestknowledge.net>
 To: NKN Publisher Group <publish@northwestknowledge.net>
 Subject: Dataset submitted for publication
 
