@@ -32,4 +32,16 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
             });
         }
     }
-}]);
+}])
+.directive('disableAutoClose', function() {
+      // directive for disabling the default
+      // close on 'click' behavior
+      return {
+            link: function($scope, $element) {
+                $element.on('click', function($event) {
+                    console.log("Dropdown should not close");
+                    $event.stopPropagation();
+                });
+            }
+        };
+    });

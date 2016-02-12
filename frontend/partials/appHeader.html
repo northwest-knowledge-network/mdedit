@@ -35,50 +35,50 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li class="dropdown">
+        <li class="dropdown" is-open="status.isopen">
             <a id="load-delete-record-dropdown" class="dropdown-toggle"
                data-toggle="dropdown" role="button" aria-haspopup="true"
                aria-expanded="false">
                 Load or delete an existing record <span class="caret"></span>
             </a>
-            <ul id="records-table" class="dropdown-menu">
+            <ul id="records-table" class="dropdown-menu" role="menu">
 
                 <table class="table" style="width:1000px;margin-bottom:-5px">
 
                     <li>
                         <thead>
-                           <input type="text" class="form-control" placeholder="Search Your Records" ng-model="searchRecords">
+                           <input type="text" class="form-control" placeholder="Search Your Records" ng-model="searchRecords" disable-auto-close>
                             <tr>
                                 <td>
-                                    <a ng-click="sortType = '-schema_type'; sortReverse = !sortReverse">
+                                    <a ng-click="sortType = '-schema_type'; sortReverse = !sortReverse"  disable-auto-close>
                                       <b>Record Type</b>
                                         <span ng-show="sortType =='-schema_type' && sortReverse" class="fa fa-caret-down"></span>
                                         <span ng-show="sortType =='-schema_type' && !sortReverse" class="fa fa-caret-up"></span>
                                     </a>
                                 </td>
                                 <td>
-                                    <a ng-click="sortType = '-title'; sortReverse = !sortReverse">
+                                    <a ng-click="sortType = '-title'; sortReverse = !sortReverse" disable-auto-close>
                                       <b>Title</b>
                                         <span ng-show="sortType =='-title' && sortReverse" class="fa fa-caret-down"></span>
                                         <span ng-show="sortType =='-title' && !sortReverse" class="fa fa-caret-up"></span>
                                     </a>
                                 </td>
                                 <td>
-                                    <a ng-click="sortType = '-summary'; sortReverse = !sortReverse">
+                                    <a ng-click="sortType = '-summary'; sortReverse = !sortReverse" disable-auto-close>
                                       <b>Summary</b>
                                         <span ng-show="sortType =='-summary' && sortReverse" class="fa fa-caret-down"></span>
                                         <span ng-show="sortType =='-summary' && !sortReverse" class="fa fa-caret-up"></span>
                                     </a>
                                 </td>
                                 <td>
-                                    <a ng-click="sortType = '-last_mod_date'; sortReverse = !sortReverse">
+                                    <a ng-click="sortType = '-last_mod_date'; sortReverse = !sortReverse" disable-auto-close>
                                       <b>Last Edited</b>
                                         <span ng-show="sortType =='-last_mod_date' && sortReverse" class="fa fa-caret-down"></span>
                                         <span ng-show="sortType =='-last_mod_date' && !sortReverse" class="fa fa-caret-up"></span>
                                     </a>
                                 </td>
                                 <td>
-                                    <a ng-click="sortType = '-md_pub_date'; sortReverse = !sortReverse">
+                                    <a ng-click="sortType = '-md_pub_date'; sortReverse = !sortReverse" disable-auto-close>
                                       <b>Last Published</b>
                                         <span ng-show="sortType =='-md_pub_date' && sortReverse" class="fa fa-caret-down"></span>
                                         <span ng-show="sortType =='-md_pub_date' && !sortReverse" class="fa fa-caret-up"></span>

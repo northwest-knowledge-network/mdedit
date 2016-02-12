@@ -427,6 +427,7 @@ metadataEditorApp.controller('BaseController',
     this.standard = 'dc';
   }
 ])
+
 //map work
 .controller('MapController',function($scope, $compile, NgMap)
   {
