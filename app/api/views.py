@@ -489,7 +489,7 @@ def _authenticate_user_from_session(request):
     """
     # TODO remove the default setting here. This is saying use a service.
     username_url = (os.getenv('GETUSER_URL') or
-                    'https://nkn-dev.nkn.uidaho.edu/getUsername/')
+                    'https://nknportal-dev.nkn.uidaho.edu/getUsername/')
     try:
         session_id = request.json['session_id']
     except:
@@ -501,7 +501,7 @@ def _authenticate_user_from_session(request):
     else:
         data = {
             'session_id': session_id,
-            'config_kw': 'nkn-dev'
+            'config_kw': 'nknportal'
         }
 
         res = requests.post(username_url, data=data)
