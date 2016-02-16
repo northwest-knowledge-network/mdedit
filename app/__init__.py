@@ -10,7 +10,7 @@ from flask_uploads import UploadSet, ALL, configure_uploads
 # if there is an exception, we are running tests
 try:
     from config import config
-except:
+except ImportError:
     from ..config import config
 
 
