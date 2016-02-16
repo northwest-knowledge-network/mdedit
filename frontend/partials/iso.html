@@ -1,7 +1,7 @@
 <form name="baseCtrl.metadataForm" id="metadataForm" class="css-form" novalidate>
 
       <!-- form header contains title -->
-      <div ng-include="'partials/formHeader.html'"></div>
+      <div ng-include="partialsPrefix + 'partials/formHeader.html'"></div>
 
       <div class="row" ng-controller="ISOController as iso">
         <!---------------Left Divider-------------->
@@ -24,7 +24,7 @@
 
             </br>
 
-          <div ng-include="'partials/form/basic.html'"></div> 
+          <div ng-include="partialsPrefix + 'partials/form/basic.html'"></div> 
 
         </div>
                
@@ -34,7 +34,7 @@
              </h2>
              <div class="subform">
 
-               <div ng-include="'partials/form/dataFormats.html'"></div>
+               <div ng-include="partialsPrefix + 'partials/form/dataFormats.html'"></div>
 
                <h4 class="attribute-label">Compression Technique</h4>
                <h6>
@@ -59,7 +59,7 @@
 
         <div class="subform">
 
-         <div ng-include="'partials/form/detailed.html'"></div>
+         <div ng-include="partialsPrefix + 'partials/form/detailed.html'"></div>
 
           <h4 class="attribute-label">Update Status</h4>
           <h6>What is the status of your dataset? For example, is it complete (you anticipate no further work and consider it final) or is it ongoing (continually being updated)?</h6>
@@ -112,17 +112,17 @@
          <div class="subform">
            <div class="row" style="vertical-align:left">
 
-              <div ng-include="'partials/form/temporalExtent.html'"></div>
+              <div ng-include="partialsPrefix + 'partials/form/temporalExtent.html'"></div>
 
-              <div ng-include="'partials/form/spatialExtent.html'"></div>
+              <div ng-include="partialsPrefix + 'partials/form/spatialExtent.html'"></div>
 
            </div>
          </div>
 
       </div>
 
-      <div ng-include="'partials/form/contacts.html'"></div>
+      <div ng-include="partialsPrefix + 'partials/form/contacts.html'"></div>
 
-      <div ng-include="'partials/form/onlineResourcesAndRestrictions.html'"></div>
+      <div ng-include="partialsPrefix + 'partials/form/onlineResourcesAndRestrictions.html'"></div>
 
 </form>

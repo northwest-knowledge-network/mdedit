@@ -24,7 +24,7 @@
             
             </br>
 
-          <div ng-include="'partials/form/basic.html'"></div>
+          <div ng-include="partialsPrefix + 'partials/form/basic.html'"></div>
 
         </div>
          
@@ -33,7 +33,7 @@
            Data Format Details
          </h2>
 
-         <div ng-include="'partials/form/dataFormats.html'"></div>
+         <div ng-include="partialsPrefix + 'partials/form/dataFormats.html'"></div>
         
     </div>
    
@@ -49,7 +49,7 @@
       </h2>
 
       <div class="subform">
-        <div ng-include="'partials/form/detailed.html'"></div>
+        <div ng-include="partialsPrefix + 'partials/form/detailed.html'"></div>
       </div>
     
     </div>
@@ -67,15 +67,15 @@
      </a>
      <div class="subform">
        <div class="row" style="vertical-align:middle">       
-          <div ng-include="'partials/form/spatialExtent.html'"></div>
+          <div ng-include="partialsPrefix + 'partials/form/spatialExtent.html'"></div>
        </div>
      </div>
         
   </div>
 
 
-  <div ng-include="'partials/form/contacts.html'"></div>
+  <div ng-include="partialsPrefix + 'partials/form/contacts.html'"></div>
   
-  <div ng-include="'partials/form/onlineResourcesAndRestrictions.html'"></div>
+  <div ng-include="partialsPrefix + 'partials/form/onlineResourcesAndRestrictions.html'"></div>
 
 </form>
