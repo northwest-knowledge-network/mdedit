@@ -36,7 +36,7 @@ class TestingConfig(Config):
     TESTING = True
 
     MONGODB_SETTINGS = {'db': 'mdedit_test'}
-    PREPROD_DIRECTORY = os.getcwd() + '/mdedit_preprod_test'
+    PREPROD_DIRECTORY = '/tmp/mdedit_preprod_test'
 
     UPLOADS_DEFAULT_DEST = 'app/static/test-uploads'
 

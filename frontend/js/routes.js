@@ -1,19 +1,21 @@
 'use strict';
 
-metadataEditorApp.config(['$routeProvider',
-  function($routeProvider) {
+metadataEditorApp.config(['$routeProvider', 'partialsPrefixProvider',
+function($routeProvider, partialsPrefixProvider) {
+
+    var prefix = partialsPrefixProvider.$get();
+
     $routeProvider.
-      when('/dublin', {
-        templateUrl: 'partials/dublin.html',
-        controller: 'DCController'
-      }).
-      when('/iso', {
-        templateUrl: 'partials/iso.html',
-        controller: 'ISOController'
-      }).
-      otherwise({
-        redirectTo: '/',
-        controller: 'BaseController'
-      });
-  }
-]);
+        when('/dublin', {
+            templateUrl: prefix + 'partials/dublin.html',
+            controller: 'DCController'
+        }).
+        when('/iso', {
+            templateUrl: prefix + 'partials/iso.html',
+            controller: 'ISOController'
+        }).
+        otherwise({
+            redirectTo: '/',
+            controller: 'BaseController'
+        });
+}]);

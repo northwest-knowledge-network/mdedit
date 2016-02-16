@@ -5,16 +5,18 @@
 metadataEditorApp.controller('BaseController',
 
     ['$scope', '$http', '$log', '$window', 'formOptions', 'updateForms', 'recordService',
-        'AttachmentService', 'Geoprocessing', 'hostname', 'sessionId',
+        'AttachmentService', 'Geoprocessing', 'hostname', 'sessionId', 'partialsPrefix',
 
     function($scope, $http, $log, $window, formOptions, updateForms,
-        recordService, AttachmentService, Geoprocessing, hostname, sessionId)
+        recordService, AttachmentService, Geoprocessing, hostname, sessionId,
+        partialsPrefix)
     {
         // initialize list of existing metadata records
         $scope.allRecords = [];
 
         $scope.options = {};
 
+        //=== set up hostname-related scope variables ===//
         // export to XML
         var exportAddr = function(oid, xmlType) {
             return hostname + '/api/metadata/' + oid + '/' + xmlType;
@@ -29,6 +31,8 @@ metadataEditorApp.controller('BaseController',
             }
             $window.open(prefix + exportAddr(oid, type));
         };
+        // prefix on routes to partials
+        $scope.partialsPrefix = partialsPrefix;
 
         $scope.updateRecordsList = function() {
             recordService.list()

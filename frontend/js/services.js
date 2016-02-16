@@ -34,6 +34,11 @@ metadataEditorApp
 
     return hostname;
 })
+.factory('partialsPrefix', ['hostname', function(hostname)
+{
+    var ret = hostname.includes('localhost') ? '' : '/frontend/';
+    return ret;
+}])
 
 /// TODO: fix this terrible comment ///
 /**
