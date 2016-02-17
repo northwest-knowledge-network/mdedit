@@ -536,7 +536,7 @@ metadataEditorApp
 
     var attachBaseRoute;
     if (hostname !== 'localhost:4000') {
-        attachBaseRoute = hostname + '/api/metadata/';
+        attachBaseRoute = 'https://' + hostname + '/api/metadata/';
     }
     else {
         attachBaseRoute = '//' + hostname + '/api/metadata/';
