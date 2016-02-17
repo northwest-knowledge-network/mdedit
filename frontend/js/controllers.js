@@ -5,10 +5,10 @@
 metadataEditorApp.controller('BaseController',
 
     ['$scope', '$http', '$log', '$window', 'formOptions', 'updateForms', 'recordService',
-        'AttachmentService', 'Geoprocessing', 'hostname', 'sessionId', 'partialsPrefix',
+        'AttachmentService', 'Geoprocessing', 'hostname', 'session_id', 'partialsPrefix',
 
     function($scope, $http, $log, $window, formOptions, updateForms,
-        recordService, AttachmentService, Geoprocessing, hostname, sessionId,
+        recordService, AttachmentService, Geoprocessing, hostname, session_id,
         partialsPrefix)
     {
         // initialize list of existing metadata records
@@ -25,7 +25,7 @@ metadataEditorApp.controller('BaseController',
             var oid = $scope.currentRecord._id.$oid;
 
             var prefix = '';
-            if (sessionId === 'local')
+            if (session_id === 'local')
             {
                 prefix = 'http://';
             }
@@ -84,7 +84,7 @@ metadataEditorApp.controller('BaseController',
         //for user sorting and filtering of records list, sets defaults
         $scope.sortType = '-last_mod_date';
         $scope.sortReverse = false;
-        $scope.searchRecords = ''; 
+        $scope.searchRecords = '';
 
         $scope.createNewRecord = function() {
 

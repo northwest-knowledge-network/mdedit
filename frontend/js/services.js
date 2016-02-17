@@ -3,21 +3,21 @@
 /* Services */
 
 metadataEditorApp
-.factory('sessionId', function()
+.factory('session_id', function()
 {
-    var sessionId = '';
+    var session_id = '';
 
     // first see if we have any user information given to us (from Drupal)
-    if (typeof(window.sessionId) === 'undefined')
+    if (typeof(window.session_id) === 'undefined')
     {
-        sessionId = 'local';
+        session_id = 'local';
     }
     else
     {
-        sessionId = window.sessionId;
+        session_id = window.session_id;
     }
 
-    return sessionId;
+    return session_id;
 })
 .factory('hostname', function()
 {
@@ -238,9 +238,9 @@ metadataEditorApp
         "zipcode": "83844-2358"
 })
 .service('recordService',
-    ['$http', '$q', '$log', 'hostname', 'sessionId',
+    ['$http', '$q', '$log', 'hostname', 'session_id',
             'emptyISORecord', 'emptyDCRecord', 'milesFields', 'nkn',
-    function($http, $q, $log, hostname, sessionId,
+    function($http, $q, $log, hostname, session_id,
              emptyISORecord, emptyDCRecord, milesFields, nkn)
     {
         /**
@@ -389,7 +389,7 @@ metadataEditorApp
             var record = {};
 
             return $http.post('//' + hostname + '/api/metadata/' + recordId,
-                              {'session_id': sessionId})
+                              {'session_id': session_id})
 
                     .success(function(data)
                     {
@@ -409,7 +409,7 @@ metadataEditorApp
             $log.log('record deleted');
             return $http.post(
                 '//' + hostname + '/api/metadata/' + recordId + '/delete',
-                {'session_id': sessionId});
+                {'session_id': session_id});
         };
 
         /**
@@ -429,7 +429,7 @@ metadataEditorApp
                 $log.log(prepareRecordForSave(scope));
                 q = $http.put('//' + hostname + '/api/metadata',
                           {'record': prepareRecordForSave(scope),
-                           'session_id': sessionId}
+                           'session_id': session_id}
                 );
 
             }
@@ -440,7 +440,7 @@ metadataEditorApp
                 q = $http.put('//' + hostname + '/api/metadata/' +
                         currentId,
                           {'record': prepareRecordForSave(scope),
-                           'session_id': sessionId}
+                           'session_id': session_id}
                 );
             }
 
@@ -449,7 +449,7 @@ metadataEditorApp
 
         var list = function () {
             return $http.post('//' + hostname + '/api/metadata',
-                              {'session_id': sessionId});
+                              {'session_id': session_id});
         };
 
 
