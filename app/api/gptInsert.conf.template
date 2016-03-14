@@ -29,8 +29,8 @@
 # UUID for the dataset to create a download link.
 
 [default]
-host = host
-user = user
-password = password
-database = database
+host = hostname
+user = username
+password = passwd
+database = postgres
 downloadURL = http://www.northwestknowledge.net/data/download.php?uuid=
