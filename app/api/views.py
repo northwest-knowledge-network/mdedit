@@ -363,8 +363,9 @@ def get_single_xml_metadata(_oid):
 
     json_rec['online'] = map(_enclose_url, json_rec['online'])
 
-    json_rec['download_url'] = \
-        app.config['ATTACHMENT_DOWNLOAD_BASE_URL'] + str(record.id)
+    if record.md_pub_date is not None:
+        json_rec['download_url'] = \
+            app.config['ATTACHMENT_DOWNLOAD_BASE_URL'] + str(record.id)
 
     xml_str = dicttoxml(dict(record=json_rec))  # , attr_type=False)
 

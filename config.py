@@ -40,6 +40,9 @@ class TestingConfig(Config):
 
     UPLOADS_DEFAULT_DEST = 'app/static/test-uploads'
 
+    ATTACHMENT_DOWNLOAD_BASE_URL = \
+        'http://example.com//data/download.php?uuid='
+
     if not os.path.exists(PREPROD_DIRECTORY):
         os.makedirs(PREPROD_DIRECTORY)
 
