@@ -340,7 +340,7 @@ def get_single_xml_metadata(_oid):
 
     except AttributeError:
         # if we get an attribute error, continue; any other error will still
-        #cause the program to fail
+        # cause the program to fail
         pass
 
     json_rec['last_mod_date'] = record.last_mod_date.strftime(d_fmt1)
