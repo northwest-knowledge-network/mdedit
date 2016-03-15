@@ -23,5 +23,6 @@ sys.path.insert(0, '/var/www/html/portal/mdedit')
 
 import os
 os.environ["MDEDIT_PREPROD_DIRECTORY"] = '/local-datastore/'
+os.environ["FLASKCONFIG"] = 'production'
 
 from manage import app as application
