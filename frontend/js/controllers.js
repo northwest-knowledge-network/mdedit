@@ -23,12 +23,7 @@ metadataEditorApp.controller('BaseController',
         };
         $scope.export_ = function(type) {
             var oid = $scope.currentRecord._id.$oid;
-
-            var prefix = '';
-            if (session_id === 'local')
-            {
-                prefix = 'http://';
-            }
+            var prefix = 'http://';
             $window.open(prefix + exportAddr(oid, type));
         };
         // prefix on routes to partials
