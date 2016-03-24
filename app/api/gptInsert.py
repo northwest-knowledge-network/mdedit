@@ -33,7 +33,7 @@ class Geoportal(object):
         self.downloadURL = downloadURL
         self.uuid = uuid
 
-def gptInsertRecord(xml, title):
+def gptInsertRecord(xml, title, record_id):
     # Config file is 'gptInsert.conf' located in the current directory
     config_file = os.path.dirname(__file__) + '/gptInsert.conf'
     try:
@@ -64,8 +64,8 @@ def gptInsertRecord(xml, title):
     gpt_sequence_num = rows[0][0]
 
     # Generate a UUID and format it in geoportal style
-    bareuuid = str(uuid.uuid4())
-    docuuid = '{' + bareuuid + '}'
+    bareuuid = record_id
+    docuuid = '{' + record_id + '}'
 
     print >> sys.stderr, 'Inserting geoportal record uuid=' + docuuid + ' id=' + str(gpt_sequence_num)
 
@@ -114,20 +114,24 @@ def gptInsertRecord(xml, title):
     # Return the Geoportal object with enough information to construct
     # a download link for the dataset
     output = Geoportal(downloadURL = downloadURL, uuid = bareuuid)
-    send_email()
+    send_email(docuuid)
     return output
 
 # The function to send the notification email
-def send_email():
+def send_email(uuid):
     sender = 'portal@northwestknowledge.net'
     receivers = ['publish@northwestknowledge.net']
     message = """From: NKN Geoportal <portal@northwestknowledge.net>
 To: NKN Publisher Group <publish@northwestknowledge.net>
 Subject: Dataset submitted for publication
 
-Hi, NKN data publishers.  A new dataset has been approved for publication
+Hi, NKN data publishers.  A new dataset has been submitted for publication
 in the geoportal interface.  Please take a look.
+
+https://northwestknowledge.net/geoportal/
+
 """
+
     try:
         smtpObj = smtplib.SMTP('localhost')
         smtpObj.sendmail(sender, receivers, message)
