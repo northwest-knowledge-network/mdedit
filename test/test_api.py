@@ -7,8 +7,8 @@ Date: 2015-12-12
 import json
 import unittest
 
-from ..manage import app
-from ..app.models import Metadata, Attachment
+from manage import app
+from app.models import Metadata, Attachment
 
 
 class TestAPI(unittest.TestCase):
