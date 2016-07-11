@@ -12,3 +12,4 @@ mdedit_preprod/*
 gptInsert.conf
 mdedit_preprod_test/
 *uploads*
+docs/_build

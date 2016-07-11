@@ -1,0 +1,19 @@
+{# layout.html #}
+{# M. Turner 7/11/16 #}
+
+{%- extends "!layout.html" %}
+
+
+{% if theme_collapsiblesidebar|tobool %}
+{% set script_files = script_files + ['_static/sidebar.js'] %}
+{% endif %}
+
+{% block extrahead %}
+<link href="https://fonts.googleapis.com/css?family=Bungee+Shade|Metrophobic|Niconne" rel="stylesheet">
+<style>
+div.body h1 {
+  font-size: 55px;
+}
+
+</style>
+{% endblock %}

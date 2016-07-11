@@ -1,5 +1,3 @@
-#!venv/bin/python
-
 import argparse
 import os
 import shutil
