@@ -1,0 +1,215 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>quickstart &mdash; mdedit v0.1</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="_static/favicon-32x32.png"/>
+    <link rel="top" title="mdedit v0.1" href="index.html" />
+    <link rel="next" title="software" href="software.html" />
+    <link rel="prev" title="mdedit" href="index.html" />
+<link href="https://fonts.googleapis.com/css?family=Bungee+Shade|Metrophobic|Niconne" rel="stylesheet">
+<style>
+div.body {
+  color: black;
+}
+div.body h1 {
+  font-size: 55px;
+}
+
+</style>
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="quickstart">
+<h1>quickstart<a class="headerlink" href="#quickstart" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="install">
+<h2>Install<a class="headerlink" href="#install" title="Permalink to this headline">¶</a></h2>
+<p>This requires <a class="reference external" href="https://docs.mongodb.com/manual/installation/#mongodb-community-edition">MongoDB</a>,
+<a class="reference external" href="https://pypi.python.org/pypi/pip">pip, the PyPA recommended tool</a>
+for Python package management, and the
+<a class="reference external" href="https://docs.npmjs.com/getting-started/installing-node">Node Package Manager (npm)</a> and
+<a class="reference external" href="https://bower.io/">bower</a> for managing javascript and CSS dependencies.
+Click the links to find more information, most importantly install
+instructions.</p>
+<p>Please get in touch if you&#8217;ve tried and have hit a snag installing any of
+these dependencies. Some notes are at the bottom of the page for
+installing dependencies.</p>
+<p>First, we need to get the mdedit repository and change to the newly cloned
+directory.</p>
+<div class="highlight-sh"><div class="highlight"><pre><span></span>git clone https://github.com/northwest-knowledge-network/mdedit <span class="o">&amp;&amp;</span> <span class="se">\</span>
+    <span class="nb">cd</span> mdedit
+</pre></div>
+</div>
+<p>Next we need to install python and javascript/css dependencies. For Python,
+virtual environments really are worth using, so we&#8217;ll use them.</p>
+<div class="highlight-sh"><div class="highlight"><pre><span></span>pip install virtualenv <span class="o">&amp;&amp;</span> <span class="se">\</span>
+    virtualenv -p /usr/bin/python2.7 venv <span class="o">&amp;&amp;</span> <span class="se">\ </span> <span class="c1"># create new py2.7 venv</span>
+    <span class="nb">source</span> venv/bin/activate <span class="o">&amp;&amp;</span> <span class="se">\ </span> <span class="c1"># activate new environment</span>
+    pip install -r requirements.txt  <span class="c1"># install listed requirements</span>
+</pre></div>
+</div>
+<p>Now every time you want to run the Flask server in your environment, you will
+have to type <code class="docutils literal"><span class="pre">source</span> <span class="pre">venv/bin/activate</span></code>. This might sound a bit tedious,
+so you might want to add something like <code class="docutils literal"><span class="pre">alias</span> <span class="pre">va='source</span> <span class="pre">venv/bin/activate</span></code>
+to your <code class="docutils literal"><span class="pre">~/.bashrc</span></code>.</p>
+<p>Now on to Javascript/CSS dependencies, installed with</p>
+<div class="highlight-sh"><div class="highlight"><pre><span></span>npm install <span class="o">&amp;&amp;</span> bower install
+</pre></div>
+</div>
+<p>If all that has succeeded, proceed to start the servers to work with a
+version of <code class="docutils literal"><span class="pre">mdedit</span></code> that runs and can be accessed from your personal computer.</p>
+</div>
+<div class="section" id="start-servers">
+<h2>Start Servers<a class="headerlink" href="#start-servers" title="Permalink to this headline">¶</a></h2>
+<p>To start the servers, we use a script that is included in the repository called
+<code class="docutils literal"><span class="pre">startup.py</span></code></p>
+<div class="highlight-sh"><div class="highlight"><pre><span></span>python startup.py run
+</pre></div>
+</div>
+<p>Once you&#8217;ve done that, you can navigate to (click the link or type in browser)
+<a class="reference external" href="http://localhost:8000/frontend">localhost:8000/frontend</a> and see the medata editor running on
+your computer.</p>
+</div>
+<div class="section" id="run-tests">
+<h2>Run Tests<a class="headerlink" href="#run-tests" title="Permalink to this headline">¶</a></h2>
+<p>There are three types of tests for the mdedit project: tests of the
+metadata Flask service backend, tests that certain internals to the front end
+Angular app are behaving as expected (&#8220;spec&#8221; tests), and finally &#8220;end-to-end&#8221;
+tests that interacts with <code class="docutils literal"><span class="pre">mdedit</span></code> through the browser as a robotic
+user to make sure the website behaves as expected, for instance, actually
+saving and updating the page when a user saves a new record.</p>
+<ul class="simple">
+<li>To run the backend tests for Python code:</li>
+</ul>
+<div class="highlight-sh"><div class="highlight"><pre><span></span>python startup.py pyTest
+</pre></div>
+</div>
+<ul class="simple">
+<li>To run the angular specs:</li>
+</ul>
+<div class="highlight-sh"><div class="highlight"><pre><span></span>python startup.py ngSpec
+</pre></div>
+</div>
+<ul class="simple">
+<li>Finally, the end-to-end tests:</li>
+</ul>
+<div class="highlight-sh"><div class="highlight"><pre><span></span>python startup.py e2e
+</pre></div>
+</div>
+<ul class="simple">
+<li>All tests can be run at once:</li>
+</ul>
+<div class="highlight-sh"><div class="highlight"><pre><span></span>python startup.py testAll
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="index.html">
+    <img class="logo" src="_static/NKN_logo_v4.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=northwest-knowledge-network&repo=mdedit&type=watch&count=true&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="20px"></iframe>
+</p>
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=northwest-knowledge-network&type=follow"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="20px"></iframe>
+  <!--<a href="https://github.com/VirtualWatershed/cord">CoRD on GitHub</a>-->
+</p>
+
+
+
+
+<h3>Navigation</h3>
+<div id="sidebar_toctree">
+  <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">quickstart</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#install">Install</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#start-servers">Start Servers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#run-tests">Run Tests</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="software.html">software</a></li>
+</ul>
+
+</div>
+<ul class="footer_nav">
+      <li class="prev">
+        Previous topic: <a href="index.html">mdedit</a>
+      </li>
+      <li class="next">
+        Next topic: <a href="software.html">software</a>
+      </li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">mdedit</a></li>
+      <li>Next: <a href="software.html" title="next chapter">software</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Northwest Knowledge Network.
+
+    
+  </body>
+</html>

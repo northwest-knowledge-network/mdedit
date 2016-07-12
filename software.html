@@ -1,0 +1,930 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>software &mdash; mdedit v0.1</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="_static/favicon-32x32.png"/>
+    <link rel="top" title="mdedit v0.1" href="index.html" />
+    <link rel="prev" title="quickstart" href="quickstart.html" />
+<link href="https://fonts.googleapis.com/css?family=Bungee+Shade|Metrophobic|Niconne" rel="stylesheet">
+<style>
+div.body {
+  color: black;
+}
+div.body h1 {
+  font-size: 55px;
+}
+
+</style>
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="software">
+<h1>software<a class="headerlink" href="#software" title="Permalink to this headline">¶</a></h1>
+<p>The best way to read this part of the documentation is to have a
+browser tab open to the <a class="reference external" href="https://github.com/northwest-knowledge-network/mdedit">mdedit GitHub repository</a>
+as we will reference this throughout. When on our repository, GitHub make
+searching the repository easy using the search bar at the top of the screen,
+shown below</p>
+<img alt="_images/github-search-screenshot.png" src="_images/github-search-screenshot.png" />
+<p>There is almost 3 times as much javascript as there is Python code in this
+project. It is true that the developers who initiated the mdedit project had
+very little experience with web technologies before this, and while this might
+cause some of the bloat on the javascript side, the reason is mostly that
+user interaction takes a lot of work to get even half right.</p>
+<p>The metadata editor provides a stack of software that provides read/write
+access to a MongoDB database that serves a web app written in the Flask
+web micro-framework written in Python. This Flask app provides a REST
+API a client can use to create, update, delete, and publish datasets within the
+NKN Portal.</p>
+<p>The front end of the metadata editor is the original client and
+consumer of the backend data server. This could be considered (and maybe
+should be separated in the future) an independent web application.
+Here, the HTTP responses from the data server are the most raw form of the data.
+We use the Angular framework to reveal that data to the end user in the browser
+in a variety of ways, as well as handle user input. We use Bootstrap for a
+styling framework.</p>
+<p>The backend and frontend share a common pattern, the
+<a class="reference external" href="https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller">Model-View-Controller (MVC)</a>
+pattern. MVC can be represented as a stack, with the &#8220;model&#8221; being data in some
+arbitrary basic state, raw or unprocessed or whatever, the &#8220;view&#8221; being
+a formatted version of the data, whether in JSON responses from an HTTP API
+or data in/out of the web form. Finally, the &#8220;controller&#8221; mediates the
+two-way pipeline from between the model and view. The view provides methods
+for submitting as well as reading model data. The controller responds to
+read/write requests from the view and manipulates data from/for the model.</p>
+<div class="section" id="sketch">
+<h2>Sketch<a class="headerlink" href="#sketch" title="Permalink to this headline">¶</a></h2>
+<p>Below is a sketch of how data moves through various modules to and from the
+Flask backend and Angular frontend. Use this as a quick reference to what
+file might contain the code you are looking to update.</p>
+<a class="reference internal image-reference" href="_images/data-through-stack.png"><img alt="_images/data-through-stack.png" src="_images/data-through-stack.png" style="height: 600px;" /></a>
+</div>
+<div class="section" id="flask-backend">
+<h2>Flask Backend<a class="headerlink" href="#flask-backend" title="Permalink to this headline">¶</a></h2>
+<p>In the Flask backend, our model (meta)data is stored in MongoDB and is represented
+in our Flask app as a Python class.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">While we allow the users to upload scientific data, in the app, the
+data that flows up and down the MVC pipelines are metadata.</p>
+</div>
+<p>We can then programmatically access
+our model data via the
+<a class="reference external" href="http://mongoengine.org">mongoengine Document-Object Mapper</a> and
+its Flask wrapper <a class="reference external" href="https://flask-mongoengine.readthedocs.io/en/latest/">Flask-Mongoengine</a>.
+Here is the first bit of the definition of the <code class="xref py py-class docutils literal"><span class="pre">Metadata</span></code> class,
+helpfully defined in the <a class="reference external" href="https://github.com/northwest-knowledge-network/mdedit/blob/master/app/models.py">app/models.py</a>
+module.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Metadata</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;MongoDB Document representation of metadata&quot;&quot;&quot;</span>
+    <span class="c1"># basic info</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">255</span><span class="p">)</span>
+    <span class="n">last_mod_date</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">)</span>
+    <span class="n">first_pub_date</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">()</span>
+    <span class="n">summary</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">3000</span><span class="p">)</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">255</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;anonymous&quot;</span><span class="p">)</span>
+
+    <span class="c1">#to capture type of metadata record - right now iso or dublin core</span>
+    <span class="n">schema_type</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">255</span><span class="p">)</span>
+
+    <span class="c1">#for last published date for metadata record published to server</span>
+    <span class="n">md_pub_date</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">()</span>
+
+    <span class="c1">## detailed info</span>
+    <span class="c1"># detailed info lists</span>
+    <span class="n">topic_category</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">ListField</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">255</span><span class="p">))</span>
+    <span class="n">thematic_keywords</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">ListField</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">255</span><span class="p">))</span>
+    <span class="n">place_keywords</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">ListField</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">StringField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">255</span><span class="p">))</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<p>By inheriting <code class="docutils literal"><span class="pre">db.Document</span></code> we have access to CRUD methods on Metadata
+instances, as shown in the following snippet from <a class="reference external" href="https://github.com/northwest-knowledge-network/mdedit/blob/master/app/api/views.py">app/api/views.py</a>.
+This is the simplest example in the whole file: removing an existing record.
+Please review the link to <code class="docutils literal"><span class="pre">views.py</span></code> to see other URLs and their associated
+methods.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>156
+157
+158
+159
+160
+161
+162
+163
+164
+165</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nd">@api.route</span><span class="p">(</span><span class="s1">&#39;/api/metadata/&lt;string:_oid&gt;/delete&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@cross_origin</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">],</span>
+              <span class="n">headers</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;X-Requested-With&#39;</span><span class="p">,</span> <span class="s1">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="s1">&#39;Origin&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">delete_metadata_record</span><span class="p">(</span><span class="n">_oid</span><span class="p">):</span>
+
+<span class="hll">    <span class="n">md</span> <span class="o">=</span> <span class="n">Metadata</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get_or_404</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">_oid</span><span class="p">)</span>
+</span>    <span class="n">md</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Record successfully removed&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;success&#39;</span><span class="p">})</span>
+</pre></div>
+</td></tr></table></div>
+<p>The <code class="docutils literal"><span class="pre">Flask-MongoEngine</span></code> extension gives us the <code class="docutils literal"><span class="pre">get_or_404</span></code> method which
+automatically returns a response with HTTP 404 response code if the metadata
+record to be removed does not exist.</p>
+<div class="section" id="roadmap-for-backend-improvements">
+<h3>Roadmap for backend improvements<a class="headerlink" href="#roadmap-for-backend-improvements" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>Streamline <code class="docutils literal"><span class="pre">views.py</span></code> using something like <a class="reference external" href="https://github.com/closeio/flask-mongorest">flask-mongorest</a></li>
+</ol>
+<ol class="arabic simple">
+<li>Improve HTTP API documentation (<a class="reference external" href="http://pythonhosted.org/sphinxcontrib-httpdomain/#sphinxcontrib-autohttp-flask-exporting-api-reference-from-flask-app">http://pythonhosted.org/sphinxcontrib-httpdomain/#sphinxcontrib-autohttp-flask-exporting-api-reference-from-flask-app</a>)</li>
+</ol>
+<ol class="arabic simple">
+<li>PHP? It may be a better for NKN. Since the frontend is not dependent on the specific implementation of the REST API the Python implementation could be phased out in favor of a PHP implementation.</li>
+</ol>
+</div>
+</div>
+<div class="section" id="angular-frontend">
+<h2>Angular Frontend<a class="headerlink" href="#angular-frontend" title="Permalink to this headline">¶</a></h2>
+<p>As with the backend, let&#8217;s follow some data as it travels up the pipeline
+back and forth between its relatively &#8220;raw&#8221; format as an HTTP response up to
+the view of it that the user can read, modify, save, and publish. For a
+general introduction to Angular, please work through the
+<a class="reference external" href="https://docs.angularjs.org/tutorial">Angular tutorial</a>, it&#8217;s excellent.
+You will learn more than Angular: you will learn about testing web apps,
+the Bower dependency manager, and javascript build scripts.</p>
+<p>On the front end, our base data comes from responses to HTTP requests issued
+by the front end and responded to by the backend. For example, in
+response to the request to</p>
+<div class="highlight-none"><div class="highlight"><pre><span></span>POST https://backend-host.com/api/metadata/{RECORD-IDENTIFIER}
+</pre></div>
+</div>
+<p>with body</p>
+<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;session_id&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;drupal_session_id&gt;&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>the backend server delivers a record that looks like this</p>
+<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;record&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;_cls&quot;</span><span class="p">:</span> <span class="s2">&quot;Metadata&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;_id&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;$oid&quot;</span><span class="p">:</span> <span class="s2">&quot;57844c55714375a380699586&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;access&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="p">{</span>
+        <span class="nt">&quot;address&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;city&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;country&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;email&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;org&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;phone&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;state&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;zipcode&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span>
+      <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="nt">&quot;attachments&quot;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="nt">&quot;citation&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="p">{</span>
+        <span class="nt">&quot;address&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;city&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;country&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;email&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;org&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;phone&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;state&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;zipcode&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span>
+      <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="nt">&quot;data_format&quot;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="nt">&quot;east_lon&quot;</span><span class="p">:</span> <span class="mf">-102.74412182499992</span><span class="p">,</span>
+    <span class="nt">&quot;hierarchy_level&quot;</span><span class="p">:</span> <span class="s2">&quot;dataset&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;last_mod_date&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;$date&quot;</span><span class="p">:</span> <span class="mi">1468292871051</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;north_lat&quot;</span><span class="p">:</span> <span class="mf">48.97169444465239</span><span class="p">,</span>
+    <span class="nt">&quot;online&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="s2">&quot;&quot;</span>
+    <span class="p">],</span>
+    <span class="nt">&quot;place_keywords&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="s2">&quot;albuquerque&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;moscow&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;Idaho&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;New Mexico&quot;</span>
+    <span class="p">],</span>
+    <span class="nt">&quot;schema_type&quot;</span><span class="p">:</span> <span class="s2">&quot;Dataset (ISO)&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;south_lat&quot;</span><span class="p">:</span> <span class="mf">31.211368751234378</span><span class="p">,</span>
+    <span class="nt">&quot;spatial_dtype&quot;</span><span class="p">:</span> <span class="s2">&quot;table or text&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;onGoing&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;thematic_keywords&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="s2">&quot;DEM&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;  climate data&quot;</span>
+    <span class="p">],</span>
+    <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Hello, World!&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;topic_category&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="s2">&quot;climatologyMeteorologyAtmosphere&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;inlandWaters&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;intelligenceMilitary&quot;</span>
+    <span class="p">],</span>
+    <span class="nt">&quot;update_frequency&quot;</span><span class="p">:</span> <span class="s2">&quot;monthly&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;local_user&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;west_lon&quot;</span><span class="p">:</span> <span class="mf">-120.77225224999995</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Here are some of the fields we can see get populated when we select the
+record from our list of records</p>
+<img alt="_images/mdedit-hello-screenshot.png" src="_images/mdedit-hello-screenshot.png" />
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <code class="docutils literal"><span class="pre">&lt;drupal_session_id&gt;</span></code> serves to authenticate the user by verifying
+the session id given by Drupal and stored in the Drupal database.</p>
+</div>
+<p>This is one of many metadata <em>services</em> provided in
+<a class="reference external" href="https://github.com/northwest-knowledge-network/mdedit/blob/master/frontend/js/services.js">frontend/js/services.js</a>
+The code block below shows the <code class="docutils literal"><span class="pre">recordService</span></code></p>
+<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>240
+241
+242
+243
+244
+245
+246
+247
+248</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nx">metadataEditorApp</span>
+<span class="p">.</span><span class="nx">service</span><span class="p">(</span><span class="s1">&#39;recordService&#39;</span><span class="p">,</span>
+    <span class="p">[</span><span class="s1">&#39;$http&#39;</span><span class="p">,</span> <span class="s1">&#39;$q&#39;</span><span class="p">,</span> <span class="s1">&#39;$log&#39;</span><span class="p">,</span> <span class="s1">&#39;hostname&#39;</span><span class="p">,</span> <span class="s1">&#39;session_id&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;emptyISORecord&#39;</span><span class="p">,</span> <span class="s1">&#39;emptyDCRecord&#39;</span><span class="p">,</span> <span class="s1">&#39;milesFields&#39;</span><span class="p">,</span> <span class="s1">&#39;nkn&#39;</span><span class="p">,</span>
+    <span class="kd">function</span><span class="p">(</span><span class="nx">$http</span><span class="p">,</span> <span class="nx">$q</span><span class="p">,</span> <span class="nx">$log</span><span class="p">,</span> <span class="nx">hostname</span><span class="p">,</span> <span class="nx">session_id</span><span class="p">,</span>
+             <span class="nx">emptyISORecord</span><span class="p">,</span> <span class="nx">emptyDCRecord</span><span class="p">,</span> <span class="nx">milesFields</span><span class="p">,</span> <span class="nx">nkn</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="p">...</span>
+    <span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>Within the record service are various methods for sending and requesting data
+to and from the Flask server. Shown for example here is the method that
+handles saving a draft record</p>
+<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>415
+416
+417
+418
+419
+420
+421
+422
+423
+424
+425
+426
+427
+428
+429
+430
+431
+432
+433
+434
+435
+436
+437
+438
+439
+440
+441
+442
+443
+444
+445
+446
+447
+448
+449</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cm">/**</span>
+<span class="cm"> * Save a draft record to the server.</span>
+<span class="cm"> *</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param {Object} scope Scope object from the controller. No</span>
+<span class="cm"> * modifications to the scope are made; a promise is returned</span>
+<span class="cm"> * for use by the controller.</span>
+<span class="cm"> * @returns {}</span>
+<span class="cm"> ***/</span>
+<span class="kd">var</span> <span class="nx">saveDraft</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">scope</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="kd">var</span> <span class="nx">q</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">scope</span><span class="p">.</span><span class="nx">newRecord</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nx">$log</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">prepareRecordForSave</span><span class="p">(</span><span class="nx">scope</span><span class="p">));</span>
+        <span class="nx">q</span> <span class="o">=</span> <span class="nx">$http</span><span class="p">.</span><span class="nx">put</span><span class="p">(</span><span class="s1">&#39;//&#39;</span> <span class="o">+</span> <span class="nx">hostname</span> <span class="o">+</span> <span class="s1">&#39;/api/metadata&#39;</span><span class="p">,</span>
+                  <span class="p">{</span><span class="s1">&#39;record&#39;</span><span class="o">:</span> <span class="nx">prepareRecordForSave</span><span class="p">(</span><span class="nx">scope</span><span class="p">),</span>
+                   <span class="s1">&#39;session_id&#39;</span><span class="o">:</span> <span class="nx">session_id</span><span class="p">}</span>
+        <span class="p">);</span>
+
+    <span class="p">}</span>
+    <span class="k">else</span>
+    <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">currentId</span> <span class="o">=</span> <span class="nx">scope</span><span class="p">.</span><span class="nx">currentRecord</span><span class="p">.</span><span class="nx">_id</span><span class="p">.</span><span class="nx">$oid</span><span class="p">;</span>
+
+        <span class="nx">q</span> <span class="o">=</span> <span class="nx">$http</span><span class="p">.</span><span class="nx">put</span><span class="p">(</span><span class="s1">&#39;//&#39;</span> <span class="o">+</span> <span class="nx">hostname</span> <span class="o">+</span> <span class="s1">&#39;/api/metadata/&#39;</span> <span class="o">+</span>
+                <span class="nx">currentId</span><span class="p">,</span>
+                  <span class="p">{</span><span class="s1">&#39;record&#39;</span><span class="o">:</span> <span class="nx">prepareRecordForSave</span><span class="p">(</span><span class="nx">scope</span><span class="p">),</span>
+                   <span class="s1">&#39;session_id&#39;</span><span class="o">:</span> <span class="nx">session_id</span><span class="p">}</span>
+        <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">q</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</td></tr></table></div>
+<p>This method gets called whenever the user saves a draft of the record they are
+currently editing. Whether or not the record is being updated or created, this
+is the function that ultimately gets called on the frontend. But how does
+this connect to the user interface? Again, this will happen via the
+controllers found in
+<a class="reference external" href="https://github.com/northwest-knowledge-network/mdedit/blob/master/frontend/js/controllers.js">frontend/js/controllers.js</a></p>
+<p><code class="docutils literal"><span class="pre">controllers.js</span></code> contains the first reference to the <code class="docutils literal"><span class="pre">$scope</span></code> that we&#8217;ve
+seen so far. <code class="docutils literal"><span class="pre">$scope</span></code> can at times be confusing, and it&#8217;s possible to define
+more than one, but at this point we can just take the <code class="docutils literal"><span class="pre">$scope</span></code> to be the
+current, common state of the data that is accessible both by the services
+and by the templates and views the user sees and modifies in the browser.</p>
+<p>Now let&#8217;s look at how both <code class="docutils literal"><span class="pre">$scope</span></code> and the <code class="docutils literal"><span class="pre">recordService.saveDraft</span></code>
+methods are used together to save changes to a new or existing metadata record.</p>
+<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cm">/**</span>
+<span class="cm"> * On submit of metadata form, submitRecord. This both updates the server</span>
+<span class="cm"> * and makes sure the form is current.</span>
+<span class="cm"> ***/</span>
+<span class="nx">$scope</span><span class="p">.</span><span class="nx">submitDraftRecord</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+
+    <span class="nx">recordService</span><span class="p">.</span><span class="nx">saveDraft</span><span class="p">(</span><span class="nx">$scope</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">success</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+            <span class="c1">// need to update the sheet with the ID</span>
+
+            <span class="nx">updateForms</span><span class="p">(</span><span class="nx">$scope</span><span class="p">,</span> <span class="nx">data</span><span class="p">.</span><span class="nx">record</span><span class="p">);</span>
+
+            <span class="nx">$scope</span><span class="p">.</span><span class="nx">newRecord</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+
+            <span class="nx">$scope</span><span class="p">.</span><span class="nx">addedContacts</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;access&#39;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s1">&#39;citation&#39;</span><span class="o">:</span> <span class="mi">0</span>
+            <span class="p">};</span>
+
+            <span class="nx">$scope</span><span class="p">.</span><span class="nx">updateRecordsList</span><span class="p">();</span>
+        <span class="p">})</span>
+        <span class="p">.</span><span class="nx">error</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+            <span class="c1">// TODO</span>
+        <span class="p">});</span>
+<span class="p">};</span>
+</pre></div>
+</td></tr></table></div>
+<p>This function sits as one of a number of methods defined in the following
+block, which starts at the very top of
+<a class="reference external" href="https://github.com/northwest-knowledge-network/mdedit/blob/master/frontend/js/controllers.js">frontend/js/controllers.js</a>
+and lasts for a few hundred lines</p>
+<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nx">metadataEditorApp</span><span class="p">.</span><span class="nx">controller</span><span class="p">(</span><span class="s1">&#39;BaseController&#39;</span><span class="p">,</span>
+
+    <span class="p">[</span><span class="s1">&#39;$scope&#39;</span><span class="p">,</span> <span class="s1">&#39;$http&#39;</span><span class="p">,</span> <span class="s1">&#39;$log&#39;</span><span class="p">,</span> <span class="s1">&#39;$window&#39;</span><span class="p">,</span> <span class="s1">&#39;formOptions&#39;</span><span class="p">,</span> <span class="s1">&#39;updateForms&#39;</span><span class="p">,</span> <span class="s1">&#39;recordService&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;AttachmentService&#39;</span><span class="p">,</span> <span class="s1">&#39;Geoprocessing&#39;</span><span class="p">,</span> <span class="s1">&#39;hostname&#39;</span><span class="p">,</span> <span class="s1">&#39;session_id&#39;</span><span class="p">,</span> <span class="s1">&#39;partialsPrefix&#39;</span><span class="p">,</span>
+
+    <span class="kd">function</span><span class="p">(</span><span class="nx">$scope</span><span class="p">,</span> <span class="nx">$http</span><span class="p">,</span> <span class="nx">$log</span><span class="p">,</span> <span class="nx">$window</span><span class="p">,</span> <span class="nx">formOptions</span><span class="p">,</span> <span class="nx">updateForms</span><span class="p">,</span>
+        <span class="nx">recordService</span><span class="p">,</span> <span class="nx">AttachmentService</span><span class="p">,</span> <span class="nx">Geoprocessing</span><span class="p">,</span> <span class="nx">hostname</span><span class="p">,</span> <span class="nx">session_id</span><span class="p">,</span>
+        <span class="nx">partialsPrefix</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="p">...</span>
+    <span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>There is a lot going on that is not being covered right now, just so the flow
+of data is clear. The details can come later. For now, let&#8217;s have a look at
+the Angular templates that use this controller method.</p>
+<p>Starting from <a class="reference external" href="https://github.com/northwest-knowledge-network/mdedit/blob/master/frontend/index.html">frontend/index.html</a>,
+which itself is an
+<a class="reference external" href="https://docs.angularjs.org/tutorial/step_02">Angular template</a>, we
+see the following line that includes an html &#8220;partial&#8221; that implements the
+navigation bar</p>
+<div class="highlight-html"><div class="highlight"><pre><span></span><span class="c">&lt;!-- frontend/index.html --&gt;</span>
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">ng-include</span><span class="o">=</span><span class="s">&quot;partialsPrefix + &#39;partials/appHeader.html&#39;&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>This partial referenced to via <code class="docutils literal"><span class="pre">ng-include</span></code> can be found in
+<a class="reference external" href="https://github.com/northwest-knowledge-network/mdedit/tree/master/frontend/partials">frontend/partials/appHeader.html</a>,
+and it&#8217;s here we see the call to <code class="docutils literal"><span class="pre">basicCtrl.submitDraftRecord</span></code>. The code
+generating the all the <code class="docutils literal"><span class="pre">Record</span> <span class="pre">Options</span></code> dropdowns, shown in the
+figure, is all included for completeness.</p>
+<img alt="_images/record-options-dropdown.png" src="_images/record-options-dropdown.png" />
+<div class="highlight-html"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">li</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;dropdown&quot;</span><span class="p">&gt;</span>
+
+  <span class="p">&lt;</span><span class="nt">a</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;record-options-dropdown&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;dropdown-toggle&quot;</span> <span class="na">data-toggle</span><span class="o">=</span><span class="s">&quot;dropdown&quot;</span>
+     <span class="na">role</span><span class="o">=</span><span class="s">&quot;button&quot;</span> <span class="na">aria-haspopup</span><span class="o">=</span><span class="s">&quot;true&quot;</span> <span class="na">aria-expanded</span><span class="o">=</span><span class="s">&quot;false&quot;</span><span class="p">&gt;</span>Record Options <span class="p">&lt;</span><span class="nt">span</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;caret&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">span</span><span class="p">&gt;&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+
+    <span class="p">&lt;</span><span class="nt">ul</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;dropdown-menu&quot;</span> <span class="na">role</span><span class="o">=</span><span class="s">&quot;menu&quot;</span><span class="p">&gt;</span>
+
+        <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;btn btn-sm btn-default navbar-btn header-button&quot;</span>
+               <span class="na">id</span><span class="o">=</span><span class="s">&quot;create-new-dataset&quot;</span>
+               <span class="na">ng-click</span><span class="o">=</span><span class="s">&quot;createNewRecord()&quot;</span>
+               <span class="na">href</span><span class="o">=</span><span class="s">&quot;#/iso&quot;</span><span class="p">&gt;</span>
+            Create new dataset record
+        <span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+
+        <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;btn btn-sm btn-default navbar-btn header-button&quot;</span>
+               <span class="na">id</span><span class="o">=</span><span class="s">&quot;create-new-non-dataset&quot;</span>
+               <span class="na">ng-click</span><span class="o">=</span><span class="s">&quot;createNewDublinRecord()&quot;</span>
+               <span class="na">href</span><span class="o">=</span><span class="s">&quot;#/dublin&quot;</span><span class="p">&gt;</span>
+            Create new non-dataset record
+        <span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+
+<span class="hll">        <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">ng-click</span><span class="o">=</span><span class="s">&quot;submitDraftRecord()&quot;</span>
+</span><span class="hll">               <span class="na">class</span><span class="o">=</span><span class="s">&quot;btn btn-sm btn-default navbar-btn header-button&quot;</span>
+</span><span class="hll">               <span class="na">style</span><span class="o">=</span><span class="s">&quot;border:0;text-align:left&quot;</span>
+</span><span class="hll">               <span class="p">&gt;</span>
+</span><span class="hll">            Save this record as a draft
+</span><span class="hll">        <span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+</span>
+        <span class="p">&lt;</span><span class="nt">li</span> <span class="na">ng-show</span><span class="o">=</span><span class="s">&quot;baseCtrl.metadataForm.$valid&quot;</span><span class="p">&gt;</span>
+            <span class="p">&lt;</span><span class="nt">a</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;record-options-publish&quot;</span> <span class="na">ng-click</span><span class="o">=</span><span class="s">&quot;publishRecord()&quot;</span>
+               <span class="na">class</span><span class="o">=</span><span class="s">&quot;btn btn-sm btn-default navbar-btn header-button&quot;</span>
+               <span class="na">href</span><span class="o">=</span><span class="s">&quot;#&quot;</span>
+               <span class="na">data-toggle</span><span class="o">=</span><span class="s">&quot;modal&quot;</span> <span class="na">data-target</span><span class="o">=</span><span class="s">&quot;#submitModal&quot;</span><span class="p">&gt;</span>
+            Publish record to NKN&#39;s portal<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+        <span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+
+        <span class="p">&lt;</span><span class="nt">li</span> <span class="na">ng-hide</span><span class="o">=</span><span class="s">&quot;baseCtrl.metadataForm.$valid&quot;</span>
+            <span class="na">class</span><span class="o">=</span><span class="s">&quot;disabled&quot;</span><span class="p">&gt;</span>
+            <span class="p">&lt;</span><span class="nt">a</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;btn btn-sm btn-default navbar-btn header-button&quot;</span><span class="p">&gt;</span>
+            Please complete the record to publish data
+            <span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+        <span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+
+<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="frontend-from-front-to-back">
+<h2>Frontend from front to back<a class="headerlink" href="#frontend-from-front-to-back" title="Permalink to this headline">¶</a></h2>
+<p>To close out this software overview, let&#8217;s look at
+<a class="reference external" href="https://github.com/northwest-knowledge-network/mdedit/blob/master/frontend/index.html">frontend/index.html</a>
+and understand a bit about how the user-facing web interface is composed.
+Below is a screenshot of <code class="docutils literal"><span class="pre">frontend/index.html</span></code> and the HTML of the
+<code class="docutils literal"><span class="pre">&lt;body&gt;</span></code>. Notice where the app is initialized (<code class="docutils literal"><span class="pre">ng-app=&quot;metadataEditor&quot;</span></code>),
+where the <code class="docutils literal"><span class="pre">BaseController</span></code> from <code class="docutils literal"><span class="pre">frontend/js/controllers.js</span></code> is initialized
+(<code class="docutils literal"><span class="pre">ng-controller=&quot;BaseController</span> <span class="pre">as</span> <span class="pre">baseCtrl&quot;</span></code>), and where these are used.
+There is another directive, <code class="docutils literal"><span class="pre">&lt;div</span> <span class="pre">ng-view&gt;&lt;/div&gt;</span></code> that we haven&#8217;t seen yet.
+This will be explained soon.</p>
+<img alt="_images/index.png" src="_images/index.png" />
+<div class="highlight-html"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">div</span>  <span class="na">id</span><span class="o">=</span><span class="s">&quot;bodyDiv&quot;</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;mdIntro&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">style</span><span class="o">=</span><span class="s">&quot;margin-left: 4em; margin-right: 4em; font-size: large&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>
+            With NKN&#39;s Metadata Editor you can create a valid ISO 19115
+            metadata record for your dataset or dataset series or a Dublin Core
+            metadata record for your non-data research product (tool,
+            visualization product, model, script, etc.). To get started,
+            select the type of metadata record you would like to create in the
+            <span class="p">&lt;</span><span class="nt">strong</span><span class="p">&gt;&lt;</span><span class="nt">i</span><span class="p">&gt;</span>Record Options <span class="p">&lt;/</span><span class="nt">strong</span><span class="p">&gt;&lt;/</span><span class="nt">i</span><span class="p">&gt;</span> dropdown above.
+        <span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">style</span><span class="o">=</span><span class="s">&quot;margin-left: 8em; margin-right: 6em; font-size: medium&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>
+            If you are using NKN to store your data, select <span class="p">&lt;</span><span class="nt">strong</span><span class="p">&gt;</span> NKN as
+            Data Manager<span class="p">&lt;/</span><span class="nt">strong</span><span class="p">&gt;</span> from the <span class="p">&lt;</span><span class="nt">strong</span><span class="p">&gt;&lt;</span><span class="nt">i</span><span class="p">&gt;</span>Load Defaults<span class="p">&lt;/</span><span class="nt">strong</span><span class="p">&gt;&lt;/</span><span class="nt">i</span><span class="p">&gt;</span>
+            dropdown.
+        <span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>
+            <span class="p">&lt;</span><span class="nt">strong</span><span class="p">&gt;</span>NOTE:<span class="p">&lt;/</span><span class="nt">strong</span><span class="p">&gt;</span> You must complete all requred fields and
+            will need to Save your record before you can Publish it.
+        <span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>
+            Please contact <span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;mailto:publish@northwestknowledge.net&quot;</span><span class="p">&gt;</span> NKN<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+            if you have additional questions or if the data associated with your
+            record are larger than 10GB.
+
+    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">ng-app</span><span class="o">=</span><span class="s">&quot;metadataEditor&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">ng-controller</span><span class="o">=</span><span class="s">&quot;BaseController as baseCtrl&quot;</span><span class="p">&gt;</span>
+
+            <span class="p">&lt;</span><span class="nt">div</span> <span class="na">ng-show</span><span class="o">=</span><span class="s">&quot;baseCtrl.showHelp&quot;</span><span class="p">&gt;</span>
+                <span class="p">&lt;</span><span class="nt">div</span> <span class="na">ng-include</span><span class="o">=</span><span class="s">&quot;partialsPrefix + &#39;partials/help.html&#39;&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+            <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+
+                <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;ngMain&quot;</span><span class="p">&gt;</span>
+
+            <span class="c">&lt;!-- &lt;div ng-controller=&quot;BaseController as baseCtrl&quot;&gt; --&gt;</span>
+
+                    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">ng-include</span><span class="o">=</span><span class="s">&quot;partialsPrefix + &#39;partials/appHeader.html&#39;&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+                    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;main-container&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;container&quot;</span><span class="p">&gt;</span>
+                        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">ng-view</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+                    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+                <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>The app, controller, views, and all other Angular components are available from
+including the appropriate <code class="docutils literal"><span class="pre">&lt;script</span> <span class="pre">src=...&gt;&lt;/script&gt;</span></code> tags in the
+<code class="docutils literal"><span class="pre">&lt;head&gt;</span></code> of <code class="docutils literal"><span class="pre">frontend/index.html</span></code>, for example for the controllers,
+<code class="docutils literal"><span class="pre">&lt;script</span> <span class="pre">src=&quot;/frontend/js/controllers.js&quot;&gt;&lt;/script&gt;</span></code>.</p>
+<p>To fulfill our promise, we can see the action of <code class="docutils literal"><span class="pre">ng-view</span></code> when we select
+the option to create a new dataset or non-dataset record from the
+&#8220;Record Options&#8221; dropdown. For example, when we click on
+&#8220;Create a new non-dataset record&#8221;, we are redirected to <code class="docutils literal"><span class="pre">#/dublin</span></code>, as shown
+in the &#8220;Record Options&#8221; dropdown code above. The following snippet causes
+Angular to watch for browser requests for <code class="docutils literal"><span class="pre">#/dublin</span></code> and render the
+template <code class="docutils literal"><span class="pre">frontend/partials/dublin.html</span></code> inside the div <code class="docutils literal"><span class="pre">&lt;div</span> <span class="pre">ng-view&gt;&lt;/div&gt;</span></code>.</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="s1">&#39;use strict&#39;</span><span class="p">;</span>
+
+<span class="nx">metadataEditorApp</span><span class="p">.</span><span class="nx">config</span><span class="p">([</span><span class="s1">&#39;$routeProvider&#39;</span><span class="p">,</span> <span class="s1">&#39;partialsPrefixProvider&#39;</span><span class="p">,</span>
+<span class="kd">function</span><span class="p">(</span><span class="nx">$routeProvider</span><span class="p">,</span> <span class="nx">partialsPrefixProvider</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="kd">var</span> <span class="nx">prefix</span> <span class="o">=</span> <span class="nx">partialsPrefixProvider</span><span class="p">.</span><span class="nx">$get</span><span class="p">();</span>
+
+    <span class="nx">$routeProvider</span><span class="p">.</span>
+        <span class="nx">when</span><span class="p">(</span><span class="s1">&#39;/dublin&#39;</span><span class="p">,</span> <span class="p">{</span>
+            <span class="nx">templateUrl</span><span class="o">:</span> <span class="nx">prefix</span> <span class="o">+</span> <span class="s1">&#39;partials/dublin.html&#39;</span><span class="p">,</span>
+            <span class="nx">controller</span><span class="o">:</span> <span class="s1">&#39;DCController&#39;</span>
+        <span class="p">}).</span>
+        <span class="nx">when</span><span class="p">(</span><span class="s1">&#39;/iso&#39;</span><span class="p">,</span> <span class="p">{</span>
+            <span class="nx">templateUrl</span><span class="o">:</span> <span class="nx">prefix</span> <span class="o">+</span> <span class="s1">&#39;partials/iso.html&#39;</span><span class="p">,</span>
+            <span class="nx">controller</span><span class="o">:</span> <span class="s1">&#39;ISOController&#39;</span>
+        <span class="p">}).</span>
+        <span class="nx">otherwise</span><span class="p">({</span>
+            <span class="nx">redirectTo</span><span class="o">:</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span>
+            <span class="nx">controller</span><span class="o">:</span> <span class="s1">&#39;BaseController&#39;</span>
+        <span class="p">});</span>
+<span class="p">}]);</span>
+</pre></div>
+</div>
+<p>As you might imagine, <code class="docutils literal"><span class="pre">partials/dublin.html</span></code> and <code class="docutils literal"><span class="pre">partials/iso.html</span></code>
+contain references to other partials. In fact this is the whole motivation for
+using partials. All of the fields in a non-dataset record are also fields
+in the dataset records. That is, the fields of a dataset record are a superset
+of non-dataset records. In this way, we can group and modularize related
+metadata fields, like &#8220;Basic Information&#8221;, &#8220;Detailed Information&#8221;,
+&#8220;Spatiotemporal Extents&#8221;, and other headers from the web interface.
+You can see each of these sections various template files by
+<a class="reference external" href="https://github.com/northwest-knowledge-network/mdedit/tree/master/frontend/partials">inspecting the frontend/partials directory</a>.</p>
+<p>Below is the view of editing a non-dataset record and the code that loads
+the partials that generate all the various fields.</p>
+<img alt="_images/dublin-screenshot.png" src="_images/dublin-screenshot.png" />
+<div class="highlight-html"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">&lt;!-- frontend/partials/dublin.html --&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">form</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;baseCtrl.metadataForm&quot;</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;metadataForm&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;css-form&quot;</span> <span class="na">novalidate</span><span class="p">&gt;</span>
+
+  <span class="c">&lt;!-- form header contains title --&gt;</span>
+  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">ng-include</span><span class="o">=</span><span class="s">&quot;&#39;partials/formHeader.html&#39;&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;row&quot;</span> <span class="na">ng-controller</span><span class="o">=</span><span class="s">&quot;DCController as dc&quot;</span><span class="p">&gt;</span>
+    <span class="c">&lt;!---------------Left Divider--------------&gt;</span>
+<span class="c">&lt;!--Basic Information: Title and Summary--&gt;</span>
+        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;col-xs-6 col-sm-6 col-md-6&quot;</span><span class="p">&gt;</span>
+            <span class="p">&lt;</span><span class="nt">h2</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;section-header&quot;</span><span class="p">&gt;</span>
+              <span class="p">&lt;</span><span class="nt">span</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;glyphicon glyphicon-list-alt&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">span</span><span class="p">&gt;</span> Basic Information
+            <span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+
+        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;subform&quot;</span><span class="p">&gt;</span>
+          <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;col-xs-offset-6 col-sm-offset-6 col-md-offset-6 col-lg-offset-6&quot;</span><span class="p">&gt;</span>
+            <span class="p">&lt;</span><span class="nt">h5</span><span class="p">&gt;</span>Record Type: <span class="p">&lt;/</span><span class="nt">h5</span><span class="p">&gt;</span>
+          <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+            <span class="p">&lt;</span><span class="nt">input</span> <span class="na">tabindex</span><span class="o">=</span><span class="s">3</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;&quot;</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;&quot;</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;text&quot;</span>
+              <span class="na">style</span><span class="o">=</span><span class="s">&quot;width:37%;float:right; text-align:center&quot;</span>
+              <span class="na">ng-model</span><span class="o">=</span><span class="s">&quot;currentRecord.schema_type&quot;</span>
+              <span class="na">ng-init</span><span class="o">=</span><span class="s">&quot;currentRecord.schema_type=&#39;Non-Dataset (Dublin Core)&#39;&quot;</span>
+              <span class="na">ng-readonly</span><span class="o">=</span><span class="s">&quot;true&quot;</span><span class="p">/&gt;</span>
+
+            <span class="p">&lt;/</span><span class="nt">br</span><span class="p">&gt;</span>
+
+          <span class="p">&lt;</span><span class="nt">div</span> <span class="na">ng-include</span><span class="o">=</span><span class="s">&quot;partialsPrefix + &#39;partials/form/basic.html&#39;&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+         <span class="p">&lt;</span><span class="nt">h2</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;section-header&quot;</span><span class="p">&gt;</span>
+           <span class="p">&lt;</span><span class="nt">span</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;mega-octicon octicon-tools&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+           Data Format Details
+         <span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+
+         <span class="p">&lt;</span><span class="nt">div</span> <span class="na">ng-include</span><span class="o">=</span><span class="s">&quot;partialsPrefix + &#39;partials/form/dataFormats.html&#39;&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+
+
+    <span class="c">&lt;!---------------Right Divider--------------&gt;</span>
+
+    <span class="c">&lt;!--Detailed Information: Place Keywords, Thematic Keywords, Topic, Update status/freq--&gt;</span>
+
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;col-xs-6 col-sm-6 col-md-6&quot;</span><span class="p">&gt;</span>
+      <span class="p">&lt;</span><span class="nt">h2</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;section-header&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">span</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;glyphicon glyphicon-list-alt&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">span</span><span class="p">&gt;</span> Detailed Information
+      <span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+
+      <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;subform&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">ng-include</span><span class="o">=</span><span class="s">&quot;partialsPrefix + &#39;partials/form/detailed.html&#39;&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+      <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+   <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+
+    <span class="c">&lt;!--Spatial and Temporal Extents (Bounding Box, Start/End dates)--&gt;</span>
+  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;row&quot;</span><span class="p">&gt;</span>
+     <span class="p">&lt;</span><span class="nt">a</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;anchor&quot;</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;spatiotemporal&quot;</span><span class="p">&gt;</span>
+       <span class="p">&lt;</span><span class="nt">h2</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;section-header&quot;</span><span class="p">&gt;</span>
+       <span class="p">&lt;</span><span class="nt">span</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;glyphicon glyphicon-globe&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+         Geospatial Extents
+       <span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+     <span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+     <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;subform&quot;</span><span class="p">&gt;</span>
+       <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;row&quot;</span> <span class="na">style</span><span class="o">=</span><span class="s">&quot;vertical-align:middle&quot;</span><span class="p">&gt;</span>
+          <span class="p">&lt;</span><span class="nt">div</span> <span class="na">ng-include</span><span class="o">=</span><span class="s">&quot;partialsPrefix + &#39;partials/form/spatialExtent.html&#39;&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+       <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+     <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+
+  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">ng-include</span><span class="o">=</span><span class="s">&quot;partialsPrefix + &#39;partials/form/contacts.html&#39;&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">ng-include</span><span class="o">=</span><span class="s">&quot;partialsPrefix + &#39;partials/form/onlineResourcesAndRestrictions.html&#39;&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+<span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="index.html">
+    <img class="logo" src="_static/NKN_logo_v4.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=northwest-knowledge-network&repo=mdedit&type=watch&count=true&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="20px"></iframe>
+</p>
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=northwest-knowledge-network&type=follow"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="20px"></iframe>
+  <!--<a href="https://github.com/VirtualWatershed/cord">CoRD on GitHub</a>-->
+</p>
+
+
+
+
+<h3>Navigation</h3>
+<div id="sidebar_toctree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">quickstart</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">software</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#sketch">Sketch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#flask-backend">Flask Backend</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#angular-frontend">Angular Frontend</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#frontend-from-front-to-back">Frontend from front to back</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+<ul class="footer_nav">
+      <li class="prev">
+        Previous topic: <a href="quickstart.html">quickstart</a>
+      </li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="quickstart.html" title="previous chapter">quickstart</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Northwest Knowledge Network.
+
+    
+  </body>
+</html>

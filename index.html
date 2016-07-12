@@ -1,0 +1,154 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>mdedit &mdash; mdedit v0.1</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="_static/favicon-32x32.png"/>
+    <link rel="top" title="mdedit v0.1" href="#" />
+    <link rel="next" title="quickstart" href="quickstart.html" />
+<link href="https://fonts.googleapis.com/css?family=Bungee+Shade|Metrophobic|Niconne" rel="stylesheet">
+<style>
+div.body {
+  color: black;
+}
+div.body h1 {
+  font-size: 55px;
+}
+
+</style>
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="mdedit">
+<h1>mdedit<a class="headerlink" href="#mdedit" title="Permalink to this headline">¶</a></h1>
+<p><code class="docutils literal"><span class="pre">mdedit</span></code> is the Northwest Knowledge Network&#8217;s utility for creating,
+updating, and exporting metadata and managing data. It empowers users to
+share their data through the NKN data portal along with metadata properly
+formatted to conform to relevant metadata standards.</p>
+<p>This guide is for mdedit developers. It covers the structure and design of the
+mdedit stack, from the MongoDB database to the Flask HTTP services to
+the Angular front end.  The next page, <a class="reference internal" href="quickstart.html"><span class="doc">quickstart</span></a> shows how to
+install mdedit, how to start the front and back end servers, and how to
+run the tests.</p>
+<p>Contents:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">quickstart</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#install">Install</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#start-servers">Start Servers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#run-tests">Run Tests</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="software.html">software</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="software.html#sketch">Sketch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="software.html#flask-backend">Flask Backend</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="software.html#roadmap-for-backend-improvements">Roadmap for backend improvements</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="software.html#angular-frontend">Angular Frontend</a></li>
+<li class="toctree-l2"><a class="reference internal" href="software.html#frontend-from-front-to-back">Frontend from front to back</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="#">
+    <img class="logo" src="_static/NKN_logo_v4.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=northwest-knowledge-network&repo=mdedit&type=watch&count=true&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="20px"></iframe>
+</p>
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=northwest-knowledge-network&type=follow"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="20px"></iframe>
+  <!--<a href="https://github.com/VirtualWatershed/cord">CoRD on GitHub</a>-->
+</p>
+
+
+
+
+<h3>Navigation</h3>
+<div id="sidebar_toctree">
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="software.html">software</a></li>
+</ul>
+
+</div>
+<ul class="footer_nav">
+      <li class="next">
+        Next topic: <a href="quickstart.html">quickstart</a>
+      </li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="quickstart.html" title="next chapter">quickstart</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Northwest Knowledge Network.
+
+    
+  </body>
+</html>
