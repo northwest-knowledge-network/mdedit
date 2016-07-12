@@ -214,7 +214,8 @@ def publish_metadata_record(_oid):
                                 files={'uploadedfile': open(save_path, 'rb')})
 
         if 'localhost' not in request.base_url:
-            gptInsert.gptInsertRecord(iso, record.title, str_id)
+            username = _authenticate_user_from_session(request)
+            gptInsert.gptInsertRecord(iso, record.title, str_id, username)
 
         return jsonify(record=record)
 
@@ -248,7 +249,7 @@ def publish_metadata_record(_oid):
                                 files={'uploadedfile': open(save_path, 'rb')})
 
         if 'localhost' not in request.base_url:
-            gptInsert.gptInsertRecord(dc, record.title)
+            username = _authenticate_user_from_session(request)
 
         return jsonify(record=record)
 
