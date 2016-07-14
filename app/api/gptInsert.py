@@ -33,7 +33,7 @@ class Geoportal(object):
         self.downloadURL = downloadURL
         self.uuid = uuid
 
-def gptInsertRecord(xml, title, record_id):
+def gptInsertRecord(xml, title, record_id, username):
     # Config file is 'gptInsert.conf' located in the current directory
     config_file = os.path.dirname(__file__) + '/gptInsert.conf'
     try:
@@ -114,11 +114,11 @@ def gptInsertRecord(xml, title, record_id):
     # Return the Geoportal object with enough information to construct
     # a download link for the dataset
     output = Geoportal(downloadURL = downloadURL, uuid = bareuuid)
-    send_email(docuuid)
+    send_email(docuuid, title, inputdate, username)
     return output
 
 # The function to send the notification email
-def send_email(uuid):
+def send_email(uuid, title, inputdate, username):
     sender = 'portal@northwestknowledge.net'
     receivers = ['publish@northwestknowledge.net']
     message = """From: NKN Geoportal <portal@northwestknowledge.net>
@@ -128,9 +128,14 @@ Subject: Dataset submitted for publication
 Hi, NKN data publishers.  A new dataset has been submitted for publication
 in the geoportal interface.  Please take a look.
 
-https://northwestknowledge.net/geoportal/
+Record Details:
 
 """
+    message += "Title: " + title + "\n"
+    message += "Date: " + inputdate.isoformat() + "\n"
+    message += "User: " + username + "\n"
+    message += "Doc ID: " + uuid + "\n\n"
+    message += "https://northwestknowledge.net/geoportal/"
 
     try:
         smtpObj = smtplib.SMTP('localhost')
