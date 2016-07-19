@@ -46,45 +46,103 @@
     }
     document.onkeypress = stopRKey;
     </script> 
+    <style>
+      .details { background:#f4f4f4;border:1px solid #ddd;border-radius:6px;padding:10px;margin-bottom:20px; }
+    </style>
 </head>
 
 <body>
 <div  id="bodyDiv">
   <div class="mdIntro">
-    <div style="margin-left: 4em; margin-right: 4em; font-size: large">
-        <p>
-            With NKN's Metadata Editor you can create a valid ISO 19115
-            metadata record for your dataset or dataset series or a Dublin Core
-            metadata record for your non-data research product (tool,
-            visualization product, model, script, etc.). To get started,
-            select the type of metadata record you would like to create in the
-            <strong><i>Record Options </strong></i> dropdown above.
-        </p>
-    </div>
-    <div style="margin-left: 8em; margin-right: 6em; font-size: medium">
-        <p>
-            If you are using NKN to store your data, select <strong> NKN as
-            Data Manager</strong> from the <strong><i>Load Defaults</strong></i>
-            dropdown.
-        </p>
-        <p>
-            <strong>NOTE:</strong> You must complete all requred fields and
-            will need to Save your record before you can Publish it.
-        </p>
-        <p>
-            Please contact <a href="mailto:publish@northwestknowledge.net"> NKN</a>
-            if you have additional questions or if the data associated with your
-            record are larger than 10GB.
+    <div style="margin-left: 4em; margin-right: 4em; font-size: medium">
+
+<p><strong><em>The steps below will guide you through the Metadata Editor.</em></strong></p>
+<p><strong>Please contact <a href="mailto:publish@northwestknowledge.net?subject=NKN Metadata Editor" alt="email NKN">NKN</a></strong> if you have questions or if the data associated with your record are <strong>larger than 10GB</strong>.</p> 
+<p style="margin-bottom:20px">This tool is under active development, and we welcome your <a href="mailto:publish@northwestknowledge.net?subject=NKN Metadata Editor Feedback" alt="metadata editor feedback">feedback</a></strong>!</p>
+
+
+      <table class="table"><tbody>
+	<tr>
+	  <td>
+             <p><span class="btn btn-info">Step 1</span></p>
+	  </td>
+	  <td>
+	     <p>Under <strong><em>Record Options</em></strong> in the dropdown menu below, select the type of record you wish to create (<strong>dataset</strong> vs. <strong>non-dataset</strong>). 
+             <a href="#col1" data-toggle="collapse" aria-expanded="false" aria-controls="col1" class="btn btn-xs btn-default more1">more details</a></p>
+             <div class="collapse" id="col1">
+                <div class="details"><strong>Dataset</strong> records adhere to the ISO 19115 standard. <strong>Non-dataset</strong> records (e.g., tools, visualization products, models, scripts, etc.) adhere to the Dublin Core standard.
+                </div>
+             </div>
+	  </td>
+	</tr>
+	<tr>
+	  <td>
+             <p><span class="btn btn-info">Step 2</span></p>
+	  </td>
+	  <td>
+	     <p>(Optional) <strong><em>Load Defaults</em></strong>. 
+	     <a href="#col2" data-toggle="collapse" aria-expanded="false" aria-controls="col2" class="btn btn-xs btn-default more2">more details</a></p>
+             <div class="collapse" id="col2">
+               <div class="details">
+	         <p><strong>MILES users:</strong> If you are creating a record related to the MILES project, select <strong>MILES</strong> from the <strong><em>Load Defaults</em></strong> dropdown. Certain fields in the form will prepopulate with MILES default values. <em>Please add to these fields as appropriate:</em> for example, you will likely want to add <em>place</em> and <em>thematic keywords</em> related to your specific dataset. The <em>bounding coordinates</em> provided here are for the entire state of Idaho; modify to fit the location of your dataset as appropriate.</p>
+	 	 <p><strong>Other users:</strong> If you are using NKN to store your data, select <strong>NKN as Data Manager</strong> from the <strong><em>Load Defaults</em></strong> dropdown. Please provide the first author's name and university affiliation toward the end of the <span style="color:#080"><strong>Use Restrictions</strong></span> text where it currently reads "(Name, University Affiliation)".</p>
+               </div>
+             </div>
+	  </td>
+ 	</tr>
+	<tr>
+	  <td>
+             <p><span class="btn btn-info">Step 3</span></p>
+	  </td>
+	  <td>
+	     <p>Under <span style="color:#080"><strong>Basic Information</strong></span> (in the form), enter the <em>Title</em> of your record. Then, under the <strong><em>Record Options</em></strong> dropdown, select <strong>Save this record as a draft</strong>.</p><p><strong><u>NOTE</u>:</strong> You MUST <em>save the record as a draft</em> in order to add/upload files to the record.</p>
+	  </td>
+	</tr>
+	<tr>
+	  <td>
+             <p><span class="btn btn-info">Step 4</span></p> 
+	  </td>
+	  <td>
+	     <p>Continue to fill out the remaining form fields, and click the <strong>Add Files button</strong> to attach documents to your record. When finished, select <strong>Save this record as a draft</strong> under the <strong><em>Record Options</em></strong> dropdown.</p>
+	  </td>
+	</tr>
+	<tr>
+	  <td>
+             <p><span class="btn btn-info">Step 5</span></p>
+	  </td>
+	  <td>
+	     <p>To <strong>PUBLISH</strong> your record, you must complete <u><strong>ALL</strong></u> form fields (unless labeled as optional). Under the <strong><em>Record Options</em></strong> dropdown, select <strong>Publish record to NKN's portal</strong>. You will see a message stating that your Metadata Record was Submitted. 
+	     <a href="#col3" data-toggle="collapse" aria-expanded="false" aria-controls="col3" class="btn btn-xs btn-default more3">more details</a></p>
+             <div class="collapse" id="col3">
+               <div class="details">
+		 <p>Once submitted, we will review and publish your record. If you make changes to a record you have already submitted, you will need to re-publish.</p>
+               </div>
+             </div>
+	  </td>
+	</tr>
+        <tr>
+          <td>
+             <p><span class="btn btn-info">Tips</span></p>
+          </td>
+          <td> 
+	     <p>Use the <strong><em>My Records</em></strong> dropdown to see a list of your existing records, the date they were last modified and published, and to load a record into the webform for editing or to delete the record.</p>
+             <p>To view your metadata record as an xml document, use the <strong><em>View XML as...</em></strong> dropdown and select your preferred format (ISO, Dublin Core, or ESRI-ISO).</p>
+          </td>
+        </tr>
+	</tbody></table>
 
     </div>
+
   </div>
 
     <div ng-app="metadataEditor">
         <div ng-controller="BaseController as baseCtrl">
 
+	<!--
             <div ng-show="baseCtrl.showHelp">
                 <div ng-include="partialsPrefix + 'partials/help.html'"></div>
             </div>
+	-->
 
 
                 <div id="ngMain">
@@ -102,5 +160,36 @@
         </div>
     </div>
 </div>
+
+  <script type="text/javascript">
+  $('.more1').click(function(){
+        var $this = $(this);
+        $this.toggleClass('more1');
+        if($this.hasClass('more1')){
+            $this.text('more details');
+        } else {
+            $this.text('less details');
+        }
+  });
+  $('.more2').click(function(){
+        var $this = $(this);
+        $this.toggleClass('more2');
+        if($this.hasClass('more2')){
+            $this.text('more details');
+        } else {
+            $this.text('less details');
+        }
+  });
+  $('.more3').click(function(){
+        var $this = $(this);
+        $this.toggleClass('more3');
+        if($this.hasClass('more3')){
+            $this.text('more details');
+        } else {
+            $this.text('less details');
+        }
+  });
+
+  </script>
 </body>
 </html>
