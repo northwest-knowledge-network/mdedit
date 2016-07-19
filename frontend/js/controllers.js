@@ -192,25 +192,26 @@ metadataEditorApp.controller('BaseController',
          * and makes sure the form is current.
          */
         $scope.submitDraftRecord = function() {
+	    if(!checkRequiredFields()){
+		recordService.saveDraft($scope)
+                    .success( function (data) {
+			// need to update the sheet with the ID
 
-            recordService.saveDraft($scope)
-                .success( function (data) {
-                    // need to update the sheet with the ID
+			updateForms($scope, data.record);
 
-                    updateForms($scope, data.record);
+			$scope.newRecord = false;
 
-                    $scope.newRecord = false;
+			$scope.addedContacts = {
+                            'access': 0,
+                            'citation': 0
+			};
 
-                    $scope.addedContacts = {
-                        'access': 0,
-                        'citation': 0
-                    };
-
-                    $scope.updateRecordsList();
-                })
-                .error( function (data) {
-                    // TODO
-                });
+			$scope.updateRecordsList();
+                    })
+                    .error( function (data) {
+			// TODO
+                    });
+	    }
         };
 
         /** Function to identify if the record is ISO or Dublin based on schema_type field
@@ -411,6 +412,106 @@ metadataEditorApp.controller('BaseController',
                     updateForms($scope, data.record);
                 });
         };
+
+	/* Check all inputs, selects, and textfields that are not 
+	   optional to see if they have a value. If one does not have
+	   a value, it has not been filled out.
+	 */
+	function checkRequiredFields(){
+	    var missedFields = "";
+
+	    for(var key in $scope.currentRecord){
+		switch(key){
+		case "title":
+		case "summary":
+   		case "update_frequency":
+		case "status":
+		case "hierarcy_level":
+		case "place_keywords":
+		case "thematic_keywords":
+		case "use_restrictions":
+		case "west_lon":
+		case "east_lon":
+		case "north_lat":
+		case "south_lat":
+		    missedFields = missedFields + "\n" + checkLength(key, $scope.currentRecord[key]);
+		    break;
+
+//		case "last_mod_date.date":
+//		case "first_mod_date.date":
+		    //		case "md_pub_date.date":
+    		case "start_date":
+		case "end_date":
+		    missedFields = missedFields + "\n" + checkNull(key, $scope.currentRecord[key][0]);
+		    break;
+
+//		case "data_format":		    
+//  		case "topic_category":
+//		    missedFields = missedFields + "\n" + checkNull(key, $scope.currentRecord[key][0]);
+//		    break;
+		    
+		case "citation":
+		case "access":
+		    for(var nestedKey in $scope.currentRecord[key][0]){
+			missedFields = missedFields + "\n" + checkLength(nestedKey, $scope.currentRecord[key][0][nestedKey]);
+		    }
+		    break;
+		default:
+		    break;
+		}
+	    }
+	    
+	    if(missedFields.length > 0){
+		window.alert("Please fill out the following form fields:\n " + missedFields);
+		return true;
+	    }
+
+	    return false;
+	};
+
+	/* Translate key into more human readable format for alert window.
+	   E.X.: data_format -> Data Format
+	*/
+	function translateKey(key){
+	    var delimString = key.split("_");
+	    var parsedString = "";
+	    for(var i = 0; i < delimString.length; i++){
+		switch(delimString[i]){
+		case "org":
+		    parsedString = parsedString + "organization ";
+		    break;
+		case "lat":
+		    parsedString = parsedString + "latitude ";
+		    break;
+		case "lon":
+		    parsedString = parsedString + "longitude ";
+		    break;
+		default:
+		    parsedString = parsedString + delimString[i] + " ";
+		}
+	    }
+	    return parsedString;
+	};
+
+	/* Check if variable length is 0 (initialized with string of 
+	   length 0 in services.js). If so, display window alert with
+	   variable name. 
+	*/
+	function checkLength(fieldName, field){
+	    if(field.length == 0)
+		return translateKey(fieldName);
+
+	    return "";
+	};
+	/* Check if variable is null. If so, display window alert with
+	   variable name. 
+	*/
+	function checkNull(fieldName, field){
+	    if(field == null)
+		return translateKey(fieldName);
+	   
+	    return "";
+	};
   } // end of callback for controller initialization
 ])
 .controller('ISOController', ['formOptions', function(formOptions) {

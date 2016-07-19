@@ -224,3 +224,9 @@ div.centered-container>div>h4 {
 a.dropdown-toggle, a.btn {
     cursor: pointer;
 }
+
+/* To make it possible for (Optional) text be next to h2 header */
+
+.optional-field-header {
+    display: inline-block;
+}
