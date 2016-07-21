@@ -38,7 +38,8 @@
         <li class="dropdown" is-open="status.isopen">
             <a id="load-delete-record-dropdown" class="dropdown-toggle"
                data-toggle="dropdown" role="button" aria-haspopup="true"
-               aria-expanded="false">
+               aria-expanded="false"
+	       >
                 My Records <span class="caret"></span>
             </a>
             <ul id="records-table" class="dropdown-menu" role="menu">
@@ -140,21 +141,24 @@
                 <li><a class="btn btn-sm btn-default navbar-btn header-button"
                        id="create-new-dataset"
                        ng-click="createNewRecord()"
-                       href="#/iso">
+                       href="#/iso"
+		       ng-style="simulateHoverDataset">
                     Create new dataset record
                 </a></li>
 
                 <li><a class="btn btn-sm btn-default navbar-btn header-button"
                        id="create-new-non-dataset"
                        ng-click="createNewDublinRecord()"
-                       href="#/dublin">
+                       href="#/dublin"
+		       ng-style="simulateHoverNonDataset">
                     Create new non-dataset record
                 </a></li>
 
                 <li><a ng-click="submitDraftRecord()"
                        class="btn btn-sm btn-default navbar-btn header-button"
                        style="border:0;text-align:left"
-                       >
+                       id="save-as-draft" ng-style="simulateHoverSave"
+		       >
                     Save this record as a draft
                 </a></li>
 
@@ -162,13 +166,16 @@
                     <a id="record-options-publish" ng-click="publishRecord()"
                        class="btn btn-sm btn-default navbar-btn header-button"
                        href="#"
-                       data-toggle="modal" data-target="#submitModal">
+                       data-toggle="modal" data-target="#submitModal"
+		       ng-style="simulateHoverPublish"
+		       >
                     Publish record to NKN's portal</a>
                 </li>
 
                 <li ng-hide="baseCtrl.metadataForm.$valid"
                     class="disabled">
-                    <a class="btn btn-sm btn-default navbar-btn header-button">
+                  <a class="btn btn-sm btn-default navbar-btn header-button"
+		     ng-style="simulateHoverPublish">
                     Please complete the record to publish data
                     </a>
                 </li>
@@ -205,10 +212,12 @@
             </a>
             <ul class="dropdown-menu">
                 <li><a id="default-miles" ng-click="loadDefaultMILES()"
-                       class="btn btn-sm btn-default navbar-btn header-button">
+                       class="btn btn-sm btn-default navbar-btn header-button"
+		       ng-style="simulateHoverMiles">
                     MILES</a></li>
                 <li><a id="default-nkn" ng-click="loadDefaultNKNAsDistributor()"
-                       class="btn btn-sm btn-default navbar-btn header-button">
+                       class="btn btn-sm btn-default navbar-btn header-button"
+		       ng-style="simulateHoverNKN">
                     NKN as Data Manager</a></li>
             </ul>
 

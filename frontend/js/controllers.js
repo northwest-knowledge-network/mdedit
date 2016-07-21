@@ -3,11 +3,10 @@
 
 // for minification, explicitly declare dependencies $scope and $http
 metadataEditorApp.controller('BaseController',
-
-    ['$scope', '$http', '$log', '$window', 'formOptions', 'updateForms', 'recordService',
-        'AttachmentService', 'Geoprocessing', 'hostname', 'session_id', 'partialsPrefix',
-
-    function($scope, $http, $log, $window, formOptions, updateForms,
+    ['$scope', '$http', '$log', '$window', '$timeout', '$location', '$anchorScroll', 'formOptions', 'updateForms', 'recordService',
+     'AttachmentService', 'Geoprocessing', 'hostname', 'session_id', 'partialsPrefix',
+     
+     function($scope, $http, $log, $window, $timeout, $location, $anchorScroll, formOptions, updateForms,
         recordService, AttachmentService, Geoprocessing, hostname, session_id,
         partialsPrefix)
     {
@@ -15,7 +14,13 @@ metadataEditorApp.controller('BaseController',
         $scope.allRecords = [];
 
         $scope.options = {};
-
+	$scope.simulateHoverSave;
+	$scope.simulateHoverPublish;
+	$scope.simulateHoverDataset;
+	$scope.simulateHoverNonDataset;
+	$scope.simulateHoverMiles;
+	$scope.simulateHoverNKN;
+	
         //=== set up hostname-related scope variables ===//
         // export to XML
         var exportAddr = function(oid, xmlType) {
@@ -512,6 +517,133 @@ metadataEditorApp.controller('BaseController',
 	   
 	    return "";
 	};
+
+	/* Click on element to simulate user clicking on element. Used for 
+	   step-by-step description buttons in index.html. 
+	 */
+	$scope.clickOnElement = function(elementID){
+	    console.log("In clickOnElement");
+	    $timeout(function(){
+		angular.element(elementID).trigger('click');
+	    });
+	};
+
+	$scope.simulateStepOne = function(){
+	    console.log("In step 1");
+
+	    $timeout(function(){
+		$scope.clickOnElement("#record-options-dropdown");
+	    });
+
+	    $timeout(function(){
+		$scope.simulateHoverDataset = {'background-color':'#c2c2a3'};
+	    }, 2000);
+
+	    $timeout(function(){
+		$scope.simulateHoverDataset = {'background-color':'#ffffff'};
+	    }, 4000);
+
+	    $timeout(function(){
+		$scope.simulateHoverNonDataset = {'background-color':'#c2c2a3'};
+	    }, 6000);
+
+	    $timeout(function(){
+		$scope.simulateHoverNonDataset = {'background-color':'#ffffff'};
+	    }, 8000);
+	    
+	};
+
+	$scope.simulateStepTwo = function(){
+	    console.log("In step 2");
+
+	    $timeout(function(){
+		$scope.clickOnElement("#defaults-dropdown");
+	    });
+
+	    $timeout(function(){
+		$scope.simulateHoverMiles = {'background-color':'#c2c2a3'};
+	    }, 2000);
+
+	    $timeout(function(){
+		$scope.simulateHoverMiles = {'background-color':'#ffffff'};
+	    }, 4000);
+
+	    $timeout(function(){
+		$scope.simulateHoverNKN = {'background-color':'#c2c2a3'};
+	    }, 6000);
+
+	    $timeout(function(){
+		$scope.simulateHoverNKN = {'background-color':'#ffffff'};
+	    }, 8000);
+	    
+	};
+	
+	$scope.simulateStepThree = function(){
+	    console.log("In step 3");
+
+	    $location.hash("title-input");
+	    $anchorScroll.yOffset = 400;
+	    $anchorScroll();
+
+	    $timeout(function(){
+		$location.hash("title-input");
+		$anchorScroll.yOffset = 300;
+		$anchorScroll();
+	    }, 3000);
+	    
+	    $timeout(function(){
+		$scope.clickOnElement("#record-options-dropdown");
+	    }, 6000);
+
+	    $timeout(function(){
+		$scope.simulateHoverSave = {'background-color':'#c2c2a3'};
+	    }, 8000);
+
+	    $timeout(function(){
+		$scope.simulateHoverSave = {'background-color':'#ffffff'};
+	    }, 10000);
+	};
+
+	$scope.simulateStepFour = function(){
+	    console.log("In step 4");
+
+	    $timeout(function(){
+		$scope.clickOnElement("#record-options-dropdown");
+	    });
+
+	    $timeout(function(){
+		$scope.simulateHoverSave = {'background-color':'#c2c2a3'};
+	    }, 3000);
+
+	    $timeout(function(){
+		$scope.simulateHoverSave = {'background-color':'#ffffff'};
+	    }, 6000);
+	};
+
+	$scope.simulateStepFive = function(){
+	    console.log("In step 5");
+
+	    $timeout(function(){
+		$scope.clickOnElement("#record-options-dropdown");
+	    });
+
+	    $timeout(function(){
+		$scope.simulateHoverPublish = {'background-color':'#c2c2a3'};
+	    }, 3000);
+
+	    $timeout(function(){
+		$scope.simulateHoverPublish = {'background-color':'#ffffff'};
+	    }, 6000);
+	};
+
+	$scope.simulateTips = function(){
+	    console.log("In tips");
+
+	    $timeout(function(){
+		$scope.clickOnElement("#load-delete-record-dropdown");
+	    });
+	};
+
   } // end of callback for controller initialization
 ])
 .controller('ISOController', ['formOptions', function(formOptions) {

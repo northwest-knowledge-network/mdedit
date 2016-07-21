@@ -52,6 +52,9 @@
 </head>
 
 <body>
+      <div ng-app="metadataEditor">
+        <div ng-controller="BaseController as baseCtrl">
+
 <div  id="bodyDiv">
   <div class="mdIntro">
     <div style="margin-left: 4em; margin-right: 4em; font-size: medium">
@@ -64,7 +67,7 @@
       <table class="table"><tbody>
 	<tr>
 	  <td>
-             <p><span class="btn btn-info">Step 1</span></p>
+             <p><span class="btn btn-info" ng-click="simulateStepOne()">Step 1</span></p>
 	  </td>
 	  <td>
 	     <p>Under <strong><em>Record Options</em></strong> in the dropdown menu below, select the type of record you wish to create (<strong>dataset</strong> vs. <strong>non-dataset</strong>). 
@@ -77,7 +80,7 @@
 	</tr>
 	<tr>
 	  <td>
-             <p><span class="btn btn-info">Step 2</span></p>
+             <p><span class="btn btn-info" ng-click="simulateStepTwo()">Step 2</span></p>
 	  </td>
 	  <td>
 	     <p>(Optional) <strong><em>Load Defaults</em></strong>. 
@@ -92,15 +95,15 @@
  	</tr>
 	<tr>
 	  <td>
-             <p><span class="btn btn-info">Step 3</span></p>
+             <p><span class="btn btn-info" ng-click="simulateStepThree()">Step 3</span></p>
 	  </td>
 	  <td>
-	     <p>Under <span style="color:#080"><strong>Basic Information</strong></span> (in the form), enter the <em>Title</em> of your record. Then, under the <strong><em>Record Options</em></strong> dropdown, select <strong>Save this record as a draft</strong>.</p><p><strong><u>NOTE</u>:</strong> You MUST <em>save the record as a draft</em> in order to add/upload files to the record.</p>
+	     <p>Under <span id="basic-information-span"style="color:#080"><strong>Basic Information</strong></span> (in the form), enter the <em>Title</em> of your record. Then, under the <strong><em>Record Options</em></strong> dropdown, select <strong>Save this record as a draft</strong>.</p><p><strong><u>NOTE</u>:</strong> You MUST <em>save the record as a draft</em> in order to add/upload files to the record.</p>
 	  </td>
 	</tr>
 	<tr>
 	  <td>
-             <p><span class="btn btn-info">Step 4</span></p> 
+             <p><span class="btn btn-info" ng-click="simulateStepFour()">Step 4</span></p> 
 	  </td>
 	  <td>
 	     <p>Continue to fill out the remaining form fields, and click the <strong>Add Files button</strong> to attach documents to your record. When finished, select <strong>Save this record as a draft</strong> under the <strong><em>Record Options</em></strong> dropdown.</p>
@@ -108,7 +111,7 @@
 	</tr>
 	<tr>
 	  <td>
-             <p><span class="btn btn-info">Step 5</span></p>
+             <p><span class="btn btn-info" ng-click="simulateStepFive()">Step 5</span></p>
 	  </td>
 	  <td>
 	     <p>To <strong>PUBLISH</strong> your record, you must complete <u><strong>ALL</strong></u> form fields (unless labeled as optional). Under the <strong><em>Record Options</em></strong> dropdown, select <strong>Publish record to NKN's portal</strong>. You will see a message stating that your Metadata Record was Submitted. 
@@ -122,7 +125,7 @@
 	</tr>
         <tr>
           <td>
-             <p><span class="btn btn-info">Tips</span></p>
+             <p><span class="btn btn-info" ng-click="simulateTips()">Tips</span></p>
           </td>
           <td> 
 	     <p>Use the <strong><em>My Records</em></strong> dropdown to see a list of your existing records, the date they were last modified and published, and to load a record into the webform for editing or to delete the record.</p>
@@ -135,8 +138,6 @@
 
   </div>
 
-    <div ng-app="metadataEditor">
-        <div ng-controller="BaseController as baseCtrl">
 
 	<!--
             <div ng-show="baseCtrl.showHelp">
