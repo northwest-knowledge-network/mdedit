@@ -14,6 +14,8 @@ metadataEditorApp.controller('BaseController',
         $scope.allRecords = [];
 
         $scope.options = {};
+	
+	//Delcare variables used for ng-style tags during automated tutorial
 	$scope.simulateHoverSave;
 	$scope.simulateHoverPublish;
 	$scope.simulateHoverDataset;
@@ -522,15 +524,14 @@ metadataEditorApp.controller('BaseController',
 	   step-by-step description buttons in index.html. 
 	 */
 	$scope.clickOnElement = function(elementID){
-	    console.log("In clickOnElement");
 	    $timeout(function(){
 		angular.element(elementID).trigger('click');
 	    });
 	};
 
+	//Functions to simulate steps in tutorial
 	$scope.simulateStepOne = function(){
-	    console.log("In step 1");
-
+	    var second = 2000;
 	    $timeout(function(){
 		$scope.clickOnElement("#record-options-dropdown");
 	    });
@@ -541,126 +542,119 @@ metadataEditorApp.controller('BaseController',
 
 	    $timeout(function(){
 		$scope.simulateHoverDataset = {'background-color':'#ffffff'};
-	    }, 4000);
+	    }, second+=2000);
 
 	    $timeout(function(){
 		$scope.simulateHoverNonDataset = {'background-color':'#c2c2a3'};
-	    }, 6000);
+	    }, second+=2000);
 
 	    $timeout(function(){
 		$scope.simulateHoverNonDataset = {'background-color':'#ffffff'};
-	    }, 8000);
+	    }, second+=2000);
 
     	    $timeout(function(){
 		$scope.clickOnElement("#record-options-dropdown");
-	    }, 10000); 
-	    
+	    }, second+=2000); 
 	};
 
 	$scope.simulateStepTwo = function(){
-	    console.log("In step 2");
-
+	    var second = 2000;
 	    $timeout(function(){
 		$scope.clickOnElement("#defaults-dropdown");
 	    });
 
 	    $timeout(function(){
 		$scope.simulateHoverMiles = {'background-color':'#c2c2a3'};
-	    }, 2000);
+	    }, second);
 
 	    $timeout(function(){
 		$scope.simulateHoverMiles = {'background-color':'#ffffff'};
-	    }, 4000);
+	    }, second+=2000);
 
 	    $timeout(function(){
 		$scope.simulateHoverNKN = {'background-color':'#c2c2a3'};
-	    }, 6000);
+	    }, second+=2000);
 
 	    $timeout(function(){
 		$scope.simulateHoverNKN = {'background-color':'#ffffff'};
-	    }, 8000);
+	    }, second+=2000);
 
 	    $timeout(function(){
 		$scope.clickOnElement("#defaults-dropdown");
-	    }, 10000); 
-	    	    
+	    }, second+=2000); 
 	};
 	
 	$scope.simulateStepThree = function(){
-	    console.log("In step 3");
-
+	    var second = 3000;
 	    $location.hash("title-input");
 	    $anchorScroll.yOffset = 400;
 	    $anchorScroll();
 
 	    $timeout(function(){
 		$location.hash("title-input");
-		$anchorScroll.yOffset = 300;
+		$anchorScroll.yOffset = 260;
 		$anchorScroll();
-	    }, 3000);
+	    }, second);
 	    
 	    $timeout(function(){
 		$scope.clickOnElement("#record-options-dropdown");
-	    }, 6000);
+	    }, second+=4000);
 
 	    $timeout(function(){
 		$scope.simulateHoverSave = {'background-color':'#c2c2a3'};
-	    }, 8000);
+	    }, second+=2000);
 
 	    $timeout(function(){
 		$scope.simulateHoverSave = {'background-color':'#ffffff'};
-	    }, 10000);
+	    }, second+=2000);
 
 	    $timeout(function(){
 		$location.hash("step-three");
  		$anchorScroll();
 		$scope.clickOnElement("#record-options-dropdown");
-	    }, 12000); 
-	    
+	    }, second+=2000); 
 	};
 
 	$scope.simulateStepFour = function(){
-	    console.log("In step 4");
-
+	    var second = 3000;
+	    
 	    $timeout(function(){
 		$scope.clickOnElement("#record-options-dropdown");
 	    });
 
 	    $timeout(function(){
 		$scope.simulateHoverSave = {'background-color':'#c2c2a3'};
-	    }, 3000);
+	    }, second);
 
 	    $timeout(function(){
 		$scope.simulateHoverSave = {'background-color':'#ffffff'};
-	    }, 6000);
+	    }, second+=2000);
 
 	    $timeout(function(){
 		$scope.clickOnElement("#record-options-dropdown");
-	    }, 8000); 
+	    }, second+=2000); 
 	};
 
 	$scope.simulateStepFive = function(){
-	    console.log("In step 5");
-
+	    var second = 3000;
 	    $timeout(function(){
 		$scope.clickOnElement("#record-options-dropdown");
 	    });
 
 	    $timeout(function(){
 		$scope.simulateHoverPublish = {'background-color':'#c2c2a3'};
-	    }, 3000);
+	    }, second);
 
 	    $timeout(function(){
 		$scope.simulateHoverPublish = {'background-color':'#ffffff'};
-	    }, 6000);
+	    }, second+=2000);
 
     	    $timeout(function(){
 		$scope.clickOnElement("#record-options-dropdown");
-	    }, 8000); 
+	    }, second+=2000); 
 	};
 
 	$scope.simulateTips = function(){
-	    console.log("In tips");
 
 	    $timeout(function(){
 		$scope.clickOnElement("#load-delete-record-dropdown");
@@ -670,7 +664,6 @@ metadataEditorApp.controller('BaseController',
 		$scope.clickOnElement("#load-delete-record-dropdown");
 	    }, 5000);
 	};
-
   } // end of callback for controller initialization
 ])
 .controller('ISOController', ['formOptions', function(formOptions) {
