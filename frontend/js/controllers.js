@@ -22,6 +22,7 @@ metadataEditorApp.controller('BaseController',
 	$scope.simulateHoverNonDataset;
 	$scope.simulateHoverMiles;
 	$scope.simulateHoverNKN;
+	$scope.attachFileDiv;
 	
         //=== set up hostname-related scope variables ===//
         // export to XML
@@ -426,7 +427,7 @@ metadataEditorApp.controller('BaseController',
 	 */
 	function checkRequiredFields(){
 	    var missedFields = "";
-
+	    
 	    for(var key in $scope.currentRecord){
 		switch(key){
 		case "title":
@@ -441,33 +442,65 @@ metadataEditorApp.controller('BaseController',
 		case "east_lon":
 		case "north_lat":
 		case "south_lat":
-		    missedFields = missedFields + "\n" + checkLength(key, $scope.currentRecord[key]);
+		    if($scope.currentRecord[key] != null){
+			var response = checkLength(key, $scope.currentRecord[key]);
+			if(response.length > 0)
+			    missedFields = missedFields + "\n" + response;
+		    }else{
+			var response = checkNull(key, $scope.currentRecord[key]);
+			if(response.length > 0)
+			    missedFields = missedFields + "\n" + response;
+		    }
 		    break;
 
-//		case "last_mod_date.date":
-//		case "first_mod_date.date":
-		    //		case "md_pub_date.date":
     		case "start_date":
 		case "end_date":
-		    missedFields = missedFields + "\n" + checkNull(key, $scope.currentRecord[key][0]);
+		    for(var nestedKey in $scope.currentRecord[key]){
+			if($scope.currentRecord[key][nestedKey] != null){
+			    var response = checkLength(key, $scope.currentRecord[key][nestedKey]);
+			    if(response.length > 0)
+				missedFields = missedFields + "\n" + response;
+			}else{
+			    var response = checkNull(key, $scope.currentRecord[key][nestedKey]);
+			    if(response.length > 0)
+				missedFields = missedFields + "\n" + response;
+			}
+		    }
 		    break;
 
-//		case "data_format":		    
-//  		case "topic_category":
-//		    missedFields = missedFields + "\n" + checkNull(key, $scope.currentRecord[key][0]);
-//		    break;
+		case "data_format":		    
+  		case "topic_category":
+		    if($scope.currentRecord[key][0] != null){
+			var response = checkLength(key, $scope.currentRecord[key][0]);
+			if(response.length > 0)
+			    missedFields = missedFields + "\n" + response;
+		    }else{
+			var response = checkNull(key, $scope.currentRecord[key][0]);
+			if(response.length > 0)
+			    missedFields = missedFields + "\n" + response;
+		    }
+		    break;
 		    
 		case "citation":
 		case "access":
 		    for(var nestedKey in $scope.currentRecord[key][0]){
-			missedFields = missedFields + "\n" + checkLength(nestedKey, $scope.currentRecord[key][0][nestedKey]);
+			if($scope.currentRecord[key][0][nestedKey] != null){
+			    var response = checkLength(nestedKey, $scope.currentRecord[key][0][nestedKey]);
+			    if(response.length > 0)
+				missedFields = missedFields + "\n" + response;
+			}else{
+			    var response = checkNull(nestedKey, $scope.currentRecord[key][0][nestedKey]);
+			    if(response.length > 0)
+				missedFields = missedFields + "\n" + response;
+			}
 		    }
 		    break;
 		default:
+		    //Do nothing
 		    break;
 		}
 	    }
-	    
+
 	    if(missedFields.length > 0){
 		window.alert("Please fill out the following form fields:\n " + missedFields);
 		return true;
@@ -531,138 +564,205 @@ metadataEditorApp.controller('BaseController',
 
 	//Functions to simulate steps in tutorial
 	$scope.simulateStepOne = function(){
-	    var second = 2000;
+	    var delay = 2000;
+	    //Click on Record Options dropdown list
 	    $timeout(function(){
 		$scope.clickOnElement("#record-options-dropdown");
 	    });
 
+	    //Simulate hovering on "Create New Dataset" by changing background color of element
+	    //to grey for 2 seconds.
 	    $timeout(function(){
 		$scope.simulateHoverDataset = {'background-color':'#c2c2a3'};
 	    }, 2000);
 
+	    //Change background color of "Create New Dataset" back to white
+	    //to end "hover."
 	    $timeout(function(){
 		$scope.simulateHoverDataset = {'background-color':'#ffffff'};
-	    }, second+=2000);
+	    }, delay+=2000);
 
+	    //Simulate hover on "Create new Non-Dataset Record" element by changing
+	    //background color to grey for 2 seconds.
 	    $timeout(function(){
 		$scope.simulateHoverNonDataset = {'background-color':'#c2c2a3'};
-	    }, second+=2000);
+	    }, delay+=2000);
 
+	    //Change background color of "Create New Non-Dataset Record" element
+	    //back to white.
 	    $timeout(function(){
 		$scope.simulateHoverNonDataset = {'background-color':'#ffffff'};
-	    }, second+=2000);
+	    }, delay+=2000);
 
+	    //Click on "Record Options" dropdown again to hide it.
     	    $timeout(function(){
 		$scope.clickOnElement("#record-options-dropdown");
-	    }, second+=2000); 
+	    }, delay+=2000); 
 	};
 
 	$scope.simulateStepTwo = function(){
-	    var second = 2000;
+	    var delay = 2000;
+	    //Click on "Load Defaults" dropdown menu
 	    $timeout(function(){
 		$scope.clickOnElement("#defaults-dropdown");
 	    });
 
+	    //Simulate hovering effect on "MILES" and "NKN as Data Manager" elements
+	    //of dropdown list by changing background of respective elements to grey,
+	    //then back to white after delay. 
 	    $timeout(function(){
 		$scope.simulateHoverMiles = {'background-color':'#c2c2a3'};
-	    }, second);
+	    }, delay);
 
 	    $timeout(function(){
 		$scope.simulateHoverMiles = {'background-color':'#ffffff'};
-	    }, second+=2000);
+	    }, delay+=2000);
 
 	    $timeout(function(){
 		$scope.simulateHoverNKN = {'background-color':'#c2c2a3'};
-	    }, second+=2000);
+	    }, delay+=2000);
 
 	    $timeout(function(){
 		$scope.simulateHoverNKN = {'background-color':'#ffffff'};
-	    }, second+=2000);
+	    }, delay+=2000);
 
+	    //Click on "Load Defaults" again to hide dropdown list.
 	    $timeout(function(){
 		$scope.clickOnElement("#defaults-dropdown");
-	    }, second+=2000); 
+	    }, delay+=2000); 
 	};
 	
 	$scope.simulateStepThree = function(){
-	    var second = 3000;
+	    var delay = 3000;
+	    //Scroll to "Basic Information" section to show user where form
+	    //element is.
 	    $location.hash("title-input");
-	    $anchorScroll.yOffset = 400;
+	    $anchorScroll.yOffset = 350;
 	    $anchorScroll();
 
+	    //Scroll to "title" input after 3 second delay.
 	    $timeout(function(){
 		$location.hash("title-input");
-		$anchorScroll.yOffset = 260;
+		$anchorScroll.yOffset = 230;
 		$anchorScroll();
-	    }, second);
-	    
+	    }, delay);
+
+	    //Click on "Record Options" dropdown list again to
+	    //show user where to save.
 	    $timeout(function(){
 		$scope.clickOnElement("#record-options-dropdown");
-	    }, second+=4000);
+	    }, delay+=5000);
 
+	    //Simulate hovering effect on "Save this record as draft"element
+	    //of dropdown list by changing background of element to grey,
+	    //then back to white after delay. 
 	    $timeout(function(){
 		$scope.simulateHoverSave = {'background-color':'#c2c2a3'};
-	    }, second+=2000);
+	    }, delay+=2000);
 
 	    $timeout(function(){
 		$scope.simulateHoverSave = {'background-color':'#ffffff'};
-	    }, second+=2000);
+	    }, delay+=2000);
 
+	    //Scroll back to "Step 3" button at top of page so user
+	    //can continue with tutorial.
 	    $timeout(function(){
 		$location.hash("step-three");
  		$anchorScroll();
 		$scope.clickOnElement("#record-options-dropdown");
-	    }, second+=2000); 
+	    }, delay+=2000); 
 	};
 
 	$scope.simulateStepFour = function(){
-	    var second = 3000;
+	    var delay = 3000;
+	    //Scroll to the "Attach file" section of the form
+	    $timeout(function(){
+		$location.hash("attachment-header");
+		$anchorScroll.yOffset = 75;
+ 		$anchorScroll();
+	    }); 
+
+	    //Highlight attach file section by
+	    //changing background of attach file section to grey,
+	    //then back to white after delay. 
+	    $timeout(function(){
+		$scope.attachFileDiv = {'background-color':'#c2c2a3'};
+	    }, delay);
 	    
 	    $timeout(function(){
-		$scope.clickOnElement("#record-options-dropdown");
-	    });
+		$scope.attachFileDiv = {'background-color':'#FFFFFF'};
+	    }, delay+=3000); 
 
+	    //Click on "Record Options" dropdown list to show list elements.
+	    $timeout(function(){
+		$scope.clickOnElement("#record-options-dropdown");
+	    }, delay+=3000);
+
+	    //Simulate hovering effect on "Save this record as a draft" elements
+	    //of dropdown list by changing background of element to grey,
+	    //then back to white after delay. 
 	    $timeout(function(){
 		$scope.simulateHoverSave = {'background-color':'#c2c2a3'};
-	    }, second);
+	    }, delay+=3000);
 
 	    $timeout(function(){
 		$scope.simulateHoverSave = {'background-color':'#ffffff'};
-	    }, second+=2000);
+	    }, delay+=2000);
 
+	    //Scroll back to "Step 4" button so user can continue with tutorial.
 	    $timeout(function(){
+		$location.hash("step-four");
+ 		$anchorScroll();
 		$scope.clickOnElement("#record-options-dropdown");
-	    }, second+=2000); 
+	    }, delay+=2000); 
 	};
 
 	$scope.simulateStepFive = function(){
-	    var second = 3000;
+	    var delay = 3000;
+	    //Click on "Record Options" dropdown list to show list elements.
 	    $timeout(function(){
 		$scope.clickOnElement("#record-options-dropdown");
 	    });
-
+	    
+	    //Simulate hovering effect on publish/please complete element
+	    //of dropdown list by changing background of element to grey,
+	    //then back to white after delay. 
 	    $timeout(function(){
 		$scope.simulateHoverPublish = {'background-color':'#c2c2a3'};
-	    }, second);
+	    }, delay);
 
 	    $timeout(function(){
 		$scope.simulateHoverPublish = {'background-color':'#ffffff'};
-	    }, second+=2000);
+	    }, delay+=2000);
 
+	    //Click on "Record Options" dropdown list to hide it.
     	    $timeout(function(){
 		$scope.clickOnElement("#record-options-dropdown");
-	    }, second+=2000); 
+	    }, delay+=2000); 
 	};
 
 	$scope.simulateTips = function(){
-
+	    var delay = 5000;
+	    //Click on "My Records" to expose drop down list
 	    $timeout(function(){
 		$scope.clickOnElement("#load-delete-record-dropdown");
 	    });
 
+	    //After 5 second delay, click on "My Records" again to
+	    //hide list.
 	    $timeout(function(){
 		$scope.clickOnElement("#load-delete-record-dropdown");
-	    }, 5000);
+	    }, delay);
+
+	    //Click on "View XML as" to expose drop down list
+	    $timeout(function(){
+		$scope.clickOnElement("#export-dropdown");
+	    }, delay+=2000);
+
+	    //Click on "View XML as" again to hide list.
+	    $timeout(function(){
+		$scope.clickOnElement("#export-dropdown");
+	    }, delay+=5000);
 	};
   } // end of callback for controller initialization
 ])

@@ -9,7 +9,7 @@
 
     <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" id="upload">
 
-        <h4>Associated Data</h4>
+        <h4 id="attachment-header">Associated Data</h4>
         <ol>
             <li ng-repeat="att in currentRecord.attachments">
                 <a ng-href="{{att.url}}">{{att.url | filename}}</a>
@@ -17,18 +17,24 @@
             </li>
         </ol>
 
-        <input type="button" class="btn btn-primary btn-contact disabled"
-               value="Please save a draft to add files"
-               ng-hide="currentRecord._id"/>
-
-        <!-- <label for="fileSelect">Select file:</label> -->
-        <input type="file" id="attachment-select"
-               value="Attach File" ng-show="currentRecord._id"
-               file-model="attachmentInfo.newAttachment"/>
-        <button id="attach-file-button" class="btn btn-primary btn-contact"
-                ng-show="attachmentInfo.newAttachment"
-                ng-click="attachFile()">
+	<div id="attach-file-div"
+ 	     ng-style="attachFileDiv"
+	     >
+          <input type="button" class="btn btn-primary btn-contact disabled"
+		 value="Please save a draft to add files"
+		 ng-hide="currentRecord._id"
+		 />
+	</div>
+          <!-- <label for="fileSelect">Select file:</label> -->
+          <input type="file" id="attachment-select"
+		 value="Attach File" ng-show="currentRecord._id"
+		 file-model="attachmentInfo.newAttachment"
+		 ng-style="attachFileDiv"/>
+          <button id="attach-file-button" class="btn btn-primary btn-contact"
+                  ng-show="attachmentInfo.newAttachment"
+                  ng-click="attachFile()"
+		  >
             Attach File
-        </button>
+          </button>
     </div>
 </div>
