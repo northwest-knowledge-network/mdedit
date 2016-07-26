@@ -46,68 +46,71 @@
     }
     document.onkeypress = stopRKey;
     </script> 
-    <style>
-      .details { background:#f4f4f4;border:1px solid #ddd;border-radius:6px;padding:10px;margin-bottom:20px; }
-    </style>
 </head>
 
 <body>
-      <div ng-app="metadataEditor">
-        <div ng-controller="BaseController as baseCtrl">
 
-<div  id="bodyDiv">
+<div id="bodyDiv">
   <div class="mdIntro">
     <div style="margin-left: 4em; margin-right: 4em; font-size: medium">
 
-      <p><strong><em>The steps below will guide you through the Metadata Editor.</em></strong></p>
+      	<p><strong><em>The steps below will guide you through the Metadata Editor.</em></strong></p>
 
-<p><strong>Please contact <a href="mailto:publish@northwestknowledge.net?subject=NKN Metadata Editor" alt="email NKN">NKN</a></strong> if you have questions or if the data associated with your record are <strong>larger than 10GB</strong>.</p> 
-<p style="margin-bottom:20px">This tool is under active development, and we welcome your <a href="mailto:publish@northwestknowledge.net?subject=NKN Metadata Editor Feedback" alt="metadata editor feedback">feedback</a></strong>!</p>
+	<p><strong>Please contact <a href="mailto:publish@northwestknowledge.net?subject=NKN Metadata Editor" alt="email NKN">NKN</a>
+	</strong>if you have questions or if the data associated with your record are <strong>larger than 10GB</strong>.</p> 
+
+	<p>This tool is under active development, and we welcome your <strong>
+	<a href="mailto:publish@northwestknowledge.net?subject=NKN Metadata Editor Feedback" alt="metadata editor feedback">feedback</a>
+	</strong>!</p>
+
+	<p style="margin-bottom:20px">Use of the NKN metadata editor requires a login and implies acceptance of 
+	our <a href="/services/terms_of_service"><strong>terms of service</strong></a>.</p>
 
       <hr />
 
+    </div>
+  </div>
 
-   <!-- <div class="navbar-form navbar-right" role="help"> -->
-    <div role="help">
-      <button id="showHelp" ng-init="baseCtrl.showHelp = true;"
-	      ng-hide="baseCtrl.showHelp"
+  <div ng-app="metadataEditor">
+    <div ng-controller="BaseController as baseCtrl">
+
+
+     <!-- <div class="navbar-form navbar-right" role="help"> -->
+      <div role="help">
+        <button id="showHelp" ng-init="baseCtrl.showHelp = true;"
+              ng-hide="baseCtrl.showHelp"
               ng-click="baseCtrl.showHelp=true"
-              class="btn btn-default">
+              class="btn btn-default" style="margin-bottom:20px;">
                 Show Steps
-      </button>
-      <button id="hideHelp" ng-show="baseCtrl.showHelp"
+        </button>
+        <button id="hideHelp" ng-show="baseCtrl.showHelp"
                ng-click="baseCtrl.showHelp=false"
               class="btn btn-default">
                 Hide Steps
-      </button>
-    </div>
-
-    </div>
-
-  </div>
+        </button>
+      </div>
 
 
-
-            <div ng-show="baseCtrl.showHelp">
-                <div ng-include="partialsPrefix + 'partials/help.html'"></div>
-            </div>
+      <div ng-show="baseCtrl.showHelp">
+         <div ng-include="partialsPrefix + 'partials/help.html'"></div>
+      </div>
 	
 
 
-                <div id="ngMain">
+      <div id="ngMain">
 
-            <!-- <div ng-controller="BaseController as baseCtrl"> -->
+         <!-- <div ng-controller="BaseController as baseCtrl"> -->
 
-                    <div ng-include="partialsPrefix + 'partials/appHeader.html'"></div>
+         <div ng-include="partialsPrefix + 'partials/appHeader.html'"></div>
 
-                    <div id="main-container" class="container">
-                        <div ng-view></div>
-                    </div>
+         <div id="main-container" class="container">
+            <div ng-view></div>
+         </div>
 
-                </div>
+      </div>
 
-        </div>
     </div>
+  </div>
 </div>
 
   <script type="text/javascript">
