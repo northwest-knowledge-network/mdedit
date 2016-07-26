@@ -69,7 +69,8 @@
 
    <!-- <div class="navbar-form navbar-right" role="help"> -->
     <div role="help">
-      <button id="showHelp" ng-hide="baseCtrl.showHelp"
+      <button id="showHelp" ng-init="baseCtrl.showHelp = true;"
+	      ng-hide="baseCtrl.showHelp"
               ng-click="baseCtrl.showHelp=true"
               class="btn btn-default">
                 Show Steps
