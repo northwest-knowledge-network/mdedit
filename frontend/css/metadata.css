@@ -279,3 +279,15 @@ a.dropdown-toggle, a.btn {
 #sidebarListText {
     font-size: 1.2em;
 }
+
+/* For sticky navbar (sticks to top of screen when scrolled to) */
+nav.affix {
+    position:fixed;
+    top: 0;
+    width: 100%;
+    z-index: 9999 !important;
+}
+
+.affix + .container-fluid {
+    padding-top: 70px;
+}

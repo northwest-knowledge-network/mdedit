@@ -33,6 +33,9 @@ metadataEditorApp.controller('BaseController',
 	//Scope variables for opening and closing side nav
 	$scope.openSideNav;
 	$scope.closeSideNav;
+
+	$scope.setNavbar;
+	
         //=== set up hostname-related scope variables ===//
         // export to XML
         var exportAddr = function(oid, xmlType) {
@@ -612,16 +615,23 @@ metadataEditorApp.controller('BaseController',
 	//Functions to simulate steps in tutorial
 	$scope.simulateStepOne = function(){
 	    var delay = 2000;
+
+	    //Scroll to "Basic Information" section to show user where form
+	    //element is.
+	    $location.hash("navbar");
+	    $anchorScroll.yOffset = 0;
+	    $anchorScroll();
+
 	    //Click on Record Options dropdown list
 	    $timeout(function(){
 		$scope.clickOnElement("#record-options-dropdown");
-	    });
+	    }, delay);
 
 	    //Simulate hovering on "Create New Dataset" by changing background color of element
 	    //to grey for 2 seconds.
 	    $timeout(function(){
 		$scope.simulateHoverDataset = {'background-color':'#c2c2a3'};
-	    }, 2000);
+	    }, delay+=2000);
 
 	    //Change background color of "Create New Dataset" back to white
 	    //to end "hover."
@@ -641,25 +651,32 @@ metadataEditorApp.controller('BaseController',
 		$scope.simulateHoverNonDataset = {'background-color':'#ffffff'};
 	    }, delay+=2000);
 
-	    //Click on "Record Options" dropdown again to hide it.
+	    //Scroll to "Step 1" button and click on "Record Options" dropdown again to hide it.
     	    $timeout(function(){
+		$location.hash("step-one");
+ 		$anchorScroll();
 		$scope.clickOnElement("#record-options-dropdown");
 	    }, delay+=2000); 
 	};
 
 	$scope.simulateStepTwo = function(){
 	    var delay = 2000;
+
+	    $location.hash("navbar");
+	    $anchorScroll.yOffset = 0;
+	    $anchorScroll();
+
 	    //Click on "Load Defaults" dropdown menu
 	    $timeout(function(){
 		$scope.clickOnElement("#defaults-dropdown");
-	    });
+	    },delay);
 
 	    //Simulate hovering effect on "MILES" and "NKN as Data Manager" elements
 	    //of dropdown list by changing background of respective elements to grey,
 	    //then back to white after delay. 
 	    $timeout(function(){
 		$scope.simulateHoverMiles = {'background-color':'#c2c2a3'};
-	    }, delay);
+	    }, delay+=2000);
 
 	    $timeout(function(){
 		$scope.simulateHoverMiles = {'background-color':'#ffffff'};
@@ -675,24 +692,34 @@ metadataEditorApp.controller('BaseController',
 
 	    //Click on "Load Defaults" again to hide dropdown list.
 	    $timeout(function(){
+		$location.hash("step-two");
+ 		$anchorScroll();
 		$scope.clickOnElement("#defaults-dropdown");
 	    }, delay+=2000); 
 	};
 	
 	$scope.simulateStepThree = function(){
-	    var delay = 3000;
-	    //Scroll to "Basic Information" section to show user where form
-	    //element is.
-	    $location.hash("title-input");
-	    $anchorScroll.yOffset = 350;
+	    var delay = 2000;
+
+	    //Scroll to navbar
+	    $location.hash("navbar");
+	    $anchorScroll.yOffset = 0;
 	    $anchorScroll();
 
+	    //Scroll to "Basic Information" section to show user where form
+	    //element is.
+	    $timeout(function(){
+		$location.hash("title-input");
+		$anchorScroll.yOffset = 350;
+		$anchorScroll();
+	    }, delay);
+	    
 	    //Scroll to "title" input after 3 second delay.
 	    $timeout(function(){
 		$location.hash("title-input");
 		$anchorScroll.yOffset = 230;
 		$anchorScroll();
-	    }, delay);
+	    }, delay+=3000);
 
 	    //Click on "Record Options" dropdown list again to
 	    //show user where to save.
@@ -722,6 +749,8 @@ metadataEditorApp.controller('BaseController',
 
 	$scope.simulateStepFour = function(){
 	    var delay = 3000;
+	    $scope.setNavbar = {'position':'fixed', 'top':'0px', 'width':'100%'};
+			
 	    //Scroll to the "Attach file" section of the form
 	    $timeout(function(){
 		$location.hash("attachment-header");
@@ -758,6 +787,7 @@ metadataEditorApp.controller('BaseController',
 
 	    //Scroll back to "Step 4" button so user can continue with tutorial.
 	    $timeout(function(){
+		$scope.setNavbar = {};
 		$location.hash("step-four");
  		$anchorScroll();
 		$scope.clickOnElement("#record-options-dropdown");
@@ -766,17 +796,22 @@ metadataEditorApp.controller('BaseController',
 
 	$scope.simulateStepFive = function(){
 	    var delay = 3000;
+	    $timeout(function(){
+		$location.hash("navbar");
+		$anchorScroll.yOffset = 0;
+		$anchorScroll();
+	    });
 	    //Click on "Record Options" dropdown list to show list elements.
 	    $timeout(function(){
 		$scope.clickOnElement("#record-options-dropdown");
-	    });
+	    }, delay);
 	    
 	    //Simulate hovering effect on publish/please complete element
 	    //of dropdown list by changing background of element to grey,
 	    //then back to white after delay. 
 	    $timeout(function(){
 		$scope.simulateHoverPublish = {'background-color':'#c2c2a3'};
-	    }, delay);
+	    }, delay+=2000);
 
 	    $timeout(function(){
 		$scope.simulateHoverPublish = {'background-color':'#ffffff'};
@@ -784,22 +819,29 @@ metadataEditorApp.controller('BaseController',
 
 	    //Click on "Record Options" dropdown list to hide it.
     	    $timeout(function(){
+		$location.hash("step-five");
+ 		$anchorScroll();
 		$scope.clickOnElement("#record-options-dropdown");
 	    }, delay+=2000); 
 	};
 
 	$scope.simulateTips = function(){
-	    var delay = 5000;
+	    var delay = 2000;
+	    $timeout(function(){
+		$location.hash("navbar");
+		$anchorScroll.yOffset = 0;
+		$anchorScroll();
+	    }, delay);
 	    //Click on "My Records" to expose drop down list
 	    $timeout(function(){
 		$scope.clickOnElement("#load-delete-record-dropdown");
-	    });
+	    }, delay+=2000);
 
 	    //After 5 second delay, click on "My Records" again to
 	    //hide list.
 	    $timeout(function(){
 		$scope.clickOnElement("#load-delete-record-dropdown");
-	    }, delay);
+	    }, delay+=5000);
 
 	    //Click on "View XML as" to expose drop down list
 	    $timeout(function(){
@@ -810,8 +852,15 @@ metadataEditorApp.controller('BaseController',
 	    $timeout(function(){
 		$scope.clickOnElement("#export-dropdown");
 	    }, delay+=5000);
-	};
 
+	    //Return to steps area
+	    $timeout(function(){
+		$location.hash("step-tips");
+ 		$anchorScroll();
+	    }, delay+=2000); 
+	
+	};
+    
 	//Open side nav
 	$scope.openSideNav = function() {
 	    $scope.sidebarWidth = {'width' : '15%'};
@@ -863,4 +912,4 @@ metadataEditorApp.controller('BaseController',
         $scope.currentRecord.east_lon = vm.ne.lng();
         $scope.currentRecord.west_lon = vm.sw.lng();
     };
-});
+  });
