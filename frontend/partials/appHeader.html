@@ -134,7 +134,10 @@
         <li class="dropdown">
 
           <a id="record-options-dropdown" class="dropdown-toggle" data-toggle="dropdown"
-             role="button" aria-haspopup="true" aria-expanded="false">Record Options <span class="caret"></span></a>
+             role="button" aria-haspopup="true" aria-expanded="false"
+	     ng-click="checkRequiredFields()"
+	     >
+	    Record Options <span class="caret"></span></a>
 
             <ul class="dropdown-menu" role="menu">
 
@@ -223,9 +226,22 @@
 
         </li>
 
+	<li>
+	  <a id="sidebarHamburger" ng-click="openSideNav(); checkRequiredFields();">Remaining Fields</a>
+	  <div id="mySidenav" class="sidenav" ng-style="sidebarWidth">
+	    <a data-target="javascript:void(0)" class="closebtn" ng-click="closeSideNav()">×</a>
+	    <div ng-repeat="field in checkFormComplete track by $index">
+	      {{field}}
+	    </div>
+	  </div>
+
+	</li>
+	
       </ul>
 
-<!-- 
+
+   
+      <!-- 
     <div class="navbar-form navbar-right" role="help">
       <button id="showHelp" ng-hide="baseCtrl.showHelp"
               ng-click="baseCtrl.showHelp=true"
@@ -243,3 +259,4 @@
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
+

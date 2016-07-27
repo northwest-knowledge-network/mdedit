@@ -68,7 +68,7 @@
 
 
    <!-- <div class="navbar-form navbar-right" role="help"> -->
-    <div role="help">
+   <div role="help">
       <button id="showHelp" ng-init="baseCtrl.showHelp = true;"
 	      ng-hide="baseCtrl.showHelp"
               ng-click="baseCtrl.showHelp=true"
@@ -76,41 +76,39 @@
                 Show Steps
       </button>
       <button id="hideHelp" ng-show="baseCtrl.showHelp"
-               ng-click="baseCtrl.showHelp=false"
+              ng-click="baseCtrl.showHelp=false"
               class="btn btn-default">
-                Hide Steps
+        Hide Steps
       </button>
-    </div>
+      <br>
+      <br>
+      <div>
 
-    </div>
-
-  </div>
-
-
-
-            <div ng-show="baseCtrl.showHelp">
-                <div ng-include="partialsPrefix + 'partials/help.html'"></div>
-            </div>
-	
-
-
-                <div id="ngMain">
-
-            <!-- <div ng-controller="BaseController as baseCtrl"> -->
-
-                    <div ng-include="partialsPrefix + 'partials/appHeader.html'"></div>
-
-                    <div id="main-container" class="container">
-                        <div ng-view></div>
-                    </div>
-
-                </div>
-
-        </div>
-    </div>
+     </div>
+      
+   </div>
+</div>
 </div>
 
-  <script type="text/javascript">
+<div ng-show="baseCtrl.showHelp">
+  <div ng-include="partialsPrefix + 'partials/help.html'"></div>
+</div>
+<div id="ngMain">
+  
+  <!-- <div ng-controller="BaseController as baseCtrl"> -->
+  
+  <div ng-include="partialsPrefix + 'partials/appHeader.html'"></div>
+  <div id="main-container" class="container">
+    <div ng-view></div>
+  </div>
+  
+</div>
+
+</div>
+</div>
+</div>
+
+<script type="text/javascript">
   $('.more1').click(function(){
         var $this = $(this);
         $this.toggleClass('more1');

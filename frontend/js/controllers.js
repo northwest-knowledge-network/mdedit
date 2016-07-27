@@ -23,7 +23,16 @@ metadataEditorApp.controller('BaseController',
 	$scope.simulateHoverMiles;
 	$scope.simulateHoverNKN;
 	$scope.attachFileDiv;
-	
+
+	//Scope variable used to store remaining blank form field names
+	$scope.checkFormComplete = [];
+
+	//Scope variable used to show side bar
+	$scope.sidebarWidth = {'width' : '0%'};
+
+	//Scope variables for opening and closing side nav
+	$scope.openSideNav;
+	$scope.closeSideNav;
         //=== set up hostname-related scope variables ===//
         // export to XML
         var exportAddr = function(oid, xmlType) {
@@ -200,7 +209,7 @@ metadataEditorApp.controller('BaseController',
          * and makes sure the form is current.
          */
         $scope.submitDraftRecord = function() {
-	    if(!checkRequiredFields()){
+
 		recordService.saveDraft($scope)
                     .success( function (data) {
 			// need to update the sheet with the ID
@@ -219,7 +228,6 @@ metadataEditorApp.controller('BaseController',
                     .error( function (data) {
 			// TODO
                     });
-	    }
         };
 
         /** Function to identify if the record is ISO or Dublin based on schema_type field
@@ -273,7 +281,7 @@ metadataEditorApp.controller('BaseController',
          * Publish a record to the portal. Requires all fields to be valid
          */
         $scope.publishRecord = function() {
-
+	    //$scope.checkRequiredFields();
             recordService.publish($scope)
                 .success( function (data) {
 
@@ -424,135 +432,137 @@ metadataEditorApp.controller('BaseController',
 	/* Check all inputs, selects, and textfields that are not 
 	   optional to see if they have a value. If one does not have
 	   a value, it has not been filled out.
-	 */
-	function checkRequiredFields(){
-	    var missedFields = "";
-	    
-	    for(var key in $scope.currentRecord){
-		switch(key){
-		case "title":
-		case "summary":
-   		case "update_frequency":
-		case "status":
-		case "hierarcy_level":
-		case "place_keywords":
-		case "thematic_keywords":
-		case "use_restrictions":
-		case "west_lon":
-		case "east_lon":
-		case "north_lat":
-		case "south_lat":
-		    if($scope.currentRecord[key] != null){
-			var response = checkLength(key, $scope.currentRecord[key]);
-			if(response.length > 0)
-			    missedFields = missedFields + "\n" + response;
-		    }else{
-			var response = checkNull(key, $scope.currentRecord[key]);
-			if(response.length > 0)
-			    missedFields = missedFields + "\n" + response;
-		    }
-		    break;
+	*/
+	
+		$scope.checkRequiredFields = function(){
+		    var missedFields = [];
+		    var count = 0;
+		    for(var key in $scope.currentRecord){
+			switch(key){
+			case "title":
+			case "summary":
+   			case "update_frequency":
+			case "status":
+			case "hierarcy_level":
+			case "place_keywords":
+			case "thematic_keywords":
+			case "use_restrictions":
+			case "west_lon":
+			case "east_lon":
+			case "north_lat":
+			case "south_lat":
+			    if($scope.currentRecord[key] != null){
+				var response = checkLength(key, $scope.currentRecord[key]);
+				if(response.length > 0)
+				    missedFields[count] = response;
+			    }else{
+				var response = checkNull(key, $scope.currentRecord[key]);
+				if(response.length > 0)
+				    missedFields[count] = response;
+			    }
+			    count++;
+			    break;
 
-    		case "start_date":
-		case "end_date":
-		    for(var nestedKey in $scope.currentRecord[key]){
-			if($scope.currentRecord[key][nestedKey] != null){
-			    var response = checkLength(key, $scope.currentRecord[key][nestedKey]);
-			    if(response.length > 0)
-				missedFields = missedFields + "\n" + response;
-			}else{
-			    var response = checkNull(key, $scope.currentRecord[key][nestedKey]);
-			    if(response.length > 0)
-				missedFields = missedFields + "\n" + response;
+    			case "start_date":
+			case "end_date":
+			    for(var nestedKey in $scope.currentRecord[key]){
+				if($scope.currentRecord[key][nestedKey] != null){
+				    var response = checkLength(key, $scope.currentRecord[key][nestedKey]);
+				    if(response.length > 0)
+					missedFields[count] = response;
+				}else{
+				    var response = checkNull(key, $scope.currentRecord[key][nestedKey]);
+				    if(response.length > 0)
+					missedFields[count] = response;
+				}
+			    }
+			    count++;
+			    break;
+
+			case "data_format":		    
+  			case "topic_category":
+			    if($scope.currentRecord[key][0] != null){
+				var response = checkLength(key, $scope.currentRecord[key][0]);
+				if(response.length > 0)
+				    missedFields[count] = response;
+			    }else{
+				var response = checkNull(key, $scope.currentRecord[key][0]);
+				if(response.length > 0)
+				    missedFields[count] = response;
+			    }
+			    count++;
+			    break;
+			    
+			case "citation":
+			case "access":
+			    for(var nestedKey in $scope.currentRecord[key][0]){
+				if($scope.currentRecord[key][0][nestedKey] != null){
+				    var response = checkLength(nestedKey, $scope.currentRecord[key][0][nestedKey]);
+				    if(response.length > 0)
+					missedFields[count] = response;
+
+				    count++;
+				}else{
+				    var response = checkNull(nestedKey, $scope.currentRecord[key][0][nestedKey]);
+				    if(response.length > 0)
+					missedFields[count] = response;
+
+				    count++;
+				}
+			    }
+			    break;
+			default:
+			    //Do nothing
+			    break;
 			}
 		    }
-		    break;
 
-		case "data_format":		    
-  		case "topic_category":
-		    if($scope.currentRecord[key][0] != null){
-			var response = checkLength(key, $scope.currentRecord[key][0]);
-			if(response.length > 0)
-			    missedFields = missedFields + "\n" + response;
-		    }else{
-			var response = checkNull(key, $scope.currentRecord[key][0]);
-			if(response.length > 0)
-			    missedFields = missedFields + "\n" + response;
+		    $scope.checkFormComplete = missedFields;
+		};
+
+		/* Translate key into more human readable format for alert window.
+		   E.X.: data_format -> Data Format
+		*/
+		function translateKey(key){
+		    var delimString = key.split("_");
+		    var parsedString = "";
+		    for(var i = 0; i < delimString.length; i++){
+			switch(delimString[i]){
+			case "org":
+			    parsedString = parsedString + "organization ";
+			    break;
+			case "lat":
+			    parsedString = parsedString + "latitude ";
+			    break;
+			case "lon":
+			    parsedString = parsedString + "longitude ";
+			    break;
+			default:
+			    parsedString = parsedString + delimString[i] + " ";
+			}
 		    }
-		    break;
+		    return parsedString;
+		};
+
+		/* Check if variable length is 0 (initialized with string of 
+		   length 0 in services.js). If so, display window alert with
+		   variable name. 
+		*/
+		function checkLength(fieldName, field){
+		    if(field.length == 0)
+			return translateKey(fieldName);
+
+		    return "";
+		};
+		/* Check if variable is null. If so, display window alert with
+		   variable name. 
+		*/
+		function checkNull(fieldName, field){
+		    if(field == null)
+			return translateKey(fieldName);
 		    
-		case "citation":
-		case "access":
-		    for(var nestedKey in $scope.currentRecord[key][0]){
-			if($scope.currentRecord[key][0][nestedKey] != null){
-			    var response = checkLength(nestedKey, $scope.currentRecord[key][0][nestedKey]);
-			    if(response.length > 0)
-				missedFields = missedFields + "\n" + response;
-			}else{
-			    var response = checkNull(nestedKey, $scope.currentRecord[key][0][nestedKey]);
-			    if(response.length > 0)
-				missedFields = missedFields + "\n" + response;
-			}
-		    }
-		    break;
-		default:
-		    //Do nothing
-		    break;
-		}
-	    }
-
-	    if(missedFields.length > 0){
-		window.alert("Please fill out the following form fields:\n " + missedFields);
-		return true;
-	    }
-
-	    return false;
-	};
-
-	/* Translate key into more human readable format for alert window.
-	   E.X.: data_format -> Data Format
-	*/
-	function translateKey(key){
-	    var delimString = key.split("_");
-	    var parsedString = "";
-	    for(var i = 0; i < delimString.length; i++){
-		switch(delimString[i]){
-		case "org":
-		    parsedString = parsedString + "organization ";
-		    break;
-		case "lat":
-		    parsedString = parsedString + "latitude ";
-		    break;
-		case "lon":
-		    parsedString = parsedString + "longitude ";
-		    break;
-		default:
-		    parsedString = parsedString + delimString[i] + " ";
-		}
-	    }
-	    return parsedString;
-	};
-
-	/* Check if variable length is 0 (initialized with string of 
-	   length 0 in services.js). If so, display window alert with
-	   variable name. 
-	*/
-	function checkLength(fieldName, field){
-	    if(field.length == 0)
-		return translateKey(fieldName);
-
-	    return "";
-	};
-	/* Check if variable is null. If so, display window alert with
-	   variable name. 
-	*/
-	function checkNull(fieldName, field){
-	    if(field == null)
-		return translateKey(fieldName);
-	   
-	    return "";
-	};
-
+		    return "";
+		};
 	/* Click on element to simulate user clicking on element. Used for 
 	   step-by-step description buttons in index.html. 
 	 */
@@ -763,6 +773,16 @@ metadataEditorApp.controller('BaseController',
 	    $timeout(function(){
 		$scope.clickOnElement("#export-dropdown");
 	    }, delay+=5000);
+	};
+
+	//Open side nav
+	$scope.openSideNav = function() {
+	    $scope.sidebarWidth = {'width' : '15%'};
+	};
+
+	//Close side nav
+	$scope.closeSideNav = function() {
+	    $scope.sidebarWidth = {'width' : '0%'};
 	};
   } // end of callback for controller initialization
 ])
