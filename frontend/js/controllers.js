@@ -281,7 +281,7 @@ metadataEditorApp.controller('BaseController',
          * Publish a record to the portal. Requires all fields to be valid
          */
         $scope.publishRecord = function() {
-	    //$scope.checkRequiredFields();
+
             recordService.publish($scope)
                 .success( function (data) {
 
@@ -479,7 +479,44 @@ metadataEditorApp.controller('BaseController',
 			    count++;
 			    break;
 
-			case "data_format":		    
+			case "data_format":
+			    //check $scope.dataFormats: text input isn't bound to currentRecord
+			    //Two possibilities: dataFormats.iso[] or dataFormats.aux (string).
+			    //If one is filled out, do not check the other (mutally exclusive).
+			    if($scope.dataFormats.aux.length == 0){
+				for(var i = 0; i < $scope.dataFormats.iso.length; i++){
+		    		    if($scope.dataFormats.iso[i] != null){
+					var response = checkLength(key, $scope.dataFormats.iso[i]);
+					if(response.length > 0)
+					    missedFields[count] = response;
+				    }else{
+					var response = checkNull(key, $scope.dataFormats.iso[i]);
+					if(response.length > 0)
+					    missedFields[count] = response;
+				    }
+				    count++;
+				}
+			    }
+			    //Check aux definition too (from text input of other values)
+			    if($scope.dataFormats.iso.length == 0){
+				if($scope.dataFormats.aux != null){
+				    var response = checkLength(key, $scope.dataFormats.aux);
+				    if(response.length > 0){
+					missedFields[count] = response;
+					count++;
+				    }
+				}else{
+				    var response = checkNull(key, $scope.dataFormats.aux);
+				    if(response.length > 0){
+					missedFields[count] = response;
+					count++;
+				    }
+				}
+			    }
+
+			    
+			    break;
+			    
   			case "topic_category":
 			    if($scope.currentRecord[key][0] != null){
 				var response = checkLength(key, $scope.currentRecord[key][0]);
