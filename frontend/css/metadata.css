@@ -272,6 +272,10 @@ a.dropdown-toggle, a.btn {
   .sidenav a {font-size: 0.72em;}
 }
 
-#sidebarHamburger {
+#sidebarList {
     cursor:pointer
+}
+
+#sidebarListText {
+    font-size: 1.2em;
 }

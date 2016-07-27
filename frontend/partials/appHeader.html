@@ -227,10 +227,10 @@
         </li>
 
 	<li>
-	  <a id="sidebarHamburger" ng-click="openSideNav(); checkRequiredFields();">Remaining Fields</a>
+	  <a id="sidebarList" ng-click="openSideNav(); checkRequiredFields();">Remaining Fields</a>
 	  <div id="mySidenav" class="sidenav" ng-style="sidebarWidth">
 	    <a data-target="javascript:void(0)" class="closebtn" ng-click="closeSideNav()">×</a>
-	    <div ng-repeat="field in checkFormComplete track by $index">
+	    <div id="sidebarListText" ng-repeat="field in checkFormComplete track by $index">
 	      {{field}}
 	    </div>
 	  </div>
