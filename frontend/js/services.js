@@ -193,9 +193,6 @@ metadataEditorApp
     north_lat: '',
     south_lat: '',
 
-    start_date: {$date:''},
-    end_date: {$date:''},
-
     attachments: []
 })
 .value('milesFields',
