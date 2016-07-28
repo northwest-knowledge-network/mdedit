@@ -17,10 +17,11 @@
           </div>
             
             <input tabindex=3 id="" name="" type="text"
-              style="width:37%;float:right; text-align:center" 
-                    ng-model="currentRecord.schema_type" 
-                    ng-init="currentRecord.schema_type='Dataset (ISO)'"
-                    ng-readonly="true"/>
+		   style="width:37%;float:right; text-align:center" 
+                   ng-model="currentRecord.schema_type" 
+                   ng-init="currentRecord.schema_type='Dataset (ISO)'"
+                   ng-readonly="true"
+		   maxlength="254"/>
 
             </br>
 
@@ -47,7 +48,9 @@
                </h6>
 
                <input tabindex=20 type="text" class="optional"
-               ng-model="currentRecord.compression_technique" style="width:95%">
+		      ng-model="currentRecord.compression_technique" style="width:95%"
+		       maxlength="254"
+		      >
 
              </div>
           </div>

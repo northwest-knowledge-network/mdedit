@@ -35,7 +35,6 @@ metadataEditorApp.controller('BaseController',
 	$scope.closeSideNav;
 
 	$scope.setNavbar;
-	
         //=== set up hostname-related scope variables ===//
         // export to XML
         var exportAddr = function(oid, xmlType) {
@@ -870,6 +869,7 @@ metadataEditorApp.controller('BaseController',
 	$scope.closeSideNav = function() {
 	    $scope.sidebarWidth = {'width' : '0%'};
 	};
+
   } // end of callback for controller initialization
 ])
 .controller('ISOController', ['formOptions', function(formOptions) {
