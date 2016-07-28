@@ -445,7 +445,7 @@ metadataEditorApp.controller('BaseController',
 			case "summary":
    			case "update_frequency":
 			case "status":
-			case "hierarcy_level":
+			case "hierarchy_level":
 			case "place_keywords":
 			case "thematic_keywords":
 			case "use_restrictions":
@@ -453,6 +453,7 @@ metadataEditorApp.controller('BaseController',
 			case "east_lon":
 			case "north_lat":
 			case "south_lat":
+			case "spatial_dtype":
 			    if($scope.currentRecord[key] != null){
 				var response = checkLength(key, $scope.currentRecord[key]);
 				if(response.length > 0)
@@ -576,6 +577,14 @@ metadataEditorApp.controller('BaseController',
 			case "lon":
 			    parsedString = parsedString + "longitude ";
 			    break;
+			case "spatial":
+			    parsedString = parsedString + "data ";
+			    break;
+			case "dtype":
+			    parsedString = parsedString + "type";
+			    break;
+			case "status":
+			    parsedString = parsedString + "update ";
 			default:
 			    parsedString = parsedString + delimString[i] + " ";
 			}
