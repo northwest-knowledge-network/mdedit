@@ -616,7 +616,7 @@ metadataEditorApp.controller('BaseController',
 	 */
 	$scope.clickOnElement = function(elementID){
 	    $timeout(function(){
-		angular.element(elementID).trigger('click');
+		angular.element(document).find(elementID).trigger('click');
 	    });
 	};
 
