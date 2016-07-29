@@ -7,19 +7,64 @@
   <input tabindex=4 style="width:95%" type="text"
          ng-model="currentRecord[key_title[0]]" required>
 </div> -->
+<h2 class="section-header">
+  <span class="glyphicon glyphicon-list-alt"></span> Detailed Information
+</h2>
 
-<h4 class="attribute-label">Place Keywords</h4>
-<h6>List comma-separated keywords related to the geographic area covered by your data. Example: Idaho, Clear Creek Watershed, USA.</h6>
-<input type="text" tabindex="4" style="width:95%" ng-model="currentRecord.place_keywords" required="" maxlength="254">
+<div class="subform">
+  
+  <h4 class="attribute-label">Place Keywords</h4>
+  <h6>List comma-separated keywords related to the geographic area covered by your data. Example: Idaho, Clear Creek Watershed, USA.</h6>
+  <input type="text" tabindex="4" style="width:95%" ng-model="currentRecord.place_keywords" required="" maxlength="254">
 
-<h4 class="attribute-label">Thematic Keywords</h4>
-<h6>List comma-separated keywords that will help others discover your data through an intuitive search. In addition to subject-based keywords, you may also want to include the grant numbers and funding sources associated with creation of the data. If you are part of an NKN-supported project and thematic keywords have been pre-loaded for you, please do NOT delete or modify these, simply add to the list.</h6>
-<input type="text" tabindex="4" style="width:95%" ng-model="currentRecord.thematic_keywords" required="" maxlength="254">
+  <h4 class="attribute-label">Thematic Keywords</h4>
+  <h6>List comma-separated keywords that will help others discover your data through an intuitive search. In addition to subject-based keywords, you may also want to include the grant numbers and funding sources associated with creation of the data. If you are part of an NKN-supported project and thematic keywords have been pre-loaded for you, please do NOT delete or modify these, simply add to the list.</h6>
+  <input type="text" tabindex="4" style="width:95%" ng-model="currentRecord.thematic_keywords" required="" maxlength="254">
+  
+  <h4 class="attribute-label">Topic</h4>
+  <h6>Select as many of these high level categories as apply to your dataset. This is a set list of categories established by international standards. Use the command key (on a Mac) or the control key (on a PC) to select multiple categories.</h6>
+  
+  <select tabindex=5 style="width:80%;height:100px;" multiple ng-multiple="true" class="multiselect"
+          ng-options="c for c in topicCategoryChoices"
+          ng-model="currentRecord.topic_category" required>
+  </select>
+  
+  <!-- Might need to make another html file for html past this point: different in dublin core? -->
+  
+  <h4 class="attribute-label">Update Status</h4>
+  <h6>What is the status of your dataset? For example, is it complete (you anticipate no further work and consider it final) or is it ongoing (continually being updated)?</h6>
+  
+  <select tabindex=6 id="" name=""
+          ng-options="s for (s, iso) in iso.statusChoicesIsoMap"
+          ng-model="currentRecord.status" required>
+  </select>
+  <h4 class="attribute-label">Update Frequency</h4>
+  <h6>Please select the frequency with which changes (any modifications and deletions) are or will be made to your data after it is produced. Please select a value from below. Options are available if you do not plan to update your data or do not know the specific frequency of updates.</h6>
+  <select tabindex=7 id="" name=""
+          ng-options="f for (f, iso) in iso.updateFrequencyChoicesMap"
+          ng-model="currentRecord.update_frequency" required>
+  </select>
+  
+  <h4 class="attribute-label">Data Type</h4>
+  <h6>
+    How are your data represented? Through a text file, vector spatial representation, a spatial grid of values, a table, a
+    video of a scene, etc.?
+  </h6>
+  <select tabindex=8 id="" name=""
+          ng-options="f for f in spatialDataOptions"
+          ng-model="currentRecord.spatial_dtype" required>
+  </select>
+  
+  <h4 class="attribute-label">Hierarchy Level</h4>
+  <h6>
+    Is your data a single dataset or is it one of a series of datasets?
+  </h6>
+  <select tabindex=9 id="" name=""
+          ng-options="f for f in hierarchyLevels"
+          ng-model="currentRecord.hierarchy_level" required>
+  </select>
+  
+  
+</div>
 
-<h4 class="attribute-label">Topic</h4>
-<h6>Select as many of these high level categories as apply to your dataset. This is a set list of categories established by international standards. Use the command key (on a Mac) or the control key (on a PC) to select multiple categories.</h6>
 
-<select tabindex=5 style="width:80%;height:100px;" multiple ng-multiple="true" class="multiselect"
-        ng-options="c for c in topicCategoryChoices"
-        ng-model="currentRecord.topic_category" required>
-</select>
