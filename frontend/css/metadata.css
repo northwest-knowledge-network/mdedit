@@ -323,15 +323,22 @@ nav.affix {
 }
 
 /* Wizard form views having animations applied to them */
-#form-views { position:absolute; left:30px; right:30px;
+#form-views.ng-enter,
+#form-views.ng-leave { position:absolute; left:30px; right:30px;
     transition:0.5s all ease; -moz-transition:0.5s all ease; -webkit-transition:0.5s all ease; 
 }
     
 /* enter animation */
-#form-views            { 
+#form-views.ng-enter            { 
     -webkit-animation:slideInRight 0.5s both ease;
 	-moz-animation:slideInRight 0.5s both ease;
 	animation:slideInRight 0.5s both ease; 
+}
+
+#form-views.ng-leave            { 
+    -webkit-animation:slideOutLeft 0.5s both ease;
+	-moz-animation:slideOutLeft 0.5s both ease;
+	animation:slideOutLeft 0.5s both ease; 
 }
 
 

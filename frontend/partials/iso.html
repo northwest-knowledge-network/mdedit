@@ -2,17 +2,19 @@
 
       <!-- form header contains title -->
       <div ng-include="partialsPrefix + 'partials/formHeader.html'"></div>
-
+ 
       <div class="row" ng-controller="ISOController as iso">
-          <div id="status-buttons" class="text-center">
-              <a ui-sref-active="active" ui-sref="form.basic" ng-click="submitDraftRecord()"><span>1</span> Basic Information</a>
-              <a ui-sref-active="active" ui-sref="form.detailed" ng-click="submitDraftRecord()"><span>2</span> Detailed Information</a>
-              <a ui-sref-active="active" ui-sref="form.dataFormats" ng-click="submitDraftRecord()"><span>3</span> Data Formats</a>
-	      <a ui-sref-active="active" ui-sref="form.onlineResourcesAndRestrictions" ng-click="submitDraftRecord()"><span>4</span>Online Resources</a>
-              <a ui-sref-active="active" ui-sref="form.spatialExtent" ng-click="submitDraftRecord()"><span>5</span>Spatial Data</a>
-              <a ui-sref-active="active" ui-sref="form.temporalExtent" ng-click="submitDraftRecord()"><span>6</span>Temporal Data</a>
-	      <a ui-sref-active="active" ui-sref="form.contacts" ng-click="submitDraftRecord()"><span>7</span>Contacts</a>
-          </div>
+        <div id="status-buttons" class="text-center">
+	  <a ui-sref-active="active" ui-sref="form.setup" ng-click="submitDraftRecord()"><span>1</span>Template Setup</a>
+          <a ui-sref-active="active" ui-sref="form.basic" ng-click="submitDraftRecord()"><span>2</span> Basic Information</a>
+          <a ui-sref-active="active" ui-sref="form.detailed" ng-click="submitDraftRecord()"><span>3</span> Detailed Information</a>
+          <a ui-sref-active="active" ui-sref="form.dataFormats" ng-click="submitDraftRecord()"><span>4</span> Data Formats</a>
+	  <a ui-sref-active="active" ui-sref="form.onlineResourcesAndRestrictions" ng-click="submitDraftRecord()"><span>5</span>Online Resources</a>
+          <a ui-sref-active="active" ui-sref="form.spatialExtent" ng-click="submitDraftRecord()"><span>6</span>Spatial Data</a>
+          <a ui-sref-active="active" ui-sref="form.temporalExtent" ng-click="submitDraftRecord()"><span>7</span>Temporal Data</a>
+	  <a ui-sref-active="active" ui-sref="form.contacts" ng-click="submitDraftRecord()"><span>8</span>Contacts</a>
+	  <a ui-sref-active="active" ui-sref="form.review" ng-click="submitDraftRecord()"><span>9</span>Review</a>
+        </div>
       </div>
       
       <!-- use ng-submit to catch the form submission and use our Angular function -->

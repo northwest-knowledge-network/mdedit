@@ -436,8 +436,14 @@ metadataEditorApp.controller('BaseController',
 	   a value, it has not been filled out.
 	*/
 	
-		$scope.checkRequiredFields = function(){
-		    var missedFields = [];
+	$scope.checkRequiredFields = function(){
+	    console.log("Printing currentRecord Length: " + Object.keys($scope.currentRecord).length);
+	    var recordLength = Object.keys($scope.currentRecord).length;
+	    var missedFields = new Array(recordLength);
+	    //for(var i = 0; i < missedFields.length; i++){
+	//	console.log("Init " + i);
+	//	missedFields[i] = new Array(recordLength);
+	  //  }
 		    var count = 0;
 		    for(var key in $scope.currentRecord){
 			switch(key){
@@ -456,12 +462,13 @@ metadataEditorApp.controller('BaseController',
 			case "spatial_dtype":
 			    if($scope.currentRecord[key] != null){
 				var response = checkLength(key, $scope.currentRecord[key]);
-				if(response.length > 0)
-				    missedFields[count] = response;
+				//missedFields[count][0] = response;
+				//missedFields[count][1] = response;
 			    }else{
 				var response = checkNull(key, $scope.currentRecord[key]);
-				if(response.length > 0)
-				    missedFields[count] = response;
+				//missedFields[count][0] = response;
+				//missedFields[count][1] = response;
+
 			    }
 			    count++;
 			    break;
@@ -471,12 +478,12 @@ metadataEditorApp.controller('BaseController',
 			    for(var nestedKey in $scope.currentRecord[key]){
 				if($scope.currentRecord[key][nestedKey] != null){
 				    var response = checkLength(key, $scope.currentRecord[key][nestedKey]);
-				    if(response.length > 0)
-					missedFields[count] = response;
+				    //missedFields[count][0] = response;
+				    //missedFields[count][1] = response;
 				}else{
 				    var response = checkNull(key, $scope.currentRecord[key][nestedKey]);
-				    if(response.length > 0)
-					missedFields[count] = response;
+				    //missedFields[count][0] = response;
+				    //missedFields[count][1] = response;
 				}
 			    }
 			    count++;

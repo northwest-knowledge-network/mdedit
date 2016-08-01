@@ -1,46 +1,81 @@
 'use strict';
 
 var metadataEditorApp = angular
-    .module('metadataEditor', ['ngRoute', 'ui.date', 'ngMap', 'ngAnimate', 'ui.router'])
-    .config(function($compileProvider, $stateProvider, $urlRouterProvider) {
-    // $compileProvider.aHrefSanitizationWhitelist(/localhost:/);
+    .module('metadataEditor', ['ngRoute', 'ui.date', 'ngMap', 'ngAnimate', 'ui.router', 'ngRoute'])
+    .config(function($compileProvider, $stateProvider, $urlRouterProvider, $routeProvider, $locationProvider) {
+	// $compileProvider.aHrefSanitizationWhitelist(/localhost:/);
+	
+	var partialsPrefix = "partials/form/";
 
-    	var partialsPrefix = "partials/form/";
 	$stateProvider
 	    .state('form', {
-		url: '/form',
 		templateURl: 'partials/iso.html'
 	    })
+	    .state('form.setup', {
+		templateUrl: partialsPrefix + 'setup.html'
+	    })
 	    .state('form.basic', {
-		url: '/basic',
-		templateUrl: 'partials/form/basic.html'
+		templateUrl: partialsPrefix + 'basic.html'
 	    })
 	    .state('form.detailed', {
-		url: '/detailed',
 		templateUrl: partialsPrefix + 'detailed.html'
 	    })
 	    .state('form.dataFormats', {
-		url: '/dataFormats',
 		templateUrl: partialsPrefix + 'dataFormats.html'
 	    })
 	    .state('form.onlineResourcesAndRestrictions', {
-		url: '/onlineResourcesAndRestrictions',
 		templateUrl: partialsPrefix + 'onlineResourcesAndRestrictions.html'
 	    })
 	    .state('form.spatialExtent', {
-		url: '/spatialExtent',
 		templateUrl: partialsPrefix + 'spatialExtent.html'
 	    })
 	    .state('form.temporalExtent', {
-		url: '/temporalExtent',
 		templateUrl: partialsPrefix + 'temporalExtent.html'
 	    })
+	    .state('form.review', {
+		templateUrl: partialsPrefix + 'review.html'
+	    })
 	    .state('form.contacts', {
-		url: '/contacts',
+		templateUrl: partialsPrefix + 'contacts.html'
+	    })
+
+
+	    .state('dublinForm',{
+		templateURL: 'partials/dublin.html'
+	    })
+
+	    .state('dublinForm.setup', {
+		templateUrl: partialsPrefix + 'setup.html'
+	    })
+	    .state('dublinForm.basic', {
+		templateUrl: partialsPrefix + 'basic.html'
+	    })
+	    .state('dublinForm.detailed', {
+		templateUrl: partialsPrefix + 'detailed.html'
+	    })
+	    .state('dublinForm.dataFormats', {
+		templateUrl: partialsPrefix + 'dataFormats.html'
+	    })
+	    .state('dublinForm.onlineResourcesAndRestrictions', {
+		templateUrl: partialsPrefix + 'onlineResourcesAndRestrictions.html'
+	    })
+	    .state('dublinForm.spatialExtent', {
+		templateUrl: partialsPrefix + 'spatialExtent.html'
+	    })
+	    .state('dublinForm.temporalExtent', {
+		templateUrl: partialsPrefix + 'temporalExtent.html'
+	    })
+	    .state('dublinForm.review', {
+		templateUrl: partialsPrefix + 'review.html'
+	    })
+	    .state('dublinForm.contacts', {
 		templateUrl: partialsPrefix + 'contacts.html'
 	    });
- 	$urlRouterProvider.otherwise('/iso');
- 
+
+ 	$urlRouterProvider
+	    .when(/iso/i, '/iso')
+	    .when(/dublin/i, '/dublin')
+	    .otherwise('/iso');
 })
 .constant('formOptions',  {
 
