@@ -21,7 +21,7 @@ var metadataEditorApp = angular
 		templateUrl: partialsPrefix + 'detailed.html'
 	    })
 	    .state('form.dataFormats', {
-		templateUrl: partialsPrefix + 'dataFormats.html'
+		templateUrl: partialsPrefix + 'isoDataFormats.html'
 	    })
 	    .state('form.onlineResourcesAndRestrictions', {
 		templateUrl: partialsPrefix + 'onlineResourcesAndRestrictions.html'
@@ -54,7 +54,7 @@ var metadataEditorApp = angular
 		templateUrl: partialsPrefix + 'detailed.html'
 	    })
 	    .state('dublinForm.dataFormats', {
-		templateUrl: partialsPrefix + 'dataFormats.html'
+		templateUrl: partialsPrefix + 'dublinDataFormats.html'
 	    })
 	    .state('dublinForm.onlineResourcesAndRestrictions', {
 		templateUrl: partialsPrefix + 'onlineResourcesAndRestrictions.html'
