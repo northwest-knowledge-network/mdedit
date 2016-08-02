@@ -3,21 +3,21 @@
 </h2>
 
 <div class="subform">
-  
-  <h3>I would like to uplaod a collection of: </h3>
 
-    <input type="radio" name="data-file-type" value="date-file">data file (document, table, GIS file, georeferenced photo)</input>
+    <h3>I would like to upload a collection of: </h3>
+    
+    <input type="radio" name="data-file-type" value="data-file"  ng-click="setFormType('iso')">data file (document, table, GIS file, georeferenced photo)</input>
     <br>
-    <input type="radio" name="data-file-type" value="non-date-file">Non-data file (poster, report, model, tool, script, code, or visualization)</input>
-  <br>
-
-  <h3>My file has: </h3>
-    <input type="radio" name="data-file-attributes" value="spatial-location">A spacial location (i.e., data collected at your study site)</input>
+    <input type="radio" name="data-file-type" value="non-data-file" ng-click="setFormType('dublin')">Non-data file (poster, report, model, tool, script, code, or visualization)</input>
+    <br>
+    
+    <h3>My file has: </h3>
+    <input type="checkbox" name="data-file-attributes" value="spatial-location" ng-change="setSpatialForm('dublinForm.spatialExtent', 'Spatial Data')" ng-model="hasSpatialData">A spacial location (i.e., data collected at your study site)</input>
     <br>
     <h3>This file was produced with support from: </h3>
-    <input type="radio" name="file-production-support" value="EPSCOR-MILES">The Idaho EPSCOR-MILES project</input>
+    <input type="radio" name="file-production-support" value="EPSCOR-MILES" ng-click="loadDefaultMILES()">The Idaho EPSCOR-MILES project</input>
     <br>
-    <input type="radio" name="file-production-support" value="none-of-the-above">None of the above</input>
+    <input type="radio" name="file-production-support" value="none-of-the-above" ng-click="loadDefaultNKNAsDistributor();">None of the above</input>
     <br>
-  
+
 </div>

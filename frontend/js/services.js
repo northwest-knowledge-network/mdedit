@@ -119,6 +119,12 @@ metadataEditorApp
         scope.currentRecord.thematic_keywords = record.thematic_keywords.join(', ');
     };
 }])
+
+.value('dublinFormList', {
+    form_name: '',
+    label: ''
+})
+
 .value('emptyISORecord',
 {
     schema_type: 'Dataset (ISO)',
@@ -236,9 +242,9 @@ metadataEditorApp
 })
 .service('recordService',
     ['$http', '$q', '$log', 'hostname', 'session_id',
-            'emptyISORecord', 'emptyDCRecord', 'milesFields', 'nkn',
+     'emptyISORecord', 'emptyDCRecord', 'milesFields', 'nkn', 'dublinFormList',
     function($http, $q, $log, hostname, session_id,
-             emptyISORecord, emptyDCRecord, milesFields, nkn)
+             emptyISORecord, emptyDCRecord, milesFields, nkn, dublinFormList)
     {
         /**
          * Private functions that will not be exposed to controller
@@ -375,7 +381,13 @@ metadataEditorApp
 
             return nkn;
         };
-
+	
+	var getFreshDublinFormList = function() {
+	    
+            var freshDublinFormList = angular.copy(dublinFormList);
+	    
+            return freshDublinFormList;
+        };
 
         /**
          * @param {string} recordId ID of the record to be edited
@@ -491,7 +503,8 @@ metadataEditorApp
             saveDraft: saveDraft,
             delete: delete_,
             list: list,
-            publish: publish
+            publish: publish,
+	    getFreshDublinFormList: getFreshDublinFormList
         };
     }
 ])

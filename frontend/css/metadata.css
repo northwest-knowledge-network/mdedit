@@ -292,6 +292,9 @@ nav.affix {
     padding-top: 70px;
 }
 
+.dublin-form-list {
+    float: left;
+}
 /* Animations for form wizard: sliding left and right out of the viewport */
 /* slide out to the left */
 @keyframes slideOutLeft {
@@ -352,3 +355,4 @@ nav.affix {
 
 /* active buttons */
 #status-buttons a.active span   { background:#00BC8C; }
+

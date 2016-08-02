@@ -2,31 +2,26 @@
       
   <!-- form header contains title -->
   <div ng-include="partialsPrefix + 'partials/formHeader.html'"></div>
-
+  
   <div class="row" ng-controller="DCController as dc">
-      <div id="status-buttons" class="text-center">
-	<a ui-sref-active="active" ui-sref="dublinForm.setup" ng-click="submitDraftRecord()"><span>1</span>Template Setup</a>
-        <a ui-sref-active="active" ui-sref="dublinForm.basic" ng-click="submitDraftRecord()"><span>2</span> Basic Information</a>
-        <a ui-sref-active="active" ui-sref="dublinForm.detailed" ng-click="submitDraftRecord()"><span>3</span> Detailed Information</a>
-        <a ui-sref-active="active" ui-sref="dublinForm.dataFormats" ng-click="submitDraftRecord()"><span>4</span> Data Formats</a>
-	<a ui-sref-active="active" ui-sref="dublinForm.onlineResourcesAndRestrictions" ng-click="submitDraftRecord()"><span>5</span>Online Resources</a>
-        <a ui-sref-active="active" ui-sref="dublinForm.spatialExtent" ng-click="submitDraftRecord()"><span>6</span>Spatial Data</a>
-        <a ui-sref-active="active" ui-sref="dublinForm.temporalExtent" ng-click="submitDraftRecord()"><span>7</span>Temporal Data</a>
-	<a ui-sref-active="active" ui-sref="dublinForm.contacts" ng-click="submitDraftRecord()"><span>8</span>Contacts</a>
-	<a ui-sref-active="active" ui-sref="dublinForm.review" ng-click="submitDraftRecord()"><span>9</span>Review</a>
+    <div id="status-buttons" ng-repeat="button in formList" class="text-center">
+      <div class="col-lg-1 col-md-1">
+	<a ui-sref-active="active" id="{{button.form_name}}" ui-sref="{{button.form_name}}" ng-click="submitDraftRecord()" class="dublin-button-list"><span>{{$index + 1}}</span>{{button.label}}</a>
       </div>
+    </div>
   </div>
-
-      <!-- use ng-submit to catch the form submission and use our Angular function -->
-      <div id="form-views" ui-view>
-	<form id="signup-form" ng-submit="processForm()">
-          <!-- our nested state views will be injected here -->
-          <div id="form-views" ui-view></div>
-	</form>
-      </div>
+  
+  
+  <!-- use ng-submit to catch the form submission and use our Angular function -->
+  <div id="form-views" ui-view>
+    <form id="signup-form" ng-submit="processForm()">
+      <!-- our nested state views will be injected here -->
+      <div id="form-views" ui-view></div>
+    </form>
+  </div>
   
 </form>
-    
+
 <!--
         <div class="col-xs-6 col-sm-6 col-md-6">
             <h2 class="section-header">

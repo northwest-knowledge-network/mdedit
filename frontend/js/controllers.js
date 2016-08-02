@@ -15,15 +15,6 @@ metadataEditorApp.controller('BaseController',
 
         $scope.options = {};
 	
-	//Delcare variables used for ng-style tags during automated tutorial
-	$scope.simulateHoverSave;
-	$scope.simulateHoverPublish;
-	$scope.simulateHoverDataset;
-	$scope.simulateHoverNonDataset;
-	$scope.simulateHoverMiles;
-	$scope.simulateHoverNKN;
-	$scope.attachFileDiv;
-
 	//Scope variable used to store remaining blank form field names
 	$scope.checkFormComplete = [];
 
@@ -35,6 +26,7 @@ metadataEditorApp.controller('BaseController',
 	$scope.closeSideNav;
 
 	$scope.setNavbar;
+
         //=== set up hostname-related scope variables ===//
         // export to XML
         var exportAddr = function(oid, xmlType) {
@@ -886,6 +878,77 @@ metadataEditorApp.controller('BaseController',
 	    $scope.sidebarWidth = {'width' : '0%'};
 	};
 
+	//Sets form to Iso or Dublin core by modifying address path to either /iso or /dublin
+	$scope.formType;
+	$scope.setFormType = function(type) {
+	    if(type == "iso"){
+		$location.path("/iso");
+		$scope.createNewRecord();
+	    }
+	    else if(type == "dublin"){
+		$location.path("/dublin");
+		$scope.createNewDublinRecord();
+	    }
+	    else
+		console.log("Error: tried to set path to unsupported url.");
+	}
+
+	$scope.hasSpatialData = false;
+	$scope.setSpatialForm = function(buttonName, buttonLabel) {
+	    $scope.hasSpatialData = !$scope.hasSpatialData;
+	    if($scope.hasSpatialData){
+		addDublinButton(buttonName, buttonLabel);
+	    }
+	    else{
+		removeDublinButton(buttonName);
+	    }
+	}
+
+	//List to populate possible buttons for dublin core form wizard.
+	$scope.formList = [];
+	var initializer = [
+	    "dublinForm.setup,Template Setup",
+	    "dublinForm.basic,Basic Information",
+	    "dublinForm.detailed,Detailed Information",
+	    "dublinForm.dataFormats,Data Formats",
+	    "dublinForm.onlineResourcesAndRestrictions,Online Resources",
+	    "dublinForm.temporalExtent,Temporal Data",
+	    "dublinForm.contacts,Contacts",
+	    "dublinForm.review,Review"
+	];
+
+	for(var i = 0; i < initializer.length; i++){
+	    console.log("Adding formList " + i);
+	    var dublinButton = recordService.getFreshDublinFormList();
+	    var data = initializer[i].split(",");
+	    dublinButton.form_name = data[0];
+	    dublinButton.label = data[1];
+	    $scope.formList.push(dublinButton);
+	}
+
+	function addDublinButton(buttonName, buttonLabel){
+	    var dublinButton = recordService.getFreshDublinFormList();
+	    dublinButton.form_name = buttonName;
+	    dublinButton.label = buttonLabel;
+	    //Swap last element in array with new element (last element is review step)
+	    var reviewStep = $scope.formList.pop();
+	    $scope.formList.push(dublinButton);
+	    $scope.formList.push(reviewStep);
+	}
+
+	function removeDublinButton(buttonName){
+	    for(var i = 0; i < $scope.formList.length; i++){
+		if($scope.formList[i].form_name == buttonName){
+		    for(var j = i; j < $scope.formList.length-1; j++){
+			$scope.formList[j] = $scope.formList[j+1];
+		    }
+		    //Remove last list element
+		    $scope.formList.pop();
+		}
+	    }
+	}
+    
+	
   } // end of callback for controller initialization
 ])
 .controller('ISOController', ['formOptions', function(formOptions) {
@@ -931,3 +994,31 @@ metadataEditorApp.controller('BaseController',
         $scope.currentRecord.west_lon = vm.sw.lng();
     };
   });
+/*
+
+    .controller('dublinFormButtonController', function($scope, recordService) {
+	console.log("In dublin controller: ");
+	$scope.formList = [];
+	var initializer = [
+	    "form.setup,Template Setup",
+	    "form.basic,Basic Information",
+	    "form.detailed,Detailed Information",
+	    "form.dataFormats,Data Formats",
+	    "form.onlineResourcesAndRestrictions,Online Resources",
+	    "form.spatialExtent,Spatial Data",
+	    "form.temporalExtent,Temporal Data",
+	    "form.contacts,Contacts",
+	    "form.review,Review"
+	];
+
+	for(var i = 0; i < initializer.length; i++){
+	    console.log("Adding formList " + i);
+	    var dublinButton = recordService.getFreshDublinFormList();
+	    var data = initializer[i].split(",");
+	    dublinButton.form_name = data[0];
+	    dublinButton.label = data[1];
+	    $scope.formList.push(dublinButton);
+	}
+	
+    });
+*/
