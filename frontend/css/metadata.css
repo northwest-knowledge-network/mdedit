@@ -231,6 +231,18 @@ a.dropdown-toggle, a.btn {
     display: inline-block;
 }
 
+/* To remove line break between divs */
+.extra-detailed-align {
+    background-color: #cccccc;
+    margin:0px;
+    padding: 5px 15px 10px;
+}
+
+/* Style for review.html results table */
+#review-table tr td{
+    border: 1px solid black;
+}
+
 /* Styles for side nav bar */
 
 .sidenav {

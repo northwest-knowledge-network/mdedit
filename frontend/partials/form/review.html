@@ -1,7 +1,28 @@
+<h2 class="section-header optional-field-header">
+  <span class="mega-octicon octicon-checklist"></span> Review & Submit
+</h2>
+
 <div id="reviewForm">
-  <table>
+  <table id="review-table">
     <tr ng-repeat="(key, value) in currentRecord">
-      <td> {{key}} </td> <td> {{value}} </td>
+      <td> {{reviewFields(key)}} </td> <td> {{reviewFields(value)}} </td>
     </tr>
   </table>
+</div>
+
+<div id="submit-form">
+  <br>
+  <button class="btn btn-primary" ng-show="baseCtrl.metadataForm.$valid"
+	  id="record-options-publish" ng-click="publishRecord()"
+	  href="#"
+	  data-toggle="modal" data-target="#submitModal"
+	  >
+    Publish record to NKN's portal
+  </button>
+  
+  <button ng-hide="baseCtrl.metadataForm.$valid"
+      class="disabled btn btn-primary">
+      Please complete the record to publish data
+  </button>
+  
 </div>

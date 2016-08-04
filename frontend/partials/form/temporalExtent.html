@@ -23,17 +23,17 @@
 		    <input type="text" tabindex="20" ui-date="dateOptions" ng-model="currentRecord.start_date.$date" id="start-date"required>
 		    
 		    H:
-		    <select tabindex=20 id="" name="" ng-model="currentRecord.start_date.$date.hours"
+		    <select tabindex=20 type="number" ng-model="currentRecord.start_date.hours"
 			    ng-options="hour for hour in hours">
 		    </select>
 		    
 		    M:
-		    <select tabindex=20 id="" name="" ng-model="currentRecord.start_date.$date.minutes"
+		    <select tabindex=20 type="number" ng-model="currentRecord.start_date.minutes"
 			    ng-options="min for min in minute_seconds">
 		    </select>
 		    
 		    S:
-		    <select tabindex=20 id="" name="" ng-model="currentRecord.start_date.$date.seconds"
+		    <select tabindex=20 type="number" ng-model="currentRecord.start_date.seconds"
 			    ng-options="sec for sec in minute_seconds">
 		    </select>
 		    
@@ -43,17 +43,17 @@
 		    <input type="text" tabindex="20" ui-date="dateOptions"
 			   id="end-date" ng-model="currentRecord.end_date.$date" required>
 		    H:
-		    <select tabindex=20 id="" name="" ng-model="currentRecord.end_date.$date.hours"
+		    <select tabindex=20 type="number" ng-model="currentRecord.end_date.$date.hours"
 			    ng-options="hour for hour in hours">
 		    </select>
 		    
 		    M:
-		    <select tabindex=20 id="" name="" ng-model="currentRecord.end_date.$date.minutes"
+		    <select tabindex=20 type="number" ng-model="currentRecord.end_date.$date.minutes"
 			    ng-options="min for min in minute_seconds">
 		    </select>
 		    
 		    S:
-		    <select tabindex=20 id="" name="" ng-model="currentRecord.end_date.$date.seconds"
+		    <select tabindex=20 type="number" ng-model="currentRecord.end_date.$date.seconds"
 			    ng-options="sec for sec in minute_seconds">
 		    </select>
 	</div>

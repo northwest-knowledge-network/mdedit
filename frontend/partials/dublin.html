@@ -4,7 +4,7 @@
   <div ng-include="partialsPrefix + 'partials/formHeader.html'"></div>
   
   <div class="row" ng-controller="DCController as dc">
-    <div id="status-buttons" ng-repeat="button in formList" class="text-center">
+    <div id="status-buttons" ng-repeat="button in dublinFormList" class="text-center">
       <div class="col-lg-1 col-md-1">
 	<a ui-sref-active="active" id="{{button.form_name}}" ui-sref="{{button.form_name}}" ng-click="submitDraftRecord()" class="dublin-button-list"><span>{{$index + 1}}</span>{{button.label}}</a>
       </div>
@@ -12,7 +12,6 @@
   </div>
   
   
-  <!-- use ng-submit to catch the form submission and use our Angular function -->
   <div id="form-views" ui-view>
     <form id="signup-form" ng-submit="processForm()">
       <!-- our nested state views will be injected here -->

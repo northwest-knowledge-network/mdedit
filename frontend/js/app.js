@@ -18,7 +18,7 @@ var metadataEditorApp = angular
 		templateUrl: partialsPrefix + 'basic.html'
 	    })
 	    .state('form.detailed', {
-		templateUrl: partialsPrefix + 'detailed.html'
+		templateUrl: partialsPrefix + 'isoDetailed.html'
 	    })
 	    .state('form.dataFormats', {
 		templateUrl: partialsPrefix + 'isoDataFormats.html'
@@ -35,6 +35,25 @@ var metadataEditorApp = angular
 	    .state('form.review', {
 		templateUrl: partialsPrefix + 'review.html'
 	    })
+	    .state('form.fileUpload', {
+		templateUrl: partialsPrefix + 'uploadFile.html'
+	    })
+	    .state('form.requestDOI', {
+		templateUrl: partialsPrefix + 'doiRequest.html'
+	    })
+	    .state('form.termsConditions', {
+		templateUrl: partialsPrefix + 'termsConditions.html'
+	    })
+	    .state('form.disclaimer', {
+		templateUrl: partialsPrefix + 'disclaimer.html'
+	    })
+	    .state('form.sensitiveInformation', {
+		templateUrl: partialsPrefix + 'sensitiveInformation.html'
+	    }) 
+	    .state('form.otherOptions', {
+		templateUrl: partialsPrefix + 'otherOptions.html'
+	    }) 
+
 	    .state('form.contacts', {
 		templateUrl: partialsPrefix + 'contacts.html'
 	    })
@@ -68,6 +87,24 @@ var metadataEditorApp = angular
 	    .state('dublinForm.review', {
 		templateUrl: partialsPrefix + 'review.html'
 	    })
+	    .state('dublinForm.fileUpload', {
+		templateUrl: partialsPrefix + 'uploadFile.html'
+	    })
+	    .state('dublinForm.requestDOI', {
+		templateUrl: partialsPrefix + 'doiRequest.html'
+	    })
+	    .state('dublinForm.termsConditions', {
+		templateUrl: partialsPrefix + 'termsConditions.html'
+	    })
+	    .state('dublinForm.disclaimer', {
+		templateUrl: partialsPrefix + 'disclaimer.html'
+	    })
+	    .state('dublinForm.sensitiveInformation', {
+		templateUrl: partialsPrefix + 'sensitiveInformation.html'
+	    })
+	    .state('dublinForm.otherOptions', {
+		templateUrl: partialsPrefix + 'otherOptions.html'
+	    }) 
 	    .state('dublinForm.contacts', {
 		templateUrl: partialsPrefix + 'contacts.html'
 	    });

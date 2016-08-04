@@ -164,6 +164,8 @@ metadataEditorApp
     start_date: {$date:''},
     end_date: {$date:''},
 
+    doi_ark_request: '',
+    data_one_search: '',
     attachments: []
 })
 
@@ -199,6 +201,8 @@ metadataEditorApp
     north_lat: '',
     south_lat: '',
 
+    doi_ark_request: '',
+    data_one_search: '',
     attachments: []
 })
 .value('milesFields',

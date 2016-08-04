@@ -1,0 +1,15 @@
+<h2 class="section-header optional-field-header">
+  <span class="mega-octicon octicon-device-desktop"></span> Request DOI/ARK
+</h2>
+
+<div class="subform">
+  <h3>Disclaimer about what constitutes DOI-able work needed here!!! </h3>
+  
+  <input type="radio" name="request-doi" value="DOI"  ng-click="applyForDOI('DOI')">This file is the final version and I would like to request a DOI (Recommended)</input>
+  <br>
+  <input type="radio" name="request-doi" value="ARK" ng-click="applyForDOI('ARK')">This file is continually updated and I would like to request an ARK (A DOI can be issued once the file is complete).</input>
+  <br>
+  <input type="radio" name="request-doi" value="neither" ng-click="applyForDOI('neither')">I do not want a DOI/ARK.</input>
+  <br>
+    
+</div>

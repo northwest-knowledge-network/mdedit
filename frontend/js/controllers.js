@@ -112,6 +112,7 @@ metadataEditorApp.controller('BaseController',
             $scope.attachmentInfo = {
                 newAttachment: ''
             };
+
         };
 
         // initialize form with placeholder data for creating a new record
@@ -184,7 +185,7 @@ metadataEditorApp.controller('BaseController',
          */
         $scope.editRecord = function (recordId) {
 
-            recordService.getRecordToEdit(recordId)
+	    recordService.getRecordToEdit(recordId)
                 .success(function (data) {
                     $scope.newRecord = false;
 
@@ -196,6 +197,7 @@ metadataEditorApp.controller('BaseController',
 
              //set geocode write-in box to be blank
             $scope.options.bboxInput = '';
+
         };
 
         /**
@@ -428,141 +430,163 @@ metadataEditorApp.controller('BaseController',
 	   a value, it has not been filled out.
 	*/
 	
-	$scope.checkRequiredFields = function(){
-	    console.log("Printing currentRecord Length: " + Object.keys($scope.currentRecord).length);
-	    var recordLength = Object.keys($scope.currentRecord).length;
-	    var missedFields = new Array(recordLength);
-	    //for(var i = 0; i < missedFields.length; i++){
-	//	console.log("Init " + i);
-	//	missedFields[i] = new Array(recordLength);
-	  //  }
-		    var count = 0;
-		    for(var key in $scope.currentRecord){
-			switch(key){
-			case "title":
-			case "summary":
-   			case "update_frequency":
-			case "status":
-			case "hierarchy_level":
-			case "place_keywords":
-			case "thematic_keywords":
-			case "use_restrictions":
-			case "west_lon":
-			case "east_lon":
-			case "north_lat":
-			case "south_lat":
-			case "spatial_dtype":
-			    if($scope.currentRecord[key] != null){
-				var response = checkLength(key, $scope.currentRecord[key]);
-				//missedFields[count][0] = response;
-				//missedFields[count][1] = response;
+	$scope.reviewFields = function(value){
+	    console.log("Printing value in reviewFields: " + value);
+
+	    if(Array.isArray(value)){
+		if(typeof value[0] === 'object'){ 		
+		    var totalString = "";
+		    var response = "";
+		    for(var i = 0; i < value.length; i++){
+			var iterationString = "";
+			
+			for(var key in value[i]){
+			    if((key != null) && (value[i][key] != null)){
+				response = checkLength(key) + " : " + checkLength(value[i][key]) + " | ";
 			    }else{
-				var response = checkNull(key, $scope.currentRecord[key]);
-				//missedFields[count][0] = response;
-				//missedFields[count][1] = response;
-
+				response = checkNull(key) + " : " + checkNull(value[i][key]) + " | ";
 			    }
-			    count++;
-			    break;
+			    iterationString = iterationString + response;
+			}
+			totalString = totalString + iterationString;
+		    }
+		}
+		    return value + " : " + totalString;
+	    }
+	    
+		
+	    if(typeof value === 'object'){
+		var totalString = "";
+		for(key in value){
+		    console.log("Printing object's attributes!!!! <<<<<<>>>>>>>>>>>>>>>>> " + key + " : " + value[key]);
+		    if(typeof value[key] === 'number')
+			totalString = totalString + key + " : " + value[key].toString() + " | ";
+		    else
+			totalString = totalString + key + " : " + value[key] + " | ";
+		}
+	    }
+	    
+	    if(typeof value === 'number'){
+		return value.toString();
+	    }
+	    else if(value != null){
+		var response = checkLength(value);
+		return response;
+	    }else{
+		var response = checkNull(value);
+		return response;
+	    }
 
-    			case "start_date":
-			case "end_date":
-			    for(var nestedKey in $scope.currentRecord[key]){
-				if($scope.currentRecord[key][nestedKey] != null){
-				    var response = checkLength(key, $scope.currentRecord[key][nestedKey]);
-				    //missedFields[count][0] = response;
-				    //missedFields[count][1] = response;
-				}else{
-				    var response = checkNull(key, $scope.currentRecord[key][nestedKey]);
-				    //missedFields[count][0] = response;
-				    //missedFields[count][1] = response;
-				}
-			    }
-			    count++;
-			    break;
-
-			case "data_format":
-			    //check $scope.dataFormats: text input isn't bound to currentRecord
-			    //Two possibilities: dataFormats.iso[] or dataFormats.aux (string).
-			    //If one is filled out, do not check the other (mutally exclusive).
-			    if($scope.dataFormats.aux.length == 0){
-				for(var i = 0; i < $scope.dataFormats.iso.length; i++){
-		    		    if($scope.dataFormats.iso[i] != null){
-					var response = checkLength(key, $scope.dataFormats.iso[i]);
-					if(response.length > 0)
-					    missedFields[count] = response;
-				    }else{
-					var response = checkNull(key, $scope.dataFormats.iso[i]);
-					if(response.length > 0)
-					    missedFields[count] = response;
-				    }
-				    count++;
-				}
-			    }
-			    //Check aux definition too (from text input of other values)
-			    if($scope.dataFormats.iso.length == 0){
-				if($scope.dataFormats.aux != null){
-				    var response = checkLength(key, $scope.dataFormats.aux);
-				    if(response.length > 0){
-					missedFields[count] = response;
-					count++;
-				    }
-				}else{
-				    var response = checkNull(key, $scope.dataFormats.aux);
-				    if(response.length > 0){
-					missedFields[count] = response;
-					count++;
-				    }
-				}
-			    }
-
-			    
-			    break;
-			    
-  			case "topic_category":
-			    if($scope.currentRecord[key][0] != null){
-				var response = checkLength(key, $scope.currentRecord[key][0]);
-				if(response.length > 0)
-				    missedFields[count] = response;
-			    }else{
-				var response = checkNull(key, $scope.currentRecord[key][0]);
-				if(response.length > 0)
-				    missedFields[count] = response;
-			    }
-			    count++;
-			    break;
-			    
-			case "citation":
-			case "access":
-			    for(var nestedKey in $scope.currentRecord[key][0]){
-				if($scope.currentRecord[key][0][nestedKey] != null){
-				    var response = checkLength(nestedKey, $scope.currentRecord[key][0][nestedKey]);
-				    if(response.length > 0)
-					missedFields[count] = response;
-
-				    count++;
-				}else{
-				    var response = checkNull(nestedKey, $scope.currentRecord[key][0][nestedKey]);
-				    if(response.length > 0)
-					missedFields[count] = response;
-
-				    count++;
-				}
-			    }
-			    break;
-			default:
-			    //Do nothing
-			    break;
+/*
+	    
+	    switch(value){
+	    case "title":
+	    case "summary":
+   	    case "update_frequency":
+	    case "status":
+	    case "hierarchy_level":
+	    case "place_keywords":
+	    case "thematic_keywords":
+	    case "use_restrictions":
+	    case "west_lon":
+	    case "east_lon":
+	    case "north_lat":
+	    case "south_lat":
+	    case "spatial_dtype":
+		if(value){
+		    var response = checkLength(value);
+		    return response;
+		}else{
+		    var response = checkNull(value);
+		    return response;
+		}
+		break;
+		
+    	    case "start_date":
+	    case "end_date":
+		for(var nestedKey in $scope.currentRecord[value]){
+		    if($scope.currentRecord[value][nestedKey] != null){
+			var response = checkLength(value);
+			return response;
+		    }else{
+			var response = checkNull(value);
+			return response;
+		    }
+		}
+		break;
+		
+	    case "data_format":
+		//check $scope.dataFormats: text input isn't bound to currentRecord
+		//Two possibilities: dataFormats.iso[] or dataFormats.aux (string).
+		//If one is filled out, do not check the other (mutally exclusive).
+		if(value != null){
+		    var response = checkLength(value);
+		    if(response.length > 0)
+			return response;
+		}else{
+		    var response = checkNull(value);
+		    if(response.length > 0)
+			return response;
+		}
+		
+		//Check aux definition too (from text input of other values)
+		if($scope.dataFormats.iso.length == 0){
+		    if($scope.dataFormats.aux != null){
+			var response = checkLength(value);
+			if(response.length > 0){
+			    return response;
+			}
+		    }else{
+			var response = checkNull(value);
+			if(response.length > 0){
+			    return response;
 			}
 		    }
-
-		    $scope.checkFormComplete = missedFields;
-		};
+		}
+		
+		
+		break;
+		
+  	    case "topic_category":
+		if($scope.currentRecord[key][0] != null){
+		    var response = checkLength(value);
+		    if(response.length > 0)
+			return response;
+		}else{
+		    var response = checkNull(value);
+		    if(response.length > 0)
+			return response;
+		}
+		break;
+		
+	    case "citation":
+	    case "access":
+		for(var nestedKey in $scope.currentRecord[key][0]){
+		    if($scope.currentRecord[key][0][nestedKey] != null){
+			var response = checkLength(value);
+			if(response.length > 0)
+			    return response;
+		    }else{
+			var response = checkNull(value);
+			if(response.length > 0)
+			    return response;
+		    }
+		}
+		break;
+	    default:
+		return '';
+		break;
+	    }
+*/
+	 
+	}
+    
 
 		/* Translate key into more human readable format for alert window.
 		   E.X.: data_format -> Data Format
 		*/
-		function translateKey(key){
+	function translateKey(key){
+	    key = key + "";
 		    var delimString = key.split("_");
 		    var parsedString = "";
 		    for(var i = 0; i < delimString.length; i++){
@@ -595,8 +619,8 @@ metadataEditorApp.controller('BaseController',
 		   length 0 in services.js). If so, display window alert with
 		   variable name. 
 		*/
-		function checkLength(fieldName, field){
-		    if(field.length == 0)
+		function checkLength(fieldName){
+		    if(fieldName.length > 0)
 			return translateKey(fieldName);
 
 		    return "";
@@ -604,12 +628,12 @@ metadataEditorApp.controller('BaseController',
 		/* Check if variable is null. If so, display window alert with
 		   variable name. 
 		*/
-		function checkNull(fieldName, field){
-		    if(field == null)
+	function checkNull(fieldName){
+		    if(fieldName != null)
 			return translateKey(fieldName);
 		    
 		    return "";
-		};
+	};
 	/* Click on element to simulate user clicking on element. Used for 
 	   step-by-step description buttons in index.html. 
 	 */
@@ -617,265 +641,6 @@ metadataEditorApp.controller('BaseController',
 	    $timeout(function(){
 		angular.element(document).find(elementID).trigger('click');
 	    });
-	};
-
-	//Functions to simulate steps in tutorial
-	$scope.simulateStepOne = function(){
-	    var delay = 2000;
-
-	    //Scroll to "Basic Information" section to show user where form
-	    //element is.
-	    $location.hash("navbar");
-	    $anchorScroll.yOffset = 0;
-	    $anchorScroll();
-
-	    //Click on Record Options dropdown list
-	    $timeout(function(){
-		$scope.clickOnElement("#record-options-dropdown");
-	    }, delay);
-
-	    //Simulate hovering on "Create New Dataset" by changing background color of element
-	    //to grey for 2 seconds.
-	    $timeout(function(){
-		$scope.simulateHoverDataset = {'background-color':'#c2c2a3'};
-	    }, delay+=2000);
-
-	    //Change background color of "Create New Dataset" back to white
-	    //to end "hover."
-	    $timeout(function(){
-		$scope.simulateHoverDataset = {'background-color':'#ffffff'};
-	    }, delay+=2000);
-
-	    //Simulate hover on "Create new Non-Dataset Record" element by changing
-	    //background color to grey for 2 seconds.
-	    $timeout(function(){
-		$scope.simulateHoverNonDataset = {'background-color':'#c2c2a3'};
-	    }, delay+=2000);
-
-	    //Change background color of "Create New Non-Dataset Record" element
-	    //back to white.
-	    $timeout(function(){
-		$scope.simulateHoverNonDataset = {'background-color':'#ffffff'};
-	    }, delay+=2000);
-
-	    //Scroll to "Step 1" button and click on "Record Options" dropdown again to hide it.
-    	    $timeout(function(){
-		$location.hash("step-one");
- 		$anchorScroll();
-		$scope.clickOnElement("#record-options-dropdown");
-	    }, delay+=2000); 
-	};
-
-	$scope.simulateStepTwo = function(){
-	    var delay = 2000;
-
-	    $location.hash("navbar");
-	    $anchorScroll.yOffset = 0;
-	    $anchorScroll();
-
-	    //Click on "Load Defaults" dropdown menu
-	    $timeout(function(){
-		$scope.clickOnElement("#defaults-dropdown");
-	    },delay);
-
-	    //Simulate hovering effect on "MILES" and "NKN as Data Manager" elements
-	    //of dropdown list by changing background of respective elements to grey,
-	    //then back to white after delay. 
-	    $timeout(function(){
-		$scope.simulateHoverMiles = {'background-color':'#c2c2a3'};
-	    }, delay+=2000);
-
-	    $timeout(function(){
-		$scope.simulateHoverMiles = {'background-color':'#ffffff'};
-	    }, delay+=2000);
-
-	    $timeout(function(){
-		$scope.simulateHoverNKN = {'background-color':'#c2c2a3'};
-	    }, delay+=2000);
-
-	    $timeout(function(){
-		$scope.simulateHoverNKN = {'background-color':'#ffffff'};
-	    }, delay+=2000);
-
-	    //Click on "Load Defaults" again to hide dropdown list.
-	    $timeout(function(){
-		$location.hash("step-two");
- 		$anchorScroll();
-		$scope.clickOnElement("#defaults-dropdown");
-	    }, delay+=2000); 
-	};
-	
-	$scope.simulateStepThree = function(){
-	    var delay = 2000;
-
-	    //Scroll to navbar
-	    $location.hash("navbar");
-	    $anchorScroll.yOffset = 0;
-	    $anchorScroll();
-
-	    //Scroll to "Basic Information" section to show user where form
-	    //element is.
-	    $timeout(function(){
-		$location.hash("title-input");
-		$anchorScroll.yOffset = 350;
-		$anchorScroll();
-	    }, delay);
-	    
-	    //Scroll to "title" input after 3 second delay.
-	    $timeout(function(){
-		$location.hash("title-input");
-		$anchorScroll.yOffset = 230;
-		$anchorScroll();
-	    }, delay+=3000);
-
-	    //Click on "Record Options" dropdown list again to
-	    //show user where to save.
-	    $timeout(function(){
-		$scope.clickOnElement("#record-options-dropdown");
-	    }, delay+=5000);
-
-	    //Simulate hovering effect on "Save this record as draft"element
-	    //of dropdown list by changing background of element to grey,
-	    //then back to white after delay. 
-	    $timeout(function(){
-		$scope.simulateHoverSave = {'background-color':'#c2c2a3'};
-	    }, delay+=2000);
-
-	    $timeout(function(){
-		$scope.simulateHoverSave = {'background-color':'#ffffff'};
-	    }, delay+=2000);
-
-	    //Scroll back to "Step 3" button at top of page so user
-	    //can continue with tutorial.
-	    $timeout(function(){
-		$location.hash("step-three");
- 		$anchorScroll();
-		$scope.clickOnElement("#record-options-dropdown");
-	    }, delay+=2000); 
-	};
-
-	$scope.simulateStepFour = function(){
-	    var delay = 3000;
-	    $scope.setNavbar = {'position':'fixed', 'top':'0px', 'width':'100%'};
-			
-	    //Scroll to the "Attach file" section of the form
-	    $timeout(function(){
-		$location.hash("attachment-header");
-		$anchorScroll.yOffset = 75;
- 		$anchorScroll();
-	    }); 
-
-	    //Highlight attach file section by
-	    //changing background of attach file section to grey,
-	    //then back to white after delay. 
-	    $timeout(function(){
-		$scope.attachFileDiv = {'background-color':'#c2c2a3'};
-	    }, delay);
-	    
-	    $timeout(function(){
-		$scope.attachFileDiv = {'background-color':'#FFFFFF'};
-	    }, delay+=3000); 
-
-	    //Click on "Record Options" dropdown list to show list elements.
-	    $timeout(function(){
-		$scope.clickOnElement("#record-options-dropdown");
-	    }, delay+=3000);
-
-	    //Simulate hovering effect on "Save this record as a draft" elements
-	    //of dropdown list by changing background of element to grey,
-	    //then back to white after delay. 
-	    $timeout(function(){
-		$scope.simulateHoverSave = {'background-color':'#c2c2a3'};
-	    }, delay+=3000);
-
-	    $timeout(function(){
-		$scope.simulateHoverSave = {'background-color':'#ffffff'};
-	    }, delay+=2000);
-
-	    //Scroll back to "Step 4" button so user can continue with tutorial.
-	    $timeout(function(){
-		$scope.setNavbar = {};
-		$location.hash("step-four");
- 		$anchorScroll();
-		$scope.clickOnElement("#record-options-dropdown");
-	    }, delay+=2000); 
-	};
-
-	$scope.simulateStepFive = function(){
-	    var delay = 3000;
-	    $timeout(function(){
-		$location.hash("navbar");
-		$anchorScroll.yOffset = 0;
-		$anchorScroll();
-	    });
-	    //Click on "Record Options" dropdown list to show list elements.
-	    $timeout(function(){
-		$scope.clickOnElement("#record-options-dropdown");
-	    }, delay);
-	    
-	    //Simulate hovering effect on publish/please complete element
-	    //of dropdown list by changing background of element to grey,
-	    //then back to white after delay. 
-	    $timeout(function(){
-		$scope.simulateHoverPublish = {'background-color':'#c2c2a3'};
-	    }, delay+=2000);
-
-	    $timeout(function(){
-		$scope.simulateHoverPublish = {'background-color':'#ffffff'};
-	    }, delay+=2000);
-
-	    //Click on "Record Options" dropdown list to hide it.
-    	    $timeout(function(){
-		$location.hash("step-five");
- 		$anchorScroll();
-		$scope.clickOnElement("#record-options-dropdown");
-	    }, delay+=2000); 
-	};
-
-	$scope.simulateTips = function(){
-	    var delay = 2000;
-	    $timeout(function(){
-		$location.hash("navbar");
-		$anchorScroll.yOffset = 0;
-		$anchorScroll();
-	    }, delay);
-	    //Click on "My Records" to expose drop down list
-	    $timeout(function(){
-		$scope.clickOnElement("#load-delete-record-dropdown");
-	    }, delay+=2000);
-
-	    //After 5 second delay, click on "My Records" again to
-	    //hide list.
-	    $timeout(function(){
-		$scope.clickOnElement("#load-delete-record-dropdown");
-	    }, delay+=5000);
-
-	    //Click on "View XML as" to expose drop down list
-	    $timeout(function(){
-		$scope.clickOnElement("#export-dropdown");
-	    }, delay+=2000);
-
-	    //Click on "View XML as" again to hide list.
-	    $timeout(function(){
-		$scope.clickOnElement("#export-dropdown");
-	    }, delay+=5000);
-
-	    //Return to steps area
-	    $timeout(function(){
-		$location.hash("step-tips");
- 		$anchorScroll();
-	    }, delay+=2000); 
-	
-	};
-    
-	//Open side nav
-	$scope.openSideNav = function() {
-	    $scope.sidebarWidth = {'width' : '15%'};
-	};
-
-	//Close side nav
-	$scope.closeSideNav = function() {
-	    $scope.sidebarWidth = {'width' : '0%'};
 	};
 
 	//Sets form to Iso or Dublin core by modifying address path to either /iso or /dublin
@@ -904,9 +669,105 @@ metadataEditorApp.controller('BaseController',
 	    }
 	}
 
+	//Request either DOI or ARK: sets currentRecord.doi_ark_request to either "DOI", "ARK", or "".
+	$scope.applyForDOI = function(type) {
+	    if(type == "DOI"){
+		$scope.currentRecord.doi_ark_request = type;
+	    }else if(type == "ARK"){
+		$scope.currentRecord.doi_ark_request = type;
+	    }else if(type == "neither"){
+		$scope.currentRecord.doi_ark_request = '';
+	    }else{
+		console.log("Error: tried to set DOI/ARK request to unsupported value: options are DOI/ARK");
+	    }
+	}
+
+	$scope.searchableOnDataOne = false;
+	
+	//Initialize form variables to currentRecord values
+	$scope.checkSearchableDataOne = function() {
+	    //Initialize variable to current record variable for searchable on DataOne 
+	    if($scope.currentRecord.data_one_search.localeCompare("true")){
+		$scope.searchableOnDataOne = true;
+		return true;
+	    }
+	    else if($scope.currentRecord.data_one_search.localeCompare("false")){
+		$scope.searchableOnDataOne = false;
+		return false;
+	    }
+	    else if($scope.currentRecord.data_one_search.localeCompare("")){
+		$scope.searchableOnDataOne = false;
+		return false;
+	    }
+	    else{
+		console.log("Error: $scope.currentRecord.data_one_search set to a string other than \"true\" or \"false\".");
+		$scope.searchableOnDataOne = false;
+		return false;
+	    }
+	}
+	
+	function toggleSearchableDataOne(){
+	    $scope.searchableOnDataOne = !$scope.searchableOnDataOne;
+	}
+	
+	$scope.setSearchableDataOne = function() {
+	    toggleSearchableDataOne();
+	    $scope.currentRecord.data_one_search = $scope.searchableOnDataOne.toString();
+	    return $scope.searchableOnDataOne
+	}
+
+
+	$scope.agreeTermsConditions = false;
+	//Sets boolean variable to see if terms and conditions have been read and agreed to.
+	$scope.setTermsAndConditions = function() {
+	    $scope.agreeTermsConditions = !$scope.agreeTermsConditions;
+	}
+
+	$scope.rightToPublish = false;
+	//Sets boolean variable that demonstrates the author has the right to publish this material.
+	$scope.setRightToPublish = function() {
+	    $scope.rightToPublish = !$scope.rightToPublish; 
+	}
+
+	$scope.containsSensitiveInformation = true;
+	//Sets boolean value to see if metadata being submitted has sensitive information.
+	$scope.setSensitiveInformation = function() {
+	    $scope.containsSensitiveInformation = !$scope.containsSensitiveInformation;
+	}
+	
+	//List to populate buttons for ISO. ISO has more default form
+	//fields than Dublin.
+	$scope.isoFormList = [];
+ 	var isoInitializer = [
+	    "form.setup,Template Setup",
+	    "form.basic,Basic Information",
+	    "form.detailed,Detailed Information",
+	    "form.dataFormats,Data Formats",
+	    "form.onlineResourcesAndRestrictions,Online Resources",
+	    "form.temporalExtent,Temporal Data",
+	    "form.spatialExtent,Spatial Data",
+	    "form.contacts,Contacts",
+	    "form.fileUpload,Upload File",
+	    "form.requestDOI,Request DOI/ARK",
+	    "form.otherOptions,Other Options",
+	    "form.disclaimer,Disclaimer",
+	    "form.review,Review"
+	];
+
+	for(var i = 0; i < isoInitializer.length; i++){
+	    console.log("Adding isoFormList " + i);
+	    var dublinButton = recordService.getFreshDublinFormList();
+	    var data = isoInitializer[i].split(",");
+	    dublinButton.form_name = data[0];
+	    dublinButton.label = data[1];
+	    $scope.isoFormList.push(dublinButton);
+	}
+	
 	//List to populate possible buttons for dublin core form wizard.
-	$scope.formList = [];
-	var initializer = [
+	//String has two values split at the "," value that are both put in
+	//the "dublinButton" object from the services.js file.
+	$scope.dublinFormList = [];
+ 	var dublinInitializer = [
 	    "dublinForm.setup,Template Setup",
 	    "dublinForm.basic,Basic Information",
 	    "dublinForm.detailed,Detailed Information",
@@ -914,16 +775,20 @@ metadataEditorApp.controller('BaseController',
 	    "dublinForm.onlineResourcesAndRestrictions,Online Resources",
 	    "dublinForm.temporalExtent,Temporal Data",
 	    "dublinForm.contacts,Contacts",
+	    "dublinForm.fileUpload,Upload File",
+	    "dublinForm.requestDOI,Request DOI/ARK",
+	    "dublinForm.otherOptions,Other Options",
+	    "dublinForm.disclaimer,Disclaimer",
 	    "dublinForm.review,Review"
 	];
 
-	for(var i = 0; i < initializer.length; i++){
+	for(var i = 0; i < dublinInitializer.length; i++){
 	    console.log("Adding formList " + i);
 	    var dublinButton = recordService.getFreshDublinFormList();
-	    var data = initializer[i].split(",");
+	    var data = dublinInitializer[i].split(",");
 	    dublinButton.form_name = data[0];
 	    dublinButton.label = data[1];
-	    $scope.formList.push(dublinButton);
+	    $scope.dublinFormList.push(dublinButton);
 	}
 
 	function addDublinButton(buttonName, buttonLabel){
@@ -931,23 +796,22 @@ metadataEditorApp.controller('BaseController',
 	    dublinButton.form_name = buttonName;
 	    dublinButton.label = buttonLabel;
 	    //Swap last element in array with new element (last element is review step)
-	    var reviewStep = $scope.formList.pop();
-	    $scope.formList.push(dublinButton);
-	    $scope.formList.push(reviewStep);
+	    var reviewStep = $scope.dublinFormList.pop();
+	    $scope.dublinFormList.push(dublinButton);
+	    $scope.dublinFormList.push(reviewStep);
 	}
 
 	function removeDublinButton(buttonName){
-	    for(var i = 0; i < $scope.formList.length; i++){
-		if($scope.formList[i].form_name == buttonName){
-		    for(var j = i; j < $scope.formList.length-1; j++){
-			$scope.formList[j] = $scope.formList[j+1];
+	    for(var i = 0; i < $scope.dublinFormList.length; i++){
+		if($scope.dublinFormList[i].form_name == buttonName){
+		    for(var j = i; j < $scope.dublinFormList.length-1; j++){
+			$scope.dublinFormList[j] = $scope.dublinFormList[j+1];
 		    }
 		    //Remove last list element
-		    $scope.formList.pop();
+		    $scope.dublinFormList.pop();
 		}
 	    }
 	}
-    
 	
   } // end of callback for controller initialization
 ])

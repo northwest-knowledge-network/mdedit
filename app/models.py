@@ -69,6 +69,12 @@ class Metadata(db.Document):
     start_date = db.DateTimeField()
     end_date = db.DateTimeField()
 
+    # request for DOI or ARK
+    doi_ark_request = db.StringField(max_length=255)
+
+    # request to be searchable on DataOne
+    data_one_search = db.StringField(max_length=255)
+    
     # files associated with the metadata record
     attachments = db.EmbeddedDocumentListField('Attachment')
 
