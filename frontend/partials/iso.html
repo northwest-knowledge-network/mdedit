@@ -5,12 +5,24 @@
  
       <div class="row" ng-controller="ISOController as iso">
 
-	<div id="status-buttons" ng-repeat="button in isoFormList" class="text-center">
+      <a ui-sref-active="active" class="left-scroll-link" ng-click="submitDraftRecord(); setCurrentPage(-1, 'iso');" >
+	<span class="mega-octicon octicon-chevron-left left-scroll-button">
+        </span>
+      </a>
+
+	
+	<div id="status-buttons" ng-repeat="button in isoFormList" ng-style="calcPercentComplete()" class="text-center">
 	  <div class="col-lg-1 col-md-1">
-	    <a ui-sref-active="active" id="{{button.form_name}}" ui-sref="{{button.form_name}}" ng-click="submitDraftRecord()" class="dublin-button-list"><span>{{$index + 1}}</span>{{button.label}}</a>
+	    <a ui-sref-active="active" id="{{button.form_name}}" ng-click="submitDraftRecord(); jumpToPage($index, 'iso');" class="dublin-button-list"><span>{{$index + 1}}</span>{{button.label}}</a>
 	  </div>
 	</div>
       </div>
+      
+      
+      <a ui-sref-active="active" class="right-scroll-link" ng-click="submitDraftRecord(); setCurrentPage(1, 'iso');">
+	<span class="mega-octicon octicon-chevron-right right-scroll-button">
+	</span>
+      </a>
       
       <div id="form-views" ui-view>
 	<form id="signup-form" ng-submit="processForm()">

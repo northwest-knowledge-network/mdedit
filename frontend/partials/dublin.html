@@ -6,11 +6,20 @@
   <div class="row" ng-controller="DCController as dc">
     <div id="status-buttons" ng-repeat="button in dublinFormList" class="text-center">
       <div class="col-lg-1 col-md-1">
-	<a ui-sref-active="active" id="{{button.form_name}}" ui-sref="{{button.form_name}}" ng-click="submitDraftRecord()" class="dublin-button-list"><span>{{$index + 1}}</span>{{button.label}}</a>
+	<a ui-sref-active="active" id="{{button.form_name}}" ng-click="submitDraftRecord(); jumpToPage($index, 'dublin');" class="dublin-button-list"><span>{{$index + 1}}</span>{{button.label}}</a>
       </div>
     </div>
   </div>
   
+  <a ui-sref-active="active" id="left-scroll-link" ng-click="submitDraftRecord(); setCurrentPage(-1, 'dublin');">
+    <span class="mega-octicon octicon-chevron-left left-scroll-button">
+    </span>
+  </a>
+  
+  <a ui-sref-active="active" id="right-scroll-link" ng-click="submitDraftRecord(); setCurrentPage(1, 'dublin');">
+    <span class="mega-octicon octicon-chevron-right right-scroll-button">
+    </span>
+  </a>  
   
   <div id="form-views" ui-view>
     <form id="signup-form" ng-submit="processForm()">

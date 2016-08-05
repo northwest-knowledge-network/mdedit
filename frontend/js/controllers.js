@@ -3,10 +3,10 @@
 
 // for minification, explicitly declare dependencies $scope and $http
 metadataEditorApp.controller('BaseController',
-    ['$scope', '$http', '$log', '$window', '$timeout', '$location', '$anchorScroll', 'formOptions', 'updateForms', 'recordService',
+    ['$scope', '$http', '$log', '$window', '$timeout', '$location', '$state', 'formOptions', 'updateForms', 'recordService',
      'AttachmentService', 'Geoprocessing', 'hostname', 'session_id', 'partialsPrefix',
      
-     function($scope, $http, $log, $window, $timeout, $location, $anchorScroll, formOptions, updateForms,
+     function($scope, $http, $log, $window, $timeout, $location, $state, formOptions, updateForms,
         recordService, AttachmentService, Geoprocessing, hostname, session_id,
         partialsPrefix)
     {
@@ -442,7 +442,8 @@ metadataEditorApp.controller('BaseController',
 			
 			for(var key in value[i]){
 			    if((key != null) && (value[i][key] != null)){
-				response = checkLength(key) + " : " + checkLength(value[i][key]) + " | ";
+				if((key.length != 0) && (value[i][key].length != 0))
+				    response = checkLength(key) + " : " + checkLength(value[i][key]) + " | ";
 			    }else{
 				response = checkNull(key) + " : " + checkNull(value[i][key]) + " | ";
 			    }
@@ -729,16 +730,16 @@ metadataEditorApp.controller('BaseController',
 	    $scope.rightToPublish = !$scope.rightToPublish; 
 	}
 
-	$scope.containsSensitiveInformation = true;
+	$scope.noSensitiveInformation = false;
 	//Sets boolean value to see if metadata being submitted has sensitive information.
-	$scope.setSensitiveInformation = function() {
-	    $scope.containsSensitiveInformation = !$scope.containsSensitiveInformation;
+	$scope.noSensitiveInformation = function() {
+	    $scope.noSensitiveInformation = !$scope.noSensitiveInformation;
 	}
 	
 	//List to populate buttons for ISO. ISO has more default form
 	//fields than Dublin.
 	$scope.isoFormList = [];
- 	var isoInitializer = [
+ 	var isoButtonList = [
 	    "form.setup,Template Setup",
 	    "form.basic,Basic Information",
 	    "form.detailed,Detailed Information",
@@ -754,10 +755,10 @@ metadataEditorApp.controller('BaseController',
 	    "form.review,Review"
 	];
 
-	for(var i = 0; i < isoInitializer.length; i++){
+	for(var i = 0; i < isoButtonList.length; i++){
 	    console.log("Adding isoFormList " + i);
 	    var dublinButton = recordService.getFreshDublinFormList();
-	    var data = isoInitializer[i].split(",");
+	    var data = isoButtonList[i].split(",");
 	    dublinButton.form_name = data[0];
 	    dublinButton.label = data[1];
 	    $scope.isoFormList.push(dublinButton);
@@ -767,7 +768,7 @@ metadataEditorApp.controller('BaseController',
 	//String has two values split at the "," value that are both put in
 	//the "dublinButton" object from the services.js file.
 	$scope.dublinFormList = [];
- 	var dublinInitializer = [
+ 	var dublinButtonList = [
 	    "dublinForm.setup,Template Setup",
 	    "dublinForm.basic,Basic Information",
 	    "dublinForm.detailed,Detailed Information",
@@ -782,10 +783,10 @@ metadataEditorApp.controller('BaseController',
 	    "dublinForm.review,Review"
 	];
 
-	for(var i = 0; i < dublinInitializer.length; i++){
+	for(var i = 0; i < dublinButtonList.length; i++){
 	    console.log("Adding formList " + i);
 	    var dublinButton = recordService.getFreshDublinFormList();
-	    var data = dublinInitializer[i].split(",");
+	    var data = dublinButtonList[i].split(",");
 	    dublinButton.form_name = data[0];
 	    dublinButton.label = data[1];
 	    $scope.dublinFormList.push(dublinButton);
@@ -799,6 +800,12 @@ metadataEditorApp.controller('BaseController',
 	    var reviewStep = $scope.dublinFormList.pop();
 	    $scope.dublinFormList.push(dublinButton);
 	    $scope.dublinFormList.push(reviewStep);
+
+	    //Add same button to dublinIntializer because we need this list for use in the controller (cant use $scope in controller)
+	    var reviewStep = dublinButtonList.pop();
+	    dublinButtonList.push(dublinButton.form_name);
+	    dublinButtonList.push(reviewStep);
+	    
 	}
 
 	function removeDublinButton(buttonName){
@@ -806,13 +813,82 @@ metadataEditorApp.controller('BaseController',
 		if($scope.dublinFormList[i].form_name == buttonName){
 		    for(var j = i; j < $scope.dublinFormList.length-1; j++){
 			$scope.dublinFormList[j] = $scope.dublinFormList[j+1];
+			dublinButtonList[j] = dublinButtonList[j+1];
 		    }
 		    //Remove last list element
 		    $scope.dublinFormList.pop();
+		    dublinButtonList.pop();
 		}
 	    }
 	}
+
+	//Jump to page (state) and set currentPageIndex to page index to keep arrow buttons and button list indecies the same. 
+	$scope.jumpToPage = function(index, formType) {
+	    if(formType == 'iso'){
+		//Check index against array bounds
+		if((index >= 0) || (index < isoButtonList.length)){
+		    $state.go(isoButtonList[index].split(",")[0]);
+		    currentPageIndex = index;
+		}
+	    }else if(formType == 'dublin'){
+		//Check index against array bounds
+		if((index >= 0) || (index < isoButtonList.length)){
+		    $state.go(dublinButtonList[index].split(",")[0]);
+		    currentPageIndex = index;
+		}
+	    }else
+		console.log("Tried to index non-supported record type.");
+	}
+
+	//Using index of current page, decide what next page and previous page should be for forwards and
+	//backwards buttons should be.
+	$scope.prevPage;
+	$scope.nextPage;
+	var currentPageIndex = 0;
 	
+	$scope.setCurrentPage = function(shift, formType) {
+
+	    if(formType == "iso"){
+		currentPageIndex += shift;
+		if(currentPageIndex <= 0){
+		    currentPageIndex = 0;
+		    
+		}else if(currentPageIndex >= isoButtonList.length){
+		    currentPageIndex = isoButtonList.length-1;
+		}
+
+		//Check to see if on disclaimer page or terms and conditions page.
+		//Must return to disclaimer page if arrow buttons are pressed on
+		//that page.
+		if(($state.is("form.termsConditions")) || ($state.is("form.sensitiveInformation"))){
+		    $state.go(isoButtonList[isoButtonList.indexOf("form.disclaimer,Disclaimer")].split(",")[0]);
+		    currentPageIndex = isoButtonList.indexOf("form.disclaimer,Disclaimer");
+		}else
+		    $state.go(isoButtonList[currentPageIndex].split(",")[0]);
+		
+	    }else if(formType == "dublin"){
+		currentPageIndex += shift;
+		if(currentPageIndex <= 0){
+		    currentPageIndex = 0;
+		    
+		}else if(currentPageIndex >= dublinButtonList.length){
+		    currentPageIndex = dublinButtonList.length-1;
+		}
+		if(($state.is("dublinForm.termsConditions")) || ($state.is("dublinForm.sensitiveInformation"))){
+		    $state.go(dublinButtonList[dublinButtonList.indexOf("dublinForm.disclaimer,Disclaimer")].split(",")[0]);
+		    currentPageIndex = dublinButtonList.indexOf("dublinForm.disclaimer,Disclaimer");
+		}else
+		    $state.go(dublinButtonList[currentPageIndex].split(",")[0]);
+		
+
+	    }else{
+		console.log("Tried to use unsupported form type.")
+	    }
+	}
+
+        function checkTermsConditions(page) {
+	    return page == ".termsConditions";
+	}
   } // end of callback for controller initialization
 ])
 .controller('ISOController', ['formOptions', function(formOptions) {
@@ -858,31 +934,3 @@ metadataEditorApp.controller('BaseController',
         $scope.currentRecord.west_lon = vm.sw.lng();
     };
   });
-/*
-
-    .controller('dublinFormButtonController', function($scope, recordService) {
-	console.log("In dublin controller: ");
-	$scope.formList = [];
-	var initializer = [
-	    "form.setup,Template Setup",
-	    "form.basic,Basic Information",
-	    "form.detailed,Detailed Information",
-	    "form.dataFormats,Data Formats",
-	    "form.onlineResourcesAndRestrictions,Online Resources",
-	    "form.spatialExtent,Spatial Data",
-	    "form.temporalExtent,Temporal Data",
-	    "form.contacts,Contacts",
-	    "form.review,Review"
-	];
-
-	for(var i = 0; i < initializer.length; i++){
-	    console.log("Adding formList " + i);
-	    var dublinButton = recordService.getFreshDublinFormList();
-	    var data = initializer[i].split(",");
-	    dublinButton.form_name = data[0];
-	    dublinButton.label = data[1];
-	    $scope.formList.push(dublinButton);
-	}
-	
-    });
-*/

@@ -4,11 +4,11 @@
 
 <div class="subform">
   
-  <input type="checkbox" value="agree"  ng-click="setTermsAndConditions()">I agree to the </input><a ui-sref-active="active" id="terms-conditions" ui-sref="form.termsConditions">Terms and Conditions</a>
+  <input type="checkbox" ng-checked="agreeTermsConditions" ng-model="agreeTermsConditions" selected="{{agreeTermsConditions}}">I agree to the </input><a ui-sref-active="active" id="terms-conditions" ui-sref="form.termsConditions">Terms and Conditions</a>
   <br>
-  <input type="checkbox" ng-click="setRightToPublish()">I have the right to publish this file and by doing so does not violate any copyright laws. I have cited all external sources used in the creation of this file within the metadata record.</input>
+  <input type="checkbox" ng-checked="rightToPublish" ng-model="rightToPublish" selected="{{rightToPublish}}">I have the right to publish this file and by doing so does not violate any copyright laws. I have cited all external sources used in the creation of this file within the metadata record.</input>
   <br>
-  <input type="checkbox" ng-click="setSensitiveInformation()">My file does NOT contain any sensitive information.</input>
+  <input type="checkbox" ng-checked="noSensitiveInformation" ng-model="noSensitiveInformation" selected="{{noSensitiveInformation}}">My file does NOT contain any sensitive information.</input>
   <br>
   <ul>
     <li>
