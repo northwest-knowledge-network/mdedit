@@ -5,7 +5,7 @@
  
       <div class="row" ng-controller="ISOController as iso">
 
-      <a ui-sref-active="active" class="left-scroll-link" ng-click="submitDraftRecord(); setCurrentPage(-1, 'iso');" >
+      <a class="left-scroll-link" ng-click="submitDraftRecord(); resetBackground('iso'); setCurrentPage(-1, 'iso');" >
 	<span class="mega-octicon octicon-chevron-left left-scroll-button">
         </span>
       </a>
@@ -13,13 +13,14 @@
 	
 	<div id="status-buttons" ng-repeat="button in isoFormList" ng-style="calcPercentComplete()" class="text-center">
 	  <div class="col-lg-1 col-md-1">
-	    <a ui-sref-active="active" id="{{button.form_name}}" ng-click="submitDraftRecord(); jumpToPage($index, 'iso');" class="dublin-button-list"><span>{{$index + 1}}</span>{{button.label}}</a>
+	    <!-- Save record, reset background of current page's button, change button background to red if not complete, and move to selected page's partial -->
+	    <a id="{{button.form_name}}" ng-click="submitDraftRecord(); resetBackground('iso'); checkFormComplete(button.form_name, 'iso'); jumpToPage($index, 'iso');" class="dublin-button-list"><span ng-style="button.buttonStyle">{{$index + 1}}</span>{{button.label}}</a>
 	  </div>
 	</div>
       </div>
       
       
-      <a ui-sref-active="active" class="right-scroll-link" ng-click="submitDraftRecord(); setCurrentPage(1, 'iso');">
+      <a class="right-scroll-link" ng-click="submitDraftRecord(); setCurrentPage(1, 'iso');">
 	<span class="mega-octicon octicon-chevron-right right-scroll-button">
 	</span>
       </a>

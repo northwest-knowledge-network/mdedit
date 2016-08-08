@@ -6,17 +6,18 @@
   <div class="row" ng-controller="DCController as dc">
     <div id="status-buttons" ng-repeat="button in dublinFormList" class="text-center">
       <div class="col-lg-1 col-md-1">
-	<a ui-sref-active="active" id="{{button.form_name}}" ng-click="submitDraftRecord(); jumpToPage($index, 'dublin');" class="dublin-button-list"><span>{{$index + 1}}</span>{{button.label}}</a>
+	<!-- Save record, reset background of current page's button, and move to selected page's partial -->
+	<a id="{{button.form_name}}" ng-click="submitDraftRecord(); resetBackground('dublin'); checkFormComplete(button.form_name, 'dublin'); jumpToPage($index, 'dublin');" class="dublin-button-list"><span ng-style="button.buttonStyle">{{$index + 1}}</span>{{button.label}}</a>
       </div>
     </div>
   </div>
   
-  <a ui-sref-active="active" id="left-scroll-link" ng-click="submitDraftRecord(); setCurrentPage(-1, 'dublin');">
+  <a id="left-scroll-link" ng-click="submitDraftRecord(); setCurrentPage(-1, 'dublin');">
     <span class="mega-octicon octicon-chevron-left left-scroll-button">
     </span>
   </a>
   
-  <a ui-sref-active="active" id="right-scroll-link" ng-click="submitDraftRecord(); setCurrentPage(1, 'dublin');">
+  <a id="right-scroll-link" ng-click="submitDraftRecord(); setCurrentPage(1, 'dublin');">
     <span class="mega-octicon octicon-chevron-right right-scroll-button">
     </span>
   </a>  

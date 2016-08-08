@@ -317,7 +317,13 @@ nav.affix {
     border-radius:50%; }
 
 /* active buttons */
-#status-buttons a.active span   { background:#00BC8C; }
+.current-form-element   {
+    background:#00BC8C;
+}
+
+.incomplete-form-element {
+    
+}
 
 /*Left and right arrow buttons for form slider fixed to side of screen */
 

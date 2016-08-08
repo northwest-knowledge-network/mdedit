@@ -120,9 +120,10 @@ metadataEditorApp
     };
 }])
 
-.value('dublinFormList', {
+.value('formElement', {
     form_name: '',
-    label: ''
+    label: '',
+    buttonStyle: {}
 })
 
 .value('emptyISORecord',
@@ -246,9 +247,9 @@ metadataEditorApp
 })
 .service('recordService',
     ['$http', '$q', '$log', 'hostname', 'session_id',
-     'emptyISORecord', 'emptyDCRecord', 'milesFields', 'nkn', 'dublinFormList',
+     'emptyISORecord', 'emptyDCRecord', 'milesFields', 'nkn', 'formElement',
     function($http, $q, $log, hostname, session_id,
-             emptyISORecord, emptyDCRecord, milesFields, nkn, dublinFormList)
+             emptyISORecord, emptyDCRecord, milesFields, nkn, formElement)
     {
         /**
          * Private functions that will not be exposed to controller
@@ -386,11 +387,11 @@ metadataEditorApp
             return nkn;
         };
 	
-	var getFreshDublinFormList = function() {
+	var getFreshFormElement = function() {
 	    
-            var freshDublinFormList = angular.copy(dublinFormList);
+            var freshFormElement = angular.copy(formElement);
 	    
-            return freshDublinFormList;
+            return freshFormElement;
         };
 
         /**
@@ -508,7 +509,7 @@ metadataEditorApp
             delete: delete_,
             list: list,
             publish: publish,
-	    getFreshDublinFormList: getFreshDublinFormList
+	    getFreshFormElement: getFreshFormElement
         };
     }
 ])
