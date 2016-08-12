@@ -19,7 +19,7 @@
 # limitations under the License.
 
 import sys
-sys.path.insert(0, '/var/www/html/portal/mdedit')
+sys.path.insert(0, '/var/www/shared/mdedit')
 
 import os
 os.environ["MDEDIT_PREPROD_DIRECTORY"] = '/local-datastore/'
