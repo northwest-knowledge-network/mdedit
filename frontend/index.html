@@ -38,6 +38,8 @@
           src="http://maps.google.com/maps/api/js"></script>
   <script type="text/javascript"
           src="/frontend/bower_components/ngmap/build/scripts/ng-map.min.js"></script>
+<script type="text/javascript" src="/frontend/bower_components/angular-animate/angular-animate.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.10/angular-ui-router.min.js"></script>
   <script type="text/javascript">
     function stopRKey(evt) {
       var evt = (evt) ? evt : ((event) ? event : null);
@@ -49,58 +51,97 @@
 </head>
 
 <body>
-<div  id="bodyDiv">
+
+<div id="bodyDiv">
   <div class="mdIntro">
-    <div style="margin-left: 4em; margin-right: 4em; font-size: large">
-        <p>
-            With NKN's Metadata Editor you can create a valid ISO 19115
-            metadata record for your dataset or dataset series or a Dublin Core
-            metadata record for your non-data research product (tool,
-            visualization product, model, script, etc.). To get started,
-            select the type of metadata record you would like to create in the
-            <strong><i>Record Options </strong></i> dropdown above.
-        </p>
-    </div>
-    <div style="margin-left: 8em; margin-right: 6em; font-size: medium">
-        <p>
-            If you are using NKN to store your data, select <strong> NKN as
-            Data Manager</strong> from the <strong><i>Load Defaults</strong></i>
-            dropdown.
-        </p>
-        <p>
-            <strong>NOTE:</strong> You must complete all requred fields and
-            will need to Save your record before you can Publish it.
-        </p>
-        <p>
-            Please contact <a href="mailto:publish@northwestknowledge.net"> NKN</a>
-            if you have additional questions or if the data associated with your
-            record are larger than 10GB.
+    <div style="margin-left: 4em; margin-right: 4em; font-size: medium">
+
+      	<p><strong><em>The steps below will guide you through the Metadata Editor.</em></strong></p>
+
+	<p><strong>Please contact <a href="mailto:publish@northwestknowledge.net?subject=NKN Metadata Editor" alt="email NKN">NKN</a>
+	</strong>if you have questions or if the data associated with your record are <strong>larger than 10GB</strong>.</p> 
+
+	<p>This tool is under active development, and we welcome your <strong>
+	<a href="mailto:publish@northwestknowledge.net?subject=NKN Metadata Editor Feedback" alt="metadata editor feedback">feedback</a>
+	</strong>!</p>
+
+	<p style="margin-bottom:20px">Use of the NKN metadata editor requires a login and implies acceptance of 
+	our <a href="/services/terms_of_service"><strong>terms of service</strong></a>.</p>
+
+      <hr />
 
     </div>
   </div>
 
-    <div ng-app="metadataEditor">
-        <div ng-controller="BaseController as baseCtrl">
-
-            <div ng-show="baseCtrl.showHelp">
-                <div ng-include="partialsPrefix + 'partials/help.html'"></div>
-            </div>
+  <div ng-app="metadataEditor">
+    <div ng-controller="BaseController as baseCtrl">
 
 
-                <div id="ngMain">
+     <!-- <div class="navbar-form navbar-right" role="help"> -->
+<!--
+     <div role="help">
+        <button id="showHelp" ng-init="baseCtrl.showHelp = true;"
+              ng-hide="baseCtrl.showHelp"
+              ng-click="baseCtrl.showHelp=true; setNavbarHeight()"
+              class="btn btn-default" style="margin-bottom:20px;">
+                Show Steps
+        </button>
+        <button id="hideHelp" ng-show="baseCtrl.showHelp"
+		ng-click="baseCtrl.showHelp=false; setNavbarHeight()"
+		class="btn btn-default">
+                Hide Steps
+        </button>
+      </div>
+-->
+      <div id="ngMain">
 
-            <!-- <div ng-controller="BaseController as baseCtrl"> -->
+         <!-- <div ng-controller="BaseController as baseCtrl"> -->
+	 <br>
+         <div ng-include="partialsPrefix + 'partials/appHeader.html'"></div>
 
-                    <div ng-include="partialsPrefix + 'partials/appHeader.html'"></div>
+	 <div ng-show="baseCtrl.showHelp">
+           <div ng-include="partialsPrefix + 'partials/help.html'"></div>
+	 </div>
+	
+         <div id="main-container" class="container">
+            <div ng-view></div>
+         </div>
 
-                    <div id="main-container" class="container">
-                        <div ng-view></div>
-                    </div>
+      </div>
 
-                </div>
-
-        </div>
     </div>
+  </div>
 </div>
+
+<script type="text/javascript">
+  $('.more1').click(function(){
+        var $this = $(this);
+        $this.toggleClass('more1');
+        if($this.hasClass('more1')){
+            $this.text('more details');
+        } else {
+            $this.text('less details');
+        }
+  });
+  $('.more2').click(function(){
+        var $this = $(this);
+        $this.toggleClass('more2');
+        if($this.hasClass('more2')){
+            $this.text('more details');
+        } else {
+            $this.text('less details');
+        }
+  });
+  $('.more3').click(function(){
+        var $this = $(this);
+        $this.toggleClass('more3');
+        if($this.hasClass('more3')){
+            $this.text('more details');
+        } else {
+            $this.text('less details');
+        }
+  });
+
+  </script>
 </body>
 </html>

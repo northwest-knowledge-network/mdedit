@@ -44,4 +44,4 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
                 });
             }
         };
-    });
+});

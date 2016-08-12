@@ -1,16 +1,83 @@
-<div style="margin-left: 2em; margin-right: 4em; font-size: medium">
-	<strong> Tips for using NKN's Metadata Editor: </strong>
+<div style="border:1px solid #ccc; border-radius:6px; padding:10px; margin:1em 4em; font-size:medium;">
+
+<div>
+	<strong> Steps for using NKN's Metadata Editor: </strong>
+        <br />Click on a Step button for a brief animation of that step.
+        <br />&nbsp;
 </div>
-<div style="margin-left: 6em; margin-right: 6em; font-size: medium">
-    <p>
-        Use the <strong><i>Load or delete an existing record</strong></i> dropdown to see a list of your existing records, the date they were lasted modified and published, and to load a record into the webform for editing or to delete the record. Once you have completed all required fields in the form (highlighted in red), you will have the option to submit your record to the NKN Portal for publication, select <strong>Publish Record to NKN Portal</strong> option under <strong>Record Options</strong> dropdown. Once submitted, we will review and publish your record. If you make changes to a record you have already submited, you will need to resubmit. To view your metadata record as an xml document, use the <strong><i>View XML as</strong></i> dropdown and select your preferred format (ISO, Dublin Core, or ESRI-ISO. 
-    </p>
+<div>
+
+      <table class="table" style="margin-bottom:0;"><tbody>
+        <tr>
+          <td>
+             <p><span id="step-one" class="btn btn-info" ng-click="simulateStepOne()" title="Show Me Step 1!">Step 1</span></p>
+          </td>
+          <td>
+             <p>Under <strong><em>Record Options</em></strong> in the dropdown menu below, select the type of record you wish to create (<strong>dataset</strong> vs. <strong>non-dataset</strong>).
+             <a data-target="#col1" data-toggle="collapse" aria-expanded="false" aria-controls="col1" class="btn btn-xs btn-default more1">more details</a></p>
+             <div class="collapse" id="col1">
+                <div class="details"><p><strong>Dataset</strong> records adhere to the ISO 19115 standard. <strong>Non-dataset</strong> records (e.g., tools, visualization products, models, scripts, etc.) adhere to the Dublin Core standard.</p>
+                </div>
+             </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+             <p><span id="step-two" class="btn btn-info" ng-click="simulateStepTwo()" title="Show Me Step 2!">Step 2</span></p>
+          </td>
+          <td>
+             <p>(Optional) <strong><em>Load Defaults</em></strong>.
+             <a data-target="#col2" data-toggle="collapse" aria-expanded="false" aria-controls="col2" class="btn btn-xs btn-default more2">more details</a></p>
+             <div class="collapse" id="col2">
+               <div class="details">
+                 <p><strong>MILES users:</strong> If you are creating a record related to the MILES project, select <strong>MILES</strong> from the <strong><em>Load Defaults</em></strong> dropdown. Certain fields in the form will prepopulate with MILES default values. <em>Please add to these fields as appropriate:</em> for example, you will likely want to add <em>place</em> and <em>thematic keywords</em> related to your specific dataset. The <em>bounding coordinates</em> provided here are for the entire state of Idaho; modify to fit the location of your dataset as appropriate.</p>
+                 <p><strong>Other users:</strong> If you are using NKN to store your data, select <strong>NKN as Data Manager</strong> from the <strong><em>Load Defaults</em></strong> dropdown. Please provide the first author's name and university affiliation toward the end of the <span style="color:#080"><strong>Use Restrictions</strong></span> text where it currently reads "(Name, University Affiliation)".</p>
+               </div>
+             </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+             <p><span id="step-three" class="btn btn-info" ng-click="simulateStepThree()" title="Show Me Step 3!">Step 3</span></p>
+          </td>
+          <td>
+             <p>Under <span id="basic-information-span"style="color:#080"><strong>Basic Information</strong></span> (in the form), enter the <em>Title</em> of your record. Then, under the <strong><em>Record Options</em></strong> dropdown, select <strong>Save this record as a draft</strong>.</p><p><strong><u>NOTE</u>:</strong> You MUST <em>save the record as a draft</em> in order to add/upload files to the record.</p>
+          </td>
+        </tr>
+        <tr>
+          <td>
+             <p><span id="step-four" class="btn btn-info" ng-click="simulateStepFour()" title="Show Me Step 4!">Step 4</span></p>
+          </td>
+          <td>
+             <p>Continue to fill out the remaining form fields, and click the <strong>Add Files button</strong> to attach documents to your record. When finished, select <strong>Save this record as a draft</strong> under the <strong><em>Record Options</em></strong> dropdown.</p>
+          </td>
+        </tr>
+        <tr>
+          <td>
+             <p><span id="step-five" class="btn btn-info" ng-click="simulateStepFive()" title="Show Me Step 5!">Step 5</span></p>
+          </td>
+          <td>
+             <p>To <strong>PUBLISH</strong> your record, you must complete <u><strong>ALL</strong></u> form fields (unless labeled as optional). Under the <strong><em>Record Options</em></strong> dropdown, select <strong>Publish record to NKN's portal</strong>. You will see a message stating that your Metadata Record was Submitted.
+             <a data-target="#col3" data-toggle="collapse" aria-expanded="false" aria-controls="col3" class="btn btn-xs btn-default more3">more details</a></p>
+             <div class="collapse" id="col3">
+               <div class="details">
+                 <p>Once submitted, we will review and publish your record. If you make changes to a record you have already submitted, you will need to re-publish.</p>
+               </div>
+             </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+             <p><span id="step-tips" class="btn btn-info" ng-click="simulateTips()">Tips</span></p>
+          </td>
+          <td>
+             <p>Use the <strong><em>My Records</em></strong> dropdown to see a list of your existing records, the date they were last modified and published, and to load a record into the webform for editing or to delete the record.</p>
+             <p>To view your metadata record as an xml document, use the <strong><em>View XML as...</em></strong> dropdown and select your preferred format (ISO, Dublin Core, or ESRI-ISO).</p>
+          </td>
+        </tr>
+        </tbody></table>
+
+
 </div>
-<div style="margin-left: 2em; margin-right: 4em; font-size: medium">
-	<strong>Special Instructions for MILES users:</strong>
-</div>
-<div style="margin-left: 6em; margin-right: 6em; font-size: medium">
-    <p>
-        Use the <strong><i>Load Defaults</strong></i> dropdown and select <strong> MILES </strong> to pre-load some of the fields with MILES-related content. Please add to these fields as appropriate: for example, you will likely want to add <i>place and thematic keywords</i> related to your specific dataset. The <i>bounding coordinates</i> provided here are for the entire state of Idaho; modify to fit the location of your dataset as appropriate. If you are using NKN to store your data, also select <strong> NKN as Data Manager</strong> from the <strong><i>Load Defaults</strong></i> dropdown. Please provide the first author's name and university affiliation toward the end of the <i>use restrictions</i> text where it currently reads "(Name, University Affiliation)".
-    </p>
+
 </div>

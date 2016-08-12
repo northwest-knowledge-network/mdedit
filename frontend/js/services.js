@@ -119,6 +119,13 @@ metadataEditorApp
         scope.currentRecord.thematic_keywords = record.thematic_keywords.join(', ');
     };
 }])
+
+.value('formElement', {
+    form_name: '',
+    label: '',
+    buttonStyle: {}
+})
+
 .value('emptyISORecord',
 {
     schema_type: 'Dataset (ISO)',
@@ -158,6 +165,8 @@ metadataEditorApp
     start_date: {$date:''},
     end_date: {$date:''},
 
+    doi_ark_request: '',
+    data_one_search: '',
     attachments: []
 })
 
@@ -193,9 +202,8 @@ metadataEditorApp
     north_lat: '',
     south_lat: '',
 
-    start_date: {$date:''},
-    end_date: {$date:''},
-
+    doi_ark_request: '',
+    data_one_search: '',
     attachments: []
 })
 .value('milesFields',
@@ -239,9 +247,9 @@ metadataEditorApp
 })
 .service('recordService',
     ['$http', '$q', '$log', 'hostname', 'session_id',
-            'emptyISORecord', 'emptyDCRecord', 'milesFields', 'nkn',
+     'emptyISORecord', 'emptyDCRecord', 'milesFields', 'nkn', 'formElement',
     function($http, $q, $log, hostname, session_id,
-             emptyISORecord, emptyDCRecord, milesFields, nkn)
+             emptyISORecord, emptyDCRecord, milesFields, nkn, formElement)
     {
         /**
          * Private functions that will not be exposed to controller
@@ -378,7 +386,13 @@ metadataEditorApp
 
             return nkn;
         };
-
+	
+	var getFreshFormElement = function() {
+	    
+            var freshFormElement = angular.copy(formElement);
+	    
+            return freshFormElement;
+        };
 
         /**
          * @param {string} recordId ID of the record to be edited
@@ -494,7 +508,8 @@ metadataEditorApp
             saveDraft: saveDraft,
             delete: delete_,
             list: list,
-            publish: publish
+            publish: publish,
+	    getFreshFormElement: getFreshFormElement
         };
     }
 ])

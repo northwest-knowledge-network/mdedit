@@ -1,14 +1,16 @@
-<div class="subform">
-  <h4 class="attribute-label">Data Format</h4>
-  <h6>
+<h4 class="attribute-label">Data Format</h4>
+<h6>
   In what formats are your data available for distribution? Use the command key (on a Mac) or the control key (on a PC) to select multiple categories.
-  </h6>
-  <select tabindex=20 id="format-selector" class="multiselect" 
-     style="width:80%;height:120px"
-         ng-options="fmt for fmt in knownDataFormats" 
-         ng-model="dataFormats.iso" multiple ng-multiple="true"
-         required>
-  </select>
-  <h6>Write in formats not listed (comma-separate for multiple)</h6>
-  <input tabindex=20 type="text" ng-model="dataFormats.aux" style="width:95%">
-</div>
+</h6>
+<select tabindex=20 id="format-selector" class="multiselect" 
+	style="width:80%;height:120px"
+        ng-options="fmt for fmt in knownDataFormats" 
+        ng-model="dataFormats.iso" multiple ng-multiple="true"
+        required>
+</select>
+<h6>Write in formats not listed (comma-separate for multiple)</h6>
+<input tabindex=20 type="text" ng-model="dataFormats.aux" style="width:95%" maxlength="254">
+<br>
+
+
+

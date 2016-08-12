@@ -1,0 +1,20 @@
+<h2 class="section-header optional-field-header">
+  <span class="mega-octicon octicon-law"></span> Disclaimer & Authority
+</h2>
+
+<div class="subform">
+  
+  <input type="checkbox" ng-change="setTermsAndConditions();" ng-model="agreeTermsConditions" >I agree to the </input><a ui-sref-active="active" id="terms-conditions" ui-sref="form.termsConditions">Terms and Conditions</a>
+  <br>
+  <input type="checkbox" ng-change="setRightToPublish();" ng-model="rightToPublish" >I have the right to publish this file and by doing so does not violate any copyright laws. I have cited all external sources used in the creation of this file within the metadata record.</input>
+  <br>
+  <input type="checkbox" ng-change="setSensitiveInformation();" ng-model="noSensitiveInformation">My file does NOT contain any sensitive information.</input>
+  <br>
+  <ul>
+    <li>
+      What information is considered sensitive? <a ui-sref-active="active" id="sensitive-information" ui-sref="form.sensitiveInformation">Documentation</a>
+    </li>
+  </ul>
+  
+  
+</div>  

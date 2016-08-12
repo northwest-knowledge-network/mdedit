@@ -1,63 +1,79 @@
-<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-<div class="extent-block">
-<h4>Longitudinal and Latitudinal Extent   <span style="text-align:right" class="glyphicon glyphicon-globe" aria-hidden="true"></span></h4>
-<h6>What is the geographic area covered by the data? Please enter units in decimal degrees.</h6>
-
 <div class="row">
-<div class="col-xs-4 col-sm-4 col-md-5 col-lg-5  col-xs-offset-4 col-sm-offset-4 col-lg-offset-3 col-md-offset-3">
-  <h4 class="attribute-label" id="north">North Latitude</h4>
-  <input tabindex=20 type="number" step="0.0000000000000001"
-           ng-model="currentRecord.north_lat" required>
-</div>
-</div>
-<div class="row">
-<div class="col-xs-4 col-sm-4 col-md-5 col-lg-5">
-  <h4 class="attribute-label" id="north">West Longitude</h4>
-  <input tabindex=20 type="number" step="0.0000000000000001"
-           ng-model="currentRecord.west_lon" required>
-</div>
-<div class="col-xs-4 col-sm-4 col-md-5 col-lg-5 col-xs-offset-4 col-sm-offset-4 col-md-offset-2 col-lg-offset-2">
-  <h4 class="attribute-label" id="north">East Longitude</h4>
-  <input tabindex=20 type="number" step="0.0000000000000001"
-           ng-model="currentRecord.east_lon" required>
-</div>
-
-</div>
-<div class="row">
-  <div class="col-xs-4 col-sm-4 col-md-5 col-lg-5 col-xs-offset-4 col-sm-offset-4 col-md-offset-3 col-lg-offset-3">
-    <h4 class="attribute-label" id="north">South Latitude</h4>
-    <input tabindex=20 type="number"
-           step="0.0000000000000001"
-             ng-model="currentRecord.south_lat" required>
+  <a class="anchor" name="spatial">
+    <h2 class="section-header">
+      
+      <span class="glyphicon glyphicon-globe"></span>
+      Spatial Extents
+    </h2>
+  </a>
+  <div class="subform">
+    <div class="row" style="vertical-align:left">
+      
+      
+	  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+	    <div class="extent-block">
+	      <h4>Longitudinal and Latitudinal Extent   <span style="text-align:right" class="glyphicon glyphicon-globe" aria-hidden="true"></span></h4>
+	      <h6>What is the geographic area covered by the data? Please enter units in decimal degrees.</h6>
+	      
+	      <div class="row">
+		<div class="col-xs-4 col-sm-4 col-md-5 col-lg-5  col-xs-offset-4 col-sm-offset-4 col-lg-offset-3 col-md-offset-3">
+		  <h4 class="attribute-label" id="north">North Latitude</h4>
+		  <input tabindex=20 type="number" step="0.0000000000000001"
+			 ng-model="currentRecord.north_lat" required>
+		</div>
+	      </div>
+	      <div class="row">
+		<div class="col-xs-4 col-sm-4 col-md-5 col-lg-5">
+		  <h4 class="attribute-label" id="north">West Longitude</h4>
+		  <input tabindex=20 type="number" step="0.0000000000000001"
+			 ng-model="currentRecord.west_lon" required>
+		</div>
+		<div class="col-xs-4 col-sm-4 col-md-5 col-lg-5 col-xs-offset-4 col-sm-offset-4 col-md-offset-2 col-lg-offset-2">
+		  <h4 class="attribute-label" id="north">East Longitude</h4>
+		  <input tabindex=20 type="number" step="0.0000000000000001"
+			 ng-model="currentRecord.east_lon" required>
+		</div>
+		
+	      </div>
+	      <div class="row">
+		<div class="col-xs-4 col-sm-4 col-md-5 col-lg-5 col-xs-offset-4 col-sm-offset-4 col-md-offset-3 col-lg-offset-3">
+		  <h4 class="attribute-label" id="north">South Latitude</h4>
+		  <input tabindex=20 type="number"
+			 step="0.0000000000000001"
+			 ng-model="currentRecord.south_lat" required>
+		</div>
+	      </div>
+	      
+	      
+	      <h6>Don't know your bounding coordinates? Enter a location name here (e.g., Idaho, Ada County, Coeur d'Alene, 83209). Click the button below to have the system calculate bounding coordinates and fill in the entries above.</h6>
+	      <div class="row">
+		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+		  <input style="width:100%" tabindex=20 type="text"
+			 ng-model="options.bboxInput">
+		</div>
+		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+		  <div id="place-button">
+		    <button tabindex=20 class="btn btn-small btn-primary btn-contact" type="button"
+			    ng-click="getBbox()">
+		      <span class="glyphicon" aria-hide="true"></span>   Calculate Bounding Coordinates
+		    </button>
+		  </div>
+		</div>
+	      </div>
+	      <h6>Once you've entered bounding coordinates, a rectangle will appear showing you the corresponding area on the map. Be sure to verify that it is where you expect it to be. You can also edit the rectangle and new bounds will appear in the above fields.</h6>
+	      
+	      <!-- MAP -->
+	      <div ng-controller="MapController as vm">
+		<ng-map default-style="true" zoom="5" map-type-id="TERRAIN" center="[45.5,-115]">
+		  <shape name="rectangle" id="extent" fill-color="#111111" fill-opacity="0.3" stroke-weight="2" bounds="[[{{currentRecord.south_lat}},{{currentRecord.west_lon}}],[{{currentRecord.north_lat}},{{currentRecord.east_lon}}]]" editable ="true" draggable="false" on-bounds_changed="vm.boundsChanged()">
+		  </shape>
+		</ng-map>
+	      </div> 
+	      <!-- end of Map -->
+	    </div>
+	    
+	    
+	  </div>
+    </div>
   </div>
-</div>
-
-
-<h6>Don't know your bounding coordinates? Enter a location name here (e.g., Idaho, Ada County, Coeur d'Alene, 83209). Click the button below to have the system calculate bounding coordinates and fill in the entries above.</h6>
-<div class="row">
-<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-<input style="width:100%" tabindex=20 type="text"
-       ng-model="options.bboxInput">
-</div>
-<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-<div id="place-button">
-<button tabindex=20 class="btn btn-small btn-primary btn-contact" type="button"
-        ng-click="getBbox()">
-    <span class="glyphicon" aria-hide="true"></span>   Calculate Bounding Coordinates
-</button>
-</div>
-</div>
-</div>
-<h6>Once you've entered bounding coordinates, a rectangle will appear showing you the corresponding area on the map. Be sure to verify that it is where you expect it to be. You can also edit the rectangle and new bounds will appear in the above fields.</h6>
-
-<!-- MAP -->
- <div ng-controller="MapController as vm">
-  <ng-map default-style="true" zoom="5" map-type-id="TERRAIN" center="[45.5,-115]">
-    <shape name="rectangle" id="extent" fill-color="#111111" fill-opacity="0.3" stroke-weight="2" bounds="[[{{currentRecord.south_lat}},{{currentRecord.west_lon}}],[{{currentRecord.north_lat}},{{currentRecord.east_lon}}]]" editable ="true" draggable="false" on-bounds_changed="vm.boundsChanged()">
-    </shape>
-    </ng-map>
-</div> 
-<!-- end of Map -->
-</div>
-
 </div>

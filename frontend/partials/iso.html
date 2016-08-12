@@ -2,64 +2,42 @@
 
       <!-- form header contains title -->
       <div ng-include="partialsPrefix + 'partials/formHeader.html'"></div>
-
+ 
       <div class="row" ng-controller="ISOController as iso">
+
+      <a class="left-scroll-link" ng-click="submitDraftRecord(); resetBackground('iso'); setCurrentPage(-1, 'iso');" >
+	<span class="mega-octicon octicon-chevron-left left-scroll-button">
+        </span>
+      </a>
+
+	
+	<div id="status-buttons" ng-repeat="button in isoFormList" ng-style="calcPercentComplete()" class="text-center">
+	  <div class="col-lg-1 col-md-1">
+	    <!-- Save record, reset background of current page's button, change button background to red if not complete, and move to selected page's partial -->
+	    <a id="{{button.form_name}}" ng-click="submitDraftRecord(); resetBackground('iso'); checkFormComplete(button.form_name, 'iso'); jumpToPage($index, 'iso');" class="dublin-button-list"><span ng-style="button.buttonStyle">{{$index + 1}}</span>{{button.label}}</a>
+	  </div>
+	</div>
+      </div>
+      
+      
+      <a class="right-scroll-link" ng-click="submitDraftRecord(); setCurrentPage(1, 'iso');">
+	<span class="mega-octicon octicon-chevron-right right-scroll-button">
+	</span>
+      </a>
+      
+      <div id="form-views" ui-view>
+	<form id="signup-form" ng-submit="processForm()">
+          <!-- our nested state views will be injected here -->
+          <div id="form-views" ui-view></div>
+	</form>
+      </div>
         <!---------------Left Divider-------------->
-   <!--Basic Information: Title and Summary-->
-        <div class="col-xs-6 col-sm-6 col-md-6">
-            <h2 class="section-header">
-              <span class="glyphicon glyphicon-list-alt"></span> Basic Information
-            </h2>
+	<!--Basic Information: Title and Summary-->
 
-        <div class="subform">
-          <div class="col-xs-offset-6 col-sm-offset-6 col-md-offset-6 col-lg-offset-6">
-            <h5>Record Type: </h5>
-          </div>
-            
-            <input tabindex=3 id="" name="" type="text"
-              style="width:37%;float:right; text-align:center" 
-                    ng-model="currentRecord.schema_type" 
-                    ng-init="currentRecord.schema_type='Dataset (ISO)'"
-                    ng-readonly="true"/>
+	<!--
 
-            </br>
+        --Detailed Information: Place Keywords, Thematic Keywords, Topic, Update status/freq--
 
-          <div ng-include="partialsPrefix + 'partials/form/basic.html'"></div> 
-
-        </div>
-               
-               <h2 class="section-header">
-               <span class="mega-octicon octicon-tools"></span>
-               Data Format Details
-             </h2>
-             <div class="subform">
-
-               <div ng-include="partialsPrefix + 'partials/form/dataFormats.html'"></div>
-
-               <h4 class="attribute-label">Compression Technique</h4>
-               <h6>
-                Is your data offered in a compressed format? If so, please type a
-                short description here. For example, "The LAS files are compressed
-                in standard ZIP format"
-               </h6>
-
-               <input tabindex=20 type="text" 
-               ng-model="currentRecord.compression_technique" style="width:95%">
-
-             </div>
-          </div>
-
-        <!---------------Right Divider-------------->
-
-        <!--Detailed Information: Place Keywords, Thematic Keywords, Topic, Update status/freq-->
-      <div class="col-xs-6 col-sm-6 col-md-6">
-        <h2 class="section-header">
-          <span class="glyphicon glyphicon-list-alt"></span> Detailed Information
-        </h2>
-
-        <div class="subform">
-
-         <div ng-include="partialsPrefix + 'partials/form/detailed.html'"></div>
 
           <h4 class="attribute-label">Update Status</h4>
           <h6>What is the status of your dataset? For example, is it complete (you anticipate no further work and consider it final) or is it ongoing (continually being updated)?</h6>
@@ -99,30 +77,14 @@
        </div>
 
 
-        <!--Spatial and Temporal Extents (Bounding Box, Start/End dates)-->
-      <div class="row">
-         <a class="anchor" name="spatiotemporal">
-           <h2 class="section-header">
-           <span class="glyphicon glyphicon-time"></span>
-
-           <span class="glyphicon glyphicon-globe"></span>
-             Spatiotemporal Extents
-           </h2>
-         </a>
-         <div class="subform">
-           <div class="row" style="vertical-align:left">
-
-              <div ng-include="partialsPrefix + 'partials/form/temporalExtent.html'"></div>
-
-              <div ng-include="partialsPrefix + 'partials/form/spatialExtent.html'"></div>
-
+	      -->
            </div>
          </div>
 
       </div>
+<!--
 
-      <div ng-include="partialsPrefix + 'partials/form/contacts.html'"></div>
-
-      <div ng-include="partialsPrefix + 'partials/form/onlineResourcesAndRestrictions.html'"></div>
+      -->
+	
 
 </form>

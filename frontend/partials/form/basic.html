@@ -1,30 +1,46 @@
-    <!--Basic Information: Title and Summary-->
-         <h4 class="attribute-label">Title</h4>
-         <h6>A brief description of your data; include 'what','where,' and 'when'.</h6>
-          <p class="field-description">
-           Examples: 
-          </p>
-            <ul class="field-description">
-              <li>
-                LiDAR data for Clear Creek Watershed, Idaho (2009) 
-              </li>
-              <li>
-                Water clarity for Lake Coeur d'Alene from IDEQ source data, Idaho (2005-2014)
-              </li>
-            </ul>
-         <input tabindex=1 style="width:95%" type="text" 
-                ng-model="currentRecord.title" required>
+<h2 class="section-header">
+  <span class="glyphicon glyphicon-list-alt"></span> Basic Information
+</h2>
 
-         <h4 class="attribute-label">Summary</h4>
-         <h6>Describe your data for someone who knows very little about your field of study. Be sure to include what the data set is, what variables it describes over what spatial extent, why it was created, and if there are any major use restrictions.
-          <p><span style="text-transform: uppercase"><strong><i> Remember many people may not read past this description.</span style></strong></i></h6>
-         <textarea tabindex=2 style="width:95%" type="text" 
-                   ng-model="currentRecord.summary" required>
-         </textarea>
 
-         <h4 class="attribute-label">Date (dataset)</h4>
-         <h6>
-           What is the most recent date that the data was published or updated?
-         </h6>
-         <input tabindex=4 ui-date="dateOptions"
-                ng-model="currentRecord.first_pub_date.$date" required>
+<div class="subform">
+  <h5>Record Type: </h5>
+
+  <input tabindex=3 id="" name="" type="text"
+	 style="width:37%;float:right; text-align:center" 
+	 ng-model="currentRecord.schema_type" 
+	 ng-init="currentRecord.schema_type='Dataset (ISO)'"
+	 ng-readonly="true"
+	 maxlength="254"/>
+  
+  <!--Basic Information: Title and Summary-->
+  <h4 class="attribute-label">Title</h4>
+  <h6>A brief description of your data; include 'what','where,' and 'when'.</h6>
+  <p class="field-description">
+    Examples: 
+  </p>
+  <ul class="field-description">
+    <li>
+      LiDAR data for Clear Creek Watershed, Idaho (2009) 
+    </li>
+    <li>
+      Water clarity for Lake Coeur d'Alene from IDEQ source data, Idaho (2005-2014)
+    </li>
+  </ul>
+  <input id="title-input" tabindex=1 style="width:95%" type="text" 
+	 ng-model="currentRecord.title" required  maxlength="254">
+  
+  <h4 class="attribute-label">Summary</h4>
+  <h6>Describe your data for someone who knows very little about your field of study. Be sure to include what the data set is, what variables it describes over what spatial extent, why it was created, and if there are any major use restrictions.
+    <p><span style="text-transform: uppercase"><strong><i> Remember many people may not read past this description.</span style></strong></i></h6>
+  <textarea tabindex=2 style="width:95%" type="text" 
+            ng-model="currentRecord.summary" maxlength="2995" required>
+  </textarea>
+  
+  <h4 class="attribute-label">Date (dataset)</h4>
+  <h6>
+    What is the most recent date that the data was published or updated?
+  </h6>
+  <input tabindex=4 ui-date="dateOptions"
+	 ng-model="currentRecord.first_pub_date.$date" required>
+</div>

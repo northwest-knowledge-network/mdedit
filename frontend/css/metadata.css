@@ -224,3 +224,128 @@ div.centered-container>div>h4 {
 a.dropdown-toggle, a.btn {
     cursor: pointer;
 }
+
+/* To make it possible for (Optional) text be next to h2 header */
+
+.optional-field-header {
+    display: inline-block;
+}
+
+/* To remove line break between divs */
+.extra-detailed-align {
+    background-color: #cccccc;
+    margin:0px;
+    padding: 5px 15px 10px;
+}
+
+/* Style for review.html results table */
+#review-table tr td{
+    border: 1px solid black;
+}
+
+/* For sticky navbar (sticks to top of screen when scrolled to) */
+nav.affix {
+    position:fixed;
+    top: 0;
+    width: 100%;
+    z-index: 9999 !important;
+}
+
+.affix + .container-fluid {
+    padding-top: 70px;
+}
+
+.dublin-form-list {
+    float: left;
+}
+/* Animations for form wizard: sliding left and right out of the viewport */
+/* slide out to the left */
+@keyframes slideOutLeft {
+	to 		{ transform: translateX(-200%); }
+}
+
+@-moz-keyframes slideOutLeft {	
+	to 		{ -moz-transform: translateX(-200%); }
+}
+
+@-webkit-keyframes slideOutLeft {
+	to 		{ -webkit-transform: translateX(-200%); }
+}
+
+/* slide in from the right */
+@keyframes slideInRight {
+    from 	{ transform:translateX(200%); }
+    to 		{ transform: translateX(0); }
+}
+
+@-moz-keyframes slideInRight {
+    from 	{ -moz-transform:translateX(200%); }
+    to 		{ -moz-transform: translateX(0); }
+}
+
+@-webkit-keyframes slideInRight {
+    from 	{ -webkit-transform:translateX(200%); }
+    to 		{ -webkit-transform: translateX(0); }
+}
+
+/* Wizard form views having animations applied to them */
+#form-views.ng-enter,
+#form-views.ng-leave { position:absolute; left:30px; right:30px;
+    transition:0.5s all ease; -moz-transition:0.5s all ease; -webkit-transition:0.5s all ease; 
+}
+    
+/* enter animation */
+#form-views.ng-enter            { 
+    -webkit-animation:slideInRight 0.5s both ease;
+	-moz-animation:slideInRight 0.5s both ease;
+	animation:slideInRight 0.5s both ease; 
+}
+
+#form-views.ng-leave            { 
+    -webkit-animation:slideOutLeft 0.5s both ease;
+	-moz-animation:slideOutLeft 0.5s both ease;
+	animation:slideOutLeft 0.5s both ease; 
+}
+
+
+/* Styling for step buttons */
+/* numbered buttons */
+#status-buttons                 {  }
+#status-buttons a               { display:inline-block; font-size:12px; margin-right:10px; text-align:center; text-transform:uppercase; }
+#status-buttons a:hover         { text-decoration:none; }
+#status-buttons span            { background:#080808; display:block; height:30px; margin:0 auto 10px; padding-top:5px; width:30px; 
+    border-radius:50%; }
+
+/* active buttons */
+.current-form-element   {
+    background:#00BC8C;
+}
+
+.incomplete-form-element {
+    
+}
+
+/*Left and right arrow buttons for form slider fixed to side of screen */
+
+.left-scroll-button {
+    position: fixed;
+    top: 50%;
+    left: 5px;
+    font-size: 15em !important;
+    z-index: 1;
+}
+
+.right-scroll-button {
+    position: fixed;
+    top: 50%;
+    right: 5px;
+    font-size: 15em !important;
+    z-index: 1;
+}
+
+@media only screen and (max-width: 890px) {
+    .left-scroll-button, .right-scroll-button {
+	font-size: 7em !important;
+	top: 40%;
+    }
+}
