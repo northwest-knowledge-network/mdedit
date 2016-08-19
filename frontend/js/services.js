@@ -123,7 +123,12 @@ metadataEditorApp
 .value('formElement', {
     form_name: '',
     label: '',
-    buttonStyle: {}
+    buttonStyle: {},
+    checkIconStyle: false,
+    xIconStyle: false,
+    dotIconStyle: false,
+    isValid: false,
+    saveOnClick: ''
 })
 
 .value('emptyISORecord',
@@ -163,10 +168,11 @@ metadataEditorApp
     south_lat: '',
 
     start_date: {$date:''},
+    
     end_date: {$date:''},
-
+    
     doi_ark_request: '',
-    data_one_search: '',
+    data_one_search: 'false',
     attachments: []
 })
 
@@ -202,8 +208,22 @@ metadataEditorApp
     north_lat: '',
     south_lat: '',
 
+    start_date: {
+	$date:'',
+	hours:'',
+	minutes:'',
+	seconds:''
+    },
+    
+    end_date: {
+	$date:'',
+    	hours:'',
+	minutes:'',
+	seconds:''
+    },
+    
     doi_ark_request: '',
-    data_one_search: '',
+    data_one_search: 'false',
     attachments: []
 })
 .value('milesFields',

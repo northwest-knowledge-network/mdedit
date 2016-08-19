@@ -10,6 +10,9 @@ var MD_COLLECTION = 'metadata';
 var MD_TEST_DB = 'mdedit_test';
 var MONGO_HOST = 'mongodb://localhost:27017/';
 
+//Variable that keeps track of name of current form type ("iso" or "dublin").
+var form = "iso";
+
 var clearCollection = function () {
     mongocl.connect(MONGO_HOST + MD_TEST_DB, function (err, db) {
 
@@ -18,7 +21,6 @@ var clearCollection = function () {
         coll.drop({});
     });
 };
-
 
 clearCollection();
 
@@ -52,25 +54,36 @@ describe('ISO and Dublin Core editing views', function () {
 
          browser.get('/frontend/index.html');
 
-         element(by.id('record-options-dropdown')).click();
+	 setFormType("iso");
+	 var formType = getFormType();
+	 
+	 
+	 element(by.id(formType + 'setup')).click();
+
          element(by.id('create-new-non-dataset')).click();
 
+	 setFormType("dublin");
+	 formType = getFormType();
          browser.getLocationAbsUrl().then(function(url) {
              expect(url).toEqual('/dublin');
          });
      });
  });
 
-
 function contactsTest() {
 
     describe('Adding and removing contacts using buttons', function () {
-
+	
         var addRemoveContacts = function () {
+	    var formType = getFormType();
+	    
+	   // element(by.id('record-options-dropdown')).click();
 
             element.all(by.css('.contact-input')).sendKeys('aaaaa');
             element.all(by.css('.contact-email')).sendKeys('a@aaaa.com');
 
+	    element(by.id(formType + "contacts")).click();
+	    
             var addContact = element(by.css('[ng-click="addContactAccess()"]'));
 
             addContact.click();
@@ -97,22 +110,32 @@ function contactsTest() {
             removeContact.click();
 
             expect(accessContacts.count()).toEqual(1);
-         };
-
+        };
+	
         it('should add/remove access contacts when the add/remove citation ' +
-            'button is pressed for iso and dublin', function () {
+           'button is pressed for iso and dublin', function () {
+ 	       
+               browser.get('/frontend');
+	       setFormType("iso");
+	       var formType = getFormType();
 
-            browser.get('/frontend');
-            element(by.id('record-options-dropdown')).click();
-            element(by.id('create-new-dataset')).click();
-
-            addRemoveContacts();
-
-            element(by.id('record-options-dropdown')).click();
-            element(by.id('create-new-non-dataset')).click();
-
-            addRemoveContacts();
-        });
+               
+	       element(by.id(formType + 'setup')).click();
+	       element(by.id('create-new-dataset')).click();
+	       setFormType("iso");
+	       formType = getFormType();
+	       
+	       addRemoveContacts();
+	       
+	       
+	       element(by.id(formType + 'setup')).click();
+	       
+	       element(by.id('create-new-non-dataset')).click();
+	       setFormType("dublin");
+	       formType = getFormType();
+	       
+               addRemoveContacts();
+           });
      });
 }
 
@@ -120,27 +143,41 @@ function contactsTest() {
 function deleteRecordTest(schemaType) {
 
     describe('Delete a metadata record', function() {
-
+	
         beforeEach( function () {
             browser.get('/frontend');
+	    setFormType("iso");
+	    var completeForm = "";
+	    var formType = getFormType();
 
-            element(by.id('record-options-dropdown')).click();
+	    completeForm = formType + "setup";
+	    element(by.id(completeForm)).click();
+	    
             if (schemaType === 'iso')
                 element(by.id('create-new-dataset')).click();
             else if (schemaType === 'dublin')
                 element(by.id('create-new-non-dataset')).click();
 
+	    setFormType(schemaType);
+	    formType = getFormType();
+	    
+	    completeForm = formType + "basic";
+	    element(by.id(completeForm)).click();
+	    
             element(by.model('currentRecord.title')).sendKeys('¡Pollo Loco!');
             element(by.model('currentRecord.summary')).sendKeys('mmmm....chicken');
 
-            element(by.id('record-options-dropdown')).click();
-            element(by.css('[ng-click="submitDraftRecord()"]')).click();
+	    //Automatically saves when changing states, so change back to first state of form.
+            
+	    element(by.id(formType + 'basic')).click();
+
         });
 
         afterEach(clearCollection);
 
         it('should delete the saved record even if current record has no id (i.e. has not yet been saved as draft)',
             function () {
+	    var formType = getFormType();
 
             var recordsList = element.all(by.repeater('record in allRecords'));
             expect(recordsList.count()).toEqual(1);
@@ -155,6 +192,8 @@ function deleteRecordTest(schemaType) {
         });
 
         it('should delete current record and load fresh form when record deleted', function() {
+	    var formType = getFormType();
+	    
             element(by.id('load-delete-record-dropdown')).click();
             element(by.id('delete-record-0')).click();
 
@@ -169,8 +208,17 @@ function deleteRecordTest(schemaType) {
         });
 
         it('should delete non-current record while leaving currently loaded record intact', function () {
-            element(by.id('record-options-dropdown')).click();
+	    var formType = getFormType();
+	    
+	    
+	    element(by.id(formType + 'setup')).click();
+
             element(by.id('create-new-dataset')).click();
+	    setFormType("iso");
+	    formType = getFormType();
+	    //Go to basic information state
+	    
+	    element(by.id(formType + 'basic')).click();
 
             element(by.model('currentRecord.title')).sendKeys('KFC');
             var summary = 'Trust the colonel, you\'ll need a colonoscopy after a lifetime of eating KFC';
@@ -189,9 +237,53 @@ function deleteRecordTest(schemaType) {
     });
 }
 
+function setFormType(type) {
+    form = type;
+}
+
+function getFormType(){
+
+    if(form == "iso")
+	return "form.";
+    else if(form == "dublin")
+	return "dublinForm.";
+    else{
+	console.log("Error: tried to set form to unsupported from type.");
+	return "";
+    }
+    
+    /*
+    var type = "";
+
+    var schemaType = function(){
+	return function(){
+	    return browser.driver.getCurrentUrl().toString();
+	};
+    };
+
+    browser.wait(schemaType(), 1100);
+    
+    console.log("Printing url: " + schemaType);
+    if(schemaType == "iso"){
+	console.log("Form type is : " + "form.");
+	type = "form.";
+    }
+    else if(schemaType == "dublin"){
+	console.log("Form type is : " + "dublinForm.");
+	type = "dublinForm.";
+    }
+    else{
+	console.log("Error: didn't get either form type!!!");
+	type = "form.";
+    }
+
+    console.log("Printing type:::::::<<>>>> : " + type);
+    return type;
+*/
+}
 
 function testLoadDeleteDropdown(schemaType) {
-
+    
     describe('Manage your metadata dropdown', function () {
 
         var newRecord = {
@@ -249,20 +341,37 @@ function testLoadDeleteDropdown(schemaType) {
         beforeEach(function () {
 
             browser.get('/frontend');
+	    setFormType("iso");
+	    
+	    var formType = getFormType();
+	    
+            if (schemaType === 'iso'){
+			
+		element(by.id(formType + 'setup')).click();
 
-            element(by.id('record-options-dropdown')).click();
-            if (schemaType === 'iso')
                 element(by.id('create-new-dataset')).click();
-            else if (schemaType === 'dublin')
+            }else if (schemaType === 'dublin'){
+		
+		element(by.id(formType + 'setup')).click();
+		
                 element(by.id('create-new-non-dataset')).click();
-
+	    }
+	    
+	    setFormType(schemaType);
+	    formType = getFormType();
+	    
             // add data to contacts
-            var addCitationButton =
+
+	    //Change to contacts form element
+	    
+	    element(by.id(formType + 'contacts')).click();
+	    
+	    var addCitationButton =
                 element(by.css('[ng-click="addContactCitation()"]'));
 
             var citationContacts =
                 element.all(by.repeater('contact in currentRecord.citation'));
-
+	    
             var accessContacts =
                 element.all(by.repeater('contact in currentRecord.access'));
 
@@ -299,16 +408,20 @@ function testLoadDeleteDropdown(schemaType) {
                         if (['first_pub_date', 'start_date',
                              'end_date'].indexOf(key) === -1)
                         {
+			    switchFormPage(key, formType, schemaType);
                             element(by.model(model)).sendKeys(newRecord[key]);
                         }
                     }
                 }
             }
 
+	    element(by.id(formType + "dataFormats")).click();
             element(by.css('[label="netCDF"]')).click();
 
             if (schemaType === 'iso')
             {
+		
+		element(by.id(formType + 'temporalExtent')).click();
                 //element(by.model('currentRecord.start_date.$date')).sendKeys('01-01-2002');
                 element(by.id('start-date')).clear().sendKeys('01/01/2002').sendKeys(protractor.Key.TAB);
                 // search.sendKeys(protractor.Key.TAB);
@@ -319,6 +432,10 @@ function testLoadDeleteDropdown(schemaType) {
         afterEach(clearCollection);
 
          it('should have two citation contacts and one access contact from beforeEach', function () {
+	    var formType = getFormType();
+
+	     
+	     element(by.id(formType + 'contacts')).click();
 
              var citationContacts =
                  element.all(by.repeater('(contactIdx, contact) in currentRecord.citation'));
@@ -326,28 +443,29 @@ function testLoadDeleteDropdown(schemaType) {
 
              var accessContacts =
                  element.all(by.repeater('(contactIdx, contact) in currentRecord.access'));
-
+	     
              expect(accessContacts.count()).toEqual(1);
          });
-
+	
         it('should save the new record when the save option is selected, then faithfully re-load', function () {
-
-            element(by.id('record-options-dropdown')).click();
-            element(by.css('[ng-click="submitDraftRecord()"')).click();
-
+	    var formType = getFormType();
+	    
+	    
+	    //element(by.id(formType + 'review')).click();
+    	    
             element(by.id('load-delete-record-dropdown')).click();
-
+	    
             var recRows = element.all(by.repeater('record in allRecords'));
             expect(recRows.count()).toEqual(1);
-
+	    
             element(by.id('load-delete-record-dropdown')).click();
 
             expect(element(by.id('record-list-title-0')).getAttribute("innerText"))
                 .toEqual('Record One');
-
+	    
             // get a list of metadata records
             element(by.id('load-delete-record-dropdown')).click();
-
+	    
             // click the first one in the list
             element(by.id('edit-record-' + schemaType + '-0')).click();
             // check the title
@@ -355,13 +473,15 @@ function testLoadDeleteDropdown(schemaType) {
                 element(by.css('#record-title[ng-show="!newRecord"]'))
                     .getText()
             )
-            .toEqual('Editing Existing: Record One');
-
+		.toEqual('Editing Existing: Record One');
+	    
             // check contacts
             var ccExpected = newRecord.citation;
             var caExpected = newRecord.access;
-
-            for (var ccIdx = 0; ccIdx < 2; ccIdx++)
+	    
+	    element(by.id(formType + 'contacts')).click();
+	    
+	    for (var ccIdx = 0; ccIdx < 2; ccIdx++)
             {
                 for (var ccKey in ccExpected[ccIdx])
                 {
@@ -379,6 +499,9 @@ function testLoadDeleteDropdown(schemaType) {
             }
 
             // check spatial extent
+	    switchFormPage("west_lon", formType, schemaType);
+	    element(by.id(formType + 'spatialExtent')).click();
+	    
             var compareBboxVal = function (dir) {
                 var valPromise =
                     element(by.model('currentRecord.' + dir)).getAttribute('value');
@@ -398,6 +521,10 @@ function testLoadDeleteDropdown(schemaType) {
             if (schemaType === 'iso')
             {
                 // check dates
+		
+		element(by.id(formType + 'temporalExtent')).click();
+		
+		
                 expect(element(by.model('currentRecord.start_date.$date')).getAttribute('value'))
                     .toEqual('01/01/2002');
 
@@ -406,38 +533,62 @@ function testLoadDeleteDropdown(schemaType) {
             }
 
             // check the rest
+
+	    element(by.id(formType + 'dataFormats')).click();
+	    
             expect(element(by.id('format-selector')).getAttribute('value'))
                 .toEqual('string:netCDF');
         });
 
          it('should clear any information that has been input when creating a new record', function () {
+	     var formType = getFormType();
 
-             element(by.id('record-options-dropdown')).click();
-             element(by.css('[ng-click="submitDraftRecord()"')).click();
-
-             element(by.id('record-options-dropdown')).click();
-             element(by.css('[ng-click="createNewRecord()"]')).click();
-
+             
+	     element(by.id(formType + 'setup')).click();
+	     
+	     
+             element(by.id('create-new-dataset')).click();
+	     setFormType("iso");
+	     formType = getFormType();
+	     
+	     element(by.id(formType + 'basic')).click();
+	     
+	     
              element(by.model('currentRecord.title')).sendKeys('Record Two');
              element(by.model('currentRecord.summary')).sendKeys('Another record of some other stuff');
 
+	     switchFormPage("west_lon", formType, schemaType);
+	     element(by.id(formType + 'spatialExtent')).click();
+	     
              element(by.model('currentRecord.north_lat')).sendKeys('46.8');
              element(by.model('currentRecord.south_lat')).sendKeys('35.5');
              element(by.model('currentRecord.east_lon')).sendKeys('-115.0');
              element(by.model('currentRecord.west_lon')).sendKeys('-120.0');
 
-             element(by.id('record-options-dropdown')).click();
-             element(by.css('[ng-click="submitDraftRecord()"]')).click();
-
+	     //Save form by clicking on "Basic Information" page. Auto saves when switching between pages
+             
+	     element(by.id(formType + 'basic')).click();
+	     
+	     
+	     //Might need to click on prerequisite states before this
              var recordListElements = element.all(by.css('.record-list-actions'));
 
              expect(recordListElements.count()).toEqual(2);
-
-             element(by.id('record-options-dropdown')).click();
-             element(by.css('[ng-click="createNewRecord()"]')).click();
-
+	     
+             
+	     element(by.id(formType + 'setup')).click();
+	     
+	     
+             element(by.id('new-dataset-record')).clickbrowser.wait();
+	     
+	     
+	     element(by.id(formType + 'basic')).click();
+	     
              expect(element(by.model('currentRecord.title')).getText()).toEqual('');
 
+	     switchFormPage("west_lon", formType, schemaType);
+	     element(by.id(formType + 'spatialExtent')).click();
+	     
              expect(element(by.model('currentRecord.north_lat')).getText()).toEqual('');
              expect(element(by.model('currentRecord.south_lat')).getText()).toEqual('');
              expect(element(by.model('currentRecord.east_lon')).getText()).toEqual('');
@@ -448,89 +599,117 @@ function testLoadDeleteDropdown(schemaType) {
 
 
 function attachFileTest(schemaType) {
-
+    
     describe('File attachment', function () {
 
         beforeEach(function () {
-            browser.get('/frontend');
 
-            element(by.id('record-options-dropdown')).click();
+            browser.get('/frontend');
+	    setFormType("iso");
+            var formType = getFormType();
+	    
+	    element(by.id(formType + 'setup')).click();
+	    
             if (schemaType === 'iso')
                 element(by.id('create-new-dataset')).click();
             else if (schemaType === 'dublin')
                 element(by.id('create-new-non-dataset')).click();
+
+	    setFormType(schemaType);
+	    formType = getFormType();
+	    
         });
 
         it('should show a new file in the attachments list when file added then ' +
            'remove when deleted and not overwrite any user-entered but not saved data',
-        function () {
+           function () {
+	       var formType = getFormType();
 
-            element(by.model('currentRecord.title')).sendKeys('¡olé!™');
-
-            element(by.id('record-options-dropdown')).click();
-
-            element(by.css('[ng-click="submitDraftRecord()"')).click();
-
-            // now add a summary that we will check is not overwritten
-            element(by.model('currentRecord.summary')).sendKeys('Heyyyy');
-
-            // send keys to give the file name desired
-            var fname1 = 'file1.txt',
-                f1 = path.resolve(__dirname, fname1),
-                fname2 = 'file2.nc',
-                f2 = path.resolve(__dirname, fname2);
-
-            // upload 1
-            element(by.id('attachment-select')).sendKeys(f1);
-            browser.executeScript('window.scrollTo(0,0);');
-            element(by.css('[ng-click="attachFile()"]')).click();
-
-            var checkUploadLenIs = function (n) {
-                var uploadList =
-                    element.all(by.repeater('att in currentRecord.attachments'));
-
-                expect(uploadList.count()).toBe(n);
-            };
-
-            checkUploadLenIs(1);
-
-            // upload 2
-            element(by.id('attachment-select')).sendKeys(f2);
-            element(by.id('attach-file-button')).click().then(function() {
-
-                checkUploadLenIs(2);
-                element(by.id('remove-attachment-1')).click();
-                checkUploadLenIs(1);
-
-                element(by.id('remove-attachment-0')).click();
-                checkUploadLenIs(0);
-
-            });
-        });
+	       
+	       element(by.id(formType + 'basic')).click();
+	       
+               element(by.model('currentRecord.title')).sendKeys('¡olé!™');
+	       
+	       //Automatically saves when form changes states (pages)
+               
+	       element(by.id(formType + 'setup')).click();
+	       
+	       
+               // now add a summary that we will check is not overwritten
+               
+	       element(by.id(formType + 'basic')).click();
+	       	       
+               element(by.model('currentRecord.summary')).sendKeys('Heyyyy');
+	       
+               // send keys to give the file name desired
+               var fname1 = 'file1.txt',
+                   f1 = path.resolve(__dirname, fname1),
+                   fname2 = 'file2.nc',
+                   f2 = path.resolve(__dirname, fname2);
+	       
+               // upload 1
+	       
+	       element(by.id(formType + 'dataFormats')).click();
+	       
+               element(by.id('attachment-select')).sendKeys(f1);
+               browser.executeScript('window.scrollTo(0,0);');
+               element(by.css('[ng-click="attachFile()"]')).click();
+	       
+               var checkUploadLenIs = function (n) {
+                   var uploadList =
+                       element.all(by.repeater('att in currentRecord.attachments'));
+		   
+                   expect(uploadList.count()).toBe(n);
+               };
+	       
+               checkUploadLenIs(1);
+	       
+               // upload 2
+               element(by.id('attachment-select')).sendKeys(f2);
+               element(by.id('attach-file-button')).click().then(function() {
+		   
+                   checkUploadLenIs(2);
+                   element(by.id('remove-attachment-1')).click();
+                   checkUploadLenIs(1);
+		   
+                   element(by.id('remove-attachment-0')).click();
+                   checkUploadLenIs(0);
+		   
+               });
+           });
     });
 }
 
 
 function testMilesDefaults(schemaType) {
-
+    
     describe('MILES Defaults', function () {
 
         beforeEach(function() {
 
             browser.get('/frontend');
-
-            element(by.id('record-options-dropdown')).click();
+	    setFormType("iso");
+	    var formType = getFormType();
+           
+	    element(by.id(formType + 'setup')).click();
+	    
             if (schemaType === 'iso')
                 element(by.id('create-new-dataset')).click();
             else if (schemaType === 'dublin')
                 element(by.id('create-new-non-dataset')).click();
-        });
+
+	    setFormType(schemaType);
+	    formType = getFormType();	    
+        }); 
 
          it('should load the correct fields with correct data', function () {
-
-             element(by.id('defaults-dropdown')).click();
+	     var formType = getFormType();
+	     
              element(by.css('[ng-click="loadDefaultMILES()"]')).click();
 
+	     
+	     element(by.id(formType + 'basic')).click();
+	     
              expect(element(by.model('currentRecord.place_keywords')).getAttribute('value'))
                  .toBe('USA, Idaho');
 
@@ -544,6 +723,10 @@ function testMilesDefaults(schemaType) {
                  west_lon: -117.2413657,
                  east_lon: -111.043495
              };
+	     
+	     switchFormPage("west_lon", formType, schemaType);
+	     element(by.id(formType + 'spatialExtent')).click();
+	     
              var compareBboxVal = function (dir) {
                  var valPromise =
                      element(by.model('currentRecord.' + dir)).getAttribute('value');
@@ -562,45 +745,92 @@ function testMilesDefaults(schemaType) {
          });
 
          it('should not overwrite fields that are already present in a new record', function () {
-
-             element(by.id('record-options-dropdown')).click();
+	    var formType = getFormType();
+	     
+             
+	     element(by.id(formType + 'setup')).click();
+	     
              element(by.id('create-new-dataset')).click();
 
+	     setFormType("iso");
+	     formType = getFormType()
+	     
+	     element(by.id(formType + 'basic')).click();
+	     
              element(by.model('currentRecord.title')).sendKeys('Record Two');
              element(by.model('currentRecord.summary')).sendKeys('Another record of some other stuff');
 
-             element(by.id('defaults-dropdown')).click();
+             
+	     element(by.id(formType + 'setup')).click();
+	     
+	     
              element(by.css('[ng-click="loadDefaultMILES()"]')).click();
-
+	     
+	     
+	     element(by.id(formType + 'basic')).click();
+	     	     
              expect(element(by.model('currentRecord.title')).getAttribute('value'))
                  .toBe('Record Two');
-
+	     
              expect(element(by.model('currentRecord.summary')).getAttribute('value'))
                  .toBe('Another record of some other stuff');
          });
      });
  }
 
+function getUrl(){
+    var url = browser.driver.getCurrentUrl();
+    if(url.includes("iso"))
+	return "iso";
+    else if(url.includes("dublin"))
+	return "dublin";
+    else
+	console.log("Error: unsupported url.");
 
-
+    return "";
+}
+ 
 function testNknAsDistributor(schemaType) {
+    
     describe('NKN as distributor', function () {
 
         beforeEach(function () {
             browser.get('/frontend');
+	    setFormType("iso");
+	    var completeForm = "";
+	    var formType = getFormType();
 
-            element(by.id('record-options-dropdown')).click();
-            if (schemaType === 'iso')
+            completeForm = formType + "setup";
+	    console.log("Printing formType in testNknAsDistributor <<<<<<<<<<<<<<<<<VVVVVVVVVVVVVVVVVVVVVVVVVVVVV>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + formType);
+	    element(by.id(completeForm)).click();
+
+            if(schemaType === 'iso'){
+		element(by.id(completeForm)).click();
+		
                 element(by.id('create-new-dataset')).click();
-            else if (schemaType === 'dublin')
+            }else if (schemaType === 'dublin'){
+		element(by.id(completeForm)).click();
                 element(by.id('create-new-non-dataset')).click();
+
+	    }
+
+	    setFormType(schemaType);
+	    formType = getFormType();
+	    
         });
 
         it('should fill in the distributor as NKN', function() {
-
-            element(by.id('defaults-dropdown')).click();
+    
+	    var formType = getFormType();
+	    var completeForm = "";
+	    
+	    completeForm = formType + "setup";
+	    element(by.id(completeForm)).click();
             element(by.css('[ng-click="loadDefaultNKNAsDistributor()"]')).click();
 
+            completeForm = formType + "contacts";
+	    element(by.id(completeForm)).click();
+	    
             expect(element(by.id('access-name-0')).getAttribute('value'))
                 .toBe('Northwest Knowledge Network');
 
@@ -630,13 +860,24 @@ function testNknAsDistributor(schemaType) {
         });
 
         it('should not overwrite fields already present in a new record', function () {
-
+	    var formType = getFormType();
+	    var completeForm = "";
+	    
+	    completeForm = formType + "basic";
+	    element(by.id(completeForm)).click();
+	    
             element(by.model('currentRecord.title')).sendKeys('A new record');
             element(by.model('currentRecord.summary')).sendKeys('the summary');
-
-            element(by.id('defaults-dropdown')).click();
+	    
+            completeForm = formType + "setup";
+	    element(by.id(completeForm)).click();
+	    
             element(by.css('[ng-click="loadDefaultNKNAsDistributor()"]')).click();
-
+	    
+	    completeForm = formType + "basic";
+	    element(by.id(completeForm)).click();
+	    
+	    
             expect(element(by.model('currentRecord.title')).getAttribute('value'))
                 .toBe('A new record');
 
@@ -644,6 +885,69 @@ function testNknAsDistributor(schemaType) {
                 .toBe('the summary');
         });
     });
+}
+
+function switchFormPage(key, formType, schemaType){
+    switch(key){
+    case "title":
+    case "summary":
+    case "last_mod_date":
+    case "place_keywords":
+    case "thematic_keywords":
+    case "topic_category":
+	element(by.id(formType + "basic")).click();
+	break;
+	
+    case "status":
+    case "update_frequency":
+    case "spatial_dtype":
+    case "hierarchy_level":
+	element(by.id(formType + "detailed")).click();
+	break;
+
+    case "data_format":
+    case "compression_technique":
+    case "attachments":
+	element(by.id(formType + "dataFormats")).click();
+	break;
+
+    case "online":
+    case "use_restrictions":
+	element(by.id(formType + "onlineResourcesAndRestrictions")).click();
+	break;
+
+    case "start_date":
+    case "end_date":
+	element(by.id(formType + "temporalExtent")).click();
+	break;
+    case "west_lon":
+    case "east_lon":
+    case "north_lat":
+    case "south_lat":
+	if(schemaType === 'dublin'){
+	    //Check if "Spatial Extent" page was already added to dublin form. If not,
+	    //Navigate back to first page and add it.
+	    element(by.id("dublinForm.spatialExtent")).isPresent().then(function(result){
+		if(!result){
+		    element(by.id("dublinForm.setup")).click();
+		    element(by.id("add-spatial-extent")).click();
+		}
+	    });
+	}
+	
+	element(by.id(formType + "spatialExtent")).click();
+	break;
+    case "citation":
+    case "access":
+	element(by.id(formType + "contacts")).click();
+	break;
+    case "doi_ark_request":
+    case "data_one_search":
+	element(by.id(formType + "optionsAndDisclaimer")).click();
+	
+    default:
+	break;
+    }
 }
 
 //function testExportISO(schemaType) {

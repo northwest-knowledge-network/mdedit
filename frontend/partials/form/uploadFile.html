@@ -2,10 +2,15 @@
   <h2 class="section-header">
     <span class="glyphicon glyphicon-list-alt"></span> Upload File
   </h2>
-  
 
   <div class="subform">
     <h4 id="attachment-header">Associated Data</h4>
+
+    <h5>
+      <strong>Please contact <a href="mailto:publish@northwestknowledge.net?subject=NKN Metadata Editor" alt="email NKN">NKN</a>
+      </strong>if you have questions or if the data associated with your record are <strong>larger than 10GB</strong>.
+    </h5>
+    
     <ol>
       <li ng-repeat="att in currentRecord.attachments">
 	<a ng-href="{{att.url}}">{{att.url | filename}}</a>
@@ -25,7 +30,7 @@
     <input type="file" id="attachment-select"
 	   value="Attach File" ng-show="currentRecord._id"
 	   file-model="attachmentInfo.newAttachment"
-	   ng-style="attachFileDiv"/>
+	   ng-style="attachFileDiv" />
     <button id="attach-file-button" class="btn btn-primary btn-contact"
             ng-show="attachmentInfo.newAttachment"
             ng-click="attachFile()"

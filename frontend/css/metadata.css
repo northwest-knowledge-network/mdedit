@@ -185,7 +185,7 @@ h3#brand {
 }
 
 
-#nav-button {
+#nav-button{
   font-weight: bold;
 }
 
@@ -311,41 +311,132 @@ nav.affix {
 /* Styling for step buttons */
 /* numbered buttons */
 #status-buttons                 {  }
-#status-buttons a               { display:inline-block; font-size:12px; margin-right:10px; text-align:center; text-transform:uppercase; }
+#status-buttons a               {
+    display:inline-block;
+    font-size: 14px;
+    margin-right:10px;
+    text-align:center;
+    text-transform:uppercase;
+}
+
 #status-buttons a:hover         { text-decoration:none; }
-#status-buttons span            { background:#080808; display:block; height:30px; margin:0 auto 10px; padding-top:5px; width:30px; 
-    border-radius:50%; }
+#status-buttons .partial-button            {
+    display:block;
+    height: 25px;
+    margin:0 auto;
+    width:40px;
+    border-radius: 5px;
+}
 
 /* active buttons */
 .current-form-element   {
     background:#00BC8C;
 }
 
-.incomplete-form-element {
-    
-}
-
 /*Left and right arrow buttons for form slider fixed to side of screen */
-
-.left-scroll-button {
-    position: fixed;
-    top: 50%;
-    left: 5px;
-    font-size: 15em !important;
-    z-index: 1;
-}
-
-.right-scroll-button {
-    position: fixed;
-    top: 50%;
-    right: 5px;
-    font-size: 15em !important;
-    z-index: 1;
-}
 
 @media only screen and (max-width: 890px) {
     .left-scroll-button, .right-scroll-button {
 	font-size: 7em !important;
 	top: 40%;
     }
+}
+/*
+.form-button-stack {
+    float: left;
+    margin: 5px;
+    text-align: center;
+}
+*/
+
+.form-container {
+    margin-right: 4em;
+    margin-left: 4em;
+}
+
+#form-display {
+    margin-right: 2em;
+    margin-left: 2em;
+}
+
+/* Arrow that points to the right for step button backgrounds */
+
+.breadcrumb {
+    list-style: none;
+    overflow: hidden;
+    font: 18px Helvetica, Arial, Sans-Serif;
+}
+
+.breadcrumb li {
+    list-style: none;
+    float: left;
+    display: inline;
+    margin-top: 5px;
+    margin-left: -35px;
+}
+
+.breadcrumb li a{
+    margin-left: 0px;
+    margin-right: 0px;
+    height: 50px;
+    color: white;
+    text-decoration: none;
+    padding: 0px 5px 10px 30px;
+    position: relative;
+    display: block;
+}
+
+.breadcrumb li a:after {
+    content: "";
+    display: block;
+    width: 0;
+    height: 0;
+    border-top: 25px solid transparent;
+    border-bottom: 25px solid transparent;
+    border-left: 25px solid #cccccc;
+    position: absolute;
+    top: 50%;
+    margin-top: -25px;
+    left: 100%;
+    z-index: 2;
+}
+
+.breadcrumb li a:before {
+    content: " ";
+    display: block;
+    width: 0;
+    height: 0;
+    border-top: 25px solid transparent;
+    border-bottom: 25px solid transparent;
+    border-left: 25px solid white;
+    position: absolute;
+    top: 50%;
+    margin-top: -25px;
+    margin-left: 1px;
+    left: 100%;
+    z-index: 1;
+}
+
+.breadcrumb li a:hover {
+    background: #b3b3b3 !important;
+}
+
+.breadcrumb li a:hover:after {
+    border-left-color: #b3b3b3 !important;
+}
+
+a.selected:after{
+    border-left-color: #00BC8C !important;
+}
+
+a.not-complete:after{
+    border-left-color: #FF471A !important;
+}
+
+a.complete:after{
+    border-left-color: #00E600 !important;
+}
+
+a.initial:after {
+    border-left-color: #CCCCCC;
 }

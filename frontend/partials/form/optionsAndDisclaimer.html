@@ -1,0 +1,49 @@
+<!-- DOI/ARK request -->
+<h2 class="section-header optional-field-header">
+  <span class="mega-octicon octicon-device-desktop"></span> Request DOI/ARK
+</h2>
+
+<div class="subform">
+  <h3><a href="https://en.wikipedia.org/wiki/Digital_object_identifier" target="_blank">A digital object identifier (DOI)</a> and <a href="https://en.wikipedia.org/wiki/Archival_Resource_Key" target="_blank">a archival resource key (ARK)</a> is like an address for your electronic file, allowing people to find your data on the web.  Forever.  The best part is that a DOI allows you and others to cite your data just like a publication, giving you and your data-coauthors credit for your hard work.  For more information on DOI/ARK and how to use them see <a href="http://www.lib.uidaho.edu/" target="_blank">University of Idaho Library Page</a>.</h3>
+  
+  <input type="radio" name="request-doi" value="DOI" ng-checked="currentRecord.doi_ark_request" ng-model="currentRecord.doi_ark_request" ng-click="applyForDOI('DOI')">This file is the final version and I would like to request a DOI (Recommended)</input>
+  <br>
+  <input type="radio" name="request-doi" value="ARK" ng-checked="currentRecord.doi_ark_request" ng-model="currentRecord.doi_ark_request" ng-click="applyForDOI('ARK')">This file is continually updated and I would like to request an ARK (A DOI can be issued once the file is complete).</input>
+  <br>
+  <input type="radio" name="request-doi" value="neither" ng-checked="currentRecord.doi_ark_request" ng-model="currentRecord.doi_ark_request" ng-click="applyForDOI('neither')">I do not want a DOI/ARK.</input>
+  <br>
+    
+</div>
+
+<!-- DataONE Search option --> 
+<h2 class="section-header optional-field-header">
+  <span class="mega-octicon octicon-clippy"></span> Other Options
+</h2>
+
+<div class="subform">
+  
+  <input type="checkbox" ng-checked="searchableOnDataOne" ng-model="searchableOnDataOne" ng-change="setSearchableDataOne()">I would like my data to be searchable on DataONE.</input>
+  <br>
+  
+</div>  
+
+
+<!-- Disclaimer -->
+<h2 class="section-header optional-field-header">
+  <span class="mega-octicon octicon-law"></span> Disclaimer & Authority
+</h2>
+
+<div class="subform">
+  
+  <input type="checkbox" ng-change="setTermsAndConditions();" ng-model="agreeTermsConditions" required >I agree to the </input><a ui-sref-active="active" id="terms-conditions" ui-sref="form.termsConditions">Terms and Conditions</a>
+  <br>
+  <input type="checkbox" ng-change="setRightToPublish();" ng-model="rightToPublish" required >I have the right to publish this file and by doing so does not violate any copyright laws. I have cited all external sources used in the creation of this file within the metadata record.</input>
+  <br>
+  <input type="checkbox" ng-change="setSensitiveInformation();" ng-model="noSensitiveInformation" required >My file does NOT contain any sensitive information.</input>
+  <br>
+  <ul>
+    <li>
+      What information is considered sensitive? <a ui-sref-active="active" id="sensitive-information" ui-sref="form.sensitiveInformation">Documentation</a>
+    </li>
+  </ul>
+</div>  

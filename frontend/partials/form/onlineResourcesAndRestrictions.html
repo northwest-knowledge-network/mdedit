@@ -1,72 +1,73 @@
-  <div class="row">
+<div class="row">
+  
+  <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 
-    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-
-      <a class="anchor" name="online"></a>
-	<h2 class="section-header optional-field-header">
-          <span class="mega-octicon octicon-device-desktop"></span>  Online Resources
-	</h2>
-	<span>
-	(Optional)
-	</span>
-      <h6>
-        Is your data or any additional information specific to the data available
-        online or is your data provided as a web service (e.g., Web Mapping
-        Services, Catalog Services for the Web, REST services)? Provide the
-        URL for each online resource.
-      </h6>
+    <a class="anchor" name="online"></a>
+    <h2 class="section-header optional-field-header">
+      <span class="mega-octicon octicon-device-desktop"></span>  Online Resources
+    </h2>
+    <span>
+      (Optional)
+    </span>
+    <h6>
+      Is your data or any additional information specific to the data available
+      online or is your data provided as a web service (e.g., Web Mapping
+      Services, Catalog Services for the Web, REST services)? Provide the
+      URL for each online resource.
+    </h6>
 
 
-      <form name="onlineSubform" id="onlineSubform">
-        <div class="subform">
-          <div class="row">
-            <div ng-repeat="el in currentRecord.online track by $index">
-              <h3 style="margin-left:10px" class="section-header">URL {{ $index + 1 }}</h3>
-              <div class="row">
-                <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
-                  <input type="url" tabindex="21" style="margin-left:10px;width:100%"
-                         ng-model="currentRecord.online[$index]" class="optional"
-			 maxlength="254">
-                </div>
-                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                  <button tabindex=20 class="btn btn-default btn-xs"
-                      ng-click="removeOnlineResource($index)">Remove </button>
-                </div>
+    <form name="onlineSubform" id="onlineSubform">
+      <div class="subform">
+        <div class="row">
+          <div ng-repeat="el in currentRecord.online track by $index">
+            <h3 style="margin-left:10px" class="section-header">URL {{ $index + 1 }}</h3>
+            <div class="row">
+              <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+                <input type="url" tabindex="21" style="margin-left:10px;width:100%"
+                       ng-model="currentRecord.online[$index]" class="optional"
+		       maxlength="254" />
               </div>
-           </div>
+              <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                <button tabindex=20 class="btn btn-default btn-xs"
+			ng-click="removeOnlineResource($index)">Remove </button>
+              </div>
+            </div>
           </div>
         </div>
-        <div id="online-buttons">
-          <input type="button" tabindex=21 class="btn btn-primary btn-contact"
-                 ng-click="addOnlineResource()" value="Add an Online Resource"
-		 maxlength="254">
-        </div>
-      </form>
-
-    </div>
-
-
-    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-
-      <a class="anchor" name="online"></a>
-      <h2 class="section-header">
-        <span class="mega-octicon octicon-issue-opened"></span>  Use Restrictions
-      </h2>
-      <div class="subform">
-        <h6>
-          List any use restrictions for how others should use your data.
-          For example, you might want to stipulate that "This
-          dataset should be cited in any publications for which it is
-          used." If there are no restrictions for how your dataset is
-          used, please state so here.
-        </h6>
-        <form>
-          <textarea style="width:100%" tabindex=21 rows=4
-                    ng-model="currentRecord.use_restrictions" required>
-          </textarea>
-        </form>
       </div>
+      <div id="online-buttons">
+        <input type="button" tabindex=21 class="btn btn-primary btn-contact"
+               ng-click="addOnlineResource()" value="Add an Online Resource"
+	       maxlength="254" />
+      </div>
+    </form>
 
+  </div>
+
+
+  <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+
+    <a class="anchor" name="online"></a>
+    <h2 class="section-header">
+      <span class="mega-octicon octicon-issue-opened"></span>  Use Restrictions
+    </h2>
+    <div class="subform">
+      <h6>
+        List any use restrictions for how others should use your data.
+        For example, you might want to stipulate that "This
+        dataset should be cited in any publications for which it is
+        used." If there are no restrictions for how your dataset is
+        used, please state so here.
+      </h6>
+      <form>
+        <textarea style="width:100%" tabindex=21 rows=4
+                  ng-model="currentRecord.use_restrictions" required>
+        </textarea>
+      </form>
     </div>
 
   </div>
+
+</div>
+

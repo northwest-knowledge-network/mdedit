@@ -15,18 +15,20 @@
     
   <div id="submit-form">
     <br>
-    <button class="btn btn-primary" ng-show="baseCtrl.metadataForm.$valid"
-	    id="record-options-publish" ng-click="publishRecord()"
+    <div ng-show="checkAllValid();">
+      <button class="btn btn-primary" id="record-options-publish" ng-click="publishRecord()"
 	    href="#"
 	    data-toggle="modal" data-target="#submitModal"
 	    >
-      Publish record to NKN's portal
-    </button>
-    
-    <button ng-hide="baseCtrl.metadataForm.$valid"
-	    class="disabled btn btn-primary">
-      Please complete the record to publish data
-    </button>
+	Submit for publication
+      </span>
+    </div>
+
+    <div ng-hide="checkAllValid();">
+      <span class="disabled btn btn-primary">
+	Please complete the record to publish data
+      </span>
+    </div>
     
   </div>
 </div>
