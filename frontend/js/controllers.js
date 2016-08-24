@@ -200,7 +200,7 @@ metadataEditorApp.controller('BaseController',
                     }
                     else if (['place_keywords', 'thematic_keywords'].indexOf(key) > -1)
                     {
-                        $scope.currentRecord[key] = milesFields[key].join(', ');
+                        $scope.currentRecord[key] = milesFields[key].join(',');
                     }
                     else
                     {
@@ -535,109 +535,6 @@ metadataEditorApp.controller('BaseController',
 		var response = checkNull(value);
 		return response;
 	    }
-
-/*
-	    
-	    switch(value){
-	    case "title":
-	    case "summary":
-   	    case "update_frequency":
-	    case "status":
-	    case "hierarchy_level":
-	    case "place_keywords":
-	    case "thematic_keywords":
-	    case "use_restrictions":
-	    case "west_lon":
-	    case "east_lon":
-	    case "north_lat":
-	    case "south_lat":
-	    case "spatial_dtype":
-		if(value){
-		    var response = checkLength(value);
-		    return response;
-		}else{
-		    var response = checkNull(value);
-		    return response;
-		}
-		break;
-		
-    	    case "start_date":
-	    case "end_date":
-		for(var nestedKey in $scope.currentRecord[value]){
-		    if($scope.currentRecord[value][nestedKey] != null){
-			var response = checkLength(value);
-			return response;
-		    }else{
-			var response = checkNull(value);
-			return response;
-		    }
-		}
-		break;
-		
-	    case "data_format":
-		//check $scope.dataFormats: text input isn't bound to currentRecord
-		//Two possibilities: dataFormats.iso[] or dataFormats.aux (string).
-		//If one is filled out, do not check the other (mutally exclusive).
-		if(value != null){
-		    var response = checkLength(value);
-		    if(response.length > 0)
-			return response;
-		}else{
-		    var response = checkNull(value);
-		    if(response.length > 0)
-			return response;
-		}
-		
-		//Check aux definition too (from text input of other values)
-		if($scope.dataFormats.iso.length == 0){
-		    if($scope.dataFormats.aux != null){
-			var response = checkLength(value);
-			if(response.length > 0){
-			    return response;
-			}
-		    }else{
-			var response = checkNull(value);
-			if(response.length > 0){
-			    return response;
-			}
-		    }
-		}
-		
-		
-		break;
-		
-  	    case "topic_category":
-		if($scope.currentRecord[key][0] != null){
-		    var response = checkLength(value);
-		    if(response.length > 0)
-			return response;
-		}else{
-		    var response = checkNull(value);
-		    if(response.length > 0)
-			return response;
-		}
-		break;
-		
-	    case "citation":
-	    case "access":
-		for(var nestedKey in $scope.currentRecord[key][0]){
-		    if($scope.currentRecord[key][0][nestedKey] != null){
-			var response = checkLength(value);
-			if(response.length > 0)
-			    return response;
-		    }else{
-			var response = checkNull(value);
-			if(response.length > 0)
-			    return response;
-		    }
-		}
-		break;
-	    default:
-		return '';
-		break;
-	    }
-*/
-	 
 	}
     
 
@@ -853,7 +750,7 @@ metadataEditorApp.controller('BaseController',
 	    scopeButton.buttonStyle = backgroundColor;
 
 	    if(i > 0)
-		scopeButton.saveOnClick = "submitDraftRecord()";
+		scopeButton.saveOnClick = "submitDraftRecord();";
 	    
 	    var buttonName = data[0];
 
@@ -871,7 +768,7 @@ metadataEditorApp.controller('BaseController',
 	    scopeButton.buttonStyle = backgroundColor;
 	    
 	    if(i > 0)
-		scopeButton.saveOnClick = "submitDraftRecord()";
+		scopeButton.saveOnClick = "submitDraftRecord();";
 
 	    var buttonName = data[0];
 
@@ -916,6 +813,12 @@ metadataEditorApp.controller('BaseController',
 		    $scope.dublinFormList.pop();
 		    dublinButtonList.pop();
 		}
+	    }
+	}
+
+	$scope.saveForm = function(formName) {
+	    if(formName.includes("setup") !== true){
+		$scope.submitDraftRecord();
 	    }
 	}
 

@@ -5,6 +5,8 @@ module.exports = function(config){
 
     files : [
       'frontend/bower_components/angular/angular.js',
+      'frontend/bower_components/ngAnimate/js/angular-animate.min.js',
+	'frontend/bower_components/ngmap/testapp/lib/angular-ui-router.js',
       'frontend/bower_components/angular-route/angular-route.js',
       'frontend/bower_components/angular-mocks/angular-mocks.js',
       'frontend/bower_components/angular-ui-date/src/date.js',
@@ -29,7 +31,7 @@ module.exports = function(config){
     junitReporter : {
       outputFile: 'test_out/unit.xml',
       suite: 'unit'
-    }
+    },
 
   });
 };

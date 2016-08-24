@@ -365,6 +365,7 @@ nav.affix {
     list-style: none;
     overflow: hidden;
     font: 18px Helvetica, Arial, Sans-Serif;
+    background-color: white;
 }
 
 .breadcrumb li {
