@@ -116,7 +116,9 @@ metadataEditorApp
         }
 
         scope.currentRecord.place_keywords = record.place_keywords.join(', ');
-        scope.currentRecord.thematic_keywords = record.thematic_keywords.join(', ');
+	//Had to get rid of trailing witespace after comma because after every page
+	//change was adding extra whitespaces between words.
+        scope.currentRecord.thematic_keywords = record.thematic_keywords.join(',');
     };
 }])
 

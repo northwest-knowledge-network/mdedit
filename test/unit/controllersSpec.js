@@ -88,8 +88,8 @@ describe('MILES defaults', function() {
         expect(rec.description).toEqual('Limnology variables observed 2001 - 2003');
         expect(rec.start_date.$date).toEqual(new Date(2001, 9, 1));
         expect(rec.end_date.$date).toEqual(new Date(2003, 8, 30));
-        expect(rec.place_keywords).toEqual('USA,Idaho');
-        expect(rec.thematic_keywords).toEqual('IIA-1301792,MILES,EPSCoR');
+        expect(rec.place_keywords).toEqual('USA, Idaho');
+        expect(rec.thematic_keywords).toEqual('IIA-1301792, MILES, EPSCoR');
 
         expect(rec.citation).toEqual(
             [{

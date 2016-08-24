@@ -200,7 +200,7 @@ metadataEditorApp.controller('BaseController',
                     }
                     else if (['place_keywords', 'thematic_keywords'].indexOf(key) > -1)
                     {
-                        $scope.currentRecord[key] = milesFields[key].join(',');
+                        $scope.currentRecord[key] = milesFields[key].join(', ');
                     }
                     else
                     {
