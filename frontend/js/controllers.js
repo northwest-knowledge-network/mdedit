@@ -706,8 +706,10 @@ metadataEditorApp.controller('BaseController',
 		$scope.searchableOnDataOne = true;
 	    else if($scope.currentRecord.data_one_search == "false")
 		$scope.searchableOnDataOne = false;
-	    else
-		console.log("Error: tried to set $scope.searchableOnDataOne to unsupported value. Options are boolean.");
+	    else{
+		//For error handling
+		//console.log("Error: tried to set $scope.searchableOnDataOne to unsupported value. Options are boolean.");
+	    }
 	}
 
 	//Checks if $scope.agreeTermsConditions, $scope.rightToPublish, and $scope.noSensitiveInformation are true. If so, will return true.
@@ -842,9 +844,10 @@ metadataEditorApp.controller('BaseController',
 	    }else if(url.includes('dublin')){
 		return "dublin";
 	    }
-	    else
-		console.log("Error: form is an unsupported type.");
-
+	    else{
+		//For error handling
+		//console.log("Error: form is an unsupported type.");
+	    }
 	    return "";
 	}
 

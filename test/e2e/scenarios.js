@@ -590,7 +590,6 @@ function testLoadDeleteDropdown(schemaType) {
 	     waitForAnimation("title-input");
 	     
 	     
-	     //Might need to click on prerequisite states before this
              var recordListElements = element.all(by.css('.record-list-actions'));
 
              expect(recordListElements.count()).toEqual(2);
@@ -656,16 +655,8 @@ function attachFileTest(schemaType) {
 	       
                element(by.model('currentRecord.title')).sendKeys('¡olé!™');
 	       
-	       //Automatically saves when form changes states (pages)
-               
-	       //element(by.id(formType + 'setup')).click();
-	       //waitForAnimation("create-new-dataset");
-
-	       //setFormType("iso");
-	       //formType = getFormType();
-
                // now add a summary that we will check is not overwritten
-               
+
 	       element(by.id(formType + 'basic')).click();
 	       waitForAnimation("title-input");
 	       
@@ -840,17 +831,12 @@ function testNknAsDistributor(schemaType) {
 	    var formType = getFormType();
 
             completeForm = formType + "setup";
-	    console.log("Printing formType in testNknAsDistributor <<<<<<<<<<<<<<<<<VVVVVVVVVVVVVVVVVVVVVVVVVVVVV>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + completeForm);
 	    element(by.id(completeForm)).click();
 	    waitForAnimation("create-new-dataset");
             if(schemaType === 'iso'){
-		//element(by.id(completeForm)).click();
-		
                 element(by.id('create-new-dataset')).click();
             }else if (schemaType === 'dublin'){
-		//element(by.id(completeForm)).click();
                 element(by.id('create-new-non-dataset')).click();
-
 	    }
 
 	    setFormType(schemaType);
