@@ -441,3 +441,15 @@ a.complete:after{
 a.initial:after {
     border-left-color: #CCCCCC;
 }
+
+.access-table, .citation-table {
+    width: 100%;
+}
+
+.author-key {
+    width: 20%;
+}
+
+.author-value {
+    width: 80%;
+}

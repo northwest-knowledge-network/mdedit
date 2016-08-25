@@ -483,60 +483,90 @@ metadataEditorApp.controller('BaseController',
                 });
         };
 
-	/* Check all inputs, selects, and textfields that are not 
-	   optional to see if they have a value. If one does not have
-	   a value, it has not been filled out.
+	/*
+	  Return string copies of currentRecord keys and values for use in review.html. 
+	  "access", "citation", "cls", and "id" key values are skipped because they are
+	  displayed after ng-repeat loop of rest of values since the values of "access", and 
+	  "citation" are arrays of objects, and they must be parsed individually to avoid
+	  nesting problems.
 	*/
 	
 	$scope.reviewFields = function(value){
-	    //console.log("Printing value in reviewFields: " + value);
 
-	    if(Array.isArray(value)){
-		if(typeof value[0] === 'object'){ 		
-		    var totalString = "";
-		    var response = "";
-		    for(var i = 0; i < value.length; i++){
-			var iterationString = "";
-			
-			for(var key in value[i]){
-			    if((key != null) && (value[i][key] != null)){
-				if((key.length != 0) && (value[i][key].length != 0))
-				    response = checkLength(key) + " : " + checkLength(value[i][key]) + " | ";
-			    }else{
-				response = checkNull(key) + " : " + checkNull(value[i][key]) + " | ";
+	    switch(value){
+	    case "access":
+	    case "citation":
+	    case "cls":
+	    case "id":
+		break;
+	    default:
+		//If the object is either the citations or access objects, return empty string.
+		//The access and citation objects are displayed after the rest of currentRecord keys and values.
+		if((Array.isArray(value))
+		   && (typeof value[0] === 'object')
+		   && (Object.keys(value[0]).indexOf("name") > -1))
+		    return "";
+		
+		if((typeof value === 'string')
+		   && (value.indexOf('access') > -1)
+		   && (value.indexOf('citation') > -1) ){
+		    
+		    //do nothing
+		}else{
+		    
+		    if((Array.isArray(value))
+		       && (typeof value[0] === 'string')){
+			return value.join(', ');
+		    }
+
+
+		    if(Array.isArray(value)){
+			if(typeof value[0] === 'object'){
+			    var completeValue = "";
+			    for(var i = 0; i < value.length; i++){
+				for(var key in value[i]){
+				    if(key.indexOf("id") == -1)
+					if(key.indexOf("url") > -1){
+					    //Get name of file, which has been added on to end of URL.
+					    //Get text from last "/" character.
+					    completeValue = completeValue + value[i][key].substr(value[i][key].lastIndexOf("/")+1) + ", ";
+					}else
+					    completeValue = completeValue + key + " : " + value[i][key] + " | ";
+				}
 			    }
-			    iterationString = iterationString + response;
+			return completeValue;
 			}
-			totalString = totalString + iterationString;
+		    }
+
+
+		    if(typeof value === 'object'){
+			var completeValue = "";
+			for(var key in value){
+			    if(key.indexOf("$oid") > -1)
+				return "";
+			    if(key.indexOf("$date") > -1)
+				completeValue = completeValue + value[key] + " | ";
+			    else
+				completeValue = completeValue + key + " : " + value[key] + " | ";
+			}
+			return completeValue;
+		    }
+		    
+		    if(typeof value === 'number'){
+			return value.toString();
+		    }
+		    else if(value != null){
+			var response = checkLength(value);
+			return response;
+		    }else{
+			var response = checkNull(value);
+			return response;
 		    }
 		}
-		    return value + " : " + totalString;
-	    }
-	    
-		
-	    if(typeof value === 'object'){
-		var totalString = "";
-		for(key in value){
-		    //console.log("Printing object's attributes!!!! <<<<<<>>>>>>>>>>>>>>>>> " + key + " : " + value[key]);
-		    if(typeof value[key] === 'number')
-			totalString = totalString + key + " : " + value[key].toString() + " | ";
-		    else
-			totalString = totalString + key + " : " + value[key] + " | ";
-		}
-	    }
-	    
-	    if(typeof value === 'number'){
-		return value.toString();
-	    }
-	    else if(value != null){
-		var response = checkLength(value);
-		return response;
-	    }else{
-		var response = checkNull(value);
-		return response;
+		break;
 	    }
 	}
-    
+
 
 		/* Translate key into more human readable format for alert window.
 		   E.X.: data_format -> Data Format
@@ -643,9 +673,9 @@ metadataEditorApp.controller('BaseController',
 	    }else if(type == "ARK"){
 		$scope.currentRecord.doi_ark_request = type;
 	    }else if(type == "neither"){
-		$scope.currentRecord.doi_ark_request = '';
+		$scope.currentRecord.doi_ark_request = type;
 	    }else{
-		console.log("Error: tried to set DOI/ARK request to unsupported value: options are DOI/ARK");
+		console.log("Error: tried to set DOI/ARK request to unsupported value: options are \"DOI\", \"ARK\", or \"neither\"");
 	    }
 	}
 
@@ -1057,7 +1087,7 @@ metadataEditorApp.controller('BaseController',
 	    case "dataFormats":
 		//Check if user has specified data format yet.
 		if(($scope.currentRecord.data_format == null)
-		   || ($scope.currentRecord.attachments.length == null)){
+		  || ($scope.currentRecord.attachments == null)){
 		    formComplete = false;
 
 		    //Break out of statement since element is null, and checking length
@@ -1066,11 +1096,11 @@ metadataEditorApp.controller('BaseController',
 		}
 		
 		
-		if(($scope.currentRecord.data_format.length == 0)
-		   || ($scope.currentRecord.attachments.length == null)){
+		if(($scope.currentRecord.data_format[0] == '')
+		  || ($scope.currentRecord.attachments.length == 0)){
 		    formComplete = false;
 		}
- 		
+ 		console.log("Printing attachments length: " + $scope.currentRecord.attachments.length);
 		break;
 
 	    case "onlineResourcesAndRestrictions":
@@ -1101,26 +1131,27 @@ metadataEditorApp.controller('BaseController',
 		break;
 	    case "temporalExtent":
 		if(($scope.currentRecord.start_date == null)
-		   || ($scope.currentRecord.start_date.hours == null)
-		   || ($scope.currentRecord.start_date.minutes == null)
-		   || ($scope.currentRecord.start_date.seconds == null)
+		   || ($scope.currentRecord.start_date.$date.hours == null)
+		   || ($scope.currentRecord.start_date.$date.minutes == null)
+		   || ($scope.currentRecord.start_date.$date.seconds == null)
 		   || ($scope.currentRecord.end_date == null)
-		   || ($scope.currentRecord.end_date.hours == null)
-		   || ($scope.currentRecord.end_date.minutes == null)
-		   || ($scope.currentRecord.end_date.seconds == null)){
+		   || ($scope.currentRecord.end_date.$date.hours == null)
+		   || ($scope.currentRecord.end_date.$date.minutes == null)
+		   || ($scope.currentRecord.end_date.$date.seconds == null)){
 		    formComplete = false;
 		    break;
 		}
-		
-		if(($scope.currentRecord.start_date.length == 0)
-		   || ($scope.currentRecord.start_date.hours.length == 0)
-		   || ($scope.currentRecord.start_date.minutes.length == 0)
-		   || ($scope.currentRecord.start_date.seconds.length == 0)
-		   || ($scope.currentRecord.end_date.length == 0)
-		   || ($scope.currentRecord.end_date.hours.length == 0)
-		   || ($scope.currentRecord.end_date.minutes.length == 0)
-		   || ($scope.currentRecord.end_date.seconds.length == 0))
+
+		if(($scope.currentRecord.start_date.$date.length == 0)
+		   || ($scope.currentRecord.start_date.$date.hours.length == 0)
+		   || ($scope.currentRecord.start_date.$date.minutes.length == 0)
+		   || ($scope.currentRecord.start_date.$date.seconds.length == 0)
+		   || ($scope.currentRecord.end_date.$date.length == 0)
+		   || ($scope.currentRecord.end_date.$date.hours.length == 0)
+		   || ($scope.currentRecord.end_date.$date.minutes.length == 0)
+		   || ($scope.currentRecord.end_date.$date.seconds.length == 0))
 		    formComplete = false;
+
 		break;
 	    case "review":
 		break;
