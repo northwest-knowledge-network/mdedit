@@ -21,7 +21,7 @@ metadataEditorApp
 })
 .factory('hostname', function()
 {
-        // next see if there is a hostname defined
+    // next see if there is a hostname defined
     var hostname = '';
     if (typeof(window.hostname) === 'undefined')
     {
@@ -75,20 +75,21 @@ metadataEditorApp
 
         if (record.hasOwnProperty('start_date') && record.start_date.$date != '')
         {
-            record.start_date.hours = record.start_date.$date.getHours();
+	    
+            record.start_date.$date.hours = record.start_date.$date.getHours();
 
-            record.start_date.minutes = record.start_date.$date.getMinutes();
+            record.start_date.$date.minutes = record.start_date.$date.getMinutes();
 
-            record.start_date.seconds = record.start_date.$date.getSeconds();
+            record.start_date.$date.seconds = record.start_date.$date.getSeconds();
         }
 
-        if (record.hasOwnProperty('end_date') &&record.end_date.$date != '')
+        if (record.hasOwnProperty('end_date') && record.end_date.$date != '')
         {
-            record.end_date.hours = record.end_date.$date.getHours();
+            record.end_date.$date.hours = record.end_date.$date.getHours();
 
-            record.end_date.minutes = record.end_date.$date.getMinutes();
+            record.end_date.$date.minutes = record.end_date.$date.getMinutes();
 
-            record.end_date.seconds = record.end_date.$date.getSeconds();
+            record.end_date.$date.seconds = record.end_date.$date.getSeconds();
         }
 
         scope.currentRecord = record;
@@ -129,8 +130,7 @@ metadataEditorApp
     checkIconStyle: false,
     xIconStyle: false,
     dotIconStyle: false,
-    isValid: false,
-    saveOnClick: ''
+    isValid: false
 })
 
 .value('emptyISORecord',
@@ -149,7 +149,8 @@ metadataEditorApp
     topic_category: [''],
     place_keywords: '',
     thematic_keywords: '',
-
+    research_methods: '',
+    
     data_format: [''],
     compression_technique: '',
     online: [''],
@@ -175,6 +176,7 @@ metadataEditorApp
     
     doi_ark_request: '',
     data_one_search: 'false',
+    reference_system: '',
     attachments: []
 })
 
@@ -210,22 +212,13 @@ metadataEditorApp
     north_lat: '',
     south_lat: '',
 
-    start_date: {
-	$date:'',
-	hours:'',
-	minutes:'',
-	seconds:''
-    },
+    start_date: {$date:''},
     
-    end_date: {
-	$date:'',
-    	hours:'',
-	minutes:'',
-	seconds:''
-    },
+    end_date: {	$date:''},
     
     doi_ark_request: '',
     data_one_search: 'false',
+    reference_system: '',
     attachments: []
 })
 .value('milesFields',
@@ -308,7 +301,8 @@ metadataEditorApp
 
                 serverReady.data_format = scope.dataFormats.iso;
 
-            if (scope.dataFormats.aux && typeof record.dateFormats !== "undefined")
+
+            if (scope.dataFormats.aux)
             {
                 var auxList = scope.dataFormats.aux.split(',')
                                 .map(function(el) { return el.trim(); });

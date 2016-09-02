@@ -7,7 +7,7 @@
     <ul class="breadcrumb form-button-stack" id="status-buttons">
       <!-- Save record, reset background of current page's button, change button background to red if not complete, and move to selected page's partial -->
       <li ng-repeat="button in isoFormList">
-	<a id="{{button.form_name}}" ng-style="button.buttonStyle" ng-click="saveForm(button.form_name); resetBackground('iso'); formIsValid('iso', baseCtrl.metadataForm.$valid); checkFormPartial('iso'); jumpToPage($index, 'iso');" class="breadcrumb-button"><span class="partial-button"><span ng-show="button.checkIconStyle" class="mega-octicon octicon-check move-icon"></span><span ng-show="button.xIconStyle" class="mega-octicon octicon-x move-icon"></span><span ng-show="button.dotIconStyle" class="mega-octicon octicon-primitive-dot"></span></span>{{button.label}}</a>
+	<a id="{{button.form_name}}" ng-style="button.buttonStyle" ng-click="saveForm(button.form_name); formIsValid('iso', baseCtrl.metadataForm.$valid); jumpToPage($index, 'iso');" class="breadcrumb-button"><span class="partial-button"><span ng-show="button.checkIconStyle" class="mega-octicon octicon-check move-icon"></span><span ng-show="button.xIconStyle" class="mega-octicon octicon-x move-icon"></span><span ng-show="button.dotIconStyle" class="mega-octicon octicon-primitive-dot"></span></span>{{button.label}}</a>
       </li>
     </ul>
 
@@ -19,9 +19,9 @@
     </div>
     <br>
     <!-- Back button -->
-    <button class="btn btn-primary left-scroll-link" ng-click="button.saveOnClick; formIsValid('iso', baseCtrl.metadataForm.$valid); resetBackground('iso'); setCurrentPage(-1, 'iso');" >Back</button>
+    <button id="back-button" class="btn btn-primary left-scroll-link" ng-click="submitDraftRecord(); formIsValid('iso', baseCtrl.metadataForm.$valid); setCurrentPage(-1, 'iso');" >Back</button>
     
     
     <!-- Next button -->
-    <button class="btn btn-primary right-scroll-link" ng-click="submitDraftRecord(); formIsValid('iso', baseCtrl.metadataForm.$valid); setCurrentPage(1, 'iso');">Next</button>
+    <button id="save-continue-button" class="btn btn-primary right-scroll-link" ng-click="submitDraftRecord(); formIsValid('iso', baseCtrl.metadataForm.$valid); setCurrentPage(1, 'iso');">Save and Continue</button>
 </form>

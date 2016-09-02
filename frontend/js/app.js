@@ -18,7 +18,7 @@ var metadataEditorApp = angular
 		templateUrl: partialsPrefix + 'basic.html'
 	    })
 	    .state('form.detailed', {
-		templateUrl: partialsPrefix + 'isoDetailed.html'
+		templateUrl: partialsPrefix + 'detailed.html'
 	    })
 	    .state('form.dataFormats', {
 		templateUrl: partialsPrefix + 'isoDataFormats.html'
@@ -30,7 +30,7 @@ var metadataEditorApp = angular
 		templateUrl: partialsPrefix + 'spatialExtent.html'
 	    })
 	    .state('form.temporalExtent', {
-		templateUrl: partialsPrefix + 'temporalExtent.html'
+		templateUrl: partialsPrefix + 'isoTemporalExtent.html'
 	    })
 	    .state('form.review', {
 		templateUrl: partialsPrefix + 'review.html'
@@ -76,7 +76,7 @@ var metadataEditorApp = angular
 		templateUrl: partialsPrefix + 'spatialExtent.html'
 	    })
 	    .state('dublinForm.temporalExtent', {
-		templateUrl: partialsPrefix + 'temporalExtent.html'
+		templateUrl: partialsPrefix + 'dublinTemporalExtent.html'
 	    })
 	    .state('dublinForm.review', {
 		templateUrl: partialsPrefix + 'review.html'

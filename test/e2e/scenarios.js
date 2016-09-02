@@ -34,6 +34,7 @@ testNknAsDistributor('dublin');
 //testExportISO('iso');
 //testExportISO('dublin');
 
+
 testLoadDeleteDropdown('iso');
 testLoadDeleteDropdown('dublin');
 
@@ -48,6 +49,11 @@ attachFileTest('dublin');
 
 contactsTest();
 
+testAnimation('iso');
+testAnimation('dublin');
+
+testDynamicFormAddition('iso');
+testDynamicFormAddition('dublin');
 
 describe('ISO and Dublin Core editing views', function () {
 
@@ -58,9 +64,8 @@ describe('ISO and Dublin Core editing views', function () {
 	 setFormType("iso");
 	 var formType = getFormType();
 	 
-	 
-	 element(by.id(formType + 'setup')).click();
-	 waitForAnimation('create-new-non-dataset');
+	 //Click on form button for specific form section and wait for scroll animation to finish before proceding.
+	 exposeFormElement(formType, 'setup');
 	 
          element(by.id('create-new-non-dataset')).click();
 
@@ -79,13 +84,6 @@ function waitForAnimation(item){
     browser.wait(isClickable, 3000);
 }
 
-function waitForAnimationCSS(item) {
-    var EC = protractor.ExpectedConditions;
-    var itemID = element(by.css(item));
-    var isClickable = EC.elementToBeClickable(itemID);
-    browser.wait(isClickable, 3000);
-}
-
 function contactsTest() {
 
     describe('Adding and removing contacts using buttons', function () {
@@ -96,8 +94,7 @@ function contactsTest() {
             element.all(by.css('.contact-input')).sendKeys('aaaaa');
             element.all(by.css('.contact-email')).sendKeys('a@aaaa.com');
 
-	    element(by.id(formType + "contacts")).click();
-	    waitForAnimationCSS('[ng-click="addContactAccess()"]');
+	    exposeFormElement(formType, "contacts");
 	    
             var addContact = element(by.css('[ng-click="addContactAccess()"]'));
 
@@ -134,18 +131,15 @@ function contactsTest() {
 	       setFormType("iso");
 	       var formType = getFormType();
 
-               
-	       element(by.id(formType + 'setup')).click();
-	       waitForAnimation('create-new-dataset');
+               exposeFormElement(formType, "setup");
 	       element(by.id('create-new-dataset')).click();
 	       setFormType("iso");
 	       formType = getFormType();
 	       
 	       addRemoveContacts();
 	       
-	       
-	       element(by.id(formType + 'setup')).click();
-	       waitForAnimation("create-new-non-dataset");
+	       exposeFormElement(formType, "setup");
+
 	       element(by.id('create-new-non-dataset')).click();
 	       setFormType("dublin");
 	       formType = getFormType();
@@ -164,33 +158,26 @@ function deleteRecordTest(schemaType) {
 	    clearCollection();
             browser.get('/frontend');
 	    setFormType("iso");
-	    var completeForm = "";
 	    var formType = getFormType();
 
-	    completeForm = formType + "setup";
-	    element(by.id(completeForm)).click();
+	    exposeFormElement(formType, "setup");
 	    
             if (schemaType === 'iso'){
-		waitForAnimation('create-new-dataset');
                 element(by.id('create-new-dataset')).click();
             }else if (schemaType === 'dublin'){
-		waitForAnimation('create-new-non-dataset');
                 element(by.id('create-new-non-dataset')).click();
 	    }
 	    
 	    setFormType(schemaType);
 	    formType = getFormType();
-	    
-	    completeForm = formType + "basic";
-	    element(by.id(completeForm)).click();
-	    waitForAnimation('title-input');
+
+	    exposeFormElement(formType, "basic");
 	    
             element(by.model('currentRecord.title')).sendKeys('¡Pollo Loco!');
             element(by.model('currentRecord.summary')).sendKeys('mmmm....chicken');
 
 	    //Automatically saves when changing states, so change back to first state of form.
-	    element(by.id(formType + 'basic')).click();
-	    waitForAnimation("title-input");
+	    exposeFormElement(formType, "basic");
         });
 
         afterEach(clearCollection);
@@ -216,8 +203,7 @@ function deleteRecordTest(schemaType) {
         it('should delete current record and load fresh form when record deleted', function() {
 	    var formType = getFormType();
 
-	    element(by.id(formType + 'basic')).click();
-	    waitForAnimation("title-input");
+	    exposeFormElement(formType, "basic");
 	    
             element(by.id('load-delete-record-dropdown')).click();
             element(by.id('delete-record-0')).click();
@@ -236,18 +222,16 @@ function deleteRecordTest(schemaType) {
 
         it('should delete non-current record while leaving currently loaded record intact', function () {
 	    var formType = getFormType();
-	    
-	    element(by.id(formType + 'setup')).click();
-	    waitForAnimation('create-new-dataset');
+
+	    exposeFormElement(formType, "setup");
 	    
             element(by.id('create-new-dataset')).click();
 	    setFormType("iso");
 	    formType = getFormType();
 
 	    //Go to basic information state
-	    
-	    element(by.id(formType + 'basic')).click();
-	    waitForAnimation('title-input');
+
+	    exposeFormElement(formType, "basic");
 	    
             element(by.model('currentRecord.title')).sendKeys('KFC');
             var summary = 'Trust the colonel, you\'ll need a colonoscopy after a lifetime of eating KFC';
@@ -263,8 +247,6 @@ function deleteRecordTest(schemaType) {
 	    browser.driver.sleep(100);
             browser.switchTo().alert().accept();
 	    
-	    //element(by.id(formType + 'basic')).click();
-	    //waitForAnimation("title-input");
             expect(element(by.model('currentRecord.title')).getAttribute('value'))
                 .toEqual('KFC');
             expect(element(by.model('currentRecord.summary')).getAttribute('value'))
@@ -273,10 +255,16 @@ function deleteRecordTest(schemaType) {
     });
 }
 
+//Set which form type we are using
 function setFormType(type) {
-    form = type;
+    if((type == "iso")
+       || (type == "dublin"))
+	form = type;
+    else
+	console.log("Error: tried to set form to unsupported type. Current supported types are \"iso\" and \"dublin\"");
 }
 
+//Get the current form type. Current types are "iso" or "dublin".
 function getFormType(){
 
     if(form == "iso")
@@ -353,15 +341,12 @@ function testLoadDeleteDropdown(schemaType) {
 	    var formType = getFormType();
 	    
             if (schemaType === 'iso'){
-			
-		element(by.id(formType + 'setup')).click();
-		waitForAnimation('create-new-dataset');
+
+		exposeFormElement(formType, "setup");
 		
                 element(by.id('create-new-dataset')).click();
             }else if (schemaType === 'dublin'){
-		
-		element(by.id(formType + 'setup')).click();
-		waitForAnimation("create-new-non-dataset");
+		exposeFormElement(formType, "setup");
                 element(by.id('create-new-non-dataset')).click();
 	    }
 	    
@@ -371,9 +356,8 @@ function testLoadDeleteDropdown(schemaType) {
             // add data to contacts
 
 	    //Change to contacts form element
-	    
-	    element(by.id(formType + 'contacts')).click();
-	    waitForAnimationCSS('[ng-click="addContactCitation()"]');
+
+	    exposeFormElement(formType, "contacts");
 	    
 	    var addCitationButton =
                 element(by.css('[ng-click="addContactCitation()"]'));
@@ -424,24 +408,21 @@ function testLoadDeleteDropdown(schemaType) {
                 }
             }
 
-	    element(by.id(formType + "dataFormats")).click();
-	    waitForAnimation("format-selector");
+	    exposeFormElement(formType, "dataFormats");
 	    
             element(by.css('[label="netCDF"]')).click();
 	    //Save the record by switching pages
-	    element(by.id(formType + "review")).click();
+	    exposeFormElement(formType, "review");
             if (schemaType === 'iso')
             {
-		
-		element(by.id(formType + 'temporalExtent')).click();
-		waitForAnimation("start-date");
+		exposeFormElement(formType, "temporalExtent");
                 //element(by.model('currentRecord.start_date.$date')).sendKeys('01-01-2002');
                 element(by.id('start-date')).clear().sendKeys('01/01/2002').sendKeys(protractor.Key.TAB);
                 // search.sendKeys(protractor.Key.TAB);
                 element(by.id('end-date')).clear().sendKeys('12/31/2012').sendKeys(protractor.Key.TAB);
 
 		//Save the record by changing the page
-		element(by.id(formType + 'review')).click();
+		exposeFormElement(formType, "review");
             }
         });
 
@@ -450,9 +431,8 @@ function testLoadDeleteDropdown(schemaType) {
          it('should have two citation contacts and one access contact from beforeEach', function () {
 	    var formType = getFormType();
 
-	     
-	     element(by.id(formType + 'contacts')).click();
-	     waitForAnimation("citation-contacts");
+	     exposeFormElement(formType, "contacts");
+
              var citationContacts =
                  element.all(by.repeater('(contactIdx, contact) in currentRecord.citation'));
              expect(citationContacts.count()).toEqual(2);
@@ -491,9 +471,8 @@ function testLoadDeleteDropdown(schemaType) {
             // check contacts
             var ccExpected = newRecord.citation;
             var caExpected = newRecord.access;
-	    
-	    element(by.id(formType + 'contacts')).click();
-	    waitForAnimation("citation-contacts");
+
+	    exposeFormElement(formType, "contacts");
 	    
 	    for (var ccIdx = 0; ccIdx < 2; ccIdx++)
             {
@@ -514,8 +493,7 @@ function testLoadDeleteDropdown(schemaType) {
 
             // check spatial extent
 	    switchFormPage("west_lon", formType, schemaType);
-	    element(by.id(formType + 'spatialExtent')).click();
-	    waitForAnimation("north");
+	    exposeFormElement(formType, "spatialExtent");
 	    
             var compareBboxVal = function (dir) {
                 var valPromise =
@@ -536,9 +514,7 @@ function testLoadDeleteDropdown(schemaType) {
             if (schemaType === 'iso')
             {
                 // check dates
-		
-		element(by.id(formType + 'temporalExtent')).click();
-		waitForAnimation("start-date");
+		exposeFormElement(formType, "temporalExtent");
 		
                 expect(element(by.model('currentRecord.start_date.$date')).getAttribute('value'))
                     .toEqual('01/01/2002');
@@ -549,35 +525,30 @@ function testLoadDeleteDropdown(schemaType) {
 
             // check the rest
 
-	    element(by.id(formType + 'dataFormats')).click();
-	    waitForAnimation("format-selector");
+	    exposeFormElement(formType, "dataFormats");
 	    
             expect(element(by.id('format-selector')).getAttribute('value'))
                 .toEqual('string:netCDF');
-	    
-	    element(by.id(formType + 'review')).click();
+
+	    exposeFormElement(formType, "review");
         });
 
          it('should clear any information that has been input when creating a new record', function () {
 	     var formType = getFormType();
 
-             
-	     element(by.id(formType + 'setup')).click();
-	     waitForAnimation("create-new-dataset");
+             exposeFormElement(formType, "setup");
 	     
              element(by.id('create-new-dataset')).click();
 	     setFormType("iso");
 	     formType = getFormType();
-	     
-	     element(by.id(formType + 'basic')).click();
-	     waitForAnimation("title-input");
+
+	     exposeFormElement(formType, "basic");
 	     
              element(by.model('currentRecord.title')).sendKeys('Record Two');
              element(by.model('currentRecord.summary')).sendKeys('Another record of some other stuff');
 
 	     switchFormPage("west_lon", formType, schemaType);
-	     element(by.id(formType + 'spatialExtent')).click();
-	     waitForAnimation("north");
+	     exposeFormElement(formType, "spatialExtent");
 	     
              element(by.model('currentRecord.north_lat')).sendKeys('46.8');
              element(by.model('currentRecord.south_lat')).sendKeys('35.5');
@@ -585,33 +556,25 @@ function testLoadDeleteDropdown(schemaType) {
              element(by.model('currentRecord.west_lon')).sendKeys('-120.0');
 
 	     //Save form by clicking on "Basic Information" page. Auto saves when switching between pages
-             
-	     element(by.id(formType + 'basic')).click();
-	     waitForAnimation("title-input");
-	     
+
+	     exposeFormElement(formType, "basic");
 	     
              var recordListElements = element.all(by.css('.record-list-actions'));
 
              expect(recordListElements.count()).toEqual(2);
-	     
-	     element(by.id(formType + 'setup')).click();
 
-	     //Have to wait here because of animation
-	     waitForAnimation("create-new-dataset");
+	     exposeFormElement(formType, "setup");
 	     
              element(by.id('create-new-dataset')).click();
 	     setFormType("iso");
 	     formType = getFormType();
 
-	     
-	     element(by.id(formType + 'basic')).click();
-	     waitForAnimation("title-input");
+	     exposeFormElement(formType, "basic");
 	     
              expect(element(by.model('currentRecord.title')).getText()).toEqual('');
 
 	     switchFormPage("west_lon", formType, schemaType);
-	     element(by.id(formType + 'spatialExtent')).click();
-	     waitForAnimation("north");
+	     exposeFormElement(formType, "spatialExtent");
 	     
              expect(element(by.model('currentRecord.north_lat')).getText()).toEqual('');
              expect(element(by.model('currentRecord.south_lat')).getText()).toEqual('');
@@ -620,7 +583,6 @@ function testLoadDeleteDropdown(schemaType) {
          });
     });
 }
-
 
 function attachFileTest(schemaType) {
     
@@ -631,9 +593,9 @@ function attachFileTest(schemaType) {
             browser.get('/frontend');
 	    setFormType("iso");
             var formType = getFormType();
-	    
-	    element(by.id(formType + 'setup')).click();
-	    waitForAnimation("create-new-dataset");
+
+	    exposeFormElement(formType, "setup");
+
             if (schemaType === 'iso')
                 element(by.id('create-new-dataset')).click();
             else if (schemaType === 'dublin')
@@ -649,16 +611,13 @@ function attachFileTest(schemaType) {
            function () {
 	       var formType = getFormType();
 
-	       
-	       element(by.id(formType + 'basic')).click();
-	       waitForAnimation("title-input");
+	       exposeFormElement(formType, "basic");
 	       
                element(by.model('currentRecord.title')).sendKeys('¡olé!™');
 	       
                // now add a summary that we will check is not overwritten
 
-	       element(by.id(formType + 'basic')).click();
-	       waitForAnimation("title-input");
+	       exposeFormElement(formType, "basic");
 	       
                element(by.model('currentRecord.summary')).sendKeys('Heyyyy');
 	       
@@ -669,9 +628,8 @@ function attachFileTest(schemaType) {
                    f2 = path.resolve(__dirname, fname2);
 	       
                // upload 1
-	       
-	       element(by.id(formType + 'dataFormats')).click();
-	       waitForAnimation("format-selector");
+
+	       exposeFormElement(formType, "dataFormats");
 	       
                element(by.id('attachment-select')).sendKeys(f1);
                browser.executeScript('window.scrollTo(0,0);');
@@ -712,9 +670,8 @@ function testMilesDefaults(schemaType) {
             browser.get('/frontend');
 	    setFormType("iso");
 	    var formType = getFormType();
-           
-	    element(by.id(formType + 'setup')).click();
-	    waitForAnimation("create-new-dataset");
+
+	    exposeFormElement(formType, "setup");
 	    
             if (schemaType === 'iso')
                 element(by.id('create-new-dataset')).click();
@@ -727,12 +684,10 @@ function testMilesDefaults(schemaType) {
 
          it('should load the correct fields with correct data', function () {
 	     var formType = getFormType();
-	     element(by.id(formType + "setup")).click();
-	     waitForAnimationCSS('[ng-click="loadDefaultMILES()"]');
+	     exposeFormElement(formType, "setup");
              element(by.css('[ng-click="loadDefaultMILES()"]')).click();
-	     
-	     element(by.id(formType + 'basic')).click();
-	     waitForAnimation("title-input");
+
+	     exposeFormElement(formType, "basic");
 	     
              expect(element(by.model('currentRecord.place_keywords')).getAttribute('value'))
                  .toBe('USA, Idaho');
@@ -749,8 +704,7 @@ function testMilesDefaults(schemaType) {
              };
 	     
 	     switchFormPage("west_lon", formType, schemaType);
-	     element(by.id(formType + 'spatialExtent')).click();
-	     waitForAnimation("north");
+	     exposeFormElement(formType, "spatialExtent");
 	     
              var compareBboxVal = function (dir) {
                  var valPromise =
@@ -771,33 +725,28 @@ function testMilesDefaults(schemaType) {
 
          it('should not overwrite fields that are already present in a new record', function () {
 	    var formType = getFormType();
-	                  
-	     element(by.id(formType + 'setup')).click();
-	     waitForAnimation('create-new-dataset');
+
+             exposeFormElement(formType, "setup");
 	     
              element(by.id('create-new-dataset')).click();
 
 	     setFormType("iso");
 	     formType = getFormType()
-	     
-	     element(by.id(formType + 'basic')).click();
-	     waitForAnimation("title-input");
+
+	     exposeFormElement(formType, "basic");
 	     
              element(by.model('currentRecord.title')).sendKeys('Record Two');
              element(by.model('currentRecord.summary')).sendKeys('Another record of some other stuff');
 
-             
-	     element(by.id(formType + 'setup')).click();
-	     waitForAnimation("create-new-dataset");
+             exposeFormElement(formType, "setup");
+
 	     setFormType("iso");
 	     formType = getFormType();
 	     
 	     
              element(by.css('[ng-click="loadDefaultMILES()"]')).click();
 	     
-	     
-	     element(by.id(formType + 'basic')).click();
-	     waitForAnimation("title-input");
+	     exposeFormElement(formType, "basic");
 	     	     
              expect(element(by.model('currentRecord.title')).getAttribute('value'))
                  .toBe('Record Two');
@@ -827,12 +776,10 @@ function testNknAsDistributor(schemaType) {
         beforeEach(function () {
             browser.get('/frontend');
 	    setFormType("iso");
-	    var completeForm = "";
 	    var formType = getFormType();
 
-            completeForm = formType + "setup";
-	    element(by.id(completeForm)).click();
-	    waitForAnimation("create-new-dataset");
+	    exposeFormElement(formType, "setup");
+
             if(schemaType === 'iso'){
                 element(by.id('create-new-dataset')).click();
             }else if (schemaType === 'dublin'){
@@ -847,17 +794,12 @@ function testNknAsDistributor(schemaType) {
         it('should fill in the distributor as NKN', function() {
     
 	    var formType = getFormType();
-	    var completeForm = "";
 	    
-	    completeForm = formType + "setup";
-	    element(by.id(completeForm)).click();
-	    waitForAnimationCSS('[ng-click="loadDefaultNKNAsDistributor()"]');
+	    exposeFormElement(formType, "setup");
 	    
             element(by.css('[ng-click="loadDefaultNKNAsDistributor()"]')).click();
 
-            completeForm = formType + "contacts";
-	    element(by.id(completeForm)).click();
-	    waitForAnimation("citation-contacts");
+	    exposeFormElement(formType, "contacts");
 	    
             expect(element(by.id('access-name-0')).getAttribute('value'))
                 .toBe('Northwest Knowledge Network');
@@ -889,21 +831,17 @@ function testNknAsDistributor(schemaType) {
 
         it('should not overwrite fields already present in a new record', function () {
 	    var formType = getFormType();
-	    var completeForm = "";
-	    
-	    element(by.id(formType + "basic")).click();
-	    waitForAnimation("title-input");
+
+	    exposeFormElement(formType, "basic");
 	    
             element(by.model('currentRecord.title')).sendKeys('A new record');
             element(by.model('currentRecord.summary')).sendKeys('the summary');
-	    
-	    element(by.id(formType + "setup")).click();
-	    waitForAnimationCSS('[ng-click="loadDefaultNKNAsDistributor()"]');
+
+	    exposeFormElement(formType, "setup");
 	    	    
             element(by.css('[ng-click="loadDefaultNKNAsDistributor()"]')).click();
-	    
-	    element(by.id(formType + "basic")).click();
-	    waitForAnimation("title-input");
+
+	    exposeFormElement(formType, "basic");
 	    
             expect(element(by.model('currentRecord.title')).getAttribute('value'))
                 .toBe('A new record');
@@ -914,11 +852,327 @@ function testNknAsDistributor(schemaType) {
     });
 }
 
+
+function testAnimation(schemaType) {
+
+    describe('Scroll though form sections and find the first input in each section after animation', function() {
+	
+        beforeEach( function () {
+	    clearCollection();
+            browser.get('/frontend');
+	    setFormType("iso");
+	    var formType = getFormType();
+
+	    exposeFormElement(formType, "setup");
+	    
+            if (schemaType === 'iso'){
+                element(by.id('create-new-dataset')).click();
+            }else if (schemaType === 'dublin'){
+                element(by.id('create-new-non-dataset')).click();
+	    }
+	    
+	    setFormType(schemaType);
+	    formType = getFormType();
+
+	    //Check spatial extent. If form type is dublin, then navigate to setup page, and add
+	    //dublin form section to form list.
+	    if(formType.indexOf("dublin") > -1){
+		exposeFormElement(formType, "setup");
+		element(by.id("add-spatial-extent")).click();
+	    }
+        });
+
+        afterEach(clearCollection);
+
+        it('should navigate though the form by clicking on the breadcrumb buttons',
+           function () {
+	       var formType = getFormType();
+	       
+	       exposeFormElement(formType, "setup");
+	       expect(element(by.id("create-new-dataset")).isPresent()).toBe(true);
+
+	       exposeFormElement(formType, "basic");
+	       expect(element(by.id("title-input")).isPresent()).toBe(true);
+
+	       exposeFormElement(formType, "onlineResourcesAndRestrictions");
+	       expect(element(by.id("online-buttons")).isPresent()).toBe(true);
+
+	       exposeFormElement(formType, "temporalExtent");
+	       expect(element(by.id("start-date")).isPresent()).toBe(true);
+
+	       //Check contacts page
+	       exposeFormElement(formType, "contacts");
+	       expect(element(by.id("citation-contacts")).isPresent()).toBe(true);
+
+	       //Check file upload page
+	       exposeFormElement(formType, "dataFormats");
+	       expect(element(by.id("format-selector")).isPresent()).toBe(true);
+
+	       exposeFormElement(formType, "spatialExtent");
+	       expect(element(by.id("north")).isPresent()).toBe(true);
+
+	       //Check disclaimer page
+	       exposeFormElement(formType, "optionsAndDisclaimer");
+	       expect(element(by.id("terms-conditions")).isPresent()).toBe(true);
+
+	       //Check review page
+	       exposeFormElement(formType, "review");
+	       expect(element(by.id("review-table")).isPresent()).toBe(true);
+	       
+	   });
+
+	it('should navigate forwards though the form by clicking on the \"Save and Continue\" button',
+           function () {
+	       var formType = getFormType();
+
+	       //Click on next button, wait for animation, and then test if first element on that page is present
+	       element(by.id("save-continue-button")).click();
+	       waitForAnimation("title-input");
+	       expect(element(by.id("title-input")).isPresent()).toBe(true);
+
+	       //Click on next button, wait for animation, and test if first element of onlineResourcesAndRestriction is present.
+	       element(by.id("save-continue-button")).click();
+	       waitForAnimation("online-buttons");
+	       expect(element(by.id("online-buttons")).isPresent()).toBe(true);
+
+	       //Click on next button, wait for animation, and test if first element of temporalExtent is present.
+	       element(by.id("save-continue-button")).click();
+	       waitForAnimation("start-date");
+	       expect(element(by.id("start-date")).isPresent()).toBe(true);
+
+	       //Click on next button, wait for animation, and test if first element of contacts page is present.
+	       element(by.id("save-continue-button")).click();
+	       waitForAnimation("citation-contacts");
+	       expect(element(by.id("citation-contacts")).isPresent()).toBe(true);
+
+	       //Click on next button, wait for animation, and test if first element of dataFormats page is present.
+	       element(by.id("save-continue-button")).click();
+	       waitForAnimation("format-selector");
+	       expect(element(by.id("format-selector")).isPresent()).toBe(true);
+
+	       //Click on next button, wait for animation, and test if first element of spatialExtent page is present.
+	       element(by.id("save-continue-button")).click();
+	       waitForAnimation("north");
+	       expect(element(by.id("north")).isPresent()).toBe(true);
+
+
+	       //Click on next button, wait for animation, and test if first element of disclaimer page is present.
+	       element(by.id("save-continue-button")).click();
+	       waitForAnimation("terms-conditions");
+	       expect(element(by.id("terms-conditions")).isPresent()).toBe(true);
+
+
+	       //Click on next button, wait for animation, and test if first element of disclaimer page is present.
+	       element(by.id("save-continue-button")).click();
+	       waitForAnimation("review-table");
+	       expect(element(by.id("review-table")).isPresent()).toBe(true);
+	       
+	   });
+
+	it('should navigate backwards though the form by clicking on the \"Back\" button',
+           function () {
+	       var formType = getFormType();
+
+	       //Click on review page button, wait for animation, and test if first element of review page is present.
+	       element(by.id(formType + "review")).click();
+	       waitForAnimation("review-table");
+	       expect(element(by.id("review-table")).isPresent()).toBe(true);
+
+	       //Click on back button, wait for animation, and test if first element of disclaimer page is present.
+	       element(by.id("back-button")).click();
+	       waitForAnimation("terms-conditions");
+	       expect(element(by.id("terms-conditions")).isPresent()).toBe(true);
+
+	       //Click on back button, wait for animation, and test if first element of spatialExtent page is present.
+	       element(by.id("back-button")).click();
+	       waitForAnimation("north");
+	       expect(element(by.id("north")).isPresent()).toBe(true);
+	       
+	       //Click on back button, wait for animation, and test if first element of dataFormats page is present.
+	       element(by.id("back-button")).click();
+	       waitForAnimation("format-selector");
+	       expect(element(by.id("format-selector")).isPresent()).toBe(true);
+
+	       //Click on back button, wait for animation, and test if first element of contacts page is present.
+	       element(by.id("back-button")).click();
+	       waitForAnimation("citation-contacts");
+	       expect(element(by.id("citation-contacts")).isPresent()).toBe(true);
+
+	       //Click on back button, wait for animation, and test if first element of temporalExtent is present.
+	       element(by.id("back-button")).click();
+	       waitForAnimation("start-date");
+	       expect(element(by.id("start-date")).isPresent()).toBe(true);
+
+	       //Click on back button, wait for animation, and test if first element of onlineResourcesAndRestriction is present.
+	       element(by.id("back-button")).click();
+	       waitForAnimation("online-buttons");
+	       expect(element(by.id("online-buttons")).isPresent()).toBe(true);
+
+	       //Click on back button, wait for animation, and then test if first element on that page is present
+	       element(by.id("back-button")).click();
+	       waitForAnimation("title-input");
+	       expect(element(by.id("title-input")).isPresent()).toBe(true);
+
+	       //Click on back button, wait for animation, and then test if first element on that page is present
+	       element(by.id("back-button")).click();
+	       waitForAnimation("create-new-dataset");
+	       expect(element(by.id("create-new-dataset")).isPresent()).toBe(true);
+	    });
+    });
+}
+
+function testDynamicFormAddition(schemaType) {
+
+        describe('Scroll though form sections and find the first input in each section after animation', function() {
+	    
+            beforeEach( function () {
+	    clearCollection();
+            browser.get('/frontend');
+	    setFormType("iso");
+	    var formType = getFormType();
+
+	    exposeFormElement(formType, "setup");
+	    
+            if (schemaType === 'iso'){
+                element(by.id('create-new-dataset')).click();
+            }else if (schemaType === 'dublin'){
+                element(by.id('create-new-non-dataset')).click();
+	    }
+	    
+	    setFormType(schemaType);
+	    formType = getFormType();
+
+        });
+
+        afterEach(clearCollection);
+
+        it('should add and subtract the spatialExtent form section from the dublin core form, and navigate to the Spatial Exent form and check if the map is present',
+           function () {
+	       var formType = getFormType();
+	       if(formType.indexOf("dublin") > -1){
+		   exposeFormElement(formType, "setup");
+		   element(by.id("add-spatial-extent")).click();
+		   expect(element(by.id(formType + "spatialExtent")).isPresent()).toBe(true);
+	       }
+	       
+	       exposeFormElement(formType, "spatialExtent");
+	       expect(element(by.id("north")).isDisplayed()).toBe(true);
+	       expect(element(by.id("extent")).isDisplayed()).toBe(true);
+	       
+	   });
+	    
+        it('should navigate to the spatialExtents form section and find the map and coordinate inputs',
+           function () {
+	       var formType = getFormType();
+	       
+	       //Check spatial extent. If form type is dublin, then navigate to setup page, and add
+	       //dublin form section to form list.
+	       if(formType.indexOf("dublin") > -1){
+		   exposeFormElement(formType, "setup");
+		   element(by.id("add-spatial-extent")).click();
+	       }
+	       
+	       exposeFormElement(formType, "spatialExtent");
+	       expect(element(by.id("north")).isDisplayed()).toBe(true);
+	       expect(element(by.id("extent")).isDisplayed()).toBe(true);
+
+	       //Navigate back to setup form section, click on "A reference system" button, and
+	       //check if reference_system input was added to spatialExtents
+	       exposeFormElement(formType, "setup");
+	       element(by.id("add-coordinate-system")).click();
+	       exposeFormElement(formType, "spatialExtent");
+	       expect(element(by.id("reference-system-input")).isDisplayed()).toBe(true);
+
+	       //If dublin core form, then navigate back to setup, remove spatial location which should remove map
+	       //from spatialExtent, then navigate back to spatialExtent, and check if map is not present and
+	       //reference-system-input is still present.
+	       if(formType.indexOf("dublin") > -1){
+		   exposeFormElement(formType, "setup");
+		   element(by.id("add-spatial-extent")).click();
+
+		   //Even though spacial extent was removed, reference-system-input is on spatialExtents, so we keep that
+		   //form section, but make map not visible.
+		   expect(element(by.id(formType + "spatialExtent")).isPresent()).toBe(true);
+
+		   //Click on spatialExtents button, and wait for "reference-system-input" to appear. Can't use
+		   //exposeFormElement() here because the usual form element for Spatial Extent (id="north") is not present anymore.
+		   element(by.id(formType + "spatialExtent")).click();
+		   waitForAnimation("reference-system-input");
+		   expect(element(by.id("north")).isDisplayed()).toBe(false);
+		   expect(element(by.id("extent")).isDisplayed()).toBe(false);
+		   expect(element(by.id("reference-system-input")).isDisplayed()).toBe(true);
+
+		   exposeFormElement(formType, "setup");
+		   element(by.id("add-coordinate-system")).click();
+		   expect(element(by.id(formType + "spatialExtent")).isPresent()).toBe(false);
+
+		   //Now check if adding coordinate system add spatialExtent, and only adds reference-system-input
+		   //and not the map to the form element
+		   exposeFormElement(formType, "setup");
+		   element(by.id("add-coordinate-system")).click();
+		   expect(element(by.id(formType + "spatialExtent")).isPresent()).toBe(true);
+
+		   //Click on spatialExtents button, and wait for "reference-system-input" to appear. Can't use
+		   //exposeFormElement() here because the usual form element for Spatial Extent (id="north") is not present anymore.
+		   element(by.id(formType + "spatialExtent")).click();
+		   waitForAnimation("reference-system-input");
+		   expect(element(by.id("north")).isDisplayed()).toBe(false);
+		   expect(element(by.id("extent")).isDisplayed()).toBe(false);
+		   expect(element(by.id("reference-system-input")).isDisplayed()).toBe(true);
+	       }
+	       
+	   });
+	});
+}
+
+//Click on form button (breadcrumb button ids are the name of their states in app.js)
+//for specific form section and wait for scroll animation to finish before proceding.
+function exposeFormElement(formType, pageName){
+    element(by.id(formType + pageName)).click();
+
+    //Wait for element present on selected page before trying to access elements: otherwise
+    //tests will try an access elements before animation has finished and test will have errors.
+    switch(pageName){
+    case "setup":
+	waitForAnimation("create-new-dataset");
+	break;
+    case "basic":
+	waitForAnimation("title-input");
+	break;
+    case "detailed":
+	waitForAnimation("dataset-status");
+	break;
+    case "dataFormats":
+	waitForAnimation("format-selector");
+	break;
+    case "onlineResourcesAndRestriction":
+	waitForAnimation("online-buttons");
+	break;
+    case "temporalExtent":
+	waitForAnimation("start-date");
+	break;
+    case "spatialExtent":
+	waitForAnimation("north");
+	break;
+    case "contacts":
+	waitForAnimation("citation-contacts");
+	break;
+    case "optionsAndDisclaimer":
+	waitForAnimation("terms-conditions");	
+	break;
+    case "review":
+	waitForAnimation("review-table");
+	break;
+    default:
+	break;
+	
+    }
+}
+
 function switchFormPage(key, formType, schemaType){
     switch(key){
     case "title":
     case "summary":
-    case "last_mod_date":
     case "place_keywords":
     case "thematic_keywords":
     case "topic_category":
@@ -926,17 +1180,11 @@ function switchFormPage(key, formType, schemaType){
 	waitForAnimation("title-input");
 	break;
 	
-    case "status":
-    case "update_frequency":
-    case "spatial_dtype":
-    case "hierarchy_level":
-	element(by.id(formType + "detailed")).click();
-	waitForAnimation("dataset-status");
-	break;
-
     case "data_format":
     case "compression_technique":
     case "attachments":
+    case "spatial_dtype":
+    case "hierarchy_level":
 	element(by.id(formType + "dataFormats")).click();
 	waitForAnimation("format-selector");
 	break;
@@ -949,6 +1197,10 @@ function switchFormPage(key, formType, schemaType){
 
     case "start_date":
     case "end_date":
+    case "last_mod_date":
+    case "status":
+    case "update_frequency":
+    case "research_methods":
 	element(by.id(formType + "temporalExtent")).click();
 	waitForAnimation("start-date");
 	break;
@@ -986,6 +1238,8 @@ function switchFormPage(key, formType, schemaType){
 	break;
     }
 }
+
+
 
 //function testExportISO(schemaType) {
     //describe('Export ISO', function () {

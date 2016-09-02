@@ -9,8 +9,8 @@
 <div id="reviewForm">
   <table id="review-table">
     <!-- Display everything except cls, id, citation, and access -->
-    <tr ng-repeat="(key, value) in currentRecord">
-      <td> {{reviewFields(key)}} </td> <td> {{reviewFields(value)}}</td>
+    <tr ng-repeat="key in notSorted(currentRecord)">
+      <td> {{reviewFields(key)}} </td> <td> {{reviewFields(currentRecord[key])}}</td>
     </tr>
     <!-- Now do citation and access values from currentRecord -->
     <tr ng-repeat="i in currentRecord.access">

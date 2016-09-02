@@ -1,64 +1,57 @@
-<div class="row">
-  <a class="anchor" name="temporal">
-    <h2 class="section-header">
-      <span class="glyphicon glyphicon-time"></span>
-      
-      Temporal Extents
-    </h2>
-  </a>
-  <div class="subform">
-    <div class="row" style="vertical-align:left">
-      
-      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-	<div class="extent-block">
-	  
-	  <h4>
-	    <span class="glyphicon glyphicon-time"></span> <span style="text-align:right" class="glyphicon glyphicon-globe" aria-hidden="true"></span> 
-		    Temporal Extent</h4>
-		    
-		    <h6>What is the time period represented by the data?</h6>
-		    
-		    <h4>Start Date</h4>
-		    
-		    <input type="text" tabindex="20" ui-date="dateOptions" ng-model="currentRecord.start_date.$date" id="start-date" required></input>
-		    
-		    H:
-		    <select tabindex=20 type="number" ng-model="currentRecord.start_date.$date.hours"
-			    ng-options="hour for hour in hours">
-		    </select>
-		    
-		    M:
-		    <select tabindex=20 type="number" ng-model="currentRecord.start_date.$date.minutes"
-			    ng-options="min for min in minute_seconds">
-		    </select>
-		    
-		    S:
-		    <select tabindex=20 type="number" ng-model="currentRecord.start_date.$date.seconds"
-			    ng-options="sec for sec in minute_seconds">
-		    </select>
-		    
-		    
-		    <h4>End Date</h4>
-		    
-		    <input type="text" tabindex="20" ui-date="dateOptions"
-			   id="end-date" ng-model="currentRecord.end_date.$date" required></input>
-		    H:
-		    <select tabindex=20 type="number" ng-model="currentRecord.end_date.$date.hours"
-			    ng-options="hour for hour in hours">
-		    </select>
-		    
-		    M:
-		    <select tabindex=20 type="number" ng-model="currentRecord.end_date.$date.minutes"
-			    ng-options="min for min in minute_seconds">
-		    </select>
-		    
-		    S:
-		    <select tabindex=20 type="number" ng-model="currentRecord.end_date.$date.seconds"
-			    ng-options="sec for sec in minute_seconds">
-		    </select>
-	</div>
-	
-      </div>
-    </div>
-  </div>
+<div>
+  <h4>Temporal Extent</h4>
+  
+  <h6>What is the time period represented by the data?</h6>
+  
+  <h4>Start Date</h4>
+  
+  <input type="text" tabindex="20" ui-date="dateOptions" ng-model="currentRecord.start_date.$date" id="start-date" required />
+
+  <!-- Getting rid of these in most recent version
+  H:
+  <select tabindex=20 type="number" ng-model="currentRecord.start_date.$date.hours"
+	  ng-options="hour for hour in hours">
+  </select>
+  
+  M:
+  <select tabindex=20 type="number" ng-model="currentRecord.start_date.$date.minutes"
+	  ng-options="min for min in minute_seconds">
+  </select>
+  
+  S:
+  <select tabindex=20 type="number" ng-model="currentRecord.start_date.$date.seconds"
+	  ng-options="sec for sec in minute_seconds">
+  </select>
+  -->
+  
+  <h4>End Date</h4>
+  
+  <input type="text" tabindex="20" ui-date="dateOptions"
+	 id="end-date" ng-model="currentRecord.end_date.$date" required />
+
+  <!--
+  H:
+  <select tabindex=20 type="number" ng-model="currentRecord.end_date.$date.hours"
+	  ng-options="hour for hour in hours">
+  </select>
+  
+  M:
+  <select tabindex=20 type="number" ng-model="currentRecord.end_date.$date.minutes"
+	  ng-options="min for min in minute_seconds">
+  </select>
+  
+  S:
+  <select tabindex=20 type="number" ng-model="currentRecord.end_date.$date.seconds"
+	  ng-options="sec for sec in minute_seconds">
+  </select>
+  -->
+  
+  <br>
+  <h4 class="attribute-label">Date (dataset)</h4>
+  <h6>
+    What is the most recent date that the data was published or updated?
+  </h6>
+  <input tabindex=4 ui-date="dateOptions"
+	 ng-model="currentRecord.first_pub_date.$date" required />
 </div>
+

@@ -1,0 +1,28 @@
+<h4 class="attribute-label">Data Type</h4>
+<h6>
+  How are your data represented? Through a text file, vector spatial representation, a spatial grid of values, a table, a
+  video of a scene, etc.?
+</h6>
+<select tabindex=8 id="spatial-dtype" name=""
+        ng-options="f for f in spatialDataOptions"
+          ng-model="currentRecord.spatial_dtype" required >
+</select>
+
+<h4 class="attribute-label">Hierarchy Level</h4>
+<h6>
+  Is your data a single dataset or is it one of a series of datasets?
+</h6>
+<select tabindex=9 id="" name=""
+        ng-options="f for f in hierarchyLevels"
+        ng-model="currentRecord.hierarchy_level" required>
+</select>
+
+<h4 class="attribute-label">Research Methods</h4>
+<h6>
+  List all research methods that were used to obtain your data.
+    </h6>
+<textarea style="width:100%" tabindex=21 rows=4
+	  ng-model="currentRecord.research_methods" required>
+</textarea>
+  
+  

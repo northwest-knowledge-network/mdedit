@@ -37,28 +37,21 @@
             ng-model="currentRecord.summary" maxlength="2995" required>
   </textarea>
   
-  <h4 class="attribute-label">Date (dataset)</h4>
-  <h6>
-    What is the most recent date that the data was published or updated?
-  </h6>
-  <input tabindex=4 ui-date="dateOptions"
-	 ng-model="currentRecord.first_pub_date.$date" required />
-
-    
   <h4 class="attribute-label">Place Keywords</h4>
   <h6>List comma-separated keywords related to the geographic area covered by your data. Example: Idaho, Clear Creek Watershed, USA.</h6>
-  <input type="text" tabindex="4" style="width:95%" ng-model="currentRecord.place_keywords" required maxlength="254" />
+  <input type="text" tabindex="4" style="width:95%" ng-model="currentRecord.place_keywords" maxlength="254" required />
   
   <h4 class="attribute-label">Thematic Keywords</h4>
   <h6>List comma-separated keywords that will help others discover your data through an intuitive search. In addition to subject-based keywords, you may also want to include the grant numbers and funding sources associated with creation of the data. If you are part of an NKN-supported project and thematic keywords have been pre-loaded for you, please do NOT delete or modify these, simply add to the list.</h6>
-  <input type="text" tabindex="4" style="width:95%" ng-model="currentRecord.thematic_keywords" required maxlength="254" />
+  <input type="text" tabindex="4" style="width:95%" ng-model="currentRecord.thematic_keywords" maxlength="254" required />
   
   <h4 class="attribute-label">Topic</h4>
   <h6>Select as many of these high level categories as apply to your dataset. This is a set list of categories established by international standards. Use the command key (on a Mac) or the control key (on a PC) to select multiple categories.</h6>
   
-  <select tabindex=5 style="width:80%;height:100px;" multiple ng-multiple="true" class="multiselect"
+  <select tabindex=5 style="width:80%;height:100px;"
+	  id="topic-category"
+	  multiple ng-multiple="true" class="multiselect"
           ng-options="c for c in topicCategoryChoices"
           ng-model="currentRecord.topic_category" required >
-  </select>
-    
+    </select>
 </div>

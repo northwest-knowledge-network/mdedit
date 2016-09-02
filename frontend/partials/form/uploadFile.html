@@ -18,9 +18,7 @@
       </li>
     </ol>
     
-    <div id="attach-file-div"
-	 ng-style="attachFileDiv"
-	 >
+    <div id="attach-file-div">
       <input type="button" class="btn btn-primary btn-contact disabled"
 	     value="Please save a draft to add files"
 	     ng-hide="currentRecord._id"
@@ -30,12 +28,13 @@
     <input type="file" id="attachment-select"
 	   value="Attach File" ng-show="currentRecord._id"
 	   file-model="attachmentInfo.newAttachment"
-	   ng-style="attachFileDiv" />
+	   required >
     <button id="attach-file-button" class="btn btn-primary btn-contact"
             ng-show="attachmentInfo.newAttachment"
             ng-click="attachFile()"
 	    >
       Attach File
     </button>
+    </input>
   </div>
 </div>
