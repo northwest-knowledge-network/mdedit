@@ -55,6 +55,9 @@ testAnimation('dublin');
 testDynamicFormAddition('iso');
 testDynamicFormAddition('dublin');
 
+testReviewSection('iso');
+testReviewSection('dublin');
+
 describe('ISO and Dublin Core editing views', function () {
 
      it('should go to #/dublin when the dublin core button is pressed', function () {
@@ -1020,7 +1023,7 @@ function testAnimation(schemaType) {
 	    });
     });
 }
-
+ 
 function testDynamicFormAddition(schemaType) {
 
         describe('Scroll though form sections and find the first input in each section after animation', function() {
@@ -1125,6 +1128,364 @@ function testDynamicFormAddition(schemaType) {
 	});
 }
 
+function testReviewSection(schemaType) {
+
+        describe('Fill out the form, then test the text on the review page against the original input', function() {
+
+        var newRecord = {
+
+            title: 'Record One',
+            summary: 'A good dataset',
+            last_mod_date: {$date: new Date(2002, 0, 1),
+			    input: '01/01/2002'},
+            first_pub_date: {$date: new Date(2006, 1, 4),
+			     input: '02/04/2006'},
+
+            place_keywords: 'Idaho, Treasure Valley',
+            thematic_keywords: 'Agriculture, Water',
+
+            data_format: ['netCDF'],
+	    data_format_aux: 'mp4',
+            online: ['http://example.com/mynetcdfs/33422525'],
+            use_restrictions: 'None',
+	    spatial_dtype: 'vector',
+	    
+            citation: [{
+		'name': 'Matt', 'email': 'matt@example.com', 'org': 'NKN', 'address': '34 Concord',
+		'city': 'Rochester', 'state': 'Idaho', 'zipcode': '83843', 'country': 'USA', 'phone': '555-5555'
+            }, {
+		'name': 'Rodney Dangerfield', 'email': 'rodang@example.com', 'org': 'FunnyMen.org', 'address': '443 Broadway',
+		'city': 'New York', 'state': 'New York', 'zipcode': '10003', 'country': 'USA', 'phone': '202-555-5555'
+            }],
+	    
+            access: [{
+		'name': 'Marisa', 'email': 'nkn@example.com', 'org': 'NKN', 'address': '875 Perimeter',
+		'city': 'Moscow', 'state': 'Idaho', 'zipcode': '83844', 'country': 'USA', 'phone': '208-555-5555'
+            }],
+	    
+            west_lon: '-116.1',
+            east_lon: '-110.6',
+            north_lat: '46.5',
+            south_lat: '35.4',
+
+	    status: 'completed',
+	    update_frequency: 'daily',
+	    hierarchy_level: 'dataset',
+
+	    research_methods: 'Observational research, correlational research, stratified sampling',
+	    compression_technique: 'zip, jar',
+	    reference_system: 'UTM, NAD83',
+	    
+            start_date: {$date: new Date(2009, 2, 6),
+			 input: '03/06/2009'},
+            end_date: {$date: new Date(2012, 3, 8),
+		       input: '04/08/2012'}
+        };
+
+            beforeEach( function () {
+		clearCollection();
+		browser.get('/frontend');
+		setFormType("iso");
+		var formType = getFormType();
+		
+		exposeFormElement(formType, "setup");
+		
+		if (schemaType === 'iso'){
+                    element(by.id('create-new-dataset')).click();
+		}else if (schemaType === 'dublin'){
+                    element(by.id('create-new-non-dataset')).click();
+		}
+	    
+		setFormType(schemaType);
+		formType = getFormType();
+
+		if(formType.indexOf("dublin") > -1){
+		    exposeFormElement(formType, "setup");
+		    element(by.id("add-spatial-extent")).click();
+		}
+
+		//Add reference system input to Spatial Extents section
+		exposeFormElement(formType, "setup");
+		element(by.id("add-coordinate-system")).click();
+		
+	    });
+
+        afterEach(clearCollection);
+
+        it('should complete the form, then test the review page against the input',
+           function () {
+	       var formType = getFormType();
+	       exposeFormElement(formType, "basic");
+	       element(by.model('currentRecord.title')).sendKeys(newRecord.title);
+	       element(by.model('currentRecord.summary')).sendKeys(newRecord.summary);
+	       element(by.model('currentRecord.place_keywords')).sendKeys(newRecord.place_keywords);
+	       element(by.model('currentRecord.thematic_keywords')).sendKeys(newRecord.thematic_keywords);
+	       element(by.model('currentRecord.topic_category')).sendKeys(newRecord.topic_category);
+	       
+	       exposeFormElement(formType, "onlineResourcesAndRestrictions");
+	       element(by.id('online')).sendKeys(newRecord.online[0]);
+	       element(by.model('currentRecord.use_restrictions')).sendKeys(newRecord.use_restrictions);
+	       
+	       exposeFormElement(formType, "temporalExtent");
+	       element(by.id('start-date')).clear().sendKeys(newRecord.start_date.input).sendKeys(protractor.Key.TAB);;
+	       element(by.id('end-date')).clear().sendKeys(newRecord.end_date.input).sendKeys(protractor.Key.TAB);;
+//               element(by.id('start-date')).clear().sendKeys(newRecord.start_date);
+  //             element(by.id('end-date')).clear().sendKeys(newRecord.end_date);
+	       element(by.id('first-pub-date-input')).clear().sendKeys(newRecord.first_pub_date.input).sendKeys(protractor.Key.TAB);;
+	       
+	       //If not dubin form, then form is 'iso' type, and check extra form fields in this seciton
+	       if(formType.indexOf("dublin") == -1){
+		   element(by.model('currentRecord.status')).sendKeys(newRecord.status);
+		   element(by.model('currentRecord.update_frequency')).sendKeys(newRecord.update_frequency);
+	       }
+
+	       //Fill out contacts
+	       exposeFormElement(formType, "contacts");
+	       
+	       var addCitationButton =
+                   element(by.css('[ng-click="addContactCitation()"]'));
+	       
+               var citationContacts =
+                   element.all(by.repeater('contact in currentRecord.citation'));
+	       
+               var accessContacts =
+                   element.all(by.repeater('contact in currentRecord.access'));
+	       
+               for (var i = 0; i < 2; i++){
+                   var c = newRecord.citation[i];
+                   var contactFieldIdx = 0;
+                   for (var k in c){
+                       element(by.id('citation-' + k + '-' + i)).sendKeys(c[k]);
+		       
+                   }
+                   if (i === 0){
+                       addCitationButton.click();
+                   }
+               }
+	       
+               var ca = newRecord.access[0];
+               for (var ka in ca){
+                   element(by.id('access-' + ka + '-0')).sendKeys(ca[ka]);
+               }
+	       
+
+	       //Check file upload page
+	       exposeFormElement(formType, "dataFormats");
+	       element(by.model('dataFormats.iso')).sendKeys(newRecord.data_format[0]);
+	       element(by.model('dataFormats.aux')).sendKeys(newRecord.data_format_aux);
+
+	       //Attach file
+	       // send keys to give the file name desired
+               var fname1 = 'file1.txt',
+                   f1 = path.resolve(__dirname, fname1),
+                   fname2 = 'file2.nc',
+                   f2 = path.resolve(__dirname, fname2);
+	       
+               // upload 1
+
+               element(by.id('attachment-select')).sendKeys(f1);
+               browser.executeScript('window.scrollTo(0,0);');
+               element(by.css('[ng-click="attachFile()"]')).click();
+	       
+	       //If not dublin form type, then send keys to exta form elements in 'iso' type
+	       if(formType.indexOf("dublin") == -1){
+		   element(by.model('currentRecord.spatial_dtype')).sendKeys(newRecord.spatial_dtype);
+		   element(by.model('currentRecord.hierarchy_level')).sendKeys(newRecord.hierarchy_level);
+		   element(by.model('currentRecord.research_methods')).sendKeys(newRecord.research_methods);
+		   element(by.model('currentRecord.compression_technique')).sendKeys(newRecord.compression_technique);
+	       }
+	       
+	       exposeFormElement(formType, "spatialExtent");
+	       element(by.model('currentRecord.east_lon')).sendKeys(newRecord.east_lon);
+	       element(by.model('currentRecord.west_lon')).sendKeys(newRecord.west_lon);
+	       element(by.model('currentRecord.north_lat')).sendKeys(newRecord.north_lat);
+	       element(by.model('currentRecord.south_lat')).sendKeys(newRecord.south_lat);
+
+	       element(by.model('currentRecord.reference_system')).sendKeys(newRecord.reference_system);
+	       
+	       //Check disclaimer page
+	       exposeFormElement(formType, "optionsAndDisclaimer");
+	       element(by.id('data-one-checkbox')).click();
+
+	       //Check review page
+	       exposeFormElement(formType, "review");
+
+	       //Check all parts of the form except _cls, _id, access, citation, last_mod_date, dataFormats.aux, and data_formats_aux
+	       //dataFormats.aux gets added on to data_format, so we need to do the same before checking data_format. Also, last_mod_date is
+	       //set on the last time the record was saved, so hard to check that. access and citation are checked later since they are arrays of objects.
+	       for(var key in newRecord){
+		   if((key.indexOf("_cls") == -1)
+		      && (key.indexOf("_id") == -1)
+		      && (key.indexOf("access") == -1)
+		      && (key.indexOf("citation") == -1)
+		      && (key.indexOf("last_mod_date") == -1)
+		      && (key.indexOf("dataFormats.aux") == -1)
+		      && (key.indexOf("data_format_aux") == -1)){
+		       //Compare values
+		       //spatial_dtype is not in dublin, so skip if form type is dublin
+  		       if((formType.indexOf("dublin") > -1)
+			  && ((key.indexOf("spatial_dtype") > -1)
+			      || (key.indexOf("status") > -1)
+			      || (key.indexOf("update_frequency") > -1)
+			      || (key.indexOf("hierarchy_level") > -1)
+			      || (key.indexOf("research_methods") > -1)
+			      || (key.indexOf("compression_technique") > -1))){
+			   //Do nothing: dubin core form does not have any of these values
+		       }else{
+			   //If record element is "data_format", then add the extra data formats from the text input below the select box to value being compared.
+			   //In services.js this is done automatically, so need to have same behavior here to test.
+			   if(key.indexOf("data_format") > -1){
+			       expect(element(by.id(key + '-1')).getText()).toEqual(parseKeyValues(newRecord[key]) + ", " + newRecord["data_format_aux"]);
+			   }
+			   //If record element is any date format, then get date object from newRecord, and convert it to string.
+			   else if((key.indexOf("start_date") > -1)
+				   || (key.indexOf("end_date") > -1)
+				   || (key.indexOf("first_pub_date") > -1)
+				   || (key.indexOf("last_mod_date") > -1)){
+			       expect(element(by.id(key + '-1')).getText()).toEqual(parseKeyValues((newRecord[key].$date).toString()));
+			   }
+			   //If record element is any spatial point, then send though compareBbox function to check if number input is within 0.000001
+			   //because protractor is adding extra decimal points for some reason.
+			   else if((key.indexOf("west_lon") > -1)
+				   || (key.indexOf("east_lon") > -1)
+				   || (key.indexOf("south_lat") > -1)
+				   || (key.indexOf("north_lat") > -1)){
+			       compareBbox(key, newRecord);
+			   }
+			   //Otherwise, then just compare value in review.html results table to value in newRecord.
+			   else
+			       expect(element(by.id(key + '-1')).getText()).toEqual(parseKeyValues(newRecord[key]));
+		       }
+		   }
+	       }
+
+	       //Check access contact information
+	       for(var i = 0; i < newRecord.access.length; i++){
+		   for(var key in newRecord.access[i]){
+		       expect(element(by.id("access" + "-" + i + "-" + key + '-1')).getText()).toEqual(parseKeyValues(newRecord.access[i][key]));
+		   }
+	       }
+
+	       //Check citation contact information
+	       for(var i = 0; i < newRecord.citation.length; i++){
+		   for(var key in newRecord.citation[i]){
+		       expect(element(by.id("citation" + "-" + i + "-" + key + '-1')).getText()).toEqual(parseKeyValues(newRecord.citation[i][key]));
+		   }
+	       }
+	       
+	   });
+	    
+	});
+}
+
+function compareBbox(dir, newRecord) {
+    var valPromise = element(by.id(dir + '-1')).getText();
+    valPromise.then(el => {
+	
+        var val = parseFloat(el);
+        expect(val - newRecord[dir])
+            .toBeLessThan(0.000001);
+    });
+}
+
+function parseKeyValues(value){
+    
+    if((Array.isArray(value))
+       && (typeof value[0] === 'string')){
+	return value.join(', ');
+    }
+
+    //If input value is the attachment url, get file name out of url (file name is from last "/" character to end of string.
+    //Unless the user uses Mac's ability to name files with a "/" character.
+    if(Array.isArray(value)){
+	if(typeof value[0] === 'object'){
+	    var completeValue = "";
+	    for(var i = 0; i < value.length; i++){
+		for(var key in value[i]){
+		    if(key.indexOf("id") == -1)
+			if(key.indexOf("url") > -1){
+			    //Get name of file, which has been added on to end of URL.
+			    //Get text from last "/" character.
+			    completeValue = completeValue + value[i][key].substr(value[i][key].lastIndexOf("/")+1) + ", ";
+			}
+		}
+	    }
+	    return completeValue;
+	}
+    }
+
+    if(typeof value === 'object'){
+	var completeValue = "";
+	for(var key in value){
+	    if(key.indexOf("$oid") > -1)
+		return "";
+	    if(key.indexOf("$date") > -1)
+		completeValue = completeValue + value[key];
+	    else
+		completeValue = completeValue + key + " : " + value[key] + " | ";
+	}
+	return completeValue;
+    }
+    
+    if(typeof value === 'number'){
+	return value.toString();
+    }else if(value != null){
+	var response = checkLength(value);
+	return response;
+    }else{
+	var response = checkNull(value);
+	return response;
+    }
+}
+
+function translateKey(key){
+    key = key + "";
+    var delimString = key.split("_");
+    var parsedString = "";
+    for(var i = 0; i < delimString.length; i++){
+	switch(delimString[i]){
+	case "org":
+	    parsedString = parsedString + "organization ";
+	    break;
+	case "lat":
+	    parsedString = parsedString + "latitude ";
+	    break;
+	case "lon":
+	    parsedString = parsedString + "longitude ";
+	    break;
+	case "spatial":
+	    parsedString = parsedString + "data ";
+	    break;
+	case "dtype":
+	    parsedString = parsedString + "type";
+	    break;
+	case "status":
+	    parsedString = parsedString + "update ";
+	default:
+	    parsedString = parsedString + delimString[i];
+	}
+    }
+    return parsedString;
+};
+
+
+function checkLength(fieldName){
+    if(fieldName.length > 0)
+	return translateKey(fieldName);
+    
+    return "";
+};
+
+// Check if variable is null. If so, return empty string.
+function checkNull(fieldName){
+    if(fieldName != null)
+	return translateKey(fieldName);
+    
+    return "";
+};
+
+
+
 //Click on form button (breadcrumb button ids are the name of their states in app.js)
 //for specific form section and wait for scroll animation to finish before proceding.
 function exposeFormElement(formType, pageName){
@@ -1145,7 +1506,7 @@ function exposeFormElement(formType, pageName){
     case "dataFormats":
 	waitForAnimation("format-selector");
 	break;
-    case "onlineResourcesAndRestriction":
+    case "onlineResourcesAndRestrictions":
 	waitForAnimation("online-buttons");
 	break;
     case "temporalExtent":
@@ -1284,7 +1645,7 @@ function switchFormPage(key, formType, schemaType){
          //it('\'Export as...\' should be visible', function () {
              ////browser.get('/frontend/index.html');
 
-             //element(by.model('currentRecord.title')).sendKeys('¡Pollo Loco!');
+              //element(by.model('currentRecord.title')).sendKeys('¡Pollo Loco!');
              //element(by.model('currentRecord.summary')).sendKeys('The craziest tasting Chicken!');
 
              //element(by.id('record-options-dropdown')).click().then( () => {

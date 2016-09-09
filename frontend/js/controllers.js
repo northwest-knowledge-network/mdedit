@@ -506,15 +506,6 @@ metadataEditorApp.controller('BaseController',
                 });
         };
 
-	$scope.notSorted = function(obj) {
-
-	    console.log("Inside notSorted!");
-	    if(!obj)
-		return [];
-	    else
-		return Object.keys(obj);
-	}
-
 	/*
 	  Return string copies of currentRecord keys and values for use in review.html. 
 	  "access", "citation", "cls", and "id" key values are skipped because they are
@@ -522,72 +513,55 @@ metadataEditorApp.controller('BaseController',
 	  "citation" are arrays of objects, and they must be parsed individually to avoid
 	  nesting problems.
 	*/
-	
 	$scope.reviewFields = function(value){
 
-	    switch(value){
-	    case "access":
-	    case "citation":
-	    case "cls":
-	    case "id":
-		break;
-	    default:
-		//If the object is either the citations or access objects, return empty string.
-		//The access and citation objects are displayed after the rest of currentRecord keys and values.
-		if((Array.isArray(value))
-		   && (typeof value[0] === 'object')
-		   && (Object.keys(value[0]).indexOf("name") > -1))
-		    return "";
-		
-		
-		if((Array.isArray(value))
-		   && (typeof value[0] === 'string')){
-		    return value.join(', ');
-		}
+	    //If value is array, then return strings joined with ", "
+	    if((Array.isArray(value))
+	       && (typeof value[0] === 'string')){
+		return value.join(', ');
+	    }
 
-
-		if(Array.isArray(value)){
-		    if(typeof value[0] === 'object'){
-			var completeValue = "";
-			for(var i = 0; i < value.length; i++){
-			    for(var key in value[i]){
-				if(key.indexOf("id") == -1)
-				    if(key.indexOf("url") > -1){
-					//Get name of file, which has been added on to end of URL.
-					//Get text from last "/" character.
-					completeValue = completeValue + value[i][key].substr(value[i][key].lastIndexOf("/")+1) + ", ";
-				    }else
-					completeValue = completeValue + key + " : " + value[i][key] + " | ";
-			    }
-			}
-			return completeValue;
-		    }
-		}
-
-		if(typeof value === 'object'){
+	    //If input value is the attachment url, get file name out of url (file name is from last "/" character to end of string.
+	    //Unless the user uses Mac's ability to name files with a "/" character.
+	    if(Array.isArray(value)){
+		if(typeof value[0] === 'object'){
 		    var completeValue = "";
-		    for(var key in value){
-			if(key.indexOf("$oid") > -1)
-			    return "";
-			if(key.indexOf("$date") > -1)
-			    completeValue = completeValue + value[key] + " | ";
-			else
-			    completeValue = completeValue + key + " : " + value[key] + " | ";
+		    for(var i = 0; i < value.length; i++){
+			for(var key in value[i]){
+			    if(key.indexOf("id") == -1)
+				if(key.indexOf("url") > -1){
+				    //Get name of file, which has been added on to end of URL.
+				    //Get text from last "/" character.
+				    completeValue = completeValue + value[i][key].substr(value[i][key].lastIndexOf("/")+1) + ", ";
+				}
+			}
 		    }
 		    return completeValue;
 		}
-		
-		if(typeof value === 'number'){
-		    return value.toString();
-		}else if(value != null){
-		    var response = checkLength(value);
-		    return response;
-		}else{
-		    var response = checkNull(value);
-		    return response;
+	    }
+
+	    //If value is date object, then return date string out of object
+	    if(typeof value === 'object'){
+		var completeValue = "";
+		for(var key in value){
+		    if(key.indexOf("$oid") > -1)
+			return "";
+		    if(key.indexOf("$date") > -1)
+			completeValue = completeValue + value[key];
+		    else
+			completeValue = completeValue + key + " : " + value[key] + " | ";
 		}
+		return completeValue;
+	    }
 	    
-		break;
+	    if(typeof value === 'number'){
+		return value.toString();
+	    }else if(value != null){
+		var response = checkLength(value);
+		return response;
+	    }else{
+		var response = checkNull(value);
+		return response;
 	    }
 	}
 
@@ -620,6 +594,12 @@ metadataEditorApp.controller('BaseController',
 	    var parsedString = "";
 	    for(var i = 0; i < delimString.length; i++){
 		switch(delimString[i]){
+		case "mod":
+		    parsedString = parsedString + "modification ";
+		    break;
+		case "pub":
+		    parsedString = parsedString + "publication ";
+		    break;
 		case "org":
 		    parsedString = parsedString + "organization ";
 		    break;
