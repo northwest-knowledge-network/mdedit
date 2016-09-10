@@ -349,11 +349,10 @@ metadataEditorApp
                 delete serverReady.first_pub_date;
             }
 
-            if (record.hasOwnProperty('md_pub_date') && record.md_pub_date.$date != ''
-                && typeof record.md_pub_date.$date !== "undefined")
+            if (record.hasOwnProperty('md_pub_date') && typeof record.md_pub_date.$date !== "undefined")
             {
-                serverReady.md_pub_date.$date =
-                    record.md_pub_date.$date.getTime();
+                serverReady.md_pub_date.$date = new Date().getTime();
+
             }
 
             else
