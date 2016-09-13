@@ -241,6 +241,11 @@ a.dropdown-toggle, a.btn {
 /* Style for review.html results table */
 #review-table tr td{
     border: 1px solid black;
+
+}
+
+.cell-padding {
+    padding: 5px;
 }
 
 /* For sticky navbar (sticks to top of screen when scrolled to) */
