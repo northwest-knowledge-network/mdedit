@@ -55,6 +55,12 @@ class Metadata(db.Document):
     # use restrictions
     use_restrictions = db.StringField()
 
+    #research methods
+    research_methods = db.StringField()
+
+    #reference system: what kind of coordinate system and datum.
+    reference_system = db.StringField(max_length=255)
+    
     # contacts
     citation = db.ListField(db.EmbeddedDocumentField('Contact'))
     access = db.ListField(db.EmbeddedDocumentField('Contact'))

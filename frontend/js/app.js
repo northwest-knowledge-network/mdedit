@@ -18,7 +18,7 @@ var metadataEditorApp = angular
 		templateUrl: partialsPrefix + 'basic.html'
 	    })
 	    .state('form.detailed', {
-		templateUrl: partialsPrefix + 'isoDetailed.html'
+		templateUrl: partialsPrefix + 'detailed.html'
 	    })
 	    .state('form.dataFormats', {
 		templateUrl: partialsPrefix + 'isoDataFormats.html'
@@ -30,13 +30,10 @@ var metadataEditorApp = angular
 		templateUrl: partialsPrefix + 'spatialExtent.html'
 	    })
 	    .state('form.temporalExtent', {
-		templateUrl: partialsPrefix + 'temporalExtent.html'
+		templateUrl: partialsPrefix + 'isoTemporalExtent.html'
 	    })
 	    .state('form.review', {
 		templateUrl: partialsPrefix + 'review.html'
-	    })
-	    .state('form.fileUpload', {
-		templateUrl: partialsPrefix + 'uploadFile.html'
 	    })
 	    .state('form.requestDOI', {
 		templateUrl: partialsPrefix + 'doiRequest.html'
@@ -50,8 +47,8 @@ var metadataEditorApp = angular
 	    .state('form.sensitiveInformation', {
 		templateUrl: partialsPrefix + 'sensitiveInformation.html'
 	    }) 
-	    .state('form.otherOptions', {
-		templateUrl: partialsPrefix + 'otherOptions.html'
+	    .state('form.optionsAndDisclaimer', {
+		templateUrl: partialsPrefix + 'optionsAndDisclaimer.html'
 	    }) 
 
 	    .state('form.contacts', {
@@ -69,9 +66,6 @@ var metadataEditorApp = angular
 	    .state('dublinForm.basic', {
 		templateUrl: partialsPrefix + 'basic.html'
 	    })
-	    .state('dublinForm.detailed', {
-		templateUrl: partialsPrefix + 'detailed.html'
-	    })
 	    .state('dublinForm.dataFormats', {
 		templateUrl: partialsPrefix + 'dublinDataFormats.html'
 	    })
@@ -82,13 +76,10 @@ var metadataEditorApp = angular
 		templateUrl: partialsPrefix + 'spatialExtent.html'
 	    })
 	    .state('dublinForm.temporalExtent', {
-		templateUrl: partialsPrefix + 'temporalExtent.html'
+		templateUrl: partialsPrefix + 'dublinTemporalExtent.html'
 	    })
 	    .state('dublinForm.review', {
 		templateUrl: partialsPrefix + 'review.html'
-	    })
-	    .state('dublinForm.fileUpload', {
-		templateUrl: partialsPrefix + 'uploadFile.html'
 	    })
 	    .state('dublinForm.requestDOI', {
 		templateUrl: partialsPrefix + 'doiRequest.html'
@@ -102,8 +93,8 @@ var metadataEditorApp = angular
 	    .state('dublinForm.sensitiveInformation', {
 		templateUrl: partialsPrefix + 'sensitiveInformation.html'
 	    })
-	    .state('dublinForm.otherOptions', {
-		templateUrl: partialsPrefix + 'otherOptions.html'
+	    .state('dublinForm.optionsAndDisclaimer', {
+		templateUrl: partialsPrefix + 'optionsAndDisclaimer.html'
 	    }) 
 	    .state('dublinForm.contacts', {
 		templateUrl: partialsPrefix + 'contacts.html'

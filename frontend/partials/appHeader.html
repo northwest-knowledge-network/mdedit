@@ -48,7 +48,7 @@
 
                     <li>
                         <thead>
-                           <input type="text" class="form-control" placeholder="Search Your Records" ng-model="searchRecords" disable-auto-close>
+                           <input type="text" class="form-control" placeholder="Search Your Records" ng-model="searchRecords" disable-auto-close></input>
                             <tr>
                                 <td>
                                     <a ng-click="sortType = '-schema_type'; sortReverse = !sortReverse"  disable-auto-close>
@@ -101,14 +101,14 @@
                             <td class="record-list-last-published">{{record.md_pub_date.$date | date:'short'}}</td>
                             <td class="record-list-actions">
                                 <a ng-show="isISO(record.schema_type)"
-                                   ng-click="editRecord(record._id.$oid)"
+                                   ng-click="editRecord(record._id.$oid); resetFormValidity('iso'); checkCoordinateInput();"
                                    class="btn btn-xs record-list-edit"
                                    id="{{'edit-record-iso-' + $index}}"
                                    href="#/iso">
                                    Load
                                 </a>
                                 <a ng-show="!isISO(record.schema_type)"
-                                   ng-click="editRecord(record._id.$oid)"
+                                   ng-click="editRecord(record._id.$oid); resetFormValidity('dublin'); checkCoordinateInput(); checkSpatialData();"
                                    class="btn btn-xs record-list-edit"
                                    id="{{'edit-record-dublin-' + $index}}"
                                    href="#/dublin">
@@ -131,99 +131,28 @@
             </ul>
         </li>
 
-        <li class="dropdown">
-
-          <a id="record-options-dropdown" class="dropdown-toggle" data-toggle="dropdown"
-             role="button" aria-haspopup="true" aria-expanded="false"
-	     ng-click="checkRequiredFields()"
-	     >
-	    Record Options <span class="caret"></span></a>
-
-            <ul class="dropdown-menu" role="menu">
-
-                <li><a class="btn btn-sm btn-default navbar-btn header-button"
-                       id="create-new-dataset"
-                       ng-click="createNewRecord()"
-                       href="#/iso"
-		       >
-                    Create new dataset record
-                </a></li>
-
-                <li><a class="btn btn-sm btn-default navbar-btn header-button"
-                       id="create-new-non-dataset"
-                       ng-click="createNewDublinRecord()"
-                       href="#/dublin"
-		       >
-                    Create new non-dataset record
-                </a></li>
-
-                <li><a ng-click="submitDraftRecord()"
-                       class="btn btn-sm btn-default navbar-btn header-button"
-                       style="border:0;text-align:left"
-                       >
-                    Save this record as a draft
-                </a></li>
-
-                <li ng-show="baseCtrl.metadataForm.$valid">
-                    <a id="record-options-publish" ng-click="publishRecord()"
-                       class="btn btn-sm btn-default navbar-btn header-button"
-                       href="#"
-                       data-toggle="modal" data-target="#submitModal"
-		       >
-                    Publish record to NKN's portal</a>
-                </li>
-
-                <li ng-hide="baseCtrl.metadataForm.$valid"
-                    class="disabled">
-                  <a class="btn btn-sm btn-default navbar-btn header-button"
-		     >
-                    Please complete the record to publish data
-                    </a>
-                </li>
-            </ul>
-
-        </li>
-
         <li class="dropdown" ng-show="currentRecord._id.$oid">
 
             <a id="export-dropdown" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                View XML as... <span class="caret"></span>
+                Export as... <span class="caret"></span>
             </a>
             <ul class="dropdown-menu">
                 <li><a id="default-miles"
                        ng-click="export_('iso')"
                        class="btn btn-sm btn-default navbar-btn header-button">
-                    ISO 19115
+                    ISO 19115 XML
                 </a></li>
                 <li><a id="default-nkn" ng-click="export_('dc')"
                        class="btn btn-sm btn-default navbar-btn header-button">
-                    Dublin Core
+                    Dublin Core XML
                 </a></li>
                 <li><a id="default-nkn" ng-click="export_('esri')"
                        class="btn btn-sm btn-default navbar-btn header-button">
-                    ESRI-ISO
+                    ESRI-ISO XML
                 </a></li>
             </ul>
 
         </li>
-
-        <li class="dropdown">
-            <a id="defaults-dropdown" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                Load Defaults <span class="caret"></span>
-            </a>
-            <ul class="dropdown-menu">
-                <li><a id="default-miles" ng-click="loadDefaultMILES()"
-                       class="btn btn-sm btn-default navbar-btn header-button"
-		       ng-style="simulateHoverMiles">
-                    MILES</a></li>
-                <li><a id="default-nkn" ng-click="loadDefaultNKNAsDistributor()"
-                       class="btn btn-sm btn-default navbar-btn header-button"
-		       ng-style="simulateHoverNKN">
-                    NKN as Data Manager</a></li>
-            </ul>
-
-        </li>
-
       </ul>
 
 

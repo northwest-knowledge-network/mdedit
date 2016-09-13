@@ -1,9 +1,15 @@
-<h2 class="section-header">
-  <span class="mega-octicon octicon-tools"></span>
-  Data Format Details
-</h2>
-<div class="subform">
- 
-  <div ng-include="partialsPrefix + 'partials/form/dataFormats.html'">
+<div class="row" ng-controller="DCController as dc">
+  <h2 class="section-header">
+    <span class="mega-octicon octicon-tools"></span>
+    Data Format Details
+  </h2>
+  <div class="subform">
+    
+    <div ng-include="partialsPrefix + 'partials/form/dataFormats.html'">
+    </div>
   </div>
+  
+  <br>
+  <span ng-include="partialsPrefix + 'partials/form/uploadFile.html'">
+  </span>
 </div>

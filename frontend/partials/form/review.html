@@ -7,26 +7,46 @@
      checked
 -->
 <div id="reviewForm">
-  <table id="review-table">
-    <tr ng-repeat="(key, value) in currentRecord">
-      <td> {{reviewFields(key)}} </td> <td> {{reviewFields(value)}} </td>
+  <table id="review-table" class="table-bordered table-hover">
+    <tr>
+      <td id="title-0" class="cell-padding"> Title </td> <td id="title-1" class="cell-padding"> {{reviewFields(currentRecord.title)}} </td>
+    </tr>
+    <tr>
+      <td id="summary-0" class="cell-padding"> Summary </td> <td id="summary-1" class="cell-padding"> {{reviewFields(currentRecord.summary)}} </td>
+    </tr>
+  
+    <tr ng-repeat="(key, value) in currentRecord" ng-if="key != 'title' && key != 'summary' && key != 'access' && key != 'citation' && key != '_cls' && key != '_id'">
+      <td id="{{key}}-0" class="cell-padding"> {{reviewFields(key)}} </td> <td id="{{key}}-1" class="cell-padding"> {{reviewFields(value)}}</td>
+    </tr>
+          
+    <!-- Display everything except cls, id, title, summary, citation, and access -->
+    <!-- Now do citation and access values from currentRecord -->
+    <tr ng-repeat="i in currentRecord.access">
+      <td> access {{$index + 1}} </td> <td><table class="access-table" ng-init="reverse = false;"> <tr ng-repeat="(key, value) in i" class="no-side-border"> <td id="access-{{$parent.$index}}-{{key}}-0" class="author-key cell-padding"> {{reviewFields(key)}} </td><td id="access-{{$parent.$index}}-{{key}}-1" class="author-value cell-padding"> {{reviewFields(value)}} </td><tr></table></td>
+      
+    </tr>
+    <tr ng-repeat="i in currentRecord.citation">
+      <td> citation {{$index + 1}} </td> <td> <table class="citation-table"><tr ng-repeat="(key, value) in i" class="no-side-border"> <td id="citation-{{$parent.$index}}-{{key}}-0" class="author-key cell-padding"> {{reviewFields(key)}} </td><td id="citation-{{$parent.$index}}-{{key}}-1" class="author-value cell-padding"> {{reviewFields(value)}} </td><tr></table></td>
+      
     </tr>
   </table>
-    
+  
   <div id="submit-form">
     <br>
-    <button class="btn btn-primary" ng-show="baseCtrl.metadataForm.$valid"
-	    id="record-options-publish" ng-click="publishRecord()"
-	    href="#"
-	    data-toggle="modal" data-target="#submitModal"
-	    >
-      Publish record to NKN's portal
-    </button>
+    <div ng-show="checkAllValid();">
+      <button class="btn btn-primary" id="record-options-publish" ng-click="publishRecord()"
+	      href="#"
+	      data-toggle="modal" data-target="#submitModal"
+	      >
+	Submit for publication
+      </button>
+    </div>
     
-    <button ng-hide="baseCtrl.metadataForm.$valid"
-	    class="disabled btn btn-primary">
-      Please complete the record to publish data
-    </button>
+    <div ng-hide="checkAllValid();">
+      <span class="disabled btn btn-primary">
+	Please complete the record to publish data
+      </span>
+    </div>
     
   </div>
 </div>

@@ -21,11 +21,11 @@
               <input tabindex=20 style="width:100%" type="text" ng-model="contact[cfield]"
                      ng-if="!($parent.$index==0 && $index==1)" class="contact-input"
                      id="{{'citation-' + cfield + '-' + contactIdx}}" required
-		      maxlength="254">
+		      maxlength="254" />
               <input tabindex=20 style="width:100%" type="email" ng-model="contact[cfield]"
                      ng-if="$parent.$index==0 && $index==1" class="contact-email"
                      id="{{'citation-email-' + contactIdx}}" required
-		      maxlength="254">
+		      maxlength="254" />
             </div>
           </div>
         </div>
@@ -38,7 +38,7 @@
         <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <input tabindex=20 class="btn btn-default btn-cancel-contact" type="button"
 		 ng-click="cancelAddContactCitation()" value="Cancel Author Add"
-		  maxlength="254">
+		  maxlength="254" />
         </div>
 
         <!-- Only allowed to add a new contact if all current contact fields
@@ -69,11 +69,11 @@
                 <input tabindex=20 style="width:100%" type="text" ng-model="contact[cfield]"
                        ng-if="!($parent.$index==0 && $index==1)" class="contact-input"
                        id="{{'access-' + cfield + '-' + contactIdx}}" required
-		       maxlength="254">
+		       maxlength="254" />
                 <input tabindex=20 style="width:100%" type="email" ng-model="contact[cfield]"
                        ng-if="$parent.$index==0 && $index==1" class="contact-email"
                        id="{{'access-email-' + contactIdx}}" required
-		       maxlength="254">
+		       maxlength="254" />
               </div>
             </div>
           </div>
@@ -86,7 +86,7 @@
         <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4">
           <input tabindex=20 class="btn btn-default btn-cancel-contact" type="button"
 		 ng-click="cancelAddContactAccess()" value="Cancel Contact Add"
-		 maxlength="254">
+		 maxlength="254" />
         </div>
 
         <!-- Only allowed to add a new contact if all current contact fields

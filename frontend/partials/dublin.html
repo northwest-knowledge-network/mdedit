@@ -3,102 +3,24 @@
   <!-- form header contains title -->
   <div ng-include="partialsPrefix + 'partials/formHeader.html'"></div>
   
-  <div class="row" ng-controller="DCController as dc">
-    <div id="status-buttons" ng-repeat="button in dublinFormList" class="text-center">
-      <div class="col-lg-1 col-md-1">
-	<!-- Save record, reset background of current page's button, and move to selected page's partial -->
-	<a id="{{button.form_name}}" ng-click="submitDraftRecord(); resetBackground('dublin'); checkFormComplete(button.form_name, 'dublin'); jumpToPage($index, 'dublin');" class="dublin-button-list"><span ng-style="button.buttonStyle">{{$index + 1}}</span>{{button.label}}</a>
-      </div>
-    </div>
-  </div>
-  
-  <a id="left-scroll-link" ng-click="submitDraftRecord(); setCurrentPage(-1, 'dublin');">
-    <span class="mega-octicon octicon-chevron-left left-scroll-button">
-    </span>
-  </a>
-  
-  <a id="right-scroll-link" ng-click="submitDraftRecord(); setCurrentPage(1, 'dublin');">
-    <span class="mega-octicon octicon-chevron-right right-scroll-button">
-    </span>
-  </a>  
-  
-  <div id="form-views" ui-view>
-    <form id="signup-form" ng-submit="processForm()">
-      <!-- our nested state views will be injected here -->
-      <div id="form-views" ui-view></div>
-    </form>
-  </div>
-  
-</form>
-
-<!--
-        <div class="col-xs-6 col-sm-6 col-md-6">
-            <h2 class="section-header">
-              <span class="glyphicon glyphicon-list-alt"></span> Basic Information
-            </h2>
-
-        <div class="subform">
-          <div class="col-xs-offset-6 col-sm-offset-6 col-md-offset-6 col-lg-offset-6">
-            <h5>Record Type: </h5>
-          </div>
-            
-          <input tabindex=3 id="" name="" type="text"
-		 style="width:37%;float:right; text-align:center" 
-		 ng-model="currentRecord.schema_type" 
-		 ng-init="currentRecord.schema_type='Non-Dataset (Dublin Core)'"
-		 ng-readonly="true"
-		 maxlength="254"/>
-            
-            </br>
-
-          <div ng-include="partialsPrefix + 'partials/form/basic.html'"></div>
-
-        </div>
-         
-         <h2 class="section-header">
-           <span class="mega-octicon octicon-tools"></span> 
-           Data Format Details
-         </h2>
-
-         <div ng-include="partialsPrefix + 'partials/form/dataFormats.html'"></div>
-        
-    </div>
-   
-
-
-    <div class="col-xs-6 col-sm-6 col-md-6">
-      <h2 class="section-header">
-        <span class="glyphicon glyphicon-list-alt"></span> Detailed Information
-      </h2>
-
-      <div class="subform">
-        <div ng-include="partialsPrefix + 'partials/form/detailed.html'"></div>
-      </div>
-    
-    </div>
-    
-   </div>
-
-
   <div class="row">
-     <a class="anchor" name="spatiotemporal">
-       <h2 class="section-header">
-       <span class="glyphicon glyphicon-globe"></span> 
-         Geospatial Extents
-       </h2>
-     </a>
-     <div class="subform">
-       <div class="row" style="vertical-align:middle">       
-          <div ng-include="partialsPrefix + 'partials/form/spatialExtent.html'"></div>
-       </div>
-     </div>
-        
-  </div>
-
-
-  <div ng-include="partialsPrefix + 'partials/form/contacts.html'"></div>
-  
-  <div ng-include="partialsPrefix + 'partials/form/onlineResourcesAndRestrictions.html'"></div>
-
+    <ul class="breadcrumb form-button-stack" id="status-buttons">
+      <!-- Save record, reset background of current page's button, and move to selected page's partial -->
+      <li ng-repeat="button in dublinFormList">
+	<a id="{{button.form_name}}" ng-style="button.buttonStyle" ng-click="saveForm(button.form_name); formIsValid('dublin', baseCtrl.metadataForm.$valid); jumpToPage($index, 'dublin'); " class="breadcrumb-button"><span class="partial-button"><span ng-show="button.checkIconStyle" class="mega-octicon octicon-check move-icon"></span><span ng-show="button.xIconStyle" class="mega-octicon octicon-x move-icon"></span><span ng-show="button.dotIconStyle" class="mega-octicon octicon-primitive-dot"></span></span>{{button.label}}</a>
+      </li>
+    </ul>
+    
+    <div id="form-display">
+      <div id="form-views" ui-view>
+	<!-- our nested state views will be injected here -->
+	<div id="form-views" ui-view></div>
+      </div>
+    </div>
+    <br>
+    <!-- Back button -->
+    <button id="back-button" class="btn btn-primary left-scroll-link" ng-click="submitDraftRecord(); formIsValid('dublin', baseCtrl.metadataForm.$valid); setCurrentPage(-1, 'dublin');" >Back</button>
+    
+    <!-- Next button -->
+    <button id="save-continue-button" class="btn btn-primary right-scroll-link" ng-click="submitDraftRecord(); formIsValid('dublin', baseCtrl.metadataForm.$valid); setCurrentPage(1, 'dublin');">Save and Continue</button>
 </form>
--->

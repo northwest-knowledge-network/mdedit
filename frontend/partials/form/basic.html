@@ -5,13 +5,13 @@
 
 <div class="subform">
   <h5>Record Type: </h5>
-
+  
   <input tabindex=3 id="" name="" type="text"
 	 style="width:37%;float:right; text-align:center" 
 	 ng-model="currentRecord.schema_type" 
 	 ng-init="currentRecord.schema_type='Dataset (ISO)'"
 	 ng-readonly="true"
-	 maxlength="254"/>
+	 maxlength="254" required />
   
   <!--Basic Information: Title and Summary-->
   <h4 class="attribute-label">Title</h4>
@@ -28,19 +28,30 @@
     </li>
   </ul>
   <input id="title-input" tabindex=1 style="width:95%" type="text" 
-	 ng-model="currentRecord.title" required  maxlength="254">
+	 ng-model="currentRecord.title" maxlength="254" required />
   
   <h4 class="attribute-label">Summary</h4>
   <h6>Describe your data for someone who knows very little about your field of study. Be sure to include what the data set is, what variables it describes over what spatial extent, why it was created, and if there are any major use restrictions.
-    <p><span style="text-transform: uppercase"><strong><i> Remember many people may not read past this description.</span style></strong></i></h6>
+    <p><span style="text-transform: uppercase"><strong><i> Remember many people may not read past this description.</i></strong></span></p></h6>
   <textarea tabindex=2 style="width:95%" type="text" 
             ng-model="currentRecord.summary" maxlength="2995" required>
   </textarea>
   
-  <h4 class="attribute-label">Date (dataset)</h4>
-  <h6>
-    What is the most recent date that the data was published or updated?
-  </h6>
-  <input tabindex=4 ui-date="dateOptions"
-	 ng-model="currentRecord.first_pub_date.$date" required>
+  <h4 class="attribute-label">Place Keywords</h4>
+  <h6>List comma-separated keywords related to the geographic area covered by your data. Example: Idaho, Clear Creek Watershed, USA.</h6>
+  <input type="text" tabindex="4" style="width:95%" ng-model="currentRecord.place_keywords" maxlength="254" required />
+  
+  <h4 class="attribute-label">Thematic Keywords</h4>
+  <h6>List comma-separated keywords that will help others discover your data through an intuitive search. In addition to subject-based keywords, you may also want to include the grant numbers and funding sources associated with creation of the data. If you are part of an NKN-supported project and thematic keywords have been pre-loaded for you, please do NOT delete or modify these, simply add to the list.</h6>
+  <input type="text" tabindex="4" style="width:95%" ng-model="currentRecord.thematic_keywords" maxlength="254" required />
+  
+  <h4 class="attribute-label">Topic</h4>
+  <h6>Select as many of these high level categories as apply to your dataset. This is a set list of categories established by international standards. Use the command key (on a Mac) or the control key (on a PC) to select multiple categories.</h6>
+  
+  <select tabindex=5 style="width:80%;height:100px;"
+	  id="topic-category"
+	  multiple ng-multiple="true" class="multiselect"
+          ng-options="c for c in topicCategoryChoices"
+          ng-model="currentRecord.topic_category" required >
+    </select>
 </div>
