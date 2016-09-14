@@ -248,14 +248,6 @@ a.dropdown-toggle, a.btn {
     padding: 5px;
 }
 
-/* For sticky navbar (sticks to top of screen when scrolled to) */
-nav.affix {
-    position:fixed;
-    top: 0;
-    width: 100%;
-    z-index: 9999 !important;
-}
-
 .affix + .container-fluid {
     padding-top: 70px;
 }
