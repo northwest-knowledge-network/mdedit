@@ -1030,6 +1030,9 @@ metadataEditorApp.controller('BaseController',
 
 		    //Set selected page's button to blue
 		    highlightCurrentPage("iso");
+
+		    //Hide button until animation is finished
+		    hideButtonForAnimation();
 		}
 	    }else if(formType == 'dublin'){
 		//Check index against array bounds
@@ -1040,6 +1043,8 @@ metadataEditorApp.controller('BaseController',
 		    //Set selected page's button to blue
 		    highlightCurrentPage("dublin");
 
+		    //Hide button until animation is finished
+		    hideButtonForAnimation();
 		}
 	    }else
 		console.log("Tried to index non-supported record type.");
@@ -1293,10 +1298,12 @@ metadataEditorApp.controller('BaseController',
 	//Set current form state to current state plus shift amount. Also returns to disclaimer state if back
 	//or Save & Continue buttons pressed on "Terms & Conditions" or "Sensitive Information" states.
 	$scope.setCurrentPage = function(shift, formType) {
-
 	    if(formType == "iso"){
 		incrementCurrentPage(shift);
-		
+
+		//Hide button until animation is finished
+		hideButtonForAnimation();
+
 		if((getCurrentPage()) <= 0){
 		    setCurrentPage(0);
 		    
@@ -1312,6 +1319,7 @@ metadataEditorApp.controller('BaseController',
 		    setCurrentPage(isoButtonList.indexOf("form.optionsAndDisclaimer"));
 		    highlightCurrentPage("iso");
 		}else{
+		    console.log("Setting else!");
 		    //Set selected page's button to blue
 		    highlightCurrentPage("iso");
 
@@ -1321,6 +1329,9 @@ metadataEditorApp.controller('BaseController',
 	    }else if(formType == "dublin"){
 		//checkFormElement("dublin");
 		incrementCurrentPage(shift);
+
+		//Hide button until animation is finished
+		hideButtonForAnimation();
 		
 		if((getCurrentPage()) <= 0){
 		    setCurrentPage(0);
@@ -1328,12 +1339,14 @@ metadataEditorApp.controller('BaseController',
 		}else if((getCurrentPage()) >= dublinButtonList.length){
 		    setCurrentPage(dublinButtonList.length-1);
 		}
-		if(($state.is("dublinForm.termsConditions")) || ($state.is("dublinForm.sensitiveInformation"))){
+		if(($state.is("form.termsConditions")) || ($state.is("form.sensitiveInformation"))){
+		    console.log("Setting dublin!");
 		    $state.go(dublinButtonList[dublinButtonList.indexOf("dublinForm.optionsAndDisclaimer")]);
 		    setCurrentPage(dublinButtonList.indexOf("dublinForm.optionsAndDisclaimer"));
 		    highlightCurrentPage("dublin");
 		}else{
 		    //Set selected page's button to blue
+		    console.log("Setting other!");
 		    highlightCurrentPage("dublin");
 		    
 		    $state.go(dublinButtonList[getCurrentPage()]);
@@ -1341,7 +1354,16 @@ metadataEditorApp.controller('BaseController',
 	    }else{
 		console.log("Tried to use unsupported form type.")
 	    }
-	}
+	};
+
+	$scope.showButton = {};
+	function hideButtonForAnimation() {
+	    $scope.showButton = {"display": "none"};
+	    //Wait for animation to finish, then change display back to show
+	    $timeout(function(){
+		$scope.showButton = {};
+	    }, 700);
+	};
   } // end of callback for controller initialization
 ])
 .controller('ISOController', ['formOptions', function(formOptions) {

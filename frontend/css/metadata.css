@@ -441,3 +441,10 @@ a.initial:after {
 #form-display {
     z-index: 100;
 }
+
+/* Give main conainer a default height to avoid Drupal page resizing
+   a lot during animation.
+*/
+#main-container {
+    height: 600px;
+}

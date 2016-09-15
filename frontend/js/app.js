@@ -35,9 +35,6 @@ var metadataEditorApp = angular
 	    .state('form.review', {
 		templateUrl: partialsPrefix + 'review.html'
 	    })
-	    .state('form.requestDOI', {
-		templateUrl: partialsPrefix + 'doiRequest.html'
-	    })
 	    .state('form.termsConditions', {
 		templateUrl: partialsPrefix + 'termsConditions.html'
 	    })
@@ -50,7 +47,6 @@ var metadataEditorApp = angular
 	    .state('form.optionsAndDisclaimer', {
 		templateUrl: partialsPrefix + 'optionsAndDisclaimer.html'
 	    }) 
-
 	    .state('form.contacts', {
 		templateUrl: partialsPrefix + 'contacts.html'
 	    })
@@ -81,17 +77,8 @@ var metadataEditorApp = angular
 	    .state('dublinForm.review', {
 		templateUrl: partialsPrefix + 'review.html'
 	    })
-	    .state('dublinForm.requestDOI', {
-		templateUrl: partialsPrefix + 'doiRequest.html'
-	    })
-	    .state('dublinForm.termsConditions', {
-		templateUrl: partialsPrefix + 'termsConditions.html'
-	    })
 	    .state('dublinForm.disclaimer', {
 		templateUrl: partialsPrefix + 'disclaimer.html'
-	    })
-	    .state('dublinForm.sensitiveInformation', {
-		templateUrl: partialsPrefix + 'sensitiveInformation.html'
 	    })
 	    .state('dublinForm.optionsAndDisclaimer', {
 		templateUrl: partialsPrefix + 'optionsAndDisclaimer.html'

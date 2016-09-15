@@ -19,9 +19,10 @@
   </div>
   <br>
   <!-- Back button -->
-  <button id="back-button" class="btn btn-primary left-scroll-link" ng-click="submitDraftRecord(); formIsValid('iso', baseCtrl.metadataForm.$valid); setCurrentPage(-1, 'iso');">Back</button>
-  
-  
-  <!-- Next button -->
-  <button id="save-continue-button" class="btn btn-primary right-scroll-link" ng-click="submitDraftRecord(); formIsValid('iso', baseCtrl.metadataForm.$valid); setCurrentPage(1, 'iso');">Save and Continue</button>
+  <span ng-style="showButton">
+    <button id="back-button" class="btn btn-primary left-scroll-link" ng-click="submitDraftRecord(); formIsValid('iso', baseCtrl.metadataForm.$valid); setCurrentPage(-1, 'iso');">Back</button>
+    
+    <!-- Next button -->
+    <button id="save-continue-button" class="btn btn-primary right-scroll-link" ng-click="submitDraftRecord(); formIsValid('iso', baseCtrl.metadataForm.$valid); setCurrentPage(1, 'iso');">Save and Continue</button>
+  </span>
 </form>
