@@ -166,10 +166,6 @@ h6 {
   text-decoration: none;
 }
 
-/*
- * to accomodate the navbar
- * see http://getbootstrap.com/components/#navbar-fixed-top
- */
 body {
     padding-top: 70px;
 }
@@ -306,7 +302,6 @@ a.dropdown-toggle, a.btn {
 
 /* Styling for step buttons */
 /* numbered buttons */
-#status-buttons                 {  }
 #status-buttons a               {
     display:inline-block;
     font-size: 14px;
@@ -329,30 +324,14 @@ a.dropdown-toggle, a.btn {
     background:#00BC8C;
 }
 
-/*Left and right arrow buttons for form slider fixed to side of screen */
-
-@media only screen and (max-width: 890px) {
-    .left-scroll-button, .right-scroll-button {
-	font-size: 7em !important;
-	top: 40%;
-    }
-}
-/*
 .form-button-stack {
-    float: left;
-    margin: 5px;
-    text-align: center;
-}
-*/
-
-.form-container {
-    margin-right: 4em;
-    margin-left: 4em;
+    width: 100%;
 }
 
 #form-display {
     margin-right: 2em;
     margin-left: 2em;
+    height: auto;
 }
 
 /* Arrow that points to the right for step button backgrounds */
