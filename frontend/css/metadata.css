@@ -304,7 +304,6 @@ a.dropdown-toggle, a.btn {
 	animation:slideOutLeft 0.5s both ease; 
 }
 
-
 /* Styling for step buttons */
 /* numbered buttons */
 #status-buttons                 {  }
@@ -449,4 +448,17 @@ a.initial:after {
 
 .author-value {
     width: 80%;
+}
+
+/* Back and Save & Continue buttons in iso.html and dublin.html positioning */
+#back-button, #save-continue-button {
+    position: relative;
+    left: 80%;
+}
+
+/* Give form partials z-index of 100 to make them float over other text while
+   animation is playing.
+ */
+#form-display {
+    z-index: 100;
 }

@@ -15,7 +15,7 @@
       <td id="summary-0" class="cell-padding"> Summary </td> <td id="summary-1" class="cell-padding"> {{reviewFields(currentRecord.summary)}} </td>
     </tr>
   
-    <tr ng-repeat="(key, value) in currentRecord" ng-if="key != 'title' && key != 'summary' && key != 'access' && key != 'citation' && key != '_cls' && key != '_id'">
+    <tr ng-repeat="(key, value) in currentRecord" ng-if="key != 'title' && key != 'summary' && key != 'access' && key != 'citation' && key != '_cls' && key != '_id' && key != 'username'">
       <td id="{{key}}-0" class="cell-padding"> {{reviewFields(key)}} </td> <td id="{{key}}-1" class="cell-padding"> {{reviewFields(value)}}</td>
     </tr>
           

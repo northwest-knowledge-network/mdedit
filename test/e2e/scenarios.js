@@ -1,3 +1,4 @@
+
 'use strict';
 
 var mongo = require('mongodb');
@@ -897,11 +898,11 @@ function testAnimation(schemaType) {
 	       exposeFormElement(formType, "basic");
 	       expect(element(by.id("title-input")).isPresent()).toBe(true);
 
-	       exposeFormElement(formType, "onlineResourcesAndRestrictions");
-	       expect(element(by.id("online-buttons")).isPresent()).toBe(true);
-
 	       exposeFormElement(formType, "temporalExtent");
 	       expect(element(by.id("start-date")).isPresent()).toBe(true);
+
+	       exposeFormElement(formType, "spatialExtent");
+	       expect(element(by.id("north")).isPresent()).toBe(true);
 
 	       //Check contacts page
 	       exposeFormElement(formType, "contacts");
@@ -911,8 +912,8 @@ function testAnimation(schemaType) {
 	       exposeFormElement(formType, "dataFormats");
 	       expect(element(by.id("format-selector")).isPresent()).toBe(true);
 
-	       exposeFormElement(formType, "spatialExtent");
-	       expect(element(by.id("north")).isPresent()).toBe(true);
+	       exposeFormElement(formType, "onlineResourcesAndRestrictions");
+	       expect(element(by.id("online-buttons")).isPresent()).toBe(true);
 
 	       //Check disclaimer page
 	       exposeFormElement(formType, "optionsAndDisclaimer");
@@ -933,15 +934,21 @@ function testAnimation(schemaType) {
 	       waitForAnimation("title-input");
 	       expect(element(by.id("title-input")).isPresent()).toBe(true);
 
-	       //Click on next button, wait for animation, and test if first element of onlineResourcesAndRestriction is present.
+	       //Click on next button, wait for animation, and test if first element of temporalExtents is present.
 	       element(by.id("save-continue-button")).click();
-	       waitForAnimation("online-buttons");
-	       expect(element(by.id("online-buttons")).isPresent()).toBe(true);
-
-	       //Click on next button, wait for animation, and test if first element of temporalExtent is present.
-	       element(by.id("save-continue-button")).click();
+	       //If iso form type, then check 'Detailed Info' next
+	       if(formType.indexOf("dublin") == -1){
+		   waitForAnimation("research-methods");
+		   expect(element(by.id("research-methods")).isPresent()).toBe(true);
+		   element(by.id("save-continue-button")).click();
+	       }
 	       waitForAnimation("start-date");
 	       expect(element(by.id("start-date")).isPresent()).toBe(true);
+	       
+	       //Click on next button, wait for animation, and test if first element of spatialExtent page is present.
+	       element(by.id("save-continue-button")).click();
+	       waitForAnimation("north");
+	       expect(element(by.id("north")).isPresent()).toBe(true);
 
 	       //Click on next button, wait for animation, and test if first element of contacts page is present.
 	       element(by.id("save-continue-button")).click();
@@ -953,17 +960,15 @@ function testAnimation(schemaType) {
 	       waitForAnimation("format-selector");
 	       expect(element(by.id("format-selector")).isPresent()).toBe(true);
 
-	       //Click on next button, wait for animation, and test if first element of spatialExtent page is present.
+	       //Click on next button, wait for animation, and test if first element of onlineResourcesAndRestriction is present.
 	       element(by.id("save-continue-button")).click();
-	       waitForAnimation("north");
-	       expect(element(by.id("north")).isPresent()).toBe(true);
-
+	       waitForAnimation("online-buttons");
+	       expect(element(by.id("online-buttons")).isPresent()).toBe(true);
 
 	       //Click on next button, wait for animation, and test if first element of disclaimer page is present.
 	       element(by.id("save-continue-button")).click();
 	       waitForAnimation("terms-conditions");
 	       expect(element(by.id("terms-conditions")).isPresent()).toBe(true);
-
 
 	       //Click on next button, wait for animation, and test if first element of disclaimer page is present.
 	       element(by.id("save-continue-button")).click();
@@ -986,11 +991,11 @@ function testAnimation(schemaType) {
 	       waitForAnimation("terms-conditions");
 	       expect(element(by.id("terms-conditions")).isPresent()).toBe(true);
 
-	       //Click on back button, wait for animation, and test if first element of spatialExtent page is present.
+	       //Click on back button, wait for animation, and test if first element of onlineResourcesAndRestriction is present.
 	       element(by.id("back-button")).click();
-	       waitForAnimation("north");
-	       expect(element(by.id("north")).isPresent()).toBe(true);
-	       
+	       waitForAnimation("online-buttons");
+	       expect(element(by.id("online-buttons")).isPresent()).toBe(true);
+
 	       //Click on back button, wait for animation, and test if first element of dataFormats page is present.
 	       element(by.id("back-button")).click();
 	       waitForAnimation("format-selector");
@@ -1000,19 +1005,26 @@ function testAnimation(schemaType) {
 	       element(by.id("back-button")).click();
 	       waitForAnimation("citation-contacts");
 	       expect(element(by.id("citation-contacts")).isPresent()).toBe(true);
-
+	       
+	       //Click on back button, wait for animation, and test if first element of spatialExtent page is present.
+	       element(by.id("back-button")).click();
+	       waitForAnimation("north");
+	       expect(element(by.id("north")).isPresent()).toBe(true);
+	       
 	       //Click on back button, wait for animation, and test if first element of temporalExtent is present.
 	       element(by.id("back-button")).click();
 	       waitForAnimation("start-date");
 	       expect(element(by.id("start-date")).isPresent()).toBe(true);
 
-	       //Click on back button, wait for animation, and test if first element of onlineResourcesAndRestriction is present.
-	       element(by.id("back-button")).click();
-	       waitForAnimation("online-buttons");
-	       expect(element(by.id("online-buttons")).isPresent()).toBe(true);
-
 	       //Click on back button, wait for animation, and then test if first element on that page is present
 	       element(by.id("back-button")).click();
+	       //If iso form type, then check 'Detailed Info' next
+	       if(formType.indexOf("dublin") == -1){
+		   waitForAnimation("research-methods");
+		   expect(element(by.id("research-methods")).isPresent()).toBe(true);
+		   element(by.id("back-button")).click();
+	       }
+
 	       waitForAnimation("title-input");
 	       expect(element(by.id("title-input")).isPresent()).toBe(true);
 
@@ -1048,6 +1060,16 @@ function testDynamicFormAddition(schemaType) {
         });
 
         afterEach(clearCollection);
+
+	    it('should not have \'Detailed Info\' section if form type is \'dublin\'',
+           function () {
+	       var formType = getFormType();
+	       if(formType.indexOf("dublin") > -1){
+		   expect(element(by.id(formType + "detailed")).isPresent()).toBe(false);
+	       }else if(formType.indexOf("dublin") == -1){
+		   expect(element(by.id(formType + "detailed")).isPresent()).toBe(true);
+	       }
+	   });
 
         it('should add and subtract the spatialExtent form section from the dublin core form, and navigate to the Spatial Exent form and check if the map is present',
            function () {
@@ -1221,6 +1243,12 @@ function testReviewSection(schemaType) {
 	       element(by.model('currentRecord.place_keywords')).sendKeys(newRecord.place_keywords);
 	       element(by.model('currentRecord.thematic_keywords')).sendKeys(newRecord.thematic_keywords);
 	       element(by.model('currentRecord.topic_category')).sendKeys(newRecord.topic_category);
+
+	       //If iso form type, then fill out detailed info page too
+	       if(formType.indexOf('dublin') == -1){
+		   exposeFormElement(formType, "detailed");
+		   element(by.model('currentRecord.research_methods')).sendKeys(newRecord.research_methods);
+	       }
 	       
 	       exposeFormElement(formType, "onlineResourcesAndRestrictions");
 	       element(by.id('online')).sendKeys(newRecord.online[0]);
@@ -1229,14 +1257,13 @@ function testReviewSection(schemaType) {
 	       exposeFormElement(formType, "temporalExtent");
 	       element(by.id('start-date')).clear().sendKeys(newRecord.start_date.input).sendKeys(protractor.Key.TAB);;
 	       element(by.id('end-date')).clear().sendKeys(newRecord.end_date.input).sendKeys(protractor.Key.TAB);;
-//               element(by.id('start-date')).clear().sendKeys(newRecord.start_date);
-  //             element(by.id('end-date')).clear().sendKeys(newRecord.end_date);
 	       element(by.id('first-pub-date-input')).clear().sendKeys(newRecord.first_pub_date.input).sendKeys(protractor.Key.TAB);;
 	       
 	       //If not dubin form, then form is 'iso' type, and check extra form fields in this seciton
 	       if(formType.indexOf("dublin") == -1){
 		   element(by.model('currentRecord.status')).sendKeys(newRecord.status);
 		   element(by.model('currentRecord.update_frequency')).sendKeys(newRecord.update_frequency);
+		   element(by.model('currentRecord.hierarchy_level')).sendKeys(newRecord.hierarchy_level);		   
 	       }
 
 	       //Fill out contacts
@@ -1290,8 +1317,6 @@ function testReviewSection(schemaType) {
 	       //If not dublin form type, then send keys to exta form elements in 'iso' type
 	       if(formType.indexOf("dublin") == -1){
 		   element(by.model('currentRecord.spatial_dtype')).sendKeys(newRecord.spatial_dtype);
-		   element(by.model('currentRecord.hierarchy_level')).sendKeys(newRecord.hierarchy_level);
-		   element(by.model('currentRecord.research_methods')).sendKeys(newRecord.research_methods);
 		   element(by.model('currentRecord.compression_technique')).sendKeys(newRecord.compression_technique);
 	       }
 	       
@@ -1501,7 +1526,7 @@ function exposeFormElement(formType, pageName){
 	waitForAnimation("title-input");
 	break;
     case "detailed":
-	waitForAnimation("dataset-status");
+	waitForAnimation("research-methods");
 	break;
     case "dataFormats":
 	waitForAnimation("format-selector");
@@ -1545,7 +1570,6 @@ function switchFormPage(key, formType, schemaType){
     case "compression_technique":
     case "attachments":
     case "spatial_dtype":
-    case "hierarchy_level":
 	element(by.id(formType + "dataFormats")).click();
 	waitForAnimation("format-selector");
 	break;
@@ -1555,16 +1579,22 @@ function switchFormPage(key, formType, schemaType){
 	element(by.id(formType + "onlineResourcesAndRestrictions")).click();
 	waitForAnimation("online-buttons");
 	break;
-
+	
+    case "research_methods":
+	element(by.id(formType + "detailed")).click();
+	waitForAnimation("research-methods");
+	break;
+	
     case "start_date":
     case "end_date":
     case "last_mod_date":
     case "status":
     case "update_frequency":
-    case "research_methods":
+    case "hierarchy_level":
 	element(by.id(formType + "temporalExtent")).click();
 	waitForAnimation("start-date");
 	break;
+	
     case "west_lon":
     case "east_lon":
     case "north_lat":
@@ -1599,8 +1629,6 @@ function switchFormPage(key, formType, schemaType){
 	break;
     }
 }
-
-
 
 //function testExportISO(schemaType) {
     //describe('Export ISO', function () {

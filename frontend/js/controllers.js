@@ -54,13 +54,14 @@ metadataEditorApp.controller('BaseController',
 	$scope.isoFormList = [];
 	var isoButtonList = [];
  	var isoButtonInit = [
-	    "form.setup,Template Setup",
+	    "form.setup,Setup",
 	    "form.basic,Basic Info",
-	    "form.onlineResourcesAndRestrictions,Resources",
-	    "form.temporalExtent,Temporal Data",
+	    "form.detailed,Detailed Info",
+	    "form.temporalExtent,Temporal",
+	    "form.spatialExtent,Spatial",
 	    "form.contacts,Contacts",
-	    "form.dataFormats,File Upload",
-	    "form.spatialExtent,Spatial Data",
+	    "form.dataFormats,Upload",
+	    "form.onlineResourcesAndRestrictions,Resources",
 	    "form.optionsAndDisclaimer,Disclaimer",
 	    "form.review,Review"
 	];
@@ -71,12 +72,12 @@ metadataEditorApp.controller('BaseController',
 	$scope.dublinFormList = [];
 	var dublinButtonList = [];
  	var dublinButtonInit = [
-	    "dublinForm.setup,Template Setup",
+	    "dublinForm.setup,Setup",
 	    "dublinForm.basic,Basic Info",
-	    "dublinForm.onlineResourcesAndRestrictions,Resources",
-	    "dublinForm.temporalExtent,Temporal Data",
+	    "dublinForm.temporalExtent,Temporal",
 	    "dublinForm.contacts,Contacts",
-	    "dublinForm.dataFormats,File Upload",
+	    "dublinForm.dataFormats,Upload",
+	    "dublinForm.onlineResourcesAndRestrictions,Resources",
 	    "dublinForm.optionsAndDisclaimer,Disclaimer",
 	    "dublinForm.review,Review"
 	];
@@ -608,6 +609,11 @@ metadataEditorApp.controller('BaseController',
 		    break;
 		case "status":
 		    parsedString = parsedString + "update ";
+		    break;
+		case "online":
+		    parsedString = parsedString + "URL ";
+		    break;
+		    
 		default:
 		    parsedString = parsedString + delimString[i] + " ";
 		}
@@ -691,7 +697,7 @@ metadataEditorApp.controller('BaseController',
 		  
 		    //Add "spatialExtent.html" to form since that is where the "Reference System" form input is.
 		    $scope.hasSpatialData = true;
-		    addDublinButton("dublinForm.spatialExtent", "Spatial Data");
+		    addDublinButton("dublinForm.spatialExtent", "Spatial");
 		}
 	    }
 	}
@@ -710,7 +716,7 @@ metadataEditorApp.controller('BaseController',
 		   && ($scope.currentRecord.south_lat.length > 0)){
 		    console.log("hasSpatial is true! ");
 		    $scope.hasSpatialData = true;
-		    addDublinButton("dublinForm.spatialExtent", "Spatial Data");
+		    addDublinButton("dublinForm.spatialExtent", "Spatial");
 		}
 	    }
 	}
@@ -722,7 +728,7 @@ metadataEditorApp.controller('BaseController',
 	    //Add Spatial Data form element to dublin form if not already present.
 	    if(($location.url().indexOf("dublin") > -1)
 	       && ($scope.coordinateInputVisible == true))
-		addDublinButton("dublinForm.spatialExtent", "Spatial Data");
+		addDublinButton("dublinForm.spatialExtent", "Spatial");
 	    else if(($location.url().indexOf("dublin") > -1)
 		    && ($scope.coordinateInputVisible == false)
 		    && ($scope.hasSpatialData == false))
@@ -734,8 +740,6 @@ metadataEditorApp.controller('BaseController',
 		$scope.hasMap = false;
 	    else
 		$scope.hasMap = true;
-	    
-	    console.log("coordinateInputVisible = " + $scope.coordinateInputVisible);
 	}
 	 
 	//Request either DOI or ARK: sets currentRecord.doi_ark_request to either "DOI", "ARK", or "".
@@ -816,8 +820,6 @@ metadataEditorApp.controller('BaseController',
 	    }
 	    
 	    if($scope.currentRecord != null){
-		//checkCoordinateInput();
-
 		if($scope.currentRecord.data_one_search == "true")
 		    $scope.searchableOnDataOne = true;
 		else if($scope.currentRecord.data_one_search == "false")
@@ -913,7 +915,8 @@ metadataEditorApp.controller('BaseController',
 	    else if(formType == "dublin")
 		$state.go(dublinButtonList[getCurrentPage()]);
 	    else if(formType == ""){
-		//do nothing: angular router will redirect to "iso".
+		//Angular router will redirect to "iso" if blank.
+		$state.go(isoButtonList[getCurrentPage()]);
 	    }else
 		console.log("Error: tried to set page to unsupported type. Supported types are \"iso\" and \"dublin\".");
 	}
@@ -933,57 +936,38 @@ metadataEditorApp.controller('BaseController',
 
 	    //If form does not currently have button, then add
 	    if(dublinButtonList.indexOf(buttonName) == -1){
-		//Put new element third from last in the list. Last two element are disclaimer and review steps.
-		var reviewStep = $scope.dublinFormList.pop();
-		var disclaimerStep = $scope.dublinFormList.pop();
-		
-		//Push new form element onto list
-		$scope.dublinFormList.push(dublinButton);
-		
-		//Push last two elements back on.
-		$scope.dublinFormList.push(disclaimerStep);
-		$scope.dublinFormList.push(reviewStep);
-		
-		//Add same button to dublinIntializer because we need this list for use in the controller (cant use $scope in controller and get strings)
-		var reviewStepString = dublinButtonList.pop();
-		var disclaimerStepString = dublinButtonList.pop();
-		
-		//Push new form button name onto list
-		dublinButtonList.push(dublinButton.form_name);
-		
-		//Push old button names back on
-		dublinButtonList.push(disclaimerStepString);
-		dublinButtonList.push(reviewStepString);
+		//If button is "Spatial" then put it after "Temporal"
+		if(buttonLabel.indexOf('Spatial') > -1){
+		    var index = dublinButtonList.indexOf("dublinForm.temporalExtent");
+		    dublinButtonList.splice(index+1, 0, dublinButton.form_name);
+		    $scope.dublinFormList.splice(index+1, 0, dublinButton);
+		}else{
+		    dublinButtonList.splice((dublinButtonList.length - 2), 0, buttonLabel);
+		    $scope.dublinFormList.splice((dublinButtonList.length - 2), 0, dublinButton);
+		}
 	    }
 	}
 	
 	//Removes button from the dublinForm list in this controller. Used to remove
 	//form elements as needed to button list used to navigate through form.
 	function removeDublinButton(buttonName){
-	    for(var i = 0; i < $scope.dublinFormList.length; i++){
-		if($scope.dublinFormList[i].form_name == buttonName){
-		    for(var j = i; j < $scope.dublinFormList.length-1; j++){
-			$scope.dublinFormList[j] = $scope.dublinFormList[j+1];
-			dublinButtonList[j] = dublinButtonList[j+1];
-		    }
-		    //Remove last list element
-		    $scope.dublinFormList.pop();
-		    dublinButtonList.pop();
-		}
+	    if(dublinButtonList.indexOf(buttonName) > -1){
+		var index = dublinButtonList.indexOf(buttonName);
+		dublinButtonList.splice(index, 1);
+		$scope.dublinFormList.splice(index, 1);
 	    }
 	}
 
 	//Scope variable used to save form on every form element except the setup page.
 	$scope.saveForm = function(formName) {
-	    if(formName.includes("setup") !== true){
+	    if(formName.indexOf('setup') == -1){
 		$scope.submitDraftRecord();
 	    }
 	}
 
 	//Check is current form element is valid. form.$valid resets every time $stateProvider changes
-	//states, so we can check each form element individually, but we want to check the form a a whole.
+	//states, so we can check each form element individually, but we want to check the form a a whole on the review page.
 	$scope.formIsValid = function(formType, isValid){
-	    console.log("Checking form validity!");
 	    if(formType == 'iso'){
 		$scope.isoFormList[getCurrentPage()].isValid = isValid;
 	    }else if(formType == 'dublin'){
