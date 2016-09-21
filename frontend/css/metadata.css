@@ -453,5 +453,5 @@ a.initial:after {
    during animation.
 */
 .ui-view-container {
-    height: 400;
+	min-height:300px;
 }
