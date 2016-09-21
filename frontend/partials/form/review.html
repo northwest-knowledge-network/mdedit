@@ -7,30 +7,108 @@
      checked
 -->
 <div id="reviewForm">
-  <table id="review-table" class="table-bordered table-hover">
+
+<h4>Basic Info</h4>
+<table class="table-bordered table-hover review-table">
+  <tr>
+    <td id="title-0" class="cell-padding first-cell-width"> Title </td> <td id="title-1" class="cell-padding"> {{reviewFields(currentRecord.title, 'value-string')}} </td>
+    </tr>
+  <tr>
+    <td id="summary-0" class="cell-padding"> Summary </td> <td id="summary-1" class="cell-padding"> {{reviewFields(currentRecord.summary, 'value-string')}} </td>
+  </tr>
+  <tr ng-repeat="key in keys(currentRecord)" ng-if="key == 'place_keywords' || key == 'thematic_keywords' || key == 'topic_category'">
+      <td id="{{key}}-0" class="cell-padding first-cell-width"> {{reviewFields(key, 'key-string')}} </td> <td id="{{key}}-1" class="cell-padding"> {{reviewFields(currentRecord[key], 'value-string')}}</td>
+    </tr>
+</table>
+
+<span ng-show="currentRecord.schema_type == 'Dataset (ISO)'">
+  <h4>Detailed</h4>
+  <table class="table-bordered table-hover review-table">
     <tr>
-      <td id="title-0" class="cell-padding"> Title </td> <td id="title-1" class="cell-padding"> {{reviewFields(currentRecord.title)}} </td>
-    </tr>
-    <tr>
-      <td id="summary-0" class="cell-padding"> Summary </td> <td id="summary-1" class="cell-padding"> {{reviewFields(currentRecord.summary)}} </td>
-    </tr>
-  
-    <tr ng-repeat="(key, value) in currentRecord" ng-if="key != 'title' && key != 'summary' && key != 'access' && key != 'citation' && key != '_cls' && key != '_id' && key != 'username'">
-      <td id="{{key}}-0" class="cell-padding"> {{reviewFields(key)}} </td> <td id="{{key}}-1" class="cell-padding"> {{reviewFields(value)}}</td>
-    </tr>
-          
-    <!-- Display everything except cls, id, title, summary, citation, and access -->
-    <!-- Now do citation and access values from currentRecord -->
-    <tr ng-repeat="i in currentRecord.access">
-      <td> access {{$index + 1}} </td> <td><table class="access-table" ng-init="reverse = false;"> <tr ng-repeat="(key, value) in i" class="no-side-border"> <td id="access-{{$parent.$index}}-{{key}}-0" class="author-key cell-padding"> {{reviewFields(key)}} </td><td id="access-{{$parent.$index}}-{{key}}-1" class="author-value cell-padding"> {{reviewFields(value)}} </td><tr></table></td>
-      
-    </tr>
-    <tr ng-repeat="i in currentRecord.citation">
-      <td> citation {{$index + 1}} </td> <td> <table class="citation-table"><tr ng-repeat="(key, value) in i" class="no-side-border"> <td id="citation-{{$parent.$index}}-{{key}}-0" class="author-key cell-padding"> {{reviewFields(key)}} </td><td id="citation-{{$parent.$index}}-{{key}}-1" class="author-value cell-padding"> {{reviewFields(value)}} </td><tr></table></td>
-      
+      <td id="research_methods-0" class="cell-padding first-cell-width"> Research Methods </td> <td id="research_methods-1" class="cell-padding"> {{reviewFields(currentRecord.research_methods, 'value-string')}} </td>
     </tr>
   </table>
-  
+</span>
+
+<h4>Temporal</h4>
+<table class="table-bordered table-hover review-table">
+  <tr>
+    <td id="start_date-0" class="cell-padding first-cell-width"> Start Date </td> <td id="start_date-1" class="cell-padding"> {{reviewFields(currentRecord.start_date, 'value-string')}} </td>
+    </tr>
+  <tr>
+    <td id="end_date-0" class="cell-padding first-cell-width"> End Date </td> <td id="end_date-1" class="cell-padding"> {{reviewFields(currentRecord.end_date, 'value-string')}} </td>
+  </tr>
+  <tr ng-repeat="(key, value) in currentRecord" ng-if="key == 'first_pub_date' || key == 'status' || key == 'hierarchy_level' || key == 'update_frequency'">
+    <td id="{{key}}-0" class="cell-padding first-cell-width"> {{reviewFields(key, 'key-string')}} </td> <td id="{{key}}-1" class="cell-padding"> {{reviewFields(value, 'value-string')}}</td>
+  </tr>
+</table>
+
+<span ng-show="hasSpatialData || currentRecord.schema_type == 'Dataset (ISO)'">
+  <h4>Spatial</h4>
+  <table class="table-bordered table-hover review-table">
+    <tr ng-repeat="(key, value) in currentRecord" ng-if="key == 'north_lat' || key == 'south_lat' || key == 'east_lon' || key == 'west_lon'">
+      <td id="{{key}}-0" class="cell-padding first-cell-width"> {{reviewFields(key, 'key-string')}} </td> <td id="{{key}}-1" class="cell-padding"> {{reviewFields(value, 'value-string')}}</td>
+    </tr>
+    <tr ng-show="coordinateInputVisible">
+      <td id="reference_system-0" class="cell-padding first-cell-width"> Reference System </td> <td id="reference_system-1" class="cell-padding"> {{reviewFields(currentRecord.reference_system, 'value-string')}} </td>
+    </tr>
+  </table>
+</span>
+
+<h4>Contacts</h4>
+<table class="table-bordered table-hover review-table">
+  <!-- Display everything except cls, id, title, summary, citation, and access -->
+  <!-- Now do citation and access values from currentRecord -->
+  <tr ng-repeat="i in currentRecord.access">
+    <td> Access {{$index + 1}} </td> <td><table class="access-table" ng-init="reverse = false;"> <tr ng-repeat="(key, value) in i" class="no-side-border"> <td id="access-{{$parent.$index}}-{{key}}-0" class="author-key cell-padding first-cell-width"> {{reviewFields(key, 'key-string')}} </td><td id="access-{{$parent.$index}}-{{key}}-1" class="author-value cell-padding"> {{reviewFields(value, 'value-string')}} </td><tr></table></td>
+  </tr>
+  <tr ng-repeat="i in currentRecord.citation">
+      <td> Citation {{$index + 1}} </td> <td> <table class="citation-table"><tr ng-repeat="(key, value) in i" class="no-side-border"> <td id="citation-{{$parent.$index}}-{{key}}-0" class="author-key cell-padding first-cell-width"> {{reviewFields(key, 'key-string')}} </td><td id="citation-{{$parent.$index}}-{{key}}-1" class="author-value cell-padding"> {{reviewFields(value, 'value-string')}} </td><tr></table></td>
+    </tr>
+</table>
+
+<h4>Upload</h4>
+<table class="table-bordered table-hover review-table">
+  <tr>
+    <td id="data_format-0" class="cell-padding first-cell-width"> Data Format </td> <td id="data_format-1" class="cell-padding"> {{reviewFields(currentRecord.data_format, 'value-string')}} </td>
+  </tr>
+
+  <tr ng-show="currentRecord.schema_type == 'Dataset (ISO)'">
+    <td id="spatial_dtype-0" class="cell-padding first-cell-width"> Data Type </td> <td id="spatial_dtype-1" class="cell-padding"> {{reviewFields(currentRecord.spatial_dtype, 'value-string')}} </td>
+  </tr>
+
+  <tr ng-show="currentRecord.compression_technique.length > 0">
+    <td id="compression_technique-0" class="cell-padding first-cell-width"> Compression Technique </td> <td id="compression_technique-1" class="cell-padding"> {{reviewFields(currentRecord.compression_technique, 'value-string')}} </td>
+  </tr>
+
+  <tr>
+    <td id="attachments-0" class="cell-padding first-cell-width"> Attachments </td> <td id="attachments-1" class="cell-padding"> {{reviewFields(currentRecord.attachments, 'value-string')}} </td>
+  </tr>
+    
+</table>
+
+<h4>Resources</h4>
+<table class="table-bordered table-hover review-table">
+  <tr ng-show="currentRecord.online.length > 0">
+    <td id="online-0" class="cell-padding first-cell-width"> URL(s) </td> <td id="online-1" class="cell-padding"> {{reviewFields(currentRecord.online, 'value-string')}} </td>
+  </tr>
+
+  <tr>
+    <td id="use_restrictions-0" class="cell-padding first-cell-width"> Use Restrictions </td> <td id="use_restrictions-1" class="cell-padding"> {{reviewFields(currentRecord.use_restrictions, 'value-string')}} </td>
+  </tr>
+</table>
+
+<h4>Disclaimer</h4>
+<table class="table-bordered table-hover review-table">
+  <tr>
+    <td id="doi_ark_request-0" class="cell-padding first-cell-width"> DOI/ARK </td> <td id="doi_ark_request-1" class="cell-padding"> {{reviewFields(currentRecord.doi_ark_request, 'value-string')}} </td>
+  </tr>
+
+  <tr>
+    <td id="data_one_search-0" class="cell-padding first-cell-width"> Searchable on DataONE </td> <td id="data_one_search-1" class="cell-padding"> {{reviewFields(currentRecord.data_one_search, 'value-string')}} </td>
+  </tr>
+</table>
+
   <div id="submit-form">
     <br>
     <div ng-show="checkAllValid();">

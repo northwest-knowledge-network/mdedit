@@ -235,9 +235,16 @@ a.dropdown-toggle, a.btn {
 }
 
 /* Style for review.html results table */
-#review-table tr td{
+.review-table tr td{
     border: 1px solid black;
+}
 
+.review-table {
+    width: 70%;
+}
+
+.first-cell-width {
+    width: 25%;
 }
 
 .cell-padding {
@@ -442,9 +449,9 @@ a.initial:after {
     z-index: 100;
 }
 
-/* Give main conainer a default height to avoid Drupal page resizing
-   a lot during animation.
+/* Setting minimum height on ui-view to prevent collapse of height
+   during animation.
 */
-#main-container {
-    height: 600px;
+.ui-view-container {
+    height: 400;
 }

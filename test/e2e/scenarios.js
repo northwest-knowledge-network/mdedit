@@ -921,7 +921,7 @@ function testAnimation(schemaType) {
 
 	       //Check review page
 	       exposeFormElement(formType, "review");
-	       expect(element(by.id("review-table")).isPresent()).toBe(true);
+	       expect(element(by.id("reviewForm")).isPresent()).toBe(true);
 	       
 	   });
 
@@ -972,8 +972,8 @@ function testAnimation(schemaType) {
 
 	       //Click on next button, wait for animation, and test if first element of disclaimer page is present.
 	       element(by.id("save-continue-button")).click();
-	       waitForAnimation("review-table");
-	       expect(element(by.id("review-table")).isPresent()).toBe(true);
+	       waitForAnimation("reviewForm");
+	       expect(element(by.id("reviewForm")).isPresent()).toBe(true);
 	       
 	   });
 
@@ -983,8 +983,8 @@ function testAnimation(schemaType) {
 
 	       //Click on review page button, wait for animation, and test if first element of review page is present.
 	       element(by.id(formType + "review")).click();
-	       waitForAnimation("review-table");
-	       expect(element(by.id("review-table")).isPresent()).toBe(true);
+	       waitForAnimation("reviewForm");
+	       expect(element(by.id("reviewForm")).isPresent()).toBe(true);
 
 	       //Click on back button, wait for animation, and test if first element of disclaimer page is present.
 	       element(by.id("back-button")).click();
@@ -1547,7 +1547,7 @@ function exposeFormElement(formType, pageName){
 	waitForAnimation("terms-conditions");	
 	break;
     case "review":
-	waitForAnimation("review-table");
+	waitForAnimation("reviewForm");
 	break;
     default:
 	break;
