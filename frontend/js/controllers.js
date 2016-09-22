@@ -17,19 +17,17 @@ metadataEditorApp.controller('BaseController',
 
 	$scope.metadataForm = {};
 	
-	//Scope variables to check if user has read terms & conditions
-	$scope.agreeTermsConditions = false;
-	//Scope variable to check if user has right to publish 
-	$scope.rightToPublish = false;
-	//Scope varialble to check if record does not contain sensitive information
-	$scope.noSensitiveInformation = false;
 	//Variable to check if user wants record to be searchable on DataONE.
 	$scope.searchableOnDataOne = false;
+
 	//Scope variable used to add or subtract "spatialExtents.html" partial to dublin form list
 	//in "setup.html" checkbox.
 	$scope.hasSpatialData = false;
 	//Scope variable to check if map on spatialExtent.html is visible
 	$scope.hasMap = true;
+	//Scope variable to show or hide the "coordinate system" input in the "spatialExtent.html" partial.
+	$scope.coordinateInputVisible = false;
+
 	//Scope variable to track if user has agreed to terms and conditions of using metadata editor.
 	//Used to allow publishing of record, but not saved in the database.
 	$scope.agreeTermsConditions = false;
@@ -39,8 +37,6 @@ metadataEditorApp.controller('BaseController',
 	//Scope variable to track if user has agreed that there is no sensitive information in their data.
 	//Used to allow publishing of record, but not saved in the database.
 	$scope.noSensitiveInformation = false;
-	//Scope variable to show or hide the "coordinate system" input in the "spatialExtent.html" partial.
-	$scope.coordinateInputVisible = false;
 
 	//Objects for background colors of buttons used in ng-style tags in iso.html and dublin.html 
 	var backgroundColor = {"background-color": "#cccccc"};
@@ -504,7 +500,9 @@ metadataEditorApp.controller('BaseController',
                 });
         };
 
-
+	//Functions that return colors for breadcrumb button states: Complete,
+	//not complete, selected, and default background color.
+	
 	//Get background color
 	function getBackgroundColor(){
 	    return backgroundColor;
@@ -525,8 +523,8 @@ metadataEditorApp.controller('BaseController',
 	    return notCompleteColor;
 	}
 
-	//Reset form buttons to grey. Used on load of existing record in partials/appHeader.html.
-	$scope.resetFormValidity = function(formType) {
+	//Reset form buttons to default color (currently grey). Used on load of existing record in partials/appHeader.html.
+	$scope.resetFormButtons = function(formType) {
 	    if((formType == "iso")
 	       || (formType == "dublin"))
 		greyButtonBackgrounds(formType);
@@ -589,7 +587,7 @@ metadataEditorApp.controller('BaseController',
 	}
 
 
-	/*
+	
 	//Check currentRecord if lat and lon fields in SpatialExtent.html are length 0.
 	//If not, then add spatialExtent form element to form.
 	//Useful on new record load.
@@ -598,17 +596,18 @@ metadataEditorApp.controller('BaseController',
 	       && ($scope.currentRecord.east_lon != null)
 	       && ($scope.currentRecord.north_lat != null)
 	       && ($scope.currentRecord.south_lat != null)){
-		if(($scope.currentRecord.west_lon.length > 0)
-		   && ($scope.currentRecord.east_lon.length > 0)
-		   && ($scope.currentRecord.north_lat.length > 0)
-		   && ($scope.currentRecord.south_lat.length > 0)){
+		if(($scope.currentRecord.west_lon != "")
+		   || ($scope.currentRecord.east_lon != "")
+		   || ($scope.currentRecord.north_lat != "")
+		   || ($scope.currentRecord.south_lat != "")){
+		    //In services.js, lat and lon variables are set to empty strings.
+		    //So if they have been reset to numbers, then they have been set by user.
 		    console.log("hasSpatial is true! ");
 		    $scope.hasSpatialData = true;
 		    addDublinButton("dublinForm.spatialExtent", "Spatial");
 		}
 	    }
 	}
-	*/	  
   
 	//Adds and subtracts spatialExtent.html partial from form if user clicks checkbox stating that they
 	//have a coordinate system. This form input is on the spatialExtent.html form state.
@@ -623,6 +622,9 @@ metadataEditorApp.controller('BaseController',
 		    && ($scope.hasSpatialData == false))
 		removeDublinButton("dublinForm.spatialExtent");
 
+	    //If only the reference system has been added, and the form type is dublin, then make the
+	    //map visible. The map must always be visible on iso, but can be subtracted from dublin's
+	    //Spatial Extent section
 	    if(($scope.hasSpatialData == false)
 	       && ($scope.coordinateInputVisible == true)
 	       && ($location.url().indexOf("dublin") > -1))
@@ -650,17 +652,17 @@ metadataEditorApp.controller('BaseController',
 	$scope.checkSearchableDataOne = function() {
 	    //Initialize variable to current record variable for searchable on DataOne
 	    //Check if string in currentRecord.data_one_search is equal to "true". 
-	    if($scope.currentRecord.data_one_search.localeCompare("true")){
+	    if($scope.currentRecord.data_one_search.indexOf("true") > -1){
 		$scope.searchableOnDataOne = true;
 		return true;
 	    }
 	    //Check if string in currentRecord.data_one_search is equal to "false". 
-	    else if($scope.currentRecord.data_one_search.localeCompare("false")){
+	    else if($scope.currentRecord.data_one_search.indexOf("false") > -1){
 		$scope.searchableOnDataOne = false;
 		return false;
 	    }
 	    //Check if string in currentRecord.data_one_search is equal to "". 
-	    else if($scope.currentRecord.data_one_search.localeCompare("")){
+	    else if($scope.currentRecord.data_one_search.indexOf("") > -1){
 		$scope.searchableOnDataOne = false;
 		return false;
 	    }
@@ -725,34 +727,6 @@ metadataEditorApp.controller('BaseController',
 		    $scope.dublinFormList[i].isValid = false;
 		}
 	    }
-	}
-
-	//Checks if $scope.agreeTermsConditions, $scope.rightToPublish, and $scope.noSensitiveInformation are true. If so, will return true.
-	$scope.canPublish = function() {
-	    if(($scope.agreeTermsCondiditons == true)
-	       && ($scope.rightToPublish == true)
-	       && ($scope.noSensitiveInformation == true)){
-		return true;
-	    }else
-		return false;
-	}
-
-	//Sets boolean variable to see if terms and conditions have been read and agreed to.
-	$scope.setTermsAndConditions = function() {
-	    $scope.agreeTermsConditions = !$scope.agreeTermsConditions;
-	    return $scope.agreeTermsConditions;
-	}
-
-	//Sets boolean variable that demonstrates the author has the right to publish this material.
-	$scope.setRightToPublish = function() {
-	    $scope.rightToPublish = !$scope.rightToPublish;
-	    return $scope.rightToPublish;
-	}
-
-	//Sets boolean value to see if metadata being submitted has sensitive information.
-	$scope.setSensitiveInformation = function() {
-	    $scope.noSensitiveInformation = !$scope.noSensitiveInformation;
-	    return $scope.noSensitiveInformation;
 	}
 
 	//Initialize iso and dublin form lists
@@ -892,8 +866,39 @@ metadataEditorApp.controller('BaseController',
 	    return "";
 	}
 
-	//Checks if all form elements of current form list are valid (complete). Used in review.html for publish button.
-	$scope.checkAllValid = function(){
+	//Checks if $scope.agreeTermsConditions, $scope.rightToPublish, and $scope.noSensitiveInformation are true. If so, will return true.
+	function canPublish() {
+	    if(($scope.agreeTermsConditions == true)
+	       && ($scope.rightToPublish == true)
+	       && ($scope.noSensitiveInformation == true)){
+		return true;
+	    }else
+		return false;
+	}
+
+	//Sets boolean variable to see if terms and conditions have been read and agreed to.
+	$scope.setTermsAndConditions = function() {
+	    $scope.agreeTermsConditions = !$scope.agreeTermsConditions;
+	    return $scope.agreeTermsConditions;
+	}
+
+	//Sets boolean variable that demonstrates the author has the right to publish this material.
+	$scope.setRightToPublish = function() {
+	    $scope.rightToPublish = !$scope.rightToPublish;
+	    return $scope.rightToPublish;
+	}
+
+	//Sets boolean value to see if metadata being submitted has sensitive information.
+	$scope.setSensitiveInformation = function() {
+	    $scope.noSensitiveInformation = !$scope.noSensitiveInformation;
+	    return $scope.noSensitiveInformation;
+	}
+
+	/* Checks if all form elements of current form list are valid (complete), and if user has
+	   agreed to the terms & conditions, record doesn't have sensitive information, and they have
+	   the right to publish the information. Used in review.html for publish button.
+	*/
+	$scope.checkAllFormsValid = function(){
 	    var url = $location.url();
 	    
 	    if(url.indexOf('iso') > -1){
@@ -904,7 +909,12 @@ metadataEditorApp.controller('BaseController',
 			return false;
 		    }
 		}
-		return true;
+		//Check scope variables that user checks to agree to terms & conditions, record does not have
+		//sensitive information, and they have the right to publish the information
+		if(canPublish())
+		    return true;
+		else
+		    return false;
 	    }else if(url.indexOf('dublin') > -1){
 		//Check all forms except review and template setup page (first and last)
 		for(var i = 1; i < $scope.dublinFormList.length-1; i++){
@@ -912,7 +922,13 @@ metadataEditorApp.controller('BaseController',
 			return false;
 		    }
 		}
-		return true;
+
+		//Check scope variables that user checks to agree to terms & conditions, record does not have
+		//sensitive information, and they have the right to publish the information
+		if(canPublish())
+		    return true;
+		else
+		    return false;
 	    }else
 		console.log("Error: not in a supported form type.");
 
@@ -1030,7 +1046,6 @@ metadataEditorApp.controller('BaseController',
 	    else if(formType == 'dublin')
 		parsedName = dublinButtonList[getCurrentPage()].split(".")[1];
 
-	    console.log("Parsed Name: " + parsedName + " is " + formComplete);
 	    /*
 	      Function checks if $valid parameter passed in is true. If it is true, then all inputs with "required" tags
 	      have been filled out. We need a little extra functionality though since $valid only works on elements with "required"
@@ -1061,7 +1076,6 @@ metadataEditorApp.controller('BaseController',
 		break;
 	    default:
 		break;
-		
 	    }
 	    
 	    //If form element was not finished, then set corresponding button red. If it was, set corresponding
@@ -1193,7 +1207,7 @@ metadataEditorApp.controller('BaseController',
 
 	//Set current form state to current state plus shift amount. Also returns to disclaimer state if back
 	//or Save & Continue buttons pressed on "Terms & Conditions" or "Sensitive Information" states.
-	$scope.setCurrentPage = function(shift, formType) {
+	$scope.setCurrentFormElement = function(shift, formType) {
 	    if(formType == "iso"){
 		incrementCurrentPage(shift);
 
@@ -1296,7 +1310,9 @@ metadataEditorApp.controller('BaseController',
 		}
 		return completeValue;
 	    }
-	    
+
+	    //Else, if value is a number or string, then return values converted into more
+	    //human readable formats.
 	    if(typeof value === 'number'){
 		return value.toString();
 	    }else if(value != null){
@@ -1316,42 +1332,52 @@ metadataEditorApp.controller('BaseController',
 	    var delimString = key.split("_");
 	    var parsedString = "";
 	    for(var i = 0; i < delimString.length; i++){
-		switch(delimString[i]){
-		case "mod":
-		    parsedString = parsedString + "Modification ";
-		    break;
-		case "pub":
-		    parsedString = parsedString + "Publication ";
-		    break;
-		case "org":
-		    parsedString = parsedString + "Organization ";
-		    break;
-		case "lat":
-		    parsedString = parsedString + "Latitude ";
-		    break;
-		case "lon":
-		    parsedString = parsedString + "Longitude ";
-		    break;
-		case "spatial":
-		    parsedString = parsedString + "Data ";
-		    break;
-		case "dtype":
-		    parsedString = parsedString + "Type";
-		    break;
-		case "status":
-		    parsedString = parsedString + "Update Status";
-		    break;
-		case "online":
-		    parsedString = parsedString + "URL ";
-		    break;
-		    
-		default:
-		    if(type.indexOf("key-string") > -1){
-		    //Capitalize first character of each key
+		if(type.indexOf("key-string") > -1){
+		    switch(delimString[i]){
+		    case "mod":
+			parsedString = parsedString + "Modification ";
+			break;
+		    case "pub":
+			parsedString = parsedString + "Publication ";
+			break;
+		    case "org":
+			parsedString = parsedString + "Organization ";
+			break;
+		    case "lat":
+			parsedString = parsedString + "Latitude ";
+			break;
+		    case "lon":
+			parsedString = parsedString + "Longitude ";
+			break;
+		    case "spatial":
+			parsedString = parsedString + "Data ";
+			break;
+		    case "dtype":
+			parsedString = parsedString + "Type";
+			break;
+		    case "status":
+			parsedString = parsedString + "Update Status";
+			break;
+		    case "online":
+			parsedString = parsedString + "URL ";
+			break;
+		    default:
+			//Capitalize first character of each key
 			parsedString = parsedString + delimString[i].charAt(0).toUpperCase() + delimString[i].slice(1) + " ";
-		    }else{
+			break;
+		    }
+		}else if(type.indexOf("value-string") > -1){
+		    switch(delimString[i]){
+		    case "true":
+			parsedString = parsedString + "Yes ";
+			break;
+		    case "false":
+			parsedString = parsedString + "No ";
+			break;
+		    default:
 			//Return string with "_" characters replaced with " " (whitespace) characters.
 			parsedString = parsedString + delimString[i] + " ";
+			break;
 		    }
 		}
 	    }
@@ -1375,11 +1401,6 @@ metadataEditorApp.controller('BaseController',
 		    
 	    return "";
 	};
-
-	//Return keys in non-alphabetical order
-	$scope.keys = function(obj) {
-	    return obj? Object.keys(obj) : [];
-	}
 
 	//Set display to none for "Back" and "Save & Continue" buttons for duration of
 	//slide in animation of form.

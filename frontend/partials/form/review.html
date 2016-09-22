@@ -16,7 +16,7 @@
   <tr>
     <td id="summary-0" class="cell-padding"> Summary </td> <td id="summary-1" class="cell-padding"> {{reviewFields(currentRecord.summary, 'value-string')}} </td>
   </tr>
-  <tr ng-repeat="key in keys(currentRecord)" ng-if="key == 'place_keywords' || key == 'thematic_keywords' || key == 'topic_category'">
+  <tr ng-repeat="(key, value) in currentRecord" ng-if="key == 'place_keywords' || key == 'thematic_keywords' || key == 'topic_category'">
       <td id="{{key}}-0" class="cell-padding first-cell-width"> {{reviewFields(key, 'key-string')}} </td> <td id="{{key}}-1" class="cell-padding"> {{reviewFields(currentRecord[key], 'value-string')}}</td>
     </tr>
 </table>
@@ -111,7 +111,7 @@
 
   <div id="submit-form">
     <br>
-    <div ng-show="checkAllValid();">
+    <div ng-show="checkAllFormsValid();">
       <button class="btn btn-primary" id="record-options-publish" ng-click="publishRecord()"
 	      href="#"
 	      data-toggle="modal" data-target="#submitModal"
@@ -120,7 +120,7 @@
       </button>
     </div>
     
-    <div ng-hide="checkAllValid();">
+    <div ng-hide="checkAllFormsValid();">
       <span class="disabled btn btn-primary">
 	Please complete the record to publish data
       </span>

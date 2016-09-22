@@ -1469,23 +1469,12 @@ function translateKey(key){
     var parsedString = "";
     for(var i = 0; i < delimString.length; i++){
 	switch(delimString[i]){
-	case "org":
-	    parsedString = parsedString + "organization ";
+	case "true":
+	    parsedString = parsedString + "Yes ";
 	    break;
-	case "lat":
-	    parsedString = parsedString + "latitude ";
+	case "false":
+	    parsedString = parsedString + "No ";
 	    break;
-	case "lon":
-	    parsedString = parsedString + "longitude ";
-	    break;
-	case "spatial":
-	    parsedString = parsedString + "data ";
-	    break;
-	case "dtype":
-	    parsedString = parsedString + "type";
-	    break;
-	case "status":
-	    parsedString = parsedString + "update ";
 	default:
 	    parsedString = parsedString + delimString[i];
 	}

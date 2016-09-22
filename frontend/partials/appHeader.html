@@ -100,14 +100,14 @@
                             <td class="record-list-last-published">{{record.md_pub_date.$date | date:'short'}}</td>
                             <td class="record-list-actions">
                                 <a ng-show="isISO(record.schema_type)"
-                                   ng-click="editRecord(record._id.$oid); resetFormValidity('iso'); checkCoordinateInput();"
+                                   ng-click="editRecord(record._id.$oid); resetFormButtons('iso'); checkCoordinateInput();"
                                    class="btn btn-xs record-list-edit"
                                    id="{{'edit-record-iso-' + $index}}"
                                    href="#/iso">
                                    Load
                                 </a>
                                 <a ng-show="!isISO(record.schema_type)"
-                                   ng-click="editRecord(record._id.$oid); resetFormValidity('dublin'); checkCoordinateInput(); checkSpatialData();"
+                                   ng-click="editRecord(record._id.$oid); resetFormButtons('dublin'); checkCoordinateInput(); checkSpatialData();"
                                    class="btn btn-xs record-list-edit"
                                    id="{{'edit-record-dublin-' + $index}}"
                                    href="#/dublin">
