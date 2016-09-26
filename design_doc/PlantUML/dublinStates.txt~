@@ -1,0 +1,13 @@
+@startuml
+(setup.html) <-> (basic.html)
+(basic.html) <-> (detailed.html)
+(detailed.html) <-> (dublinTemporalExtent.html)
+(dublinTemporalExtent.html) <-> (spatialExtents.html)
+(spatialExtents.html) <-> (contacts.html)
+(contacts.html) <-> (dublinDataFormats.html)
+(dublinDataFormats.html) <-> (onlineResourcesAndRestrictions.html)
+(onlineResourcesAndRestrictions.html) <-> (optionsAndDisclaimer.html)
+(onlineResourcesAndRestrictions.html) <-down-> (sensitiveInformation.html)
+(onlineResourcesAndRestrictions.html) <-down-> (termsConditions.html)
+(optionsAndDisclaimer.html) <-> (review.html)
+@enduml

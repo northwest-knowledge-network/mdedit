@@ -99,6 +99,7 @@ metadataEditorApp.controller('BaseController',
         //=== set up hostname-related scope variables ===//
         // export to XML
         var exportAddr = function(oid, xmlType) {
+	    console.log("PRinting hostname in controller: " + hostname);
             return hostname + '/api/metadata/' + oid + '/' + xmlType;
         };
         $scope.export_ = function(type) {
@@ -587,7 +588,7 @@ metadataEditorApp.controller('BaseController',
 	}
 
 
-	
+	/*
 	//Check currentRecord if lat and lon fields in SpatialExtent.html are length 0.
 	//If not, then add spatialExtent form element to form.
 	//Useful on new record load.
@@ -608,7 +609,8 @@ metadataEditorApp.controller('BaseController',
 		}
 	    }
 	}
-  
+	*/
+	
 	//Adds and subtracts spatialExtent.html partial from form if user clicks checkbox stating that they
 	//have a coordinate system. This form input is on the spatialExtent.html form state.
 	$scope.toggleCoordinateInput = function() {
@@ -1248,7 +1250,6 @@ metadataEditorApp.controller('BaseController',
 		    setCurrentPage(dublinButtonList.length-1);
 		}
 		if(($state.is("form.termsConditions")) || ($state.is("form.sensitiveInformation"))){
-		    console.log("Setting dublin!");
 		    $state.go(dublinButtonList[dublinButtonList.indexOf("dublinForm.optionsAndDisclaimer")]);
 		    setCurrentPage(dublinButtonList.indexOf("dublinForm.optionsAndDisclaimer"));
 		    highlightCurrentPage("dublin");

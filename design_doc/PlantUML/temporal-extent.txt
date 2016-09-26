@@ -1,0 +1,7 @@
+@startuml
+title ISO and Dublin Temporal Extents (Temporal form element)
+(isoTemporalExtent.html) -down-> (temporalExtent.html)
+(isoTemporalExtent.html) -down-> (update.html)
+
+(dublinTemporalExtent.html) -down-> (temporalExtent.html)
+@enduml

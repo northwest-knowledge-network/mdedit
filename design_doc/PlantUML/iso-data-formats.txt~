@@ -1,0 +1,6 @@
+@startuml
+(isoDataFormats.html) -down-> (dataFormats.html)
+(isoDataFormats.html) -down-> (dataAttributes.html)
+(isoDataFormats.html) -down-> (compressionTechnique.html)
+(isoDataFormats.html) -down-> (uploadFile.html)
+@enduml

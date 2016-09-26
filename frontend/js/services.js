@@ -576,11 +576,11 @@ metadataEditorApp
         'https://nknportal-dev.nkn.uidaho.edu/portal/simpleUpload/upload.php';
 
     var attachBaseRoute;
-    if (hostname !== 'localhost:4000') {
-        attachBaseRoute = 'https://' + hostname + '/api/metadata/';
+	if (hostname !== 'localhost:4000') {
+            attachBaseRoute = 'https://' + hostname + '/api/metadata/';
     }
-    else {
-        attachBaseRoute = '//' + hostname + '/api/metadata/';
+	else {
+            attachBaseRoute = '//' + hostname + '/api/metadata/';
     }
 
     var uploadFile = function(file, recordId) {
