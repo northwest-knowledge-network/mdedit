@@ -1,11 +1,12 @@
 <div class="row">
+
   <a class="anchor" name="spatial">
     <h2 class="section-header">
-      
       <span class="glyphicon glyphicon-globe"></span>
       Spatial Extents
     </h2>
   </a>
+
   <div class="subform">
     <div class="row" style="vertical-align:left">
        
@@ -14,7 +15,7 @@
 	  <!-- end of Map -->
 	  <div ng-show="coordinateInputVisible">
 	    <br>
-	    <h4  class="attribute-label">Reference System</h4>
+	    <h4 class="attribute-label">Reference System</h4>
 	    <h6>If you are working with geographic or GIS data, include the coordinate system (example: UTM) and datum (example: NAD83) used for your data. This will allow people to project your GIS files correctly.</h6>
 	    <input id="reference-system-input" tabindex=1 style="width:95%" type="text" 
 		   ng-model="currentRecord.reference_system" maxlength="254" ng-required="coordinateInputVisible" />

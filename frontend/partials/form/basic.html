@@ -4,18 +4,19 @@
 
 
 <div class="subform">
-  <h5>Record Type: </h5>
-  
-  <input tabindex=3 id="" name="" type="text"
-	 style="width:37%;float:right; text-align:center" 
+  <h5 style="color:#888;float:right;">
+	Record Type: 
+	<input tabindex=3 id="" name="" type="text"
+	 style="width:240px;text-align:center;" 
 	 ng-model="currentRecord.schema_type" 
 	 ng-init="currentRecord.schema_type='Dataset (ISO)'"
 	 ng-readonly="true"
 	 maxlength="254" required />
+  </h5>
   
   <!--Basic Information: Title and Summary-->
   <h4 class="attribute-label">Title</h4>
-  <h6>A brief description of your data; include 'what','where,' and 'when'.</h6>
+  <h6 style="clear:right;">A brief description of your data; include 'what','where,' and 'when'.</h6>
   <p class="field-description">
     Examples: 
   </p>

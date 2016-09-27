@@ -106,7 +106,7 @@ select.ng-dirty.ng-valid {
 }
 
 .section-header {
-  color: #080;
+  color: #b1925c /*#080*/;
   margin: 15px 10px;
 }
 

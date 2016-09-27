@@ -1,11 +1,12 @@
 <div>
-  <h4>Temporal Extent</h4>
+<!--  <h4 class="attribute-label">Temporal Extent</h4> -->
   
-  <h6>What is the time period represented by the data?</h6>
+  <p>What is the time period represented by the data?</p>
   
-  <h4>Start Date</h4>
-  
-  <input type="text" tabindex="20" ui-date="dateOptions" ng-model="currentRecord.start_date.$date" id="start-date" required />
+  <div style="display:inline-block;width:180px;">
+    <h4 class="attribute-label">Start Date</h4>
+    <input type="text" tabindex="20" ui-date="dateOptions" ng-model="currentRecord.start_date.$date" id="start-date" required />
+  </div>
 
   <!-- Getting rid of these in most recent version
   H:
@@ -24,10 +25,10 @@
   </select>
   -->
   
-  <h4>End Date</h4>
-  
-  <input type="text" tabindex="20" ui-date="dateOptions"
-	 id="end-date" ng-model="currentRecord.end_date.$date" required />
+  <div style="display:inline-block;width:180px;">
+    <h4 class="attribute-label">End Date</h4>
+    <input type="text" tabindex="20" ui-date="dateOptions" id="end-date" ng-model="currentRecord.end_date.$date" required />
+  </div>
 
   <!--
   H:
