@@ -1,0 +1,118 @@
+\documentclass[a4paper, 12pt]{article}
+\usepackage{listings}
+\lstset{
+  basicstyle=\small\ttfamily,
+  columns=flexible,
+  breaklines=true
+}
+
+\title{Development Server Install Notes}
+\author{Casey Blair}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Drupal Code Block}
+\subsection{Head Tags}
+\par\indent
+The block containing the Metadata editor has to have the same javascript script tags, link tags, and everything that is in the head of frontend/index.html except for bootstrap.min.js or bootstrap.js (see Bootstrap section below for more details). So all of the scripts and links that are used in the project in the index.html file (except for bootstrap.min.js or bootstrap.js) have to be copied and added into the Drupal block. If any of these script or link tags change, or new ones are added, they must be copied and added again to the Drupal block. The $<$head$>$ and $<$/head$>$ tags themselves are not copied in too: just everything inside the head (minus Bootstrap).
+
+\par\indent
+For example, if
+\begin{lstlisting}
+  <script type="text/javascript" src="/frontend/bower_components/jquery/dist/jquery.min.js"></script>
+\end{lstlisting}
+is in frontend/index.html, then that tag must be copied and put into the Drupal block's source code too.
+
+\subsection{Ajax}
+\par\indent
+There is an Ajax request in a javascript script tag that allows the Drupal block to load in the Metadata editor from the frontend server. This is put at the end of the code copied from the head of frontend/index.html. As of 9/21/2016, the Ajax javascript looks like this:
+\begin{lstlisting}
+<script>
+var hostname = 'nknportal-dev.nkn.uidaho.edu/mdbackend_dev';
+$.ajax({
+    url: "/frontend/index.html",
+    cache: false,
+    async: false,
+    dataType: "html",
+    success: function(data) {
+       console.log(data);
+        $('#pythonOutput').html( $(data).filter('#bodyDiv').html() );
+        console.log( $(data).filter('#bodyDiv').html() )
+
+        var session_id = session_id;     
+    }
+});
+</script>
+\end{lstlisting}
+\par\indent
+The hostname variable is used in the frontend server (frontend/js/services.js) to locate the backend API server. If this value is not set here, in the services.js file the code will automatically set the hostname variable to ``localhost:4000'', which is used for local server instances for development.
+
+\subsection{Container Div in Drupal Block}
+\par\indent
+There is a div used by the Ajax code to hold the Metadata editor once the Ajax code has finished. It has the id of ``pythonOutput'' and is added to the Drupal block's code above the script and link tags that are copied from frontend/index.html. There is also another script tag that loads jquery 1.10.2 from jQuery's CDN (Content Delivery Network). As of 9/21/2016, those tags look like this:
+\begin{lstlisting}
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+<div id="pythonOutput" style="position:relative;z-index:1;">&nbsp;</div>
+\end{lstlisting}
+
+\subsection{Bootstrap}
+\par\indent
+Having multiple bootstrap.js files declared in the project has been problematic. At one point, when we were using Bootstrap.js for it's accordian feature, having a boootstrap.js file included in frontend/index.html and in the Drupal block caused the accordian section to open, then close immediately. We found out that the multiple bootstrap.js files were fighting each other, so only having bootstrap.js or boostrap.min.js in the frontend/index.html file, and not the Drupal block source code, was the answer. So do not copy any boostrap javascript files (bootstrap.js or bootstrap.min.js) into the Drupal Block!
+
+\subsection{Complete Source Code for Drupal Block}
+\par\indent
+Here is the complete source code for the Drupal block as of 9/21/2016:
+\begin{lstlisting}
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+<div id="pythonOutput" style="position:relative;z-index:1;">&nbsp;</div>
+<link href="/frontend/bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+<link href="/frontend/css/metadata.css" rel="stylesheet" />
+<link href="/frontend/bower_components/octicons/octicons/octicons.css" rel="stylesheet" />
+<link href="/frontend/bower_components/jquery-ui/themes/smoothness/jquery-ui.css" rel="stylesheet" /><script type="text/javascript"
+              src="/frontend/bower_components/jquery/dist/jquery.min.js">
+      </script><script type="text/javascript"
+              src="/frontend/bower_components/jquery-ui/jquery-ui.min.js">
+      </script><script type="text/javascript"
+              src="/frontend/bower_components/angular/angular.js"></script><script type="text/javascript"
+              src="/frontend/bower_components/angular-ui-date/src/date.js"></script><script type="text/javascript"
+              src="/frontend/bower_components/angular-route/angular-route.min.js"></script><script src="/frontend/js/app.js"></script><script src="/frontend/js/services.js"></script><script src="/frontend/js/routes.js"></script><script src="/frontend/js/directives.js"></script><script src="/frontend/js/controllers.js"></script><script src="/frontend/js/filters.js"></script><script type="text/javascript"
+              src="//maps.google.com/maps/api/js"></script><script type="text/javascript"
+              src="/frontend/bower_components/ngmap/build/scripts/ng-map.min.js"></script><script type="text/javascript"
+              src="/frontend/bower_components/angular-animate/angular-animate.js"></script><script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.10/angular-ui-router.min.js"></script><script type="text/javascript">
+    function stopRKey(evt) {
+      var evt = (evt) ? evt : ((event) ? event : null);
+      var node = (evt.target) ? evt.target : ((evt.srcElement) ? evt.srcElement : null);
+      if ((evt.keyCode == 13) && (node.type=="text"))  {return false;}
+    }
+    document.onkeypress = stopRKey;
+    </script><script>
+var hostname = 'nknportal-dev.nkn.uidaho.edu/mdbackend_dev';
+$.ajax({
+    url: "/frontend/index.html",
+    cache: false,
+    async: false,
+    dataType: "html",
+    success: function(data) {
+       console.log(data);
+        $('#pythonOutput').html( $(data).filter('#bodyDiv').html() );
+        console.log( $(data).filter('#bodyDiv').html() )
+
+        var session_id = session_id;     
+    }
+});
+</script>
+\end{lstlisting}
+
+\section{Development Server Locations}
+\subsection{Development Frontend}
+\par\indent
+The development frontend server location is on the web-dev server in /var/www/shared/mdedit/ folder. Github can be used for a manual install of the most current code by pulling down the desired branch. 
+
+\subsection{Development Backend}
+\par\indent
+The development backend server location is on the nknportal-dev server in the /var/www/shared/mdedit/ folder. This folder is also a Git repository, so the most recent version of whatever branch can be pulled from the Git repo and deployed manually this way too.
+
+\end{document}

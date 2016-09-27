@@ -1,0 +1,14 @@
+@startuml
+title ISO Form
+(setup.html) <-> (basic.html)
+(basic.html) <-> (detailed.html)
+(detailed.html) <-> (isoTemporalExtent.html)
+(isoTemporalExtent.html) <-> (spatialExtents.html)
+(spatialExtents.html) <-> (contacts.html)
+(contacts.html) <-> (isoDataFormats.html)
+(isoDataFormats.html) <-> (onlineResourcesAndRestrictions.html)
+(onlineResourcesAndRestrictions.html) <-> (optionsAndDisclaimer.html)
+(onlineResourcesAndRestrictions.html) <-down-> (sensitiveInformation.html)
+(onlineResourcesAndRestrictions.html) <-down-> (termsConditions.html)
+(optionsAndDisclaimer.html) <-> (review.html)
+@enduml

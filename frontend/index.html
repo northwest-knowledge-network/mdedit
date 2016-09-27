@@ -75,40 +75,16 @@
 
   <div ng-app="metadataEditor">
     <div ng-controller="BaseController as baseCtrl">
-
-
-     <!-- <div class="navbar-form navbar-right" role="help"> -->
-<!--
-     <div role="help">
-        <button id="showHelp" ng-init="baseCtrl.showHelp = true;"
-              ng-hide="baseCtrl.showHelp"
-              ng-click="baseCtrl.showHelp=true; setNavbarHeight()"
-              class="btn btn-default" style="margin-bottom:20px;">
-                Show Steps
-        </button>
-        <button id="hideHelp" ng-show="baseCtrl.showHelp"
-		ng-click="baseCtrl.showHelp=false; setNavbarHeight()"
-		class="btn btn-default">
-                Hide Steps
-        </button>
-      </div>
--->
       <div id="ngMain">
 
-         <!-- <div ng-controller="BaseController as baseCtrl"> -->
+        <!-- <div ng-controller="BaseController as baseCtrl"> -->
 	 <br>
          <div ng-include="partialsPrefix + 'partials/appHeader.html'"></div>
-
-	 <div ng-show="baseCtrl.showHelp">
-           <div ng-include="partialsPrefix + 'partials/help.html'"></div>
-	 </div>
-	
-         <div id="main-container" class="form-container">
-            <div ng-view></div>
+	 
+         <div id="main-container">
+           <div ng-view></div>
          </div>
-
       </div>
-
     </div>
   </div>
 </div>

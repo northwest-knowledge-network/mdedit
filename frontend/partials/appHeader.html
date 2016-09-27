@@ -1,5 +1,4 @@
-
-  <!-- Modals -->
+<!-- Modals -->
 <div class="modal fade" id="submitModal" tabindex="-1" role="dialog" aria-labelledby="submitModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -20,7 +19,7 @@
   </div>
 </div>
     <!--NavBar -->
-<nav id="navbar" class="navbar navbar-default" style="border-style: none" data-spy="affix" data-offset-top="250" ng-style="setNavbar">
+<nav id="navbar" class="navbar navbar-default" style="border-style: none">
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div id="navbar-custom" class="navbar-header">
@@ -101,14 +100,14 @@
                             <td class="record-list-last-published">{{record.md_pub_date.$date | date:'short'}}</td>
                             <td class="record-list-actions">
                                 <a ng-show="isISO(record.schema_type)"
-                                   ng-click="editRecord(record._id.$oid); resetFormValidity('iso'); checkCoordinateInput();"
+                                   ng-click="editRecord(record._id.$oid); resetFormButtons('iso'); checkCoordinateInput();"
                                    class="btn btn-xs record-list-edit"
                                    id="{{'edit-record-iso-' + $index}}"
                                    href="#/iso">
                                    Load
                                 </a>
                                 <a ng-show="!isISO(record.schema_type)"
-                                   ng-click="editRecord(record._id.$oid); resetFormValidity('dublin'); checkCoordinateInput(); checkSpatialData();"
+                                   ng-click="editRecord(record._id.$oid); resetFormButtons('dublin'); checkCoordinateInput(); checkSpatialData();"
                                    class="btn btn-xs record-list-edit"
                                    id="{{'edit-record-dublin-' + $index}}"
                                    href="#/dublin">
@@ -154,24 +153,6 @@
 
         </li>
       </ul>
-
-
-   
-      <!-- 
-    <div class="navbar-form navbar-right" role="help">
-      <button id="showHelp" ng-hide="baseCtrl.showHelp"
-              ng-click="baseCtrl.showHelp=true"
-              class="btn btn-default">
-                Show Steps
-      </button>
-      <button id="hideHelp" ng-show="baseCtrl.showHelp"
-               ng-click="baseCtrl.showHelp=false"
-              class="btn btn-default">
-                Hide Steps
-      </button>
-    </div>
--->
-  
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>

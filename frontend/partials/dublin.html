@@ -12,15 +12,17 @@
     </ul>
     
     <div id="form-display">
-      <div id="form-views" ui-view>
+      <div id="form-views" class="ui-view-container" ui-view>
 	<!-- our nested state views will be injected here -->
 	<div id="form-views" ui-view></div>
       </div>
     </div>
     <br>
-    <!-- Back button -->
-    <button id="back-button" class="btn btn-primary left-scroll-link" ng-click="submitDraftRecord(); formIsValid('dublin', baseCtrl.metadataForm.$valid); setCurrentPage(-1, 'dublin');" >Back</button>
-    
-    <!-- Next button -->
-    <button id="save-continue-button" class="btn btn-primary right-scroll-link" ng-click="submitDraftRecord(); formIsValid('dublin', baseCtrl.metadataForm.$valid); setCurrentPage(1, 'dublin');">Save and Continue</button>
+    <span ng-style="showButton">
+      <!-- Back button -->
+      <button id="back-button" class="btn btn-primary left-scroll-link" ng-click="submitDraftRecord(); formIsValid('dublin', baseCtrl.metadataForm.$valid); setCurrentFormElement(-1, 'dublin');">Back</button>
+      
+      <!-- Next button -->
+      <button id="save-continue-button" class="btn btn-primary right-scroll-link" ng-click="submitDraftRecord(); formIsValid('dublin', baseCtrl.metadataForm.$valid); setCurrentFormElement(1, 'dublin');">Save and Continue</button>
+    </span>
 </form>
