@@ -7,9 +7,6 @@ var metadataEditorApp = angular
 	
 	var partialsPrefix = "partials/form/";
 
-	//Comment out line above, uncomment line below to use system in Drupal framwork on development server
-	//var partialsPrefix = "frontend/partials/form/";
-
 	$stateProvider
 	    .state('form', {
 		templateURl: 'partials/iso.html'
@@ -165,12 +162,12 @@ var metadataEditorApp = angular
       'name': '', 'email': '', 'org': '', 'address': '',
       'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': ''
 })
-    .run(function($rootScope, hostname){
-	$rootScope.$on('$stateChangeStart', function(event, toState, toParams) {
-	    //If app is not a local instance, and in Drupal, then we need to add "frontend/" to the path
-	    //for states. 
-	    if(hostname.indexOf('localhost') == -1)
-		if(toState.templateUrl.indexOf("frontend/") == -1)
-		    toState.templateUrl = "frontend/" + toState.templateUrl;
-	})
-    });
+.run(function($rootScope, hostname){
+    $rootScope.$on('$stateChangeStart', function(event, toState, toParams) {
+	//If app is not a local instance, and in Drupal, then we need to add "frontend/" to the path
+	//for states. 
+	if(hostname.indexOf('localhost') == -1)
+	    if(toState.templateUrl.indexOf("frontend/") == -1)
+		toState.templateUrl = "frontend/" + toState.templateUrl;
+    })
+});
