@@ -170,6 +170,7 @@ var metadataEditorApp = angular
 	    //If app is not a local instance, and in Drupal, then we need to add "frontend/" to the path
 	    //for states. 
 	    if(hostname.indexOf('localhost') == -1)
-		toState.templateUrl = "frontend/" + toState.templateUrl;
+		if(toState.templateUrl.indexOf("frontend/") == -1)
+		    toState.templateUrl = "frontend/" + toState.templateUrl;
 	})
     });
