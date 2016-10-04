@@ -6,9 +6,10 @@ var metadataEditorApp = angular
 	// $compileProvider.aHrefSanitizationWhitelist(/localhost:/);
 	
 	var partialsPrefix = "partials/form/";
+
 	//Comment out line above, uncomment line below to use system in Drupal framwork on development server
-	//var partialsPrefix = "frontend/partials/form";
-	
+	//var partialsPrefix = "frontend/partials/form/";
+
 	$stateProvider
 	    .state('form', {
 		templateURl: 'partials/iso.html'
