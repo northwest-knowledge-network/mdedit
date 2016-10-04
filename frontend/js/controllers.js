@@ -1014,7 +1014,7 @@ metadataEditorApp.controller('BaseController',
 	    }else
 		console.log("Error: tried to reset non-supported form type's button backgrounds.");
 	}
-	
+
 	//Get the index of the current form element 
 	function getCurrentPage(index){
 	    return currentPageIndex;

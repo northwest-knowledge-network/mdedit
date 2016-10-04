@@ -6,7 +6,9 @@ var metadataEditorApp = angular
 	// $compileProvider.aHrefSanitizationWhitelist(/localhost:/);
 	
 	var partialsPrefix = "partials/form/";
-
+	//Comment out line above, uncomment line below to use system in Drupal framwork on development server
+	//var partialsPrefix = "frontend/partials/form";
+	
 	$stateProvider
 	    .state('form', {
 		templateURl: 'partials/iso.html'
@@ -15,40 +17,40 @@ var metadataEditorApp = angular
 		templateUrl: partialsPrefix + 'setup.html'
 	    })
 	    .state('form.basic', {
-		templateUrl: partialsPrefix + 'basic.html'
+		templateUrl:  partialsPrefix + 'basic.html'
 	    })
 	    .state('form.detailed', {
-		templateUrl: partialsPrefix + 'detailed.html'
+		templateUrl:  partialsPrefix + 'detailed.html'
 	    })
 	    .state('form.dataFormats', {
-		templateUrl: partialsPrefix + 'isoDataFormats.html'
+		templateUrl:  partialsPrefix + 'isoDataFormats.html'
 	    })
 	    .state('form.onlineResourcesAndRestrictions', {
-		templateUrl: partialsPrefix + 'onlineResourcesAndRestrictions.html'
+		templateUrl:  partialsPrefix + 'onlineResourcesAndRestrictions.html'
 	    })
 	    .state('form.spatialExtent', {
-		templateUrl: partialsPrefix + 'spatialExtent.html'
+		templateUrl:  partialsPrefix + 'spatialExtent.html'
 	    })
 	    .state('form.temporalExtent', {
-		templateUrl: partialsPrefix + 'isoTemporalExtent.html'
+		templateUrl:  partialsPrefix + 'isoTemporalExtent.html'
 	    })
 	    .state('form.review', {
-		templateUrl: partialsPrefix + 'review.html'
+		templateUrl:  partialsPrefix + 'review.html'
 	    })
 	    .state('form.termsConditions', {
-		templateUrl: partialsPrefix + 'termsConditions.html'
+		templateUrl:  partialsPrefix + 'termsConditions.html'
 	    })
 	    .state('form.disclaimer', {
-		templateUrl: partialsPrefix + 'disclaimer.html'
+		templateUrl:  partialsPrefix + 'disclaimer.html'
 	    })
 	    .state('form.sensitiveInformation', {
-		templateUrl: partialsPrefix + 'sensitiveInformation.html'
+		templateUrl:  partialsPrefix + 'sensitiveInformation.html'
 	    }) 
 	    .state('form.optionsAndDisclaimer', {
-		templateUrl: partialsPrefix + 'optionsAndDisclaimer.html'
+		templateUrl:  partialsPrefix + 'optionsAndDisclaimer.html'
 	    }) 
 	    .state('form.contacts', {
-		templateUrl: partialsPrefix + 'contacts.html'
+		templateUrl:  partialsPrefix + 'contacts.html'
 	    })
 
 
@@ -57,34 +59,34 @@ var metadataEditorApp = angular
 	    })
 
 	    .state('dublinForm.setup', {
-		templateUrl: partialsPrefix + 'setup.html'
+		templateUrl:  partialsPrefix + 'setup.html'
 	    })
 	    .state('dublinForm.basic', {
-		templateUrl: partialsPrefix + 'basic.html'
+		templateUrl:  partialsPrefix + 'basic.html'
 	    })
 	    .state('dublinForm.dataFormats', {
-		templateUrl: partialsPrefix + 'dublinDataFormats.html'
+		templateUrl:  partialsPrefix + 'dublinDataFormats.html'
 	    })
 	    .state('dublinForm.onlineResourcesAndRestrictions', {
-		templateUrl: partialsPrefix + 'onlineResourcesAndRestrictions.html'
+		templateUrl:  partialsPrefix + 'onlineResourcesAndRestrictions.html'
 	    })
 	    .state('dublinForm.spatialExtent', {
-		templateUrl: partialsPrefix + 'spatialExtent.html'
+		templateUrl:  partialsPrefix + 'spatialExtent.html'
 	    })
 	    .state('dublinForm.temporalExtent', {
-		templateUrl: partialsPrefix + 'dublinTemporalExtent.html'
+		templateUrl:  partialsPrefix + 'dublinTemporalExtent.html'
 	    })
 	    .state('dublinForm.review', {
-		templateUrl: partialsPrefix + 'review.html'
+		templateUrl:  partialsPrefix + 'review.html'
 	    })
 	    .state('dublinForm.disclaimer', {
-		templateUrl: partialsPrefix + 'disclaimer.html'
+		templateUrl:  partialsPrefix + 'disclaimer.html'
 	    })
 	    .state('dublinForm.optionsAndDisclaimer', {
-		templateUrl: partialsPrefix + 'optionsAndDisclaimer.html'
+		templateUrl:  partialsPrefix + 'optionsAndDisclaimer.html'
 	    }) 
 	    .state('dublinForm.contacts', {
-		templateUrl: partialsPrefix + 'contacts.html'
+		templateUrl:  partialsPrefix + 'contacts.html'
 	    });
 
  	$urlRouterProvider
@@ -161,4 +163,12 @@ var metadataEditorApp = angular
 ).constant('emptyContact', {
       'name': '', 'email': '', 'org': '', 'address': '',
       'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': ''
-});
+})
+    .run(function($rootScope, hostname){
+	$rootScope.$on('$stateChangeStart', function(event, toState, toParams) {
+	    //If app is not a local instance, and in Drupal, then we need to add "frontend/" to the path
+	    //for states. 
+	    if(hostname.indexOf('localhost') == -1)
+		toState.templateUrl = "frontend/" + toState.templateUrl;
+	})
+    });
