@@ -23,6 +23,7 @@ metadataEditorApp
 {
     // next see if there is a hostname defined
     var hostname = '';
+    /*
     if (typeof(window.hostname) === 'undefined')
     {
         hostname = 'localhost:4000';
@@ -31,6 +32,7 @@ metadataEditorApp
     {
         hostname = window.hostname;
     }
+    */
 
     return hostname;
 })
