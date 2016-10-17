@@ -368,7 +368,8 @@ metadataEditorApp
 			    if(typeof serverReady[key][i] === 'object'){
 				//If element in array is an object, then check each value of object for HTML
 				for(var nestedKey in serverReady[key][i]){
-				    serverReady[key][i][nestedKey] = sanitizeHTML(serverReady[key][i][nestedKey]);
+				    if(typeof serverReady[key][i][nestedKey] === 'string')
+					serverReady[key][i][nestedKey] = sanitizeHTML(serverReady[key][i][nestedKey]);
 				}
 			    }else if(typeof serverReady[key][i] === 'string'){
 				//If element in array is a string, then check for HTML
@@ -387,15 +388,16 @@ metadataEditorApp
 
 	function sanitizeHTML(value) {
 	    //Perform HTML sanitization for user input.
-	    var htmlPattern = /((<){1}(\/)?[a-zA-Z]+([ \n\t])*([a-zA-Z]*(=){1}(\"){1}.*(\"){1}([ \n\t])*)*([ \n\t])*(\/)?(>){1})+/g;
+	    var htmlPattern = /((<){1}(!--)?( )*(\/)?[a-zA-Z ]+([0-9])*([ \n\t])*([a-zA-Z]*(=){1}(\"){1}.*(\"){1}([ \n\t])*)*([ \n\t])*(\/)?(-){0,2}(>){1})*(<!--)*(-->)*/g;
 	    
 	    if(htmlPattern.test(value))
 		console.log("Matched regex");
 	    	    
 	    //Replace any html in string with "" and return. Removes HTML from string.
-	    if(value != null)
+	    if((value != null)
+	       && (typeof value !== 'number')){
 		return value.replace(htmlPattern, "");
-	    else
+	    }else
 		return "";
 	}
 
