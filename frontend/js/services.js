@@ -359,9 +359,45 @@ metadataEditorApp
 	    
             serverReady.last_mod_date.$date = new Date().getTime();
 
+	    //Sanitize HTML in record to be sent to database
+	    for(var key in serverReady){
+		if(serverReady[key] != null){
+		    if((Array.isArray(serverReady[key]))){
+			//If value is array, then check each element for HTML
+			for(var i = 0; i < serverReady[key].length; i++){
+			    if(typeof serverReady[key][i] === 'object'){
+				//If element in array is an object, then check each value of object for HTML
+				for(var nestedKey in serverReady[key][i]){
+				    serverReady[key][i][nestedKey] = sanitizeHTML(serverReady[key][i][nestedKey]);
+				}
+			    }else if(typeof serverReady[key][i] === 'string'){
+				//If element in array is a string, then check for HTML
+				serverReady[key][i] = sanitizeHTML(serverReady[key][i]);
+			    }
+			}
+		    }else if(typeof serverReady[key] === 'string'){
+			//If value of serverReady record is a string, then check for HTML
+			serverReady[key] = sanitizeHTML(serverReady[key]);
+		    }
+		}
+	    }
+
             return serverReady;
         };
 
+	function sanitizeHTML(value) {
+	    //Perform HTML sanitization for user input.
+	    var htmlPattern = /((<){1}(\/)?[a-zA-Z]+([ \n\t])*([a-zA-Z]*(=){1}(\"){1}.*(\"){1}([ \n\t])*)*([ \n\t])*(\/)?(>){1})+/g;
+	    
+	    if(htmlPattern.test(value))
+		console.log("Matched regex");
+	    	    
+	    //Replace any html in string with "" and return. Removes HTML from string.
+	    if(value != null)
+		return value.replace(htmlPattern, "");
+	    else
+		return "";
+	}
 
         /**
          * These functions are exposed by the service to the controllers.

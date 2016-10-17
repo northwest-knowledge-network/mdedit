@@ -281,7 +281,7 @@ metadataEditorApp.controller('BaseController',
          * and makes sure the form is current.
          */
         $scope.submitDraftRecord = function() {
-
+	    //Remove all HTML tags from currentRecord
 		recordService.saveDraft($scope)
                     .success( function (data) {
 			// need to update the sheet with the ID
@@ -1413,6 +1413,7 @@ metadataEditorApp.controller('BaseController',
 		$scope.showButton = {};
 	    }, 700);
 	};
+
   } // end of callback for controller initialization
 ])
 .controller('ISOController', ['formOptions', function(formOptions) {
