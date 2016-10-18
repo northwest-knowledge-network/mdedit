@@ -388,7 +388,7 @@ metadataEditorApp
 
 	function sanitizeHTML(value) {
 	    //Perform HTML sanitization for user input.
-	    var htmlPattern = /((<){1}(!--)?( )*(\/)?[a-zA-Z ]+([0-9])*([ \n\t])*([a-zA-Z]*(=){1}(\"){1}.*(\"){1}([ \n\t])*)*([ \n\t])*(\/)?(-){0,2}(>){1})*(<!--)*(-->)*/g;
+	    var htmlPattern = /((<){1}(!--)?(\/)?[a-zA-Z]{1}([a-zA-Z0-9 ])*([ \n\t])*([a-zA-Z]*(=){1}(\"){1}.*(\"){1}([ \n\t])*)*([a-zA-Z0-9 \n\t])*(\/)?(-){0,2}(>){1})*(<!--)*(-->)*/g;
 	    
 	    if(htmlPattern.test(value))
 		console.log("Matched regex");
