@@ -369,16 +369,16 @@ metadataEditorApp
 				//If element in array is an object, then check each value of object for HTML
 				for(var nestedKey in serverReady[key][i]){
 				    if(typeof serverReady[key][i][nestedKey] === 'string')
-					serverReady[key][i][nestedKey] = sanitizeHTML(serverReady[key][i][nestedKey]);
+					serverReady[key][i][nestedKey] = sanitizeInput(serverReady[key][i][nestedKey]);
 				}
 			    }else if(typeof serverReady[key][i] === 'string'){
 				//If element in array is a string, then check for HTML
-				serverReady[key][i] = sanitizeHTML(serverReady[key][i]);
+				serverReady[key][i] = sanitizeInput(serverReady[key][i]);
 			    }
 			}
 		    }else if(typeof serverReady[key] === 'string'){
 			//If value of serverReady record is a string, then check for HTML
-			serverReady[key] = sanitizeHTML(serverReady[key]);
+			serverReady[key] = sanitizeInput(serverReady[key]);
 		    }
 		}
 	    }
@@ -386,17 +386,21 @@ metadataEditorApp
             return serverReady;
         };
 
-	function sanitizeHTML(value) {
+	function sanitizeInput(value) {
 	    //Perform HTML sanitization for user input.
 	    var htmlPattern = /((<){1}(!--)?(\/)?[a-zA-Z]{1}([a-zA-Z0-9 ])*([ \n\t])*([a-zA-Z]*(=){1}(\"){1}.*(\"){1}([ \n\t])*)*([a-zA-Z0-9 \n\t])*(\/)?(-){0,2}(>){1})*(<!--)*(-->)*/g;
+	    var phpPattern = /((<\?php){1}(.|\n)*(\?>){1}([ \n\t])*)*/g;
 	    
 	    if(htmlPattern.test(value))
-		console.log("Matched regex");
-	    	    
-	    //Replace any html in string with "" and return. Removes HTML from string.
+		console.log("Matched html");
+
+	    if(phpPattern.test(value))
+		console.log("Matched PHP");
+	    
+	    //Replace any html or PHP in string with "" and return. Removes HTML and PHP from string.
 	    if((value != null)
 	       && (typeof value !== 'number')){
-		return value.replace(htmlPattern, "");
+		return value.replace(htmlPattern, "").replace(phpPattern, "");
 	    }else
 		return "";
 	}
