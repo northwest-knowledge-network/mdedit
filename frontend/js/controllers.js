@@ -45,43 +45,39 @@ metadataEditorApp.controller('BaseController',
 	var completeColor = {"background-color": "#00E600"};
 	
 	/* List to populate possible buttons for iso form wizard.
-	   String has two values split at the "," value that are both put in
-	   the "dublinButton" object from the services.js file.
-	   First value (ex. form.setup) is used for state routing (in app.js), and
-	   second value (ex. Setup) is used for button label text.
+	   stateName is name of state in js/app.js file, and buttonLabel is the text displayed for the button 
+	   when the page is rendered.
 	*/
 	$scope.isoFormList = [];
 	var isoButtonList = [];
  	var isoButtonInit = [
-	    "form.setup,Setup",
-	    "form.basic,Basic Info",
-	    "form.detailed,Detailed Info",
-	    "form.temporalExtent,Temporal",
-	    "form.spatialExtent,Spatial",
-	    "form.contacts,Contacts",
-	    "form.dataFormats,Upload",
-	    "form.onlineResourcesAndRestrictions,Resources",
-	    "form.optionsAndDisclaimer,Disclaimer",
-	    "form.review,Review"
+	    {"stateName":"form.setup", "buttonLabel":"Setup"},
+	    {"stateName":"form.basic", "buttonLabel":"Basic Info"},
+	    {"stateName":"form.detailed","buttonLabel":"Detailed Info"},
+	    {"stateName":"form.temporalExtent","buttonLabel":"Temporal"},
+	    {"stateName":"form.spatialExtent","buttonLabel":"Spatial"},
+	    {"stateName":"form.contacts","buttonLabel":"Contacts"},
+	    {"stateName":"form.dataFormats","buttonLabel":"Upload"},
+	    {"stateName":"form.onlineResourcesAndRestrictions","buttonLabel":"Resources"},
+	    {"stateName":"form.optionsAndDisclaimer","buttonLabel":"Disclaimer"},
+	    {"stateName":"form.review","buttonLabel":"Review"}
 	];
 
  	/* List to populate possible buttons for dublin core form wizard.
-	   String has two values split at the "," value that are both put in
-	   the "dublinButton" object from the services.js file.
-	   First value (ex. dublinForm.setup) is used for state routing (in app.js), and
-	   second value (ex. Setup) is used for button label text.
+	   stateName is name of state in js/app.js file, and buttonLabel is the text displayed for the button 
+	   when the page is rendered.
 	*/
 	$scope.dublinFormList = [];
 	var dublinButtonList = [];
  	var dublinButtonInit = [
-	    "dublinForm.setup,Setup",
-	    "dublinForm.basic,Basic Info",
-	    "dublinForm.temporalExtent,Temporal",
-	    "dublinForm.contacts,Contacts",
-	    "dublinForm.dataFormats,Upload",
-	    "dublinForm.onlineResourcesAndRestrictions,Resources",
-	    "dublinForm.optionsAndDisclaimer,Disclaimer",
-	    "dublinForm.review,Review"
+	    {"stateName":"dublinForm.setup","buttonLabel":"Setup"},
+	    {"stateName":"dublinForm.basic","buttonLabel":"Basic Info"},
+	    {"stateName":"dublinForm.temporalExtent","buttonLabel":"Temporal"},
+	    {"stateName":"dublinForm.contacts","buttonLabel":"Contacts"},
+	    {"stateName":"dublinForm.dataFormats","buttonLabel":"Upload"},
+	    {"stateName":"dublinForm.onlineResourcesAndRestrictions","buttonLabel":"Resources"},
+	    {"stateName":"dublinForm.optionsAndDisclaimer","buttonLabel":"Disclaimer"},
+	    {"stateName":"dublinForm.review","buttonLabel":"Review"}
 	];
 
 	//Initalize button lists and scope values for fresh record
@@ -307,7 +303,7 @@ metadataEditorApp.controller('BaseController',
         */
 
         $scope.isISO = function(schemaType){
-            if (schemaType == 'Dataset (ISO)')
+            if (schemaType.indexOf('Dataset (ISO)') > -1)
                 return true;
             else
                 return false;
@@ -526,8 +522,8 @@ metadataEditorApp.controller('BaseController',
 
 	//Reset form buttons to default color (currently grey). Used on load of existing record in partials/appHeader.html.
 	$scope.resetFormButtons = function(formType) {
-	    if((formType == "iso")
-	       || (formType == "dublin"))
+	    if((formType.indexOf("iso") > -1)
+	       || (formType.indexOf("dublin") > -1))
 		greyButtonBackgrounds(formType);
 	    else
 		console.log("Error: tried to reset button backgrounds on unsupported form type");
@@ -536,13 +532,13 @@ metadataEditorApp.controller('BaseController',
 	//Sets form to Iso or Dublin core by modifying address path to either /iso or /dublin. Used when new
 	//form type is selected in setup.html page.
 	$scope.setFormType = function(type, form) {
-	    if(type == "iso"){
+	    if(type.indexOf("iso") > -1){
 		$location.path("/iso");
 		$scope.createNewRecord();
 
 		//Reset button colors to grey
 		greyButtonBackgrounds('iso');
-	    }else if(type == "dublin"){
+	    }else if(type.indexOf("dublin") > -1){
 		$location.path("/dublin");
 		$scope.createNewDublinRecord();
 
@@ -560,7 +556,10 @@ metadataEditorApp.controller('BaseController',
 	    if(($scope.hasSpatialData == false)
 	       && ($location.url().indexOf("dublin") > -1))
 		$scope.hasMap = false;
-
+	    else if(($scope.hasSpatialData == true)
+		    && ($location.url().indexOf("dublin") > -1))
+		$scope.hasMap = true;
+	    
 	    //If spatial data checkbox in setup.html form partial has been selected, then add button to dublin form.
 	    if(($scope.hasSpatialData)
 	       && ($location.url().indexOf("dublin") > -1)){
@@ -581,36 +580,11 @@ metadataEditorApp.controller('BaseController',
 		    $scope.coordinateInputVisible = true;
 		  
 		    //Add "spatialExtent.html" to form since that is where the "Reference System" form input is.
-		    $scope.hasSpatialData = true;
 		    addDublinButton("dublinForm.spatialExtent", "Spatial");
 		}
 	    }
 	}
 
-
-	/*
-	//Check currentRecord if lat and lon fields in SpatialExtent.html are length 0.
-	//If not, then add spatialExtent form element to form.
-	//Useful on new record load.
-	$scope.checkSpatialData = function(){
-	    if(($scope.currentRecord.west_lon != null)
-	       && ($scope.currentRecord.east_lon != null)
-	       && ($scope.currentRecord.north_lat != null)
-	       && ($scope.currentRecord.south_lat != null)){
-		if(($scope.currentRecord.west_lon != "")
-		   || ($scope.currentRecord.east_lon != "")
-		   || ($scope.currentRecord.north_lat != "")
-		   || ($scope.currentRecord.south_lat != "")){
-		    //In services.js, lat and lon variables are set to empty strings.
-		    //So if they have been reset to numbers, then they have been set by user.
-		    console.log("hasSpatial is true! ");
-		    $scope.hasSpatialData = true;
-		    addDublinButton("dublinForm.spatialExtent", "Spatial");
-		}
-	    }
-	}
-	*/
-	
 	//Adds and subtracts spatialExtent.html partial from form if user clicks checkbox stating that they
 	//have a coordinate system. This form input is on the spatialExtent.html form state.
 	$scope.toggleCoordinateInput = function() {
@@ -639,11 +613,11 @@ metadataEditorApp.controller('BaseController',
 	$scope.applyForDOI = function(type) {
 	    //Check type to see if it is one of the supported types.
 	    //If not, output error message.
-	    if(type == "DOI"){
+	    if(type.indexOf("DOI") > -1){
 		$scope.currentRecord.doi_ark_request = type;
-	    }else if(type == "ARK"){
+	    }else if(type.indexOf("ARK") > -1){
 		$scope.currentRecord.doi_ark_request = type;
-	    }else if(type == "neither"){
+	    }else if(type.indexOf("neither") > -1){
 		$scope.currentRecord.doi_ark_request = type;
 	    }else{
 		console.log("Error: tried to set DOI/ARK request to unsupported value: options are \"DOI\", \"ARK\", or \"neither\"");
@@ -703,9 +677,9 @@ metadataEditorApp.controller('BaseController',
 	    resetFormValidity();
 	    
 	    if($scope.currentRecord != null){
-		if($scope.currentRecord.data_one_search == "true")
+		if($scope.currentRecord.data_one_search.indexOf("true") > -1)
 		    $scope.searchableOnDataOne = true;
-		else if($scope.currentRecord.data_one_search == "false")
+		else if($scope.currentRecord.data_one_search.indexOf("false") > -1)
 		    $scope.searchableOnDataOne = false;
 		else{
 		    //For error handling
@@ -738,31 +712,24 @@ metadataEditorApp.controller('BaseController',
 
 	    for(var i = 0; i < isoButtonInit.length; i++){
 		var scopeButton = recordService.getFreshFormElement();
-		var data = isoButtonInit[i].split(",");
-		scopeButton.form_name = data[0];
-		scopeButton.label = data[1];
+		scopeButton.form_name = isoButtonInit[i].stateName;
+		scopeButton.label = isoButtonInit[i].buttonLabel;
 		scopeButton.buttonStyle = getBackgroundColor();
-
-		var buttonName = data[0];
 
 		//Add button object to Scope list and string to controller list
 		$scope.isoFormList.push(scopeButton);
-		isoButtonList.push(buttonName);
+		isoButtonList.push(isoButtonInit[i].stateName);
 	    }
 	    
 	    for(var i = 0; i < dublinButtonInit.length; i++){
 		var scopeButton = recordService.getFreshFormElement();
-		var data = dublinButtonInit[i].split(",");
-		
-		scopeButton.form_name = data[0];
-		scopeButton.label = data[1];
+		scopeButton.form_name = dublinButtonInit[i].stateName;
+		scopeButton.label = dublinButtonInit[i].buttonLabel;
 		scopeButton.buttonStyle = getBackgroundColor();
 		
-		var buttonName = data[0];
-
 		//Push buttons onto controller and scope lists
 		$scope.dublinFormList.push(scopeButton);
-		dublinButtonList.push(buttonName);
+		dublinButtonList.push(dublinButtonInit[i].stateName);
 	    }
 
 	    //Reset the form validity variables in list of form sections
@@ -785,9 +752,9 @@ metadataEditorApp.controller('BaseController',
 		formType = 'dublin';
 
 	    setCurrentPage(0);
-	    if(formType == "iso")
+	    if(formType.indexOf("iso") > -1)
 		$state.go(isoButtonList[getCurrentPage()]);
-	    else if(formType == "dublin")
+	    else if(formType.indexOf("dublin") > -1)
 		$state.go(dublinButtonList[getCurrentPage()]);
 	    else if(formType == ""){
 		//Angular router will redirect to "iso" if blank.
@@ -842,15 +809,15 @@ metadataEditorApp.controller('BaseController',
 
 	//Check is current form element is valid. form.$valid resets every time $stateProvider changes
 	//states, so we can check each form element individually, but we want to check the form a a whole on the review page.
-	$scope.formIsValid = function(formType, isValid){
+	$scope.formIsValid = function(formType, form){
 	    if(formType.indexOf('iso') > -1){
-		$scope.isoFormList[getCurrentPage()].isValid = isValid;
+		$scope.isoFormList[getCurrentPage()].isValid = form.$valid;
 	    }else if(formType.indexOf('dublin') > -1){
-		$scope.dublinFormList[getCurrentPage()].isValid = isValid;
+		$scope.dublinFormList[getCurrentPage()].isValid = form.$valid;
 	    }else
 		console.log("Error: tried to set object variable on unsupported form type.");
 
-	    checkFormElement(formType, isValid);
+	    checkFormElement(formType, form.$valid);
 	}
 
 	function getFormType(){
@@ -939,7 +906,7 @@ metadataEditorApp.controller('BaseController',
 	
 	//Jump to form element (state in app.js) and set currentPageIndex to state index to keep "Back" and "Next" buttons and button list indecies the same. 
 	$scope.jumpToPage = function(index, formType) {
-	    if(formType == 'iso'){
+	    if(formType.indexOf('iso') > -1){
 		//Check index against array bounds
 		if((index >= 0) || (index < isoButtonList.length)){
 		    $state.go(isoButtonList[index]);
@@ -951,7 +918,7 @@ metadataEditorApp.controller('BaseController',
 		    //Hide button until animation is finished
 		    hideButtonForAnimation();
 		}
-	    }else if(formType == 'dublin'){
+	    }else if(formType.indexOf('dublin') > -1){
 		//Check index against array bounds
 		if((index >= 0) || (index < isoButtonList.length)){
 		    $state.go(dublinButtonList[index]);
@@ -969,7 +936,7 @@ metadataEditorApp.controller('BaseController',
 
 	//Reset background color to grey and hide both x and checkmark icons
 	function greyButtonBackgrounds(formType){
-	    if(formType == 'iso'){
+	    if(formType.indexOf('iso') > -1){
 		for(var i = 0; i < $scope.isoFormList.length; i++){
 		    //Set button style variable in selected iso form object to what is stored in "backgroundColor" variable.
 		    $scope.isoFormList[i].buttonStyle = getBackgroundColor();
@@ -990,7 +957,7 @@ metadataEditorApp.controller('BaseController',
 
 		    angular.element(result).addClass("initial");
 		}
-	    }else if(formType == 'dublin'){
+	    }else if(formType.indexOf('dublin') > -1){
 		for(var i = 0; i < $scope.dublinFormList.length; i++){
 		    //Set button style variable in selected iso form object to what is stored in "backgroundColor" variable.
 		    $scope.dublinFormList[i].buttonStyle = getBackgroundColor();
@@ -1043,10 +1010,12 @@ metadataEditorApp.controller('BaseController',
 	    //Get part of form name after "." in name. EX: "form.basic" returns "basic".
 	    var parsedName = "";
 	    
-	    if(formType == 'iso')
+	    if(formType.indexOf('iso') > -1)
 		parsedName = isoButtonList[getCurrentPage()].split(".")[1];
-	    else if(formType == 'dublin')
+	    else if(formType.indexOf('dublin') > -1)
 		parsedName = dublinButtonList[getCurrentPage()].split(".")[1];
+
+	    console.log("Checking form complete: " + formComplete);
 
 	    /*
 	      Function checks if $valid parameter passed in is true. If it is true, then all inputs with "required" tags
@@ -1083,7 +1052,7 @@ metadataEditorApp.controller('BaseController',
 	    //If form element was not finished, then set corresponding button red. If it was, set corresponding
 	    //button to green.
 	    
-	    if(formType == 'iso'){
+	    if(formType.indexOf('iso') > -1){
 		var index = 0;
 		for(var i = 0; i < $scope.isoFormList.length; i++){
 		    if($scope.isoFormList[i].form_name.indexOf(parsedName) > -1){
@@ -1127,7 +1096,7 @@ metadataEditorApp.controller('BaseController',
 		    $scope.isoFormList[index].xIconStyle = false;
 		    $scope.isoFormList[index].dotIconStyle = false;
 		}
-	    }else if(formType == 'dublin'){
+	    }else if(formType.indexOf('dublin') > -1){
 		var index = 0;
 		for(var i = 0; i < $scope.dublinFormList.length; i++){
 		    if($scope.dublinFormList[i].form_name.indexOf(parsedName) > -1)
@@ -1178,7 +1147,7 @@ metadataEditorApp.controller('BaseController',
 
 	//Set background of selected button to selectedColor color. 
 	function highlightCurrentPage(formType){
-	    if(formType == "iso"){
+	    if(formType.indexOf("iso") > -1){
 		$scope.isoFormList[getCurrentPage()].buttonStyle = getSelectedColor();
 		var result = document.getElementById(isoButtonList[getCurrentPage()]);
 		angular.element(result).removeClass("not-complete");
@@ -1190,7 +1159,7 @@ metadataEditorApp.controller('BaseController',
 		$scope.isoFormList[getCurrentPage()].checkIconStyle = false;
 		$scope.isoFormList[getCurrentPage()].xIconStyle = false;
 		
-	    }else if(formType == "dublin"){
+	    }else if(formType.indexOf("dublin") > -1){
 		$scope.dublinFormList[getCurrentPage()].buttonStyle = getSelectedColor();
 
 		var result = document.getElementById(dublinButtonList[getCurrentPage()]);
@@ -1210,7 +1179,7 @@ metadataEditorApp.controller('BaseController',
 	//Set current form state to current state plus shift amount. Also returns to disclaimer state if back
 	//or Save & Continue buttons pressed on "Terms & Conditions" or "Sensitive Information" states.
 	$scope.setCurrentFormElement = function(shift, formType) {
-	    if(formType == "iso"){
+	    if(formType.indexOf("iso") > -1){
 		incrementCurrentPage(shift);
 
 		//Hide button until animation is finished
@@ -1237,7 +1206,7 @@ metadataEditorApp.controller('BaseController',
 		    $state.go(isoButtonList[getCurrentPage()]);
 		}
 
-	    }else if(formType == "dublin"){
+	    }else if(formType.indexOf("dublin") > -1){
 		incrementCurrentPage(shift);
 
 		//Hide button until animation is finished
