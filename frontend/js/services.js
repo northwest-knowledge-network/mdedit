@@ -388,7 +388,7 @@ metadataEditorApp
 
 	function sanitizeInput(value) {
 	    //Perform HTML sanitization for user input.
-	    var htmlPattern = /((<){1}(!--)?(\/)?[a-zA-Z]{1}([a-zA-Z0-9 ])*([ \n\t])*([a-zA-Z]*(=){1}(\"){1}.*(\"){1}([ \n\t])*)*([a-zA-Z0-9 \n\t])*(\/)?(-){0,2}(>){1})*(<!--)*(-->)*/g;
+	    var htmlPattern = /((<){1}(!--)?(\/)?[a-zA-Z]{1}([a-zA-Z0-9 ])*([ \n\t])*([a-zA-Z])*([a-zA-Z]*(=){1}(\"){1}.*(\"){1}([a-zA-Z \n\t])*)*([a-zA-Z0-9 \n\t])*(\/)?(-){0,2}(>){1})*(<!--)*(-->)*/g;
 	    var phpPattern = /((<\?php){1}(.|\n)*(\?>){1}([ \n\t])*)*/g;
 
 	    //Replace any html or PHP in string with "" and return. Removes HTML and PHP from string.
@@ -531,7 +531,6 @@ metadataEditorApp
         {
 
             var current = prepareRecordForSave(scope);
-	    console.log("In publish");
 	    
             var record = current;
 

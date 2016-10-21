@@ -213,7 +213,7 @@ def publish_metadata_record(_oid):
                                 {'uuid': str_id},
                                 files={'uploadedfile': open(save_path, 'rb')})
 
-            #Save XML file of ISO record to backend server's file system
+	#Save XML file of ISO record to backend server's file system
         if 'localhost' not in request.base_url:
             username = _authenticate_user_from_session(request)
             gptInsert.gptInsertRecord(iso, record.title, str_id, username)
@@ -249,7 +249,7 @@ def publish_metadata_record(_oid):
                                 {'uuid': str_id},
                                 files={'uploadedfile': open(save_path, 'rb')})
 
-            #Save XML file of Dublin record to backend server's file system
+	#Save XML file of Dublin record to backend server's file system
         if 'localhost' not in request.base_url:
             username = _authenticate_user_from_session(request)
             gptInsert.gptInsertRecord(dc, record.title, str_id, username)
