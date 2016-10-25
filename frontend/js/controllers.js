@@ -677,14 +677,17 @@ metadataEditorApp.controller('BaseController',
 	    resetFormValidity();
 	    
 	    if($scope.currentRecord != null){
-		if($scope.currentRecord.data_one_search.indexOf("true") > -1)
-		    $scope.searchableOnDataOne = true;
-		else if($scope.currentRecord.data_one_search.indexOf("false") > -1)
+		if($scope.currentRecord.data_one_search != null){
+		    if($scope.currentRecord.data_one_search.indexOf("true") > -1)
+			$scope.searchableOnDataOne = true;
+		    else if($scope.currentRecord.data_one_search.indexOf("false") > -1)
+			$scope.searchableOnDataOne = false;
+		    else{
+			//For error handling
+			//console.log("Error: tried to set $scope.searchableOnDataOne to unsupported value. Options are boolean.");
+		    }
+		}else
 		    $scope.searchableOnDataOne = false;
-		else{
-		    //For error handling
-		    //console.log("Error: tried to set $scope.searchableOnDataOne to unsupported value. Options are boolean.");
-		}
 	    }
 	}
 
