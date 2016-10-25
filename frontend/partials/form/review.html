@@ -2,9 +2,9 @@
   <span class="mega-octicon octicon-checklist"></span> Review & Submit
 </h2>
 
-<!-- Page only shows review form if Terms & Condidtions, Right to Publish
+<!-- Page only shows publish button if Terms & Condidtions, Right to Publish
      and Page Doesn't Contain Sensitive Information checkboxes have been 
-     checked
+     checked, as well as all required form fields have been filled out.
 -->
 <div id="reviewForm">
 
@@ -57,7 +57,6 @@
 
 <h4>Contacts</h4>
 <table class="table-bordered table-hover review-table">
-  <!-- Display everything except cls, id, title, summary, citation, and access -->
   <!-- Now do citation and access values from currentRecord -->
   <tr ng-repeat="i in currentRecord.access">
     <td> Access {{$index + 1}} </td> <td><table class="access-table" ng-init="reverse = false;"> <tr ng-repeat="(key, value) in i" class="no-side-border"> <td id="access-{{$parent.$index}}-{{key}}-0" class="author-key cell-padding first-cell-width"> {{reviewFields(key, 'key-string')}} </td><td id="access-{{$parent.$index}}-{{key}}-1" class="author-value cell-padding"> {{reviewFields(value, 'value-string')}} </td><tr></table></td>
