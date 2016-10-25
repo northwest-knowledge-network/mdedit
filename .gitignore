@@ -13,3 +13,6 @@ gptInsert.conf
 mdedit_preprod_test/
 *uploads*
 docs/_build
+docs/devServerInstall.aux
+docs/devServerInstall.log
+docs/devServerInstall.tex~

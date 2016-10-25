@@ -1,0 +1,6 @@
+@startuml
+(isoTemporalExtent.html) -down-> (temporalExtent.html)
+(isoTemporalExtent.html) -down-> (update.html)
+
+(dublinTemporalExtent.html) -down-> (temporalExtent.html)
+@enduml

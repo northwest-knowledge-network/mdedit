@@ -21,7 +21,7 @@ metadataEditorApp
 })
 .factory('hostname', function()
 {
-        // next see if there is a hostname defined
+    // next see if there is a hostname defined
     var hostname = '';
     if (typeof(window.hostname) === 'undefined')
     {
@@ -75,20 +75,21 @@ metadataEditorApp
 
         if (record.hasOwnProperty('start_date') && record.start_date.$date != '')
         {
-            record.start_date.hours = record.start_date.$date.getHours();
+	    
+            record.start_date.$date.hours = record.start_date.$date.getHours();
 
-            record.start_date.minutes = record.start_date.$date.getMinutes();
+            record.start_date.$date.minutes = record.start_date.$date.getMinutes();
 
-            record.start_date.seconds = record.start_date.$date.getSeconds();
+            record.start_date.$date.seconds = record.start_date.$date.getSeconds();
         }
 
-        if (record.hasOwnProperty('end_date') &&record.end_date.$date != '')
+        if (record.hasOwnProperty('end_date') && record.end_date.$date != '')
         {
-            record.end_date.hours = record.end_date.$date.getHours();
+            record.end_date.$date.hours = record.end_date.$date.getHours();
 
-            record.end_date.minutes = record.end_date.$date.getMinutes();
+            record.end_date.$date.minutes = record.end_date.$date.getMinutes();
 
-            record.end_date.seconds = record.end_date.$date.getSeconds();
+            record.end_date.$date.seconds = record.end_date.$date.getSeconds();
         }
 
         scope.currentRecord = record;
@@ -116,9 +117,22 @@ metadataEditorApp
         }
 
         scope.currentRecord.place_keywords = record.place_keywords.join(', ');
-        scope.currentRecord.thematic_keywords = record.thematic_keywords.join(', ');
+	//Had to get rid of trailing witespace after comma because after every page
+	//change was adding extra whitespaces between words.
+        scope.currentRecord.thematic_keywords = record.thematic_keywords.join(',');
     };
 }])
+
+.value('formElement', {
+    form_name: '',
+    label: '',
+    buttonStyle: {},
+    checkIconStyle: false,
+    xIconStyle: false,
+    dotIconStyle: false,
+    isValid: false
+})
+
 .value('emptyISORecord',
 {
     schema_type: 'Dataset (ISO)',
@@ -126,7 +140,7 @@ metadataEditorApp
     summary: '',
     last_mod_date: {$date: new Date()},
     first_pub_date: {$date:''},
-    md_pub_date: {$date:''},
+    md_pub_date: {$date: ''},
 
     update_frequency: '',
     status: '',
@@ -135,7 +149,8 @@ metadataEditorApp
     topic_category: [''],
     place_keywords: '',
     thematic_keywords: '',
-
+    research_methods: '',
+    
     data_format: [''],
     compression_technique: '',
     online: [''],
@@ -156,8 +171,12 @@ metadataEditorApp
     south_lat: '',
 
     start_date: {$date:''},
+    
     end_date: {$date:''},
-
+    
+    doi_ark_request: '',
+    data_one_search: 'false',
+    reference_system: '',
     attachments: []
 })
 
@@ -168,7 +187,7 @@ metadataEditorApp
     summary: '',
     last_mod_date: {$date: new Date()},
     first_pub_date: {$date:''},
-    md_pub_date: {$date:''},
+    md_pub_date: {$date: ''},
 
     topic_category: [''],
     place_keywords: '',
@@ -194,8 +213,12 @@ metadataEditorApp
     south_lat: '',
 
     start_date: {$date:''},
-    end_date: {$date:''},
-
+    
+    end_date: {	$date:''},
+    
+    doi_ark_request: '',
+    data_one_search: 'false',
+    reference_system: '',
     attachments: []
 })
 .value('milesFields',
@@ -239,9 +262,9 @@ metadataEditorApp
 })
 .service('recordService',
     ['$http', '$q', '$log', 'hostname', 'session_id',
-            'emptyISORecord', 'emptyDCRecord', 'milesFields', 'nkn',
+     'emptyISORecord', 'emptyDCRecord', 'milesFields', 'nkn', 'formElement',
     function($http, $q, $log, hostname, session_id,
-             emptyISORecord, emptyDCRecord, milesFields, nkn)
+             emptyISORecord, emptyDCRecord, milesFields, nkn, formElement)
     {
         /**
          * Private functions that will not be exposed to controller
@@ -278,7 +301,8 @@ metadataEditorApp
 
                 serverReady.data_format = scope.dataFormats.iso;
 
-            if (scope.dataFormats.aux && typeof record.dateFormats !== "undefined")
+
+            if (scope.dataFormats.aux)
             {
                 var auxList = scope.dataFormats.aux.split(',')
                                 .map(function(el) { return el.trim(); });
@@ -326,23 +350,54 @@ metadataEditorApp
             }
 
             if (record.hasOwnProperty('md_pub_date') && record.md_pub_date.$date != ''
-                && typeof record.md_pub_date.$date !== "undefined")
-            {
-                serverReady.md_pub_date.$date =
-                    record.md_pub_date.$date.getTime();
-            }
-
-            else
-            {
-                delete serverReady.md_pub_date;
-            }
-
-
+		&& typeof record.md_pub_date.$date !== "undefined"){
+		    serverReady.md_pub_date.$date = new Date().getTime();
+            }else{
+		delete serverReady.md_pub_date;
+	    }
+	    
+	    
             serverReady.last_mod_date.$date = new Date().getTime();
+
+	    //Sanitize HTML in record to be sent to database
+	    for(var key in serverReady){
+		if(serverReady[key] != null){
+		    if((Array.isArray(serverReady[key]))){
+			//If value is array, then check each element for HTML
+			for(var i = 0; i < serverReady[key].length; i++){
+			    if(typeof serverReady[key][i] === 'object'){
+				//If element in array is an object, then check each value of object for HTML
+				for(var nestedKey in serverReady[key][i]){
+				    if(typeof serverReady[key][i][nestedKey] === 'string')
+					serverReady[key][i][nestedKey] = sanitizeInput(serverReady[key][i][nestedKey]);
+				}
+			    }else if(typeof serverReady[key][i] === 'string'){
+				//If element in array is a string, then check for HTML
+				serverReady[key][i] = sanitizeInput(serverReady[key][i]);
+			    }
+			}
+		    }else if(typeof serverReady[key] === 'string'){
+			//If value of serverReady record is a string, then check for HTML
+			serverReady[key] = sanitizeInput(serverReady[key]);
+		    }
+		}
+	    }
 
             return serverReady;
         };
 
+	function sanitizeInput(value) {
+	    //Perform HTML sanitization for user input.
+	    var htmlPattern = /((<){1}(!--)?(\/)?[a-zA-Z]{1}([a-zA-Z0-9 ])*([ \n\t])*([a-zA-Z])*([a-zA-Z]*(=){1}(\"){1}.*(\"){1}([a-zA-Z \n\t])*)*([a-zA-Z0-9 \n\t])*(\/)?(-){0,2}(>){1})*(<!--)*(-->)*/g;
+	    var phpPattern = /((<\?php){1}(.|\n)*(\?>){1}([ \n\t])*)*/g;
+
+	    //Replace any html or PHP in string with "" and return. Removes HTML and PHP from string.
+	    if((value != null)
+	       && (typeof value !== 'number')){
+		return value.replace(htmlPattern, "").replace(phpPattern, "");
+	    }else
+		return "";
+	}
 
         /**
          * These functions are exposed by the service to the controllers.
@@ -378,7 +433,13 @@ metadataEditorApp
 
             return nkn;
         };
-
+	
+	var getFreshFormElement = function() {
+	    
+            var freshFormElement = angular.copy(formElement);
+	    
+            return freshFormElement;
+        };
 
         /**
          * @param {string} recordId ID of the record to be edited
@@ -468,10 +529,22 @@ metadataEditorApp
          */
         var publish = function(scope)
         {
-            var current = prepareRecordForSave(scope);
 
+            var current = prepareRecordForSave(scope);
+	    
             var record = current;
 
+	    //md_pub_date has been deleted when saved or else the server will throw an error for an empty string.
+	    //MongoDB has a bug for dateTimeField not allowing null or strings of length 0 to construct dateTimeField.
+	    //Objects constructed with either of these will be deleted from MongoDB regardless of using dateTimeField(null=True);
+	    //So we just add md_pub_date back to the record when publishing and set md_pub_date to the current time.
+	    record.md_pub_date = {};
+	    var currentDate = new Date().getTime();
+            record.md_pub_date.$date = currentDate;
+
+	    scope.md_pub_date = {};
+	    scope.md_pub_date = currentDate;
+	    
             var serverReady = angular.copy(record);
 
             // do this sync (1/26 um.. what? -mt)
@@ -483,6 +556,8 @@ metadataEditorApp
                 '//' + hostname + '/api/metadata/' + currentId + '/publish',
                 current
             );
+	    
+	    
         };
 
         return {
@@ -494,7 +569,8 @@ metadataEditorApp
             saveDraft: saveDraft,
             delete: delete_,
             list: list,
-            publish: publish
+            publish: publish,
+	    getFreshFormElement: getFreshFormElement
         };
     }
 ])
@@ -535,11 +611,11 @@ metadataEditorApp
         'https://nknportal-dev.nkn.uidaho.edu/portal/simpleUpload/upload.php';
 
     var attachBaseRoute;
-    if (hostname !== 'localhost:4000') {
-        attachBaseRoute = 'https://' + hostname + '/api/metadata/';
+	if (hostname !== 'localhost:4000') {
+            attachBaseRoute = 'https://' + hostname + '/api/metadata/';
     }
-    else {
-        attachBaseRoute = '//' + hostname + '/api/metadata/';
+	else {
+            attachBaseRoute = '//' + hostname + '/api/metadata/';
     }
 
     var uploadFile = function(file, recordId) {

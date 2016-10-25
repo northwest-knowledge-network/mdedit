@@ -1,0 +1,25 @@
+<h2 class="section-header">
+  <span class="glyphicon glyphicon-list-alt"></span> Set-up Metadata Template
+</h2>
+
+<div class="subform">
+
+    <h3>I would like to upload a collection of: </h3>
+    <form>
+    <input id="create-new-dataset" type="radio" name="data-file-type" value="data-file"  ng-click="setFormType('iso', baseCtrl.metadataForm)" checked>data file (document, table, GIS file, georeferenced photo)</input>
+    <br>
+    <input id="create-new-non-dataset" type="radio" name="data-file-type" value="non-data-file" ng-click="setFormType('dublin', baseCtrl.metadataForm)" >Non-data file (poster, report, model, tool, script, code, or visualization)</input>
+    <br>
+    
+    <h3>My file has: </h3>
+    <input id="add-spatial-extent" type="checkbox" name="data-file-attributes" value="spatial-location" ng-change="setSpatialForm('dublinForm.spatialExtent', 'Spatial')" ng-model="hasSpatialData" ng-checked="hasSpatialData">A spatial location (i.e., data collected at your study site)</input>
+    <br>
+    <input id="add-coordinate-system" type="checkbox" name="data-coordinate-system" value="coordinate-system" ng-change="toggleCoordinateInput()" ng-model="coordinateInputVisible" ng-checked="coordinateInputVisible">A reference system (i.e., a coordinate system and datum: used in geographic or GIS data)</input>
+    <br>
+    <h3>This file was produced with support from: </h3>
+    <input type="radio" name="file-production-support" value="EPSCOR-MILES" ng-click="loadDefaultMILES()" required>The Idaho EPSCOR-MILES project</input>
+    <br>
+    <input type="radio" id="load-default-NKN" name="file-production-support" value="NKN" ng-click="loadDefaultNKNAsDistributor()">Northwest Knowledge Network</input>
+    <br>
+    </form>
+</div>

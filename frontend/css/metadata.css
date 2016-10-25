@@ -106,7 +106,7 @@ select.ng-dirty.ng-valid {
 }
 
 .section-header {
-  color: #080;
+  color: #b1925c /*#080*/;
   margin: 15px 10px;
 }
 
@@ -119,9 +119,18 @@ select.ng-dirty.ng-valid {
   /*border-width:1px;*/
   /*border-color: lightgrey;*/
   padding: 5px 15px 10px;
-  background-color: #cccccc;
+  background-color: #f4f4f4;
   margin: 10px;
 }
+.subform h6, .ng-scope h6, .subform ul { 
+  font-size: 14px; 
+  font-weight: normal; 
+  line-height: 1.3; 
+}
+
+input[type="radio"], input[type="checkbox"] { margin-right:8px; }
+
+select { background-color: #fff; }
 
 h6 {
   margin-left: 4px;
@@ -166,10 +175,6 @@ h6 {
   text-decoration: none;
 }
 
-/*
- * to accomodate the navbar
- * see http://getbootstrap.com/components/#navbar-fixed-top
- */
 body {
     padding-top: 70px;
 }
@@ -185,7 +190,7 @@ h3#brand {
 }
 
 
-#nav-button {
+#nav-button{
   font-weight: bold;
 }
 
@@ -223,4 +228,239 @@ div.centered-container>div>h4 {
 
 a.dropdown-toggle, a.btn {
     cursor: pointer;
+}
+
+/* To make it possible for (Optional) text be next to h2 header */
+
+.optional-field-header {
+    display: inline-block;
+}
+
+/* To remove line break between divs */
+.extra-detailed-align {
+    background-color: #cccccc;
+    margin:0px;
+    padding: 5px 15px 10px;
+}
+
+/* Style for review.html results table */
+.review-table tr td{
+    border: 1px solid black;
+}
+
+.review-table {
+    width: 70%;
+}
+
+.first-cell-width {
+    width: 25%;
+}
+
+.cell-padding {
+    padding: 5px;
+}
+
+.affix + .container-fluid {
+    padding-top: 70px;
+}
+
+.dublin-form-list {
+    float: left;
+}
+/* Animations for form wizard: sliding left and right out of the viewport */
+/* slide out to the left */
+@keyframes slideOutLeft {
+	to 		{ transform: translateX(-200%); }
+}
+
+@-moz-keyframes slideOutLeft {	
+	to 		{ -moz-transform: translateX(-200%); }
+}
+
+@-webkit-keyframes slideOutLeft {
+	to 		{ -webkit-transform: translateX(-200%); }
+}
+
+/* slide in from the right */
+@keyframes slideInRight {
+    from 	{ transform:translateX(200%); }
+    to 		{ transform: translateX(0); }
+}
+
+@-moz-keyframes slideInRight {
+    from 	{ -moz-transform:translateX(200%); }
+    to 		{ -moz-transform: translateX(0); }
+}
+
+@-webkit-keyframes slideInRight {
+    from 	{ -webkit-transform:translateX(200%); }
+    to 		{ -webkit-transform: translateX(0); }
+}
+
+/* Wizard form views having animations applied to them */
+#form-views.ng-enter,
+#form-views.ng-leave { position:absolute; left:30px; right:30px;
+    transition:0.5s all ease; -moz-transition:0.5s all ease; -webkit-transition:0.5s all ease; 
+}
+    
+/* enter animation */
+#form-views.ng-enter            { 
+    -webkit-animation:slideInRight 0.5s both ease;
+	-moz-animation:slideInRight 0.5s both ease;
+	animation:slideInRight 0.5s both ease; 
+}
+
+#form-views.ng-leave            { 
+    -webkit-animation:slideOutLeft 0.5s both ease;
+	-moz-animation:slideOutLeft 0.5s both ease;
+	animation:slideOutLeft 0.5s both ease; 
+}
+
+/* Styling for step buttons */
+/* numbered buttons */
+#status-buttons a               {
+    display:inline-block;
+    font-size: 14px;
+    margin-right:10px;
+    text-align:center;
+    text-transform:uppercase;
+}
+
+#status-buttons a:hover         { text-decoration:none; }
+#status-buttons .partial-button            {
+    display:block;
+    height: 25px;
+    margin:0 auto;
+    width:40px;
+    border-radius: 5px;
+}
+
+/* active buttons */
+.current-form-element   {
+    background:#00BC8C;
+}
+
+.form-button-stack {
+    width: 100%;
+}
+
+#form-display {
+    margin-right: 2em;
+    margin-left: 2em;
+    height: auto;
+}
+
+/* Arrow that points to the right for step button backgrounds */
+
+.breadcrumb {
+    list-style: none;
+    overflow: hidden;
+    font: 18px Helvetica, Arial, Sans-Serif;
+    background-color: white;
+}
+
+.breadcrumb li {
+    list-style: none;
+    float: left;
+    display: inline;
+    margin-top: 5px;
+    margin-left: -35px;
+}
+
+.breadcrumb li a{
+    margin-left: 0px;
+    margin-right: 0px;
+    height: 50px;
+    color: white;
+    text-decoration: none;
+    padding: 0px 5px 10px 30px;
+    position: relative;
+    display: block;
+}
+
+.breadcrumb li a:after {
+    content: "";
+    display: block;
+    width: 0;
+    height: 0;
+    border-top: 25px solid transparent;
+    border-bottom: 25px solid transparent;
+    border-left: 25px solid #cccccc;
+    position: absolute;
+    top: 50%;
+    margin-top: -25px;
+    left: 100%;
+    z-index: 2;
+}
+
+.breadcrumb li a:before {
+    content: " ";
+    display: block;
+    width: 0;
+    height: 0;
+    border-top: 25px solid transparent;
+    border-bottom: 25px solid transparent;
+    border-left: 25px solid white;
+    position: absolute;
+    top: 50%;
+    margin-top: -25px;
+    margin-left: 1px;
+    left: 100%;
+    z-index: 1;
+}
+
+.breadcrumb li a:hover {
+    background: #b3b3b3 !important;
+}
+
+.breadcrumb li a:hover:after {
+    border-left-color: #b3b3b3 !important;
+}
+
+a.selected:after{
+    border-left-color: #00BC8C !important;
+}
+
+a.not-complete:after{
+    border-left-color: #FF471A !important;
+}
+
+a.complete:after{
+    border-left-color: #00E600 !important;
+}
+
+a.initial:after {
+    border-left-color: #CCCCCC;
+}
+
+.access-table, .citation-table {
+    width: 100%;
+}
+
+.author-key {
+    width: 20%;
+}
+
+.author-value {
+    width: 80%;
+}
+
+/* Back and Save & Continue buttons in iso.html and dublin.html positioning */
+#back-button, #save-continue-button {
+    position: relative;
+    left: 80%;
+}
+
+/* Give form partials z-index of 100 to make them float over other text while
+   animation is playing.
+ */
+#form-display {
+    z-index: 100;
+}
+
+/* Setting minimum height on ui-view to prevent collapse of height
+   during animation.
+*/
+.ui-view-container {
+	min-height:300px;
 }
