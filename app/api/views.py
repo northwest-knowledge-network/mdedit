@@ -180,7 +180,6 @@ def get_all_metadata(page_number, records_per_page, sort_on):
                 else:
                     sort_by = 'title'
 
-                #record_list = Metadata.objects(__raw__={'published':'true'})
                 record_list = Metadata.objects(__raw__={'published':'true'}).order_by(sort_by)
                 arrayLowerBound = int(page_number) * int(records_per_page)
                 arrayUpperBound = int(page_number) * int(records_per_page) + int(records_per_page) + 1

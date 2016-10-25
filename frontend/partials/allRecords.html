@@ -1,17 +1,17 @@
 <div>
-  <table class="admin-results-table">
+  <table class="admin-results-table table-hover table">
     <tr>
-      <td class="admin-results-title">Title</td><td class="admin-results-pub-date">Publish Date</td><td class="admin-results-summary">Summary</td>
+      <td class="col-md-4">Title</td><td class="col-md-3">Author</td><td class="col-md-1">Publish Date</td><td class="col-md-4">Summary</td>
     </tr>
-    <tr ng-repeat="record in recordsList.results">
-      <td class="admin-results-title"><h4> {{record.title}} </h4></td><td class="admin-results-pub-date"> {{record.md_pub_date}} </td><td class="admin-results-summary"> {{record.summary}} </td>
+    <tr ng-repeat="record in recordsList.results" class="">
+      <td class="col-md-4"><h4> {{record.title}} </h4></td><td class="col-md-3"><div ng-repeat="author in record.citation" ng-if="author.name != ''"> - {{author.name}} </div></td><td class="col-md-1"> {{record.md_pub_date}} </td><td class="col-md-4"> {{record.summary}} </td>
     </tr>
   </table>
 </div>
 <div>
   <table class="page-table">
     <tr>
-      <td class="page-numbers">Previous </td><td ng-repeat="i in pageNumbers" class="page-numbers" ng-value="i" ng-click="switchAdminResultsPage(i);">{{ i }}</td><td class="page-numbers"> Next</td>
+      <td class="page-numbers" ng-click="decCurrentPage()">Previous </td><td ng-repeat="i in pageNumbers" class="page-numbers" ng-value="i" ng-click="switchAdminResultsPage(i);">{{ i }}</td><td class="page-numbers" ng-click="incCurrentPage()"> Next</td>
     </tr>
   </table>
 </div>

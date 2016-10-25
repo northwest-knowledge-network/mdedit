@@ -63,6 +63,30 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 			console.log("Error: tried to set current page to non-number");
 		}
 
+		$scope.incCurrentPage = function(){
+		    var newPage = getCurrentPage() + 1;
+		    if(newPage < 0)
+			setCurrentPage(0);
+		    else if(newPage >= $scope.pageNumbers.length)
+			setCurrentPage($scope.pageNumbers.length - 1);
+		    else
+			setCurrentPage(getCurrentPage() + 1);
+
+		    queryDatabase();
+		}
+
+		$scope.decCurrentPage = function(){
+		    var newPage = getCurrentPage() -1;
+		    if(newPage < 0)
+			setCurrentPage(0);
+		    else if(newPage >= $scope.pageNumbers.length)
+			setCurrentPage($scope.pageNumbers.length - 1);
+		    else
+			setCurrentPage(getCurrentPage() - 1);
+ 		    
+		    queryDatabase();
+		}
+
 		function queryDatabase(){
 		    if(getCurrentPage() < 0)
 			console.log("Error: tried to set page number to less than 0.");
@@ -104,16 +128,6 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		    */
 		    queryDatabase();
 		};
-
-		
-		//console.log($scope.recordsList);
-		//var result = recordService.list();
-		//console.log(result);
-		//console.log("Printing length of recordsList: " + result.length);
-		//console.log("Printing first record title: " + result[0]);
-		//$scope.getRecords = function(pageNumber, recordsPerPage) {
-		//    $scope.recordsList = recordService.getAllRecords(pageNumber, recordsPerPage);
-		//};
 	    },
 	    controllerAs: 'adminCtrl'
 	}
