@@ -277,7 +277,6 @@ metadataEditorApp.controller('BaseController',
          * and makes sure the form is current.
          */
         $scope.submitDraftRecord = function() {
-	    //Remove all HTML tags from currentRecord
 		recordService.saveDraft($scope)
                     .success( function (data) {
 			// need to update the sheet with the ID

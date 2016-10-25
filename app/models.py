@@ -34,6 +34,9 @@ class Metadata(db.Document):
     #for last published date for metadata record published to server
     md_pub_date = db.DateTimeField()
 
+    #If record has been submitted for publication or not
+    published = db.StringField(max_length=10)
+    
     ## detailed info
     # detailed info lists
     topic_category = db.ListField(db.StringField(max_length=255))

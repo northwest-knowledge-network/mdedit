@@ -90,6 +90,7 @@ var metadataEditorApp = angular
  	$urlRouterProvider
 	    .when(/iso/i, '/iso')
 	    .when(/dublin/i, '/dublin')
+	    .when(/admin/i, '/admin')
 	    .otherwise('/iso');
 })
 .constant('formOptions',  {

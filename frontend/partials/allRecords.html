@@ -1,0 +1,17 @@
+<div>
+  <table class="admin-results-table">
+    <tr>
+      <td class="admin-results-title">Title</td><td class="admin-results-pub-date">Publish Date</td><td class="admin-results-summary">Summary</td>
+    </tr>
+    <tr ng-repeat="record in recordsList.results">
+      <td class="admin-results-title"><h4> {{record.title}} </h4></td><td class="admin-results-pub-date"> {{record.md_pub_date}} </td><td class="admin-results-summary"> {{record.summary}} </td>
+    </tr>
+  </table>
+</div>
+<div>
+  <table class="page-table">
+    <tr>
+      <td class="page-numbers">Previous </td><td ng-repeat="i in pageNumbers" class="page-numbers" ng-value="i" ng-click="switchAdminResultsPage(i);">{{ i }}</td><td class="page-numbers"> Next</td>
+    </tr>
+  </table>
+</div>

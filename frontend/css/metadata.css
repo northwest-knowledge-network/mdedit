@@ -464,3 +464,33 @@ a.initial:after {
 .ui-view-container {
 	min-height:300px;
 }
+
+/* Table of results for admin view */
+.admin-results-table {
+    width:100%;
+}
+
+/*Width of table cells in admin results page */
+.admin-results-title {
+    width: 30%;
+}
+
+.admin-results-pub-date {
+    width: 20%;
+}
+
+.admin-results-summary {
+    width: 50%;
+}
+
+/* Table for admin page numbers from pagination of 
+   return results.
+*/
+.page-numbers {
+    border: 2px solid black;
+    padding: 10px;
+    margin-left: 50%;
+    margin-right: 50%;
+    cursor: pointer;
+    color: blue;
+}

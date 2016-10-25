@@ -44,4 +44,77 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
                 });
             }
         };
-});
+})
+    .directive("adminView", ['recordService', 'updateAdmin', function(recordService, updateAdmin){
+	return{
+	    restrict: 'E',
+	    templateUrl: 'partials/allRecords.html',
+	    controller: function($scope, recordService){
+		var currentPage = 0;
+
+		function getCurrentPage(){
+		    return currentPage;
+		}
+
+		function setCurrentPage(value){
+		    if(typeof value === 'number')
+			currentPage = value;
+		    else
+			console.log("Error: tried to set current page to non-number");
+		}
+
+		function queryDatabase(){
+		    if(getCurrentPage() < 0)
+			console.log("Error: tried to set page number to less than 0.");
+		    else{
+			recordService.getAllRecords(getCurrentPage(), 10, $scope.selectedFilter).success(function(data){
+			    updateAdmin($scope, data);
+			}).error(function(error) {
+			    $scope.errors.push("Error in loading list of records.");
+			});
+		    }
+		}
+		
+		//Use 0 based index for pages (first argument to getAllRecords) to make math work in backend
+		//for splicing results.
+		recordService.getAllRecords(0, 10, 't').success(function(data){
+		    updateAdmin($scope, data);
+		    //console.log(data);
+		    //$scope.recordsList = data;
+		}).error(function(error) {
+		    $scope.errors.push("Error in loading list of records.");
+		});
+
+		$scope.selectedFilter = "md_pub_date";
+
+
+		$scope.switchAdminResultsPage = function(pageNumber){
+		    /* Need to translate 'pageNumber' into 0 based index, decrement 'pageNumber' for calling
+		       getAllRecords(pageNumber, numberOfRecords)
+		    */
+		    pageNumber--;
+		    setCurrentPage(pageNumber);
+
+		    queryDatabase();
+		};
+
+		$scope.switchOrdering = function(){
+		    /* Need to translate 'pageNumber' into 0 based index, decrement 'pageNumber' for calling
+		       getAllRecords(pageNumber, numberOfRecords)
+		    */
+		    queryDatabase();
+		};
+
+		
+		//console.log($scope.recordsList);
+		//var result = recordService.list();
+		//console.log(result);
+		//console.log("Printing length of recordsList: " + result.length);
+		//console.log("Printing first record title: " + result[0]);
+		//$scope.getRecords = function(pageNumber, recordsPerPage) {
+		//    $scope.recordsList = recordService.getAllRecords(pageNumber, recordsPerPage);
+		//};
+	    },
+	    controllerAs: 'adminCtrl'
+	}
+    }]);

@@ -153,6 +153,47 @@ def get_single_metadata(_oid):
         return Response('Bad request for record with id ' + _oid, 400)
 
 
+@api.route('/api/metadata/admin/<string:page_number>/<string:records_per_page>/<string:sort_on>', methods=['POST'])
+@cross_origin(origin='*', methods=['POST'],
+              headers=['X-Requested-With', 'Content-Type', 'Origin'])
+def get_all_metadata(page_number, records_per_page, sort_on):
+    """
+    Retrieve all metadata records for admin view. Retrieval is done
+    via POST because we must pass a session id so that the user is
+    authenticated.
+
+    Access control is done here. A user can modify only their own records
+    because their session_id sent with the request.
+    """
+    username = _authenticate_user_from_session(request)
+    try:
+        if username:
+            if request.method == 'POST':
+                #need to do input sanitization on all these values! Separating variables so outside does not have direct access to
+                #database query.
+                if sort_on == 'title':
+                    sort_by = 'title'
+                elif sort_on == 'md_pub_date':
+                    sort_by = 'md_pub_date'
+                elif sort_on == 'summary':
+                    sort_by = 'summary'
+                else:
+                    sort_by = 'title'
+
+                #record_list = Metadata.objects(__raw__={'published':'true'})
+                record_list = Metadata.objects(__raw__={'published':'true'}).order_by(sort_by)
+                arrayLowerBound = int(page_number) * int(records_per_page)
+                arrayUpperBound = int(page_number) * int(records_per_page) + int(records_per_page) + 1
+                #Only return array elements between indicies. Don't want to return all possible values
+                #and overload browser with too much data. This is a version of 'pagination.'
+                return jsonify(dict(results=record_list[arrayLowerBound:arrayUpperBound], num_entries=(len(record_list)/int(records_per_page))))
+
+    except:
+
+        return Response('Bad request for records', 400)
+
+
+
 @api.route('/api/metadata/<string:_oid>/delete', methods=['POST'])
 @cross_origin(origin='*', methods=['POST'],
               headers=['X-Requested-With', 'Content-Type', 'Origin'])

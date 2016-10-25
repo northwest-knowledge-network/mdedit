@@ -117,12 +117,28 @@ metadataEditorApp
         }
 
         scope.currentRecord.place_keywords = record.place_keywords.join(', ');
-	//Had to get rid of trailing witespace after comma because after every page
+	//Had to get rid of trailing witespace after comma because save after every page
 	//change was adding extra whitespaces between words.
         scope.currentRecord.thematic_keywords = record.thematic_keywords.join(',');
     };
 }])
-
+.factory('updateAdmin', ['$log', function($log){
+    return function(scope, record){
+	console.log("Printing inside updateAdmin: ");
+	console.log(record);
+	scope.recordsList = record;
+	scope.pageNumbers = [];
+	var numbers = [];
+	if(scope.recordsList.num_entries == 0){
+	    numbers.push(1);
+	}else{
+	    for(var i = 0; i <= scope.recordsList.num_entries; i++){
+		numbers.push(i+1);
+	    }
+	}
+	scope.pageNumbers = numbers;
+    }
+}])
 .value('formElement', {
     form_name: '',
     label: '',
@@ -177,7 +193,8 @@ metadataEditorApp
     doi_ark_request: '',
     data_one_search: 'false',
     reference_system: '',
-    attachments: []
+    attachments: [],
+    published: 'false'
 })
 
 .value('emptyDCRecord',
@@ -219,7 +236,8 @@ metadataEditorApp
     doi_ark_request: '',
     data_one_search: 'false',
     reference_system: '',
-    attachments: []
+    attachments: [],
+    published: 'false'
 })
 .value('milesFields',
 {
@@ -458,7 +476,29 @@ metadataEditorApp
                     }
             );
         };
+	
+	/**
+	 * Get all records for admin view. Returns a paginated list: only 10
+	 * records at a time, but has access to all records. 
+	 */
+	var getAllRecords = function(pageNumber, recordsPerPage, sortBy) {
+	    //var result = $http.post(
+            //    '//' + hostname + '/api/metadata/admin/' + pageNumber + "/" + recordsPerPage,
+            //    {'session_id': session_id});
+	    //console.log("Printing length of result: " + result.length);
+	    //return result;
+	    var record = {};
+	    
+	    return $http.post(
+                '//' + hostname + '/api/metadata/admin/' + pageNumber + '/' + recordsPerPage + '/' + sortBy,
+                {'session_id': session_id}).success(function(data){
+		    record = data.record;
+		});
 
+	    //console.log("Printing what was returned from the backend: " + result);
+	    //return result;
+	};
+	
         /**
          * Remove a draft record from the server. Does not effect published
          * records.
@@ -544,6 +584,9 @@ metadataEditorApp
 
 	    scope.md_pub_date = {};
 	    scope.md_pub_date = currentDate;
+
+	    //Change record's 'published' attribute to 'true' to allow for search by admin
+	    scope.published = 'true';
 	    
             var serverReady = angular.copy(record);
 
@@ -566,6 +609,7 @@ metadataEditorApp
             getMilesDefaults: getMilesDefaults,
             getNKNAsDistributor: getNKNAsDistributor,
             getRecordToEdit: getRecordToEdit,
+	    getAllRecords: getAllRecords,
             saveDraft: saveDraft,
             delete: delete_,
             list: list,
