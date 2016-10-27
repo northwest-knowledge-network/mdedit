@@ -7,46 +7,10 @@
     <h4 class="attribute-label">Start Date</h4>
     <input type="text" tabindex="20" ui-date="dateOptions" ng-model="currentRecord.start_date.$date" id="start-date" required />
   </div>
-
-  <!-- Getting rid of these in most recent version
-  H:
-  <select tabindex=20 type="number" ng-model="currentRecord.start_date.$date.hours"
-	  ng-options="hour for hour in hours">
-  </select>
-  
-  M:
-  <select tabindex=20 type="number" ng-model="currentRecord.start_date.$date.minutes"
-	  ng-options="min for min in minute_seconds">
-  </select>
-  
-  S:
-  <select tabindex=20 type="number" ng-model="currentRecord.start_date.$date.seconds"
-	  ng-options="sec for sec in minute_seconds">
-  </select>
-  -->
-  
   <div style="display:inline-block;width:180px;">
     <h4 class="attribute-label">End Date</h4>
     <input type="text" tabindex="20" ui-date="dateOptions" id="end-date" ng-model="currentRecord.end_date.$date" required />
   </div>
-
-  <!--
-  H:
-  <select tabindex=20 type="number" ng-model="currentRecord.end_date.$date.hours"
-	  ng-options="hour for hour in hours">
-  </select>
-  
-  M:
-  <select tabindex=20 type="number" ng-model="currentRecord.end_date.$date.minutes"
-	  ng-options="min for min in minute_seconds">
-  </select>
-  
-  S:
-  <select tabindex=20 type="number" ng-model="currentRecord.end_date.$date.seconds"
-	  ng-options="sec for sec in minute_seconds">
-  </select>
-  -->
-  
   <br>
   <h4 class="attribute-label">Date (dataset)</h4>
   <h6>
