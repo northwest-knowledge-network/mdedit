@@ -1,10 +1,29 @@
 <div class="col-md-3">
-  Sort by:
-  <br>
-  <select ng-model="selectedFilter" ng-change="switchOrdering()">
-    <option value="title">Title</option>
+  <table id="admin-menu">
+    <tr>
+      <td>
+	Sort by:
+	<br>
+	<select ng-model="selectedFilter" ng-change="switchPageLayout()">
+	  <option value="title">Title</option>
     <option value="md_pub_date">Publish Date</option>
-    <option value="summary">Summary</option>
-  </select>
+	  <option value="summary">Summary</option>
+	</select>
+      </td>
+    </tr>
+    <tr>
+      <td>
+	Number of records per page:
+	<br>
+	<select ng-model="recordsPerPage" ng-change="switchPageLayout()">
+	  <option value="10" selected="selected">10</option>
+	  <option value="20">20</option>
+	  <option value="30">30</option>
+	  <option value="40">40</option>
+	  <option value="50">50</option>
+	</select>
+      </td>
+    </tr>
+  </table>
 </div>
 <admin-view class="col-md-9"></admin-view>

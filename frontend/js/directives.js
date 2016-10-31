@@ -51,6 +51,9 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 	    templateUrl: 'partials/allRecords.html',
 	    controller: function($scope, recordService){
 		var currentPage = 0;
+		$scope.recordsPerPage = "10";
+
+		$scope.selectedFilter = "title";
 
 		function getCurrentPage(){
 		    return currentPage;
@@ -91,7 +94,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		    if(getCurrentPage() < 0)
 			console.log("Error: tried to set page number to less than 0.");
 		    else{
-			recordService.getAllRecords(getCurrentPage(), 10, $scope.selectedFilter).success(function(data){
+			recordService.getAllRecords(getCurrentPage(), $scope.recordsPerPage.toString(), $scope.selectedFilter).success(function(data){
 			    updateAdmin($scope, data);
 			}).error(function(error) {
 			    $scope.errors.push("Error in loading list of records.");
@@ -109,9 +112,6 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		    $scope.errors.push("Error in loading list of records.");
 		});
 
-		$scope.selectedFilter = "md_pub_date";
-
-
 		$scope.switchAdminResultsPage = function(pageNumber){
 		    /* Need to translate 'pageNumber' into 0 based index, decrement 'pageNumber' for calling
 		       getAllRecords(pageNumber, numberOfRecords)
@@ -122,7 +122,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		    queryDatabase();
 		};
 
-		$scope.switchOrdering = function(){
+		$scope.switchPageLayout = function(){
 		    /* Need to translate 'pageNumber' into 0 based index, decrement 'pageNumber' for calling
 		       getAllRecords(pageNumber, numberOfRecords)
 		    */

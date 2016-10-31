@@ -495,8 +495,18 @@ a.initial:after {
     color: blue;
 }
 
+.page-table {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.page-table td:hover {
+    background-color:#e1e1e1;
+}
+
 /* Upper and lower borders for rows of admin record list */
 .admin-record-list {
     border-bottom: 1px solid black;
     border-top: 1px solid black;
 }
+

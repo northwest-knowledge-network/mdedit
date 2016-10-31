@@ -166,7 +166,13 @@ def get_all_metadata(page_number, records_per_page, sort_on):
     because their session_id sent with the request.
     """
     username = _authenticate_user_from_session(request)
+
+    #Need to put in database 'admin' attribute to verify if user is admin. Only let admins access to all records.
+    #username, admin = _authenticate_user_from_session(request)
+
+    #pageNumber is 0 based index. Need first page to start at 0 for math for setting arrayLowerBound and arrayUpperBound.
     try:
+        #if username && (admin == true):
         if username:
             if request.method == 'POST':
                 #need to do input sanitization on all these values! Separating variables so outside does not have direct access to
@@ -181,8 +187,9 @@ def get_all_metadata(page_number, records_per_page, sort_on):
                     sort_by = 'title'
 
                 record_list = Metadata.objects(__raw__={'published':'true'}).order_by(sort_by)
+                
                 arrayLowerBound = int(page_number) * int(records_per_page)
-                arrayUpperBound = int(page_number) * int(records_per_page) + int(records_per_page) + 1
+                arrayUpperBound = int(page_number) * int(records_per_page) + int(records_per_page)
                 #Only return array elements between indicies. Don't want to return all possible values
                 #and overload browser with too much data. This is a version of 'pagination.'
                 return jsonify(dict(results=record_list[arrayLowerBound:arrayUpperBound], num_entries=(len(record_list)/int(records_per_page))))
