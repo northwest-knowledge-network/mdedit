@@ -24,6 +24,14 @@
 	</select>
       </td>
     </tr>
+    <tr>
+      <td>
+	<form>
+	  <input type="text" name="search" ng-model="searchTerm"></input>
+	</form>
+	<button class="btn btn-primary" ng-click="searchForRecord()">Search</button>
+      </td>
+    </tr>
   </table>
 </div>
 <admin-view class="col-md-9"></admin-view>

@@ -479,14 +479,9 @@ metadataEditorApp
 	
 	/**
 	 * Get all records for admin view. Returns a paginated list: only 10
-	 * records at a time, but has access to all records. 
+	 * records at a time, but has access to all records if the user is an admin.
 	 */
 	var getAllRecords = function(pageNumber, recordsPerPage, sortBy) {
-	    //var result = $http.post(
-            //    '//' + hostname + '/api/metadata/admin/' + pageNumber + "/" + recordsPerPage,
-            //    {'session_id': session_id});
-	    //console.log("Printing length of result: " + result.length);
-	    //return result;
 	    var record = {};
 	    
 	    return $http.post(
@@ -495,6 +490,19 @@ metadataEditorApp
 		    record = data.record;
 		});
 
+	    //console.log("Printing what was returned from the backend: " + result);
+	    //return result;
+	};
+
+	var searchAllRecords = function(searchTerm, pageNumber, recordsPerPage, sortBy) {
+	    var record = {};
+	    console.log("In searchAllRecords: ");
+	    return $http.post(
+                '//' + hostname + '/api/metadata/admin/search/' + searchTerm + "/" + pageNumber + "/" + recordsPerPage + "/" + sortBy,
+                {'session_id': session_id}).success(function(data){
+		    record = data.record;
+		});
+	    
 	    //console.log("Printing what was returned from the backend: " + result);
 	    //return result;
 	};
@@ -610,6 +618,7 @@ metadataEditorApp
             getNKNAsDistributor: getNKNAsDistributor,
             getRecordToEdit: getRecordToEdit,
 	    getAllRecords: getAllRecords,
+	    searchAllRecords: searchAllRecords,
             saveDraft: saveDraft,
             delete: delete_,
             list: list,

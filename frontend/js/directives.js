@@ -55,6 +55,8 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 
 		$scope.selectedFilter = "title";
 
+		$scope.searchTerm = "";
+
 		function getCurrentPage(){
 		    return currentPage;
 		}
@@ -90,15 +92,23 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		    queryDatabase();
 		}
 
-		function queryDatabase(){
+		function queryDatabase(queryType){
 		    if(getCurrentPage() < 0)
 			console.log("Error: tried to set page number to less than 0.");
 		    else{
-			recordService.getAllRecords(getCurrentPage(), $scope.recordsPerPage.toString(), $scope.selectedFilter).success(function(data){
-			    updateAdmin($scope, data);
-			}).error(function(error) {
-			    $scope.errors.push("Error in loading list of records.");
-			});
+			if(queryType.indexOf("browse") > -1){
+			    recordService.getAllRecords(getCurrentPage(), $scope.recordsPerPage.toString(), $scope.selectedFilter).success(function(data){
+				updateAdmin($scope, data);
+			    }).error(function(error) {
+				$scope.errors.push("Error in loading list of records.");
+			    });
+			}else if(queryType.indexOf("search") > -1){
+			    recordService.searchAllRecords($scope.searchTerm, getCurrentPage(), $scope.recordsPerPage.toString(), $scope.selectedFilter).success(function(data){
+				updateAdmin($scope, data);
+			    }).error(function(error) {
+				$scope.errors.push("Error in loading list of records.");
+			    });
+			}
 		    }
 		}
 		
@@ -106,11 +116,13 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		//for splicing results.
 		recordService.getAllRecords(0, 10, 't').success(function(data){
 		    updateAdmin($scope, data);
-		    //console.log(data);
-		    //$scope.recordsList = data;
 		}).error(function(error) {
 		    $scope.errors.push("Error in loading list of records.");
 		});
+
+		$scope.searchForRecord = function() {
+		    queryDatabase("search");
+		};
 
 		$scope.switchAdminResultsPage = function(pageNumber){
 		    /* Need to translate 'pageNumber' into 0 based index, decrement 'pageNumber' for calling
@@ -119,14 +131,26 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		    pageNumber--;
 		    setCurrentPage(pageNumber);
 
-		    queryDatabase();
+		    var searchType = "";
+		    if($scope.searchTerm.length > 0)
+			searchType = "search";
+		    else
+			searchType = "browse";
+		    
+		    queryDatabase(searchType);
 		};
 
 		$scope.switchPageLayout = function(){
 		    /* Need to translate 'pageNumber' into 0 based index, decrement 'pageNumber' for calling
 		       getAllRecords(pageNumber, numberOfRecords)
 		    */
-		    queryDatabase();
+		    var searchType = "";
+		    if($scope.searchTerm.length > 0)
+			searchType = "search";
+		    else
+			searchType = "browse";
+		    
+		    queryDatabase(searchType);
 		};
 	    },
 	    controllerAs: 'adminCtrl'
