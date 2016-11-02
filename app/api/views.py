@@ -329,7 +329,7 @@ def get_single_xml_metadata(_oid):
 
     d_fmt = '%Y-%m-%d'
 
-    d_fmt1 = '%Y-%m-%d %I:%M %p GMT'
+    d_fmt1 = '%Y-%m-%dT%H:%M:%SZ'
 
     try:
         #start/end date might not exist yet
