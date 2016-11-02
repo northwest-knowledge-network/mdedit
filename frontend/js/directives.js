@@ -45,7 +45,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
             }
         };
 })
-    .directive("adminView", ['recordService', 'updateAdmin', function(recordService, updateAdmin){
+    .directive("adminView", ['$location', 'recordService', 'updateAdmin', 'updateForms', function($location, recordService, updateAdmin, updateForms){
 	return{
 	    restrict: 'E',
 	    templateUrl: 'partials/allRecords.html',
@@ -151,6 +151,23 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 			searchType = "browse";
 		    
 		    queryDatabase(searchType);
+		};
+
+		$scope.loadRecord = function(recordId){
+		    recordService.getRecordToEdit(recordId)
+			.success(function (data){
+			    //$scope.newRecord = false;
+			    
+			    updateForms($scope, data.record);
+			    var path = "iso";
+			    if(data.record.schema_type.indexOf("ISO") == 0)
+				path = "dublin";
+			    
+			    $location.path(path);
+			})
+			.error(function (error) {
+			    $scope.errors.push("Error in loading record to edit");
+			});
 		};
 	    },
 	    controllerAs: 'adminCtrl'

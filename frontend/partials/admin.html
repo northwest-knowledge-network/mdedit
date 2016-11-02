@@ -1,12 +1,24 @@
 <div class="col-md-3">
   <table id="admin-menu">
+    <th>Search for record:</th>
+    <tr id="admin-search">
+      <td>
+	<form>
+	  <input type="text" name="search" ng-model="searchTerm"></input>
+	</form>
+	<button class="btn btn-primary" ng-click="searchForRecord()">Search</button>
+      </td>
+    </tr>
+    <th>
+      Sort Results:
+    </th>
     <tr>
       <td>
 	Sort by:
 	<br>
 	<select ng-model="selectedFilter" ng-change="switchPageLayout()">
 	  <option value="title">Title</option>
-    <option value="md_pub_date">Publish Date</option>
+	  <option value="md_pub_date">Publish Date</option>
 	  <option value="summary">Summary</option>
 	</select>
       </td>
@@ -22,14 +34,6 @@
 	  <option value="40">40</option>
 	  <option value="50">50</option>
 	</select>
-      </td>
-    </tr>
-    <tr>
-      <td>
-	<form>
-	  <input type="text" name="search" ng-model="searchTerm"></input>
-	</form>
-	<button class="btn btn-primary" ng-click="searchForRecord()">Search</button>
       </td>
     </tr>
   </table>
