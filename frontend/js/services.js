@@ -124,9 +124,18 @@ metadataEditorApp
 }])
 .factory('updateAdmin', ['$log', function($log){
     return function(scope, record){
+	//Contstruct empty record to display text that no results found. Don't want ng-repeat loop in partials/allRecords to try and
+	//print variable that is not defined.
+	var noResultsRecord = {"results":{}};
+	noResultsRecord.results = [{"title":"No results!", "summary":"", "citation":[{"name":""}], "md_pub_date":""}];
+
 	console.log("Printing inside updateAdmin: ");
 	console.log(record);
-	scope.recordsList = record;
+	console.log("Printing record: " + record.results.length);
+	if(record.results.length == 0)
+	    scope.recordsList = noResultsRecord;
+	else
+	    scope.recordsList = record;
 	scope.pageNumbers = [];
 	var numbers = [];
 	if(scope.recordsList.num_entries == 0){
@@ -627,7 +636,18 @@ metadataEditorApp
         };
     }
 ])
+.service('sharedRecord', function(){
+	var record;
 
+	return {
+	    getRecord: function() {
+		return record;
+	    },
+	    setRecord: function(value) {
+		record = value;
+	    }
+	};
+})
 .service('Geoprocessing', ['$http', '$q', 'hostname', function($http, $q, hostname) {
     var getBbox = function(placeName) {
         var baseUrl = '//' + hostname + '/api/geocode/';

@@ -173,6 +173,8 @@ def get_all_metadata(page_number, records_per_page, sort_on):
     #pageNumber is 0 based index. Need first page to start at 0 for math for setting arrayLowerBound and arrayUpperBound.
     try:
         #if username && (admin == true):
+        #Change next line to something like previous line after admin authentication works! Now the system is letting
+        #any authenticated user modify any other record!
         if username:
             if request.method == 'POST':
                 #need to do input sanitization on all these values! Separating variables so outside does not have direct access to
@@ -220,6 +222,7 @@ def search_metadata(search_term, page_number, records_per_page, sort_by):
     #pageNumber is 0 based index. Need first page to start at 0 for math for setting arrayLowerBound and arrayUpperBound.
     try:
         #if username && (admin == true):
+        #Change next line to previous line to only let admins search for records! Implement this when user database is updated for admin verification
         if username:
             if request.method == 'POST':
                 #need to do input sanitization on values on route! 
@@ -600,8 +603,9 @@ def _authenticate_user_from_session(request):
         res = requests.post(username_url, data=data)
 
         username = res.json()['username']
+        #admin = res.json()['admin']
         if username:
-            return username
+            return username #, admin
         # username will be u'' if the session id was not valid; make explicit
         else:
             return None

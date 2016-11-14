@@ -530,3 +530,7 @@ a.initial:after {
 #admin-menu th {
     padding: 10px;
 }
+
+.results-row {
+    cursor:pointer;
+}

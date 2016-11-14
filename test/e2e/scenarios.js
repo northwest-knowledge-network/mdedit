@@ -59,6 +59,10 @@ testDynamicFormAddition('dublin');
 testReviewSection('iso');
 testReviewSection('dublin');
 
+testAdminView("iso");
+testAdminView("dublin");
+testAdminView("admin");
+
 describe('ISO and Dublin Core editing views', function () {
 
      it('should go to #/dublin when the dublin core button is pressed', function () {
@@ -261,11 +265,12 @@ function deleteRecordTest(schemaType) {
 
 //Set which form type we are using
 function setFormType(type) {
-    if((type == "iso")
-       || (type == "dublin"))
+    if((type.indexOf("iso") > -1)
+       || (type.indexOf("dublin") > -1)
+       || (type.indexOf("admin") > -1))
 	form = type;
     else
-	console.log("Error: tried to set form to unsupported type. Current supported types are \"iso\" and \"dublin\"");
+	console.log("Error: tried to set form to unsupported type. Current supported types are \"iso\", \"dublin\", and \"admin\"");
 }
 
 //Get the current form type. Current types are "iso" or "dublin".
@@ -275,8 +280,10 @@ function getFormType(){
 	return "form.";
     else if(form == "dublin")
 	return "dublinForm.";
+    else if(form.indexOf("admin") > -1)
+	return "admin";
     else{
-	console.log("Error: tried to set form to unsupported from type.");
+	console.log("Error: tried to get unsupported from type.");
 	return "";
     }
 }
@@ -763,10 +770,12 @@ function testMilesDefaults(schemaType) {
 
 function getUrl(){
     var url = browser.driver.getCurrentUrl();
-    if(url.includes("iso"))
+    if(url.indexOf("iso") > -1)
 	return "iso";
-    else if(url.includes("dublin"))
+    else if(url.indexOf("dublin") > -1)
 	return "dublin";
+    else if(url.indexOf("admin") > -1)
+	return "admin";
     else
 	console.log("Error: unsupported url.");
 
@@ -1401,6 +1410,43 @@ function testReviewSection(schemaType) {
 	   });
 	    
 	});
+}
+
+function testAdminView(schemaType) {
+
+    describe('Test that non-admin user cannot access admin view.', function() {
+	
+        beforeEach( function () {
+	    clearCollection();
+	    browser.get('/frontend');
+	    setFormType("iso");
+	    var formType = getFormType();
+
+	    exposeFormElement(formType, "setup");
+	    
+            if (schemaType === 'iso'){
+                element(by.id('create-new-dataset')).click();
+            }else if (schemaType === 'dublin'){
+                element(by.id('create-new-non-dataset')).click();
+	    }else if(schemaType.indexOf('admin') > -1){
+		browser.get('frontend/#/admin');
+	    }
+	    
+	    setFormType(schemaType);
+	    formType = getFormType();
+
+        });
+	
+        afterEach(clearCollection);
+	
+	it('the admin view button should not be clickable from /iso or /dublin paths, but should be visible on /admin',
+           function () {
+	       var formType = getFormType();
+	       if(formType.indexOf("admin") == -1)
+		   expect(element(by.id("admin-view-button")).isDisplayed()).toBe(false);
+	   });
+
+    });
 }
 
 function compareBbox(dir, newRecord) {

@@ -3,8 +3,8 @@
     <tr>
       <td class="col-md-4">Title</td><td class="col-md-3">Author</td><td class="col-md-1">Publish Date</td><td class="col-md-4">Summary</td>
     </tr>
-    <tr ng-repeat="record in recordsList.results" class="">
-      <td class="col-md-4" ng-click="loadRecord(record._id.$oid)"><h4> {{record.title}} </h4></td><td class="col-md-3"><div ng-repeat="author in record.citation" ng-if="author.name != ''"> - {{author.name}} </div></td><td class="col-md-1"> {{record.md_pub_date}} </td><td class="col-md-4"> {{record.summary}} </td>
+    <tr ng-repeat="record in recordsList.results" class="results-row" ng-click="loadRecord(record._id.$oid)">
+      <td class="col-md-4"><h4> {{record.title}} </h4></td><td class="col-md-3"><div ng-repeat="author in record.citation" ng-if="author.name != ''"> - {{author.name}} </div></td><td class="col-md-1"> {{record.md_pub_date}} </td><td class="col-md-4"> {{record.summary}} </td>
     </tr>
   </table>
 </div>

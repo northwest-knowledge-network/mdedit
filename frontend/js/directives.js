@@ -45,7 +45,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
             }
         };
 })
-    .directive("adminView", ['$location', 'recordService', 'updateAdmin', 'updateForms', function($location, recordService, updateAdmin, updateForms){
+    .directive("adminView", ['$location', 'recordService', 'updateAdmin', 'updateForms', 'sharedRecord', function($location, recordService, updateAdmin, updateForms, sharedRecord){
 	return{
 	    restrict: 'E',
 	    templateUrl: 'partials/allRecords.html',
@@ -57,6 +57,21 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 
 		$scope.searchTerm = "";
 
+		$scope.searchType = "browse";
+
+		//Get current search type 
+		function getSearchType(){
+		    return $scope.searchType;
+		}
+
+		//Set current search type
+		function setSearchType(value){
+		    if(typeof value === 'string')
+			$scope.searchType = value;
+		    else
+			console.log("Error: tried to set search type to non-string value.");
+		}
+		
 		function getCurrentPage(){
 		    return currentPage;
 		}
@@ -77,7 +92,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		    else
 			setCurrentPage(getCurrentPage() + 1);
 
-		    queryDatabase();
+		    queryDatabase(getSearchType());
 		}
 
 		$scope.decCurrentPage = function(){
@@ -89,10 +104,15 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		    else
 			setCurrentPage(getCurrentPage() - 1);
  		    
-		    queryDatabase();
+		    queryDatabase(getSearchType());
 		}
 
 		function queryDatabase(queryType){
+		    //Contstruct empty record to display text that no results found. Don't want ng-repeat loop in partials/allRecords to try and
+		    //print variable that is not defined.
+		    var noResultsRecord = {"results":{}};
+		    noResultsRecord.results = [{"title":"No results!", "summary":"", "citation":[{"name":""}], "md_pub_date":""}];
+		    
 		    if(getCurrentPage() < 0)
 			console.log("Error: tried to set page number to less than 0.");
 		    else{
@@ -103,11 +123,17 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 				$scope.errors.push("Error in loading list of records.");
 			    });
 			}else if(queryType.indexOf("search") > -1){
-			    recordService.searchAllRecords($scope.searchTerm, getCurrentPage(), $scope.recordsPerPage.toString(), $scope.selectedFilter).success(function(data){
-				updateAdmin($scope, data);
-			    }).error(function(error) {
-				$scope.errors.push("Error in loading list of records.");
-			    });
+			    //If search term is not an empty string, use it to query database.
+			    if($scope.searchTerm !== ""){
+				recordService.searchAllRecords($scope.searchTerm, getCurrentPage(), $scope.recordsPerPage.toString(), $scope.selectedFilter).success(function(data){
+				    updateAdmin($scope, data);
+				}).error(function(error) {
+				    $scope.errors.push("Error in loading list of records.");
+				});
+			    }else{
+				//If Search term is empty string, then use empty record to return "No results" message.
+				updateAdmin($scope, noResultsRecord);
+			    }
 			}
 		    }
 		}
@@ -121,7 +147,13 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		});
 
 		$scope.searchForRecord = function() {
-		    queryDatabase("search");
+		    setSearchType("search");
+		    queryDatabase(getSearchType());
+		};
+
+		$scope.browseRecords = function(){
+		    setSearchType("browse");
+		    queryDatabase(getSearchType());
 		};
 
 		$scope.switchAdminResultsPage = function(pageNumber){
@@ -132,37 +164,35 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		    setCurrentPage(pageNumber);
 
 		    var searchType = "";
-		    if($scope.searchTerm.length > 0)
-			searchType = "search";
-		    else
-			searchType = "browse";
-		    
-		    queryDatabase(searchType);
+		    queryDatabase(getSearchType());
 		};
 
 		$scope.switchPageLayout = function(){
-		    /* Need to translate 'pageNumber' into 0 based index, decrement 'pageNumber' for calling
-		       getAllRecords(pageNumber, numberOfRecords)
-		    */
-		    var searchType = "";
-		    if($scope.searchTerm.length > 0)
-			searchType = "search";
-		    else
-			searchType = "browse";
-		    
-		    queryDatabase(searchType);
+		    queryDatabase(getSearchType());
 		};
 
 		$scope.loadRecord = function(recordId){
 		    recordService.getRecordToEdit(recordId)
 			.success(function (data){
-			    //$scope.newRecord = false;
 			    
+			    sharedRecord.setRecord(data.record);
+
+			    /* Need to set baseController's $scope.newRecord to false or else
+			       baseController will save another copy with a different _id in the 
+			       database.
+			     */
+			    $scope.$parent.newRecord = false;
+			    $scope.$parent.currentRecord = data.record;
+			    $scope.$parent.isAdmin = true;
+			    console.log("Added record to record sharing service.");
+
+			    //Change route to either ISO or Dublin form type based on record type.
+			    var path = "/iso";
+			    if(data.record.schema_type.indexOf("Dublin Core") > -1)
+				path = "/dublin";
+
+			    console.log("Printing url: " + $location.path());
 			    updateForms($scope, data.record);
-			    var path = "iso";
-			    if(data.record.schema_type.indexOf("ISO") == 0)
-				path = "dublin";
-			    
 			    $location.path(path);
 			})
 			.error(function (error) {

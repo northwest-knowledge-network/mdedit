@@ -4,11 +4,11 @@
 // for minification, explicitly declare dependencies $scope and $http
 metadataEditorApp.controller('BaseController',
     ['$scope', '$http', '$log', '$window', '$timeout', '$location', '$state', 'formOptions', 'updateForms', 'recordService',
-     'AttachmentService', 'Geoprocessing', 'hostname', 'session_id', 'partialsPrefix',
+     'AttachmentService', 'Geoprocessing', 'hostname', 'session_id', 'partialsPrefix', 'sharedRecord',
      
      function($scope, $http, $log, $window, $timeout, $location, $state, formOptions, updateForms,
         recordService, AttachmentService, Geoprocessing, hostname, session_id,
-              partialsPrefix)
+              partialsPrefix, sharedRecord)
     {
         // initialize list of existing metadata records
         $scope.allRecords = [];
@@ -38,6 +38,10 @@ metadataEditorApp.controller('BaseController',
 	//Used to allow publishing of record, but not saved in the database.
 	$scope.noSensitiveInformation = false;
 
+	$scope.currentRecord = sharedRecord.getRecord();
+
+	$scope.isAdmin = false;
+	
 	//Objects for background colors of buttons used in ng-style tags in iso.html and dublin.html 
 	var backgroundColor = {"background-color": "#cccccc"};
 	var selectedColor = {"background-color": "#00BC8C"};
@@ -1385,6 +1389,11 @@ metadataEditorApp.controller('BaseController',
 	    }, 700);
 	};
 
+	$scope.showAdminView = function() {
+	    //Change route to admin view
+	    $location.path("/admin");
+	};
+	
   } // end of callback for controller initialization
 ])
 .controller('ISOController', ['formOptions', function(formOptions) {
