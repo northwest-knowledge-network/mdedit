@@ -883,6 +883,7 @@ function testAnimation(schemaType) {
 	    if(formType.indexOf("dublin") > -1){
 		exposeFormElement(formType, "setup");
 		element(by.id("add-spatial-extent")).click();
+		element(by.id("add-temporal-extent")).click();
 	    }
         });
 
@@ -942,8 +943,8 @@ function testAnimation(schemaType) {
 		   expect(element(by.id("research-methods")).isPresent()).toBe(true);
 		   element(by.id("save-continue-button")).click();
 	       }
-	       waitForAnimation("start-date");
-	       expect(element(by.id("start-date")).isPresent()).toBe(true);
+	       waitForAnimation("first-pub-date-input");
+	       expect(element(by.id("first-pub-date-input")).isPresent()).toBe(true);
 	       
 	       //Click on next button, wait for animation, and test if first element of spatialExtent page is present.
 	       element(by.id("save-continue-button")).click();
@@ -1013,8 +1014,8 @@ function testAnimation(schemaType) {
 	       
 	       //Click on back button, wait for animation, and test if first element of temporalExtent is present.
 	       element(by.id("back-button")).click();
-	       waitForAnimation("start-date");
-	       expect(element(by.id("start-date")).isPresent()).toBe(true);
+	       waitForAnimation("first-pub-date-input");
+	       expect(element(by.id("first-pub-date-input")).isPresent()).toBe(true);
 
 	       //Click on back button, wait for animation, and then test if first element on that page is present
 	       element(by.id("back-button")).click();
@@ -1503,6 +1504,16 @@ function checkNull(fieldName){
 //Click on form button (breadcrumb button ids are the name of their states in app.js)
 //for specific form section and wait for scroll animation to finish before proceding.
 function exposeFormElement(formType, pageName){
+    if(pageName.indexOf("temporalExtent") > -1){
+	element(by.id(formType + "temporalExtent")).isPresent().then(function(results){
+	    if(!results){
+		element(by.id(formType + "setup")).click();
+		element(by.id("add-temporal-extent")).click();
+	    }
+	});
+    }
+    
+    
     element(by.id(formType + pageName)).click();
 
     //Wait for element present on selected page before trying to access elements: otherwise
@@ -1576,10 +1587,27 @@ function switchFormPage(key, formType, schemaType){
 	
     case "start_date":
     case "end_date":
+	if((element(by.id(formType + "temporalExtent")).isPresent()) == false){
+	    element(by.id(formType + "setup")).click();
+	    waitForAnimation("create-new-dataset");
+	    element(by.id("add-temporal-extent")).click();
+	}
+ 	element(by.id(formType + "temporalExtent")).click();
+	waitForAnimation("start-date");
+	
+	break;
+	
     case "last_mod_date":
     case "status":
     case "update_frequency":
     case "hierarchy_level":
+	element(by.id(formType + "temporalExtent")).isPresent().then(function(results){
+	    if(!results){
+		element(by.id(formType + "setup")).click();
+		waitForAnimation("create-new-dataset");
+		element(by.id("add-temporal-extent")).click();
+	    }
+	});
 	element(by.id(formType + "temporalExtent")).click();
 	waitForAnimation("start-date");
 	break;

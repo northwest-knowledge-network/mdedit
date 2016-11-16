@@ -28,6 +28,9 @@ metadataEditorApp.controller('BaseController',
 	//Scope variable to show or hide the "coordinate system" input in the "spatialExtent.html" partial.
 	$scope.coordinateInputVisible = false;
 
+	//Scope variable that hides the start-date and end-date inputs in temporalExtents.html
+	$scope.hasTemporalData = false;
+	
 	//Scope variable to track if user has agreed to terms and conditions of using metadata editor.
 	//Used to allow publishing of record, but not saved in the database.
 	$scope.agreeTermsConditions = false;
@@ -54,7 +57,7 @@ metadataEditorApp.controller('BaseController',
 	    {"stateName":"form.setup", "buttonLabel":"Setup"},
 	    {"stateName":"form.basic", "buttonLabel":"Basic Info"},
 	    {"stateName":"form.detailed","buttonLabel":"Detailed Info"},
-	    {"stateName":"form.temporalExtent","buttonLabel":"Temporal"},
+	    {"stateName":"form.minimalTemporal","buttonLabel":"Temporal"},
 	    {"stateName":"form.spatialExtent","buttonLabel":"Spatial"},
 	    {"stateName":"form.contacts","buttonLabel":"Contacts"},
 	    {"stateName":"form.dataFormats","buttonLabel":"Upload"},
@@ -72,7 +75,7 @@ metadataEditorApp.controller('BaseController',
  	var dublinButtonInit = [
 	    {"stateName":"dublinForm.setup","buttonLabel":"Setup"},
 	    {"stateName":"dublinForm.basic","buttonLabel":"Basic Info"},
-	    {"stateName":"dublinForm.temporalExtent","buttonLabel":"Temporal"},
+	    {"stateName":"dublinForm.minimalTemporal","buttonLabel":"Temporal"},
 	    {"stateName":"dublinForm.contacts","buttonLabel":"Contacts"},
 	    {"stateName":"dublinForm.dataFormats","buttonLabel":"Upload"},
 	    {"stateName":"dublinForm.onlineResourcesAndRestrictions","buttonLabel":"Resources"},
@@ -571,6 +574,25 @@ metadataEditorApp.controller('BaseController',
 	    }
 	}
 
+	$scope.toggleTemporalData = function() {
+	    $scope.hasTemporalData = !$scope.hasTemporalData;
+	    if(getFormType().indexOf('iso') > -1){
+		if($scope.hasTemporalData)
+		    addIsoButton("form.temporalExtent", "Temporal");
+		else if(!$scope.hasTemporalData)
+		    addIsoButton("form.minimalTemporal", "Temporal");
+		
+		console.log("Added to iso!");
+	    }else if(getFormType().indexOf('dublin') > -1){
+		if($scope.hasTemporalData)
+		    addDublinButton("dublinForm.temporalExtent", "Temporal");
+		else if(!$scope.hasTemporalData)
+		    addDublinButton("dublinForm.minimalTemporal", "Temporal");
+		
+		console.log("Added to dublin!");
+	    }
+	}
+
 	//Check currentRecord if reference_system attribute is null or length 0.
 	//If not, then make coordinateInputVisible true to show reference system input
 	//in spatialExtent.html. Useful on new record load.
@@ -672,7 +694,8 @@ metadataEditorApp.controller('BaseController',
 	    $scope.hasMap = true;
 	    $scope.hasSpatialData = false;
 	    $scope.coordinateInputVisible = false;
-
+	    $scope.hasTemporalData = false;
+	    
 	    //Reset form validity 
 	    resetFormValidity();
 	    
@@ -783,13 +806,90 @@ metadataEditorApp.controller('BaseController',
 	    if(dublinButtonList.indexOf(buttonName) == -1){
 		//If button is "Spatial" then put it after "Temporal"
 		if(buttonLabel.indexOf('Spatial') > -1){
-		    var index = dublinButtonList.indexOf("dublinForm.temporalExtent");
+
+		    //Figure out which temporal extent is loaded in the breadcrumb bar
+		    if(dublinButtonList.indexOf("dublinForm.temporalExtent") > -1)
+			var index = dublinButtonList.indexOf("dublinForm.temporalExtent");
+		    else if(dublinButtonList.indexOf("dublinForm.minimalTemporal") > -1)
+			var index = dublinButtonList.indexOf("dublinForm.minimalTemporal");
+		    else
+			var index = dublinButtonList.indexOf("dublinForm.temporalExtent");
+		    
 		    dublinButtonList.splice(index+1, 0, dublinButton.form_name);
 		    $scope.dublinFormList.splice(index+1, 0, dublinButton);
+		}else if(buttonLabel.indexOf('Temporal') > -1){
+		    //If button is "Temporal" then change HTML page that button points to so that "start-date"
+		    //and "end-date" will go away.
+		    if(dublinButtonList.indexOf("dublinForm.temporalExtent") > -1){
+			var index = dublinButtonList.indexOf("dublinForm.temporalExtent");
+			console.log("Changing to dublinMinimalTemporal. Index is : " + index);
+			$scope.dublinFormList[index].form_name = "dublinForm.minimalTemporal";
+			dublinButtonList[index] = "dublinForm.minimalTemporal";
+
+			/* Reset start_date and end_date to empty strings to make sure user cannot
+			   remove start and end dates after they have filled them out, and they 
+			   would be submitted with the record anyway.
+			*/
+			resetDates();
+		    }else if(dublinButtonList.indexOf("dublinForm.minimalTemporal") > -1){
+			var index = dublinButtonList.indexOf("dublinForm.minimalTemporal");
+			console.log("Changing to temporalExtent. Index is : " + index);
+			$scope.dublinFormList[index].form_name = "dublinForm.temporalExtent";
+			dublinButtonList[index] = "dublinForm.temporalExtent";
+		    }
 		}else{
+		    console.log("adding in new spatial section");
 		    dublinButtonList.splice((dublinButtonList.length - 2), 0, buttonLabel);
 		    $scope.dublinFormList.splice((dublinButtonList.length - 2), 0, dublinButton);
 		}
+	    }
+	}
+
+	function addIsoButton(buttonName, buttonLabel){
+	    //Get new isoButton object
+	    var isoButton = recordService.getFreshFormElement();
+	    
+	    isoButton.form_name = buttonName;
+	    isoButton.label = buttonLabel;
+	    isoButton.buttonStyle = getBackgroundColor();
+	    
+	    //Object variable to store current form element's $valid value
+	    isoButton.isValid = false;
+
+	    //If form does not currently have button, then add
+	    if(isoButtonList.indexOf(buttonName) == -1){
+		if(buttonLabel.indexOf('Temporal') > -1){
+		    if(isoButtonList.indexOf("form.temporalExtent") > -1){
+			var index = isoButtonList.indexOf("form.temporalExtent");
+			console.log("Changing to isoMinimalTemporal. Index is : " + index);
+			$scope.isoFormList[index].form_name = "form.minimalTemporal";
+			isoButtonList[index] = "form.minimalTemporal";
+			
+			/* Reset start_date and end_date to empty strings to make sure user cannot
+			   remove start and end dates after they have filled them out, and they 
+			   would be submitted with the record anyway.
+			*/
+			resetDates();
+		    }else if(isoButtonList.indexOf("form.minimalTemporal") > -1){
+			var index = isoButtonList.indexOf("form.minimalTemporal");
+			console.log("Changing to temporalExtent. Index is : " + index);
+			$scope.isoFormList[index].form_name = "form.temporalExtent";
+			isoButtonList[index] = "form.temporalExtent";
+		    }
+		}else{
+		    isoButtonList.splice((isoButtonList.length - 2), 0, buttonLabel);
+		    $scope.isoFormList.splice((isoButtonList.length - 2), 0, isoButton);
+		}
+	    }
+	}
+
+	//Reset start_date and end_date to empty strings.
+	function resetDates(){
+	    if($scope.currentRecord != null){
+		if($scope.currentRecord.start_date != null)
+		    $scope.currentRecord.start_date.$date = '';
+		if($scope.currentRecord.end_date != null)
+		    $scope.currentRecord.end_date.$date = '';
 	    }
 	}
 	
@@ -920,6 +1020,8 @@ metadataEditorApp.controller('BaseController',
 
 		    //Hide button until animation is finished
 		    hideButtonForAnimation();
+
+		    console.log("Printing form name: " + $scope.isoFormList[getCurrentPage()].form_name);
 		}
 	    }else if(formType.indexOf('dublin') > -1){
 		//Check index against array bounds
@@ -932,6 +1034,8 @@ metadataEditorApp.controller('BaseController',
 
 		    //Hide button until animation is finished
 		    hideButtonForAnimation();
+
+		    console.log("Printing form name: " + $scope.dublinFormList[getCurrentPage()].form_name);
 		}
 	    }else
 		console.log("Tried to index non-supported record type.");
