@@ -98,7 +98,6 @@ metadataEditorApp.controller('BaseController',
         //=== set up hostname-related scope variables ===//
         // export to XML
         var exportAddr = function(oid, xmlType) {
-	    console.log("PRinting hostname in controller: " + hostname);
             return hostname + '/api/metadata/' + oid + '/' + xmlType;
         };
         $scope.export_ = function(type) {
@@ -263,16 +262,45 @@ metadataEditorApp.controller('BaseController',
                     $scope.newRecord = false;
 
                     updateForms($scope, data.record);
+
+
+		    //If start date and end date are not null, then check $date attributes inside them
+		    if(($scope.currentRecord.start_date != null)
+		       && ($scope.currentRecord.end_date != null)){
+			//If either start date or end date are not empty strings, and the start and end date
+			//inputs have not been added to the form already, then, add them.
+			if(($scope.currentRecord.start_date.$date !== '')
+			   || ($scope.currentRecord.start_date.$date !== '')){
+			    if(!$scope.hasTemporalData)
+				toggleTemporal();
+			}
+			//If start and end dates are empy strings, and their inputs are already in the
+			//Temporal Extent section, then remove the start and end date inputs.
+			else if(($scope.currentRecord.start_date.$date === '')
+				&& ($scope.currentRecord.end_date.$date === '')){
+			    if($scope.hasTemporalData)
+				toggleTemporal();
+			}
+		    }else{
+			/* If currentRecord.start_date is null and the previous record had
+			   temporal data, then we need to remove start_date and end_date inputs by
+		   calling the toggleTemporal function.
+			*/
+			if($scope.hasTemporalData){
+			    toggleTemporal();
+			    console.log("Removing temporal from null record with hasTemporalData true");
+			}
+		    }
                 })
                 .error(function (error) {
                     $scope.errors.push("Error in loading record to edit");
                 });
-
-             //set geocode write-in box to be blank
+            //set geocode write-in box to be blank
             $scope.options.bboxInput = '';
-
+	    
 	    //Reset scope variables used in disclaimer.html checkboxes
-	    initScopeValues();
+	    initScopeValues()
+	    
         };
 
         /**
@@ -575,6 +603,12 @@ metadataEditorApp.controller('BaseController',
 	}
 
 	$scope.toggleTemporalData = function() {
+	    toggleTemporal();
+	}
+
+	//Need to be able to toggle temporal data from inside and outside the controller, so split up functionality
+	//to allow for access inside and outside
+	function toggleTemporal(){
 	    $scope.hasTemporalData = !$scope.hasTemporalData;
 	    if(getFormType().indexOf('iso') > -1){
 		if($scope.hasTemporalData)
@@ -694,8 +728,7 @@ metadataEditorApp.controller('BaseController',
 	    $scope.hasMap = true;
 	    $scope.hasSpatialData = false;
 	    $scope.coordinateInputVisible = false;
-	    $scope.hasTemporalData = false;
-	    
+
 	    //Reset form validity 
 	    resetFormValidity();
 	    
@@ -822,7 +855,6 @@ metadataEditorApp.controller('BaseController',
 		    //and "end-date" will go away.
 		    if(dublinButtonList.indexOf("dublinForm.temporalExtent") > -1){
 			var index = dublinButtonList.indexOf("dublinForm.temporalExtent");
-			console.log("Changing to dublinMinimalTemporal. Index is : " + index);
 			$scope.dublinFormList[index].form_name = "dublinForm.minimalTemporal";
 			dublinButtonList[index] = "dublinForm.minimalTemporal";
 
@@ -833,7 +865,6 @@ metadataEditorApp.controller('BaseController',
 			resetDates();
 		    }else if(dublinButtonList.indexOf("dublinForm.minimalTemporal") > -1){
 			var index = dublinButtonList.indexOf("dublinForm.minimalTemporal");
-			console.log("Changing to temporalExtent. Index is : " + index);
 			$scope.dublinFormList[index].form_name = "dublinForm.temporalExtent";
 			dublinButtonList[index] = "dublinForm.temporalExtent";
 		    }
@@ -861,7 +892,6 @@ metadataEditorApp.controller('BaseController',
 		if(buttonLabel.indexOf('Temporal') > -1){
 		    if(isoButtonList.indexOf("form.temporalExtent") > -1){
 			var index = isoButtonList.indexOf("form.temporalExtent");
-			console.log("Changing to isoMinimalTemporal. Index is : " + index);
 			$scope.isoFormList[index].form_name = "form.minimalTemporal";
 			isoButtonList[index] = "form.minimalTemporal";
 			
@@ -872,7 +902,6 @@ metadataEditorApp.controller('BaseController',
 			resetDates();
 		    }else if(isoButtonList.indexOf("form.minimalTemporal") > -1){
 			var index = isoButtonList.indexOf("form.minimalTemporal");
-			console.log("Changing to temporalExtent. Index is : " + index);
 			$scope.isoFormList[index].form_name = "form.temporalExtent";
 			isoButtonList[index] = "form.temporalExtent";
 		    }
@@ -1020,8 +1049,6 @@ metadataEditorApp.controller('BaseController',
 
 		    //Hide button until animation is finished
 		    hideButtonForAnimation();
-
-		    console.log("Printing form name: " + $scope.isoFormList[getCurrentPage()].form_name);
 		}
 	    }else if(formType.indexOf('dublin') > -1){
 		//Check index against array bounds
@@ -1035,7 +1062,6 @@ metadataEditorApp.controller('BaseController',
 		    //Hide button until animation is finished
 		    hideButtonForAnimation();
 
-		    console.log("Printing form name: " + $scope.dublinFormList[getCurrentPage()].form_name);
 		}
 	    }else
 		console.log("Tried to index non-supported record type.");
@@ -1121,8 +1147,6 @@ metadataEditorApp.controller('BaseController',
 		parsedName = isoButtonList[getCurrentPage()].split(".")[1];
 	    else if(formType.indexOf('dublin') > -1)
 		parsedName = dublinButtonList[getCurrentPage()].split(".")[1];
-
-	    console.log("Checking form complete: " + formComplete);
 
 	    /*
 	      Function checks if $valid parameter passed in is true. If it is true, then all inputs with "required" tags
