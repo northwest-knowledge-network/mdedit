@@ -1,0 +1,17 @@
+<div>
+  <table class="admin-results-table table-hover table">
+    <tr>
+      <td class="col-md-1">Assign DOI/ARK</td><td class="col-md-3">Title</td><td class="col-md-2">Author</td><td class="col-md-1">Publish Date</td><td class="col-md-3">Summary</td><td class="col-md-2">DOI/ARK Request</td>
+    </tr>
+    <tr ng-repeat="record in recordsList.results" class="results-row" >
+      <td class="col-md-1"><form name="doiArkAssignCtrl.setDoi"><input type="checkbox" ng-init="doiVisible$index = false" ng-click="doiVisible$index = !doiVisible$index"></input></form></td><td class="col-md-3"><h4> {{record.title}} </h4></td><td class="col-md-2"><div ng-repeat="author in record.citation" ng-if="author.name != ''"> - {{author.name}} </div></td><td class="col-md-1"> {{record.md_pub_date}} </td><td class="col-md-3"> {{record.summary}} </td><td class="col-md-2"> {{record.doi_ark_request}} <span  ng-show="doiVisible$index"><form name="doiArkAssignCtrl.doiAssignForm"><input type="text" ng-model="record.assigned_doi_ark"></input><form><button class="btn btn-primary" ng-click="saveRecord($index)">Assign</button></span></td>
+    </tr>
+  </table>
+</div>
+<div>
+  <table class="page-table">
+    <tr>
+      <td class="page-numbers" ng-click="decCurrentPage()">Previous </td><td ng-repeat="i in pageNumbers" class="page-numbers" ng-value="i" ng-click="switchAdminResultsPage(i);">{{ i }}</td><td class="page-numbers" ng-click="incCurrentPage()"> Next</td>
+    </tr>
+  </table>
+</div>

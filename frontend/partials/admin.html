@@ -42,6 +42,22 @@
 	</select>
       </td>
     </tr>
+    <th>Search All</th>
+    <tr>
+      <td>
+	<button class="btn btn-primary" ng-click="adminCtrl.show = true; doiArkAssignCtrl.show = false; initAdminView();">Search All</button>
+      </td>
+    </tr>
+    <th>Assign DOI/ARK</th>
+    <tr>
+      <td>
+	<button class="btn btn-primary" ng-click="adminCtrl.show = false; doiArkAssignCtrl.show = true; initDoiView();">DOI/ARK</button>
+      </td>
+    </tr>
   </table>
 </div>
-<admin-view class="col-md-9"></admin-view>
+
+<admin-view class="col-md-9" ng-show="adminCtrl.show"></admin-view>
+
+<doi-ark-assign-view class="col-md-9" ng-show="doiArkAssignCtrl.show"></doi-ark-assign-view>
+

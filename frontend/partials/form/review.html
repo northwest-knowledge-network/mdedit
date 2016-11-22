@@ -108,9 +108,11 @@
 <h4>Disclaimer</h4>
 <table class="table-bordered table-hover review-table">
   <tr>
-    <td id="doi_ark_request-0" class="cell-padding first-cell-width"> DOI/ARK </td> <td id="doi_ark_request-1" class="cell-padding"> {{reviewFields(currentRecord.doi_ark_request, 'value-string')}} </td>
+    <td id="doi_ark_request-0" class="cell-padding first-cell-width"> DOI/ARK Request</td> <td id="doi_ark_request-1" class="cell-padding"> {{reviewFields(currentRecord.doi_ark_request, 'value-string')}} </td>
   </tr>
-
+  <tr ng-show="currentRecord.assigned_doi_ark.length > 0">
+    <td id="assigned_doi_ark" class="cell-padding first-cell-width"> Assigned DOI/ARK </td> <td id="assigned_doi_ark_-1" class="cell-padding"> {{reviewFields(currentRecord.assigned_doi_ark, 'value-string')}} </td>
+  </tr>
   <tr>
     <td id="data_one_search-0" class="cell-padding first-cell-width"> Searchable on DataONE </td> <td id="data_one_search-1" class="cell-padding"> {{reviewFields(currentRecord.data_one_search, 'value-string')}} </td>
   </tr>
@@ -126,13 +128,11 @@
 	Submit for publication
       </button>
     </div>
-    
     <div ng-hide="checkAllFormsValid();">
       <span class="disabled btn btn-primary">
 	Please complete the record to publish data
       </span>
     </div>
-    
   </div>
 </div>
 

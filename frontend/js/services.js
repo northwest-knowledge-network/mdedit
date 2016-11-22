@@ -200,6 +200,7 @@ metadataEditorApp
     end_date: {$date:''},
     
     doi_ark_request: '',
+    assigned_doi_ark: '',
     data_one_search: 'false',
     reference_system: '',
     attachments: [],
@@ -243,6 +244,7 @@ metadataEditorApp
     end_date: {	$date:''},
     
     doi_ark_request: '',
+    assigned_doi_ark: '',
     data_one_search: 'false',
     reference_system: '',
     attachments: [],
@@ -288,9 +290,9 @@ metadataEditorApp
         "zipcode": "83844-2358"
 })
 .service('recordService',
-    ['$http', '$q', '$log', 'hostname', 'session_id',
+	 ['$http', '$q', '$log', '$location', 'hostname', 'session_id',
      'emptyISORecord', 'emptyDCRecord', 'milesFields', 'nkn', 'formElement',
-    function($http, $q, $log, hostname, session_id,
+	  function($http, $q, $log, $location, hostname, session_id,
              emptyISORecord, emptyDCRecord, milesFields, nkn, formElement)
     {
         /**
@@ -313,24 +315,27 @@ metadataEditorApp
 
             // server requires list of strings
 
-            if (typeof record.place_keywords !== "undefined")
-
-                serverReady.place_keywords =
-                    serverReady.place_keywords.split(',')
-                        .map(function(el) { return el.trim(); });
-
-            if (typeof record.thematic_keywords !== "undefined")
+	    if ((typeof record.place_keywords !== "undefined")
+		&& ($location.url().indexOf('admin') == -1)){
+		    console.log("Printing place_keywords: " + serverReady.place_keywords );
+		    serverReady.place_keywords =
+			serverReady.place_keywords.split(',')
+			.map(function(el) { return el.trim(); });
+	    }
+	
+	    if ((typeof record.thematic_keywords !== "undefined")
+		&& ($location.url().indexOf('admin') == -1)){
 
                 serverReady.thematic_keywords =
                     serverReady.thematic_keywords.split(',');
-
+	    }
+	    
             if (typeof record.data_format !== "undefined")
 
                 serverReady.data_format = scope.dataFormats.iso;
 
 
-            if (scope.dataFormats.aux)
-            {
+            if (scope.dataFormats.aux){
                 var auxList = scope.dataFormats.aux.split(',')
                                 .map(function(el) { return el.trim(); });
 
@@ -498,9 +503,6 @@ metadataEditorApp
                 {'session_id': session_id}).success(function(data){
 		    record = data.record;
 		});
-
-	    //console.log("Printing what was returned from the backend: " + result);
-	    //return result;
 	};
 
 	var searchAllRecords = function(searchTerm, pageNumber, recordsPerPage, sortBy) {
@@ -511,9 +513,30 @@ metadataEditorApp
                 {'session_id': session_id}).success(function(data){
 		    record = data.record;
 		});
+	};
+
+	/* Get records that want a DOI or ARK associated with them
+	 */
+	var getDoiArkRequests = function(pageNumber, recordsPerPage, sortBy) {
+	    var record = {};
 	    
-	    //console.log("Printing what was returned from the backend: " + result);
-	    //return result;
+	    return $http.post(
+                '//' + hostname + '/api/metadata/doiark/' + pageNumber + '/' + recordsPerPage + '/' + sortBy,
+                {'session_id': session_id}).success(function(data){
+		    record = data.record;
+		});
+	};
+
+	/* Get records that want a DOI or ARK associated with them
+	 */
+	var searchDoiArkRequests = function(searchTerm, pageNumber, recordsPerPage, sortBy) {
+	    var record = {};
+
+	    return $http.post(
+                '//' + hostname + '/api/metadata/doiark/search/' + searchTerm + "/" + pageNumber + "/" + recordsPerPage + "/" + sortBy,
+                {'session_id': session_id}).success(function(data){
+		    record = data.record;
+		});
 	};
 	
         /**
@@ -626,8 +649,10 @@ metadataEditorApp
             getMilesDefaults: getMilesDefaults,
             getNKNAsDistributor: getNKNAsDistributor,
             getRecordToEdit: getRecordToEdit,
+	    getDoiArkRequests: getDoiArkRequests,
 	    getAllRecords: getAllRecords,
 	    searchAllRecords: searchAllRecords,
+	    searchDoiArkRequests: searchDoiArkRequests,
             saveDraft: saveDraft,
             delete: delete_,
             list: list,

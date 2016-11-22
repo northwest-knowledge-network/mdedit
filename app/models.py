@@ -81,6 +81,9 @@ class Metadata(db.Document):
     # request for DOI or ARK
     doi_ark_request = db.StringField(max_length=255)
 
+    # Assigned DOI or ARK
+    assigned_doi_ark = db.StringField(max_length=255)
+    
     # request to be searchable on DataOne
     data_one_search = db.StringField(max_length=255)
     
