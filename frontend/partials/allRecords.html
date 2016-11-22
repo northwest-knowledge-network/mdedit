@@ -1,4 +1,56 @@
-<div>
+<div class="col-md-3">
+  <table class="admin-menu">
+    <th>Search for record:</th>
+    <tr class="admin-search">
+      <td>
+	<form>
+	  <input type="text" name="search" ng-model="searchTerm"></input>
+	</form>
+	<button class="btn btn-primary" ng-click="searchAllRecords()">Search</button>
+      </td>
+    </tr>
+    <th>Browse All Records</th>
+    <tr>
+      <td>
+	<button class="btn btn-primary" ng-click="browseAllRecords()">Browse All</button>
+      </td>
+    </tr>
+    <th>
+      Sort Results:
+    </th>
+    <tr>
+      <td>
+	Sort by:
+	<br>
+	<select ng-model="selectedFilter" ng-change="switchLayout()">
+	  <option value="title">Title</option>
+	  <option value="md_pub_date">Publish Date</option>
+	  <option value="summary">Summary</option>
+	</select>
+      </td>
+    </tr>
+    <tr>
+      <td>
+	Number of records per page:
+	<br>
+	<select ng-model="recordsPerPage" ng-change="switchLayout()">
+	  <option value="10" selected="selected">10</option>
+	  <option value="20">20</option>
+	  <option value="30">30</option>
+	  <option value="40">40</option>
+	  <option value="50">50</option>
+	</select>
+      </td>
+    </tr>
+    <th>Assign DOI/ARK</th>
+    <tr>
+      <td>
+	<button class="btn btn-primary" ng-click="changeToDoiView(); initDoiView();">DOI/ARK</button>
+      </td>
+    </tr>
+  </table>
+</div>
+<div class="col-md-9">
   <table class="admin-results-table table-hover table">
     <tr>
       <td class="col-md-4">Title</td><td class="col-md-3">Author</td><td class="col-md-1">Publish Date</td><td class="col-md-4">Summary</td>
@@ -11,7 +63,7 @@
 <div>
   <table class="page-table">
     <tr>
-      <td class="page-numbers" ng-click="decCurrentPage()">Previous </td><td ng-repeat="i in pageNumbers" class="page-numbers" ng-value="i" ng-click="switchAdminResultsPage(i);">{{ i }}</td><td class="page-numbers" ng-click="incCurrentPage()"> Next</td>
+      <td class="page-numbers" ng-click="decCurrentRecordsPage()">Previous </td><td ng-repeat="i in pageNumbers" class="page-numbers" ng-value="i" ng-click="switchRecordsResultsPage(i);">{{ i }}</td><td class="page-numbers" ng-click="incCurrentRecordsPage()"> Next</td>
     </tr>
   </table>
 </div>

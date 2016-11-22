@@ -1438,4 +1438,19 @@ metadataEditorApp.controller('BaseController',
         $scope.currentRecord.east_lon = vm.ne.lng();
         $scope.currentRecord.west_lon = vm.sw.lng();
     };
+  })
+.controller('adminController',function($scope, $compile, NgMap)
+  {
+      $scope.adminView = true;
+      $scope.doiAssignView = false;
+
+      $scope.changeToRecordsView = function(){
+	  $scope.adminView = true;
+	  $scope.doiAssignView = false;
+      };
+
+      $scope.changeToDoiView = function(){
+	  $scope.adminView = false;
+	  $scope.doiAssignView = true;
+      };
   });

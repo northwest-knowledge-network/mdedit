@@ -45,15 +45,17 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
             }
         };
 })
-    .directive("adminSearchBar", ['$location', 'recordService', 'updateAdmin', 'updateForms', 'sharedRecord', function($location, recordService, updateAdmin, updateForms, sharedRecord){
+    .directive("adminView", ['$location', 'recordService', 'updateAdmin', 'updateForms', 'sharedRecord', function($location, recordService, updateAdmin, updateForms, sharedRecord){
 	return{
 	    restrict: 'E',
-	    templateUrl: 'partials/adminSearchBar.html',
+	    templateUrl: 'partials/allRecords.html',
 	    controller: function($scope, recordService){
 		var currentPage = 0;
 
+		console.log("inside adminView");
+
 		$scope.show = true;
-		
+
 		$scope.recordsPerPage = "10";
 
 		$scope.selectedFilter = "title";
@@ -85,55 +87,8 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		    else
 			console.log("Error: tried to set current page to non-number");
 		}
-	    },
-	    controllerAs: "adminSearchBarCtrl",
-	};
-    }])
 
-    .directive("adminView", ['$location', 'recordService', 'updateAdmin', 'updateForms', 'sharedRecord', function($location, recordService, updateAdmin, updateForms, sharedRecord){
-	return{
-	    restrict: 'E',
-	    templateUrl: 'partials/allRecords.html',
-	    controller: function($scope, recordService){
-		var currentPage = 0;
-
-		console.log("inside adminView");
-
-		$scope.show = true;
-		
- 		$scope.recordsPerPage = "10";
-
-		$scope.selectedFilter = "title";
-
-		$scope.searchTerm = "";
-
-		$scope.searchType = "browse";
-
-		//Get current search type 
-		function getSearchType(){
-		    return $scope.$parent.searchType;
-		}
-
-		//Set current search type
-		function setSearchType(value){
-		    if(typeof value === 'string')
-			$scope.searchType = value;
-		    else
-			console.log("Error: tried to set search type to non-string value.");
-		}
-		
-		function getCurrentPage(){
-		    return currentPage;
-		}
-
-		function setCurrentPage(value){
-		    if(typeof value === 'number')
-			currentPage = value;
-		    else
-			console.log("Error: tried to set current page to non-number");
-		}
-
-		$scope.incCurrentPage = function(){
+		$scope.incCurrentRecordsPage = function(){
 		    var newPage = getCurrentPage() + 1;
 		    if(newPage < 0)
 			setCurrentPage(0);
@@ -145,7 +100,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		    queryDatabase(getSearchType());
 		}
 
-		$scope.decCurrentPage = function(){
+		$scope.decCurrentRecordsPage = function(){
 		    var newPage = getCurrentPage() -1;
 		    if(newPage < 0)
 			setCurrentPage(0);
@@ -197,17 +152,17 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		    $scope.errors.push("Error in loading list of records.");
 		});
 
-		$scope.searchForRecord = function() {
+		$scope.searchAllRecords = function() {
 		    setSearchType("search");
 		    queryDatabase(getSearchType());
 		};
 
-		$scope.browseRecords = function(){
+		$scope.browseAllRecords = function(){
 		    setSearchType("browse");
 		    queryDatabase(getSearchType());
 		};
 
-		$scope.switchAdminResultsPage = function(pageNumber){
+		$scope.switchRecordsResultsPage = function(pageNumber){
 		    /* Need to translate 'pageNumber' into 0 based index, decrement 'pageNumber' for calling
 		       getAllRecords(pageNumber, numberOfRecords)
 		    */
@@ -217,7 +172,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		    queryDatabase(getSearchType());
 		};
 
-		$scope.switchPageLayout = function(){
+		$scope.switchLayout = function(){
 		    queryDatabase(getSearchType());
 		};
 
@@ -231,9 +186,9 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 			       baseController will save another copy with a different _id in the 
 			       database.
 			     */
-			    $scope.$parent.newRecord = false;
-			    $scope.$parent.currentRecord = data.record;
-			    $scope.$parent.isAdmin = true;
+			    $scope.newRecord = false;
+			    $scope.currentRecord = data.record;
+			    $scope.isAdmin = true;
 			    console.log("Added record to record sharing service.");
 
 			    //Change route to either ISO or Dublin form type based on record type.
@@ -258,7 +213,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		    });
 		};
 	    },
-	    controllerAs: 'adminCtrl'
+	    controllerAs: 'adminViewCtrl'
 	}
     }])
 
@@ -271,8 +226,8 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 
 		console.log("inside doi/ark");
 
-		$scope.show = false;
-		
+		$scope.showDoi = false;
+
 		$scope.recordsPerPage = "10";
 
 		$scope.selectedFilter = "title";
@@ -280,7 +235,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		$scope.searchTerm = "";
 
 		$scope.searchType = "browse";
-
+		
 		//Get current search type 
 		function getSearchType(){
 		    return $scope.searchType;
@@ -360,7 +315,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 			}
 		    }
 		}
-		
+/*		
 		//Use 0 based index for pages (first argument to getAllRecords) to make math work in backend
 		//for splicing results.
 		recordService.getDoiArkRequests(0, 10, 't').success(function(data){
@@ -368,7 +323,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		}).error(function(error) {
 		    $scope.errors.push("Error in loading list of records.");
 		});
-
+*/
 		$scope.searchForRecord = function() {
 		    setSearchType("search");
 		    queryDatabase(getSearchType());

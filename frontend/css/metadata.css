@@ -510,24 +510,24 @@ a.initial:after {
     border-top: 1px solid black;
 }
 
-#admin-menu {
+.admin-menu {
     background-color: #cccccc;
     width: 80%;
 }
 
-#admin-menu td{
+.admin-menu td{
     padding:5px;
 }
 
-#admin-menu #admin-search {
+.admin-menu .admin-search {
     width:100%;
 }
 
-#admin-menu #admin-search input {
+.admin-menu .admin-search input {
     width: 100%;
 }
 
-#admin-menu th {
+.admin-menu th {
     padding: 10px;
 }
 
