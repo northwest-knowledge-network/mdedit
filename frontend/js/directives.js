@@ -58,7 +58,8 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 
 		$scope.recordsPerPage = "10";
 
-		$scope.selectedFilter = "title";
+		//Records initially sorted by the publish date. This is the name of the publish date in the database.
+		$scope.selectedOrderFilter = "md_pub_date";
 
 		$scope.searchTerm = "";
 
@@ -122,7 +123,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 			console.log("Error: tried to set page number to less than 0.");
 		    else{
 			if(queryType.indexOf("browse") > -1){
-			    recordService.getAllRecords(getCurrentPage(), $scope.recordsPerPage.toString(), $scope.selectedFilter).success(function(data){
+			    recordService.getAllRecords(getCurrentPage(), $scope.recordsPerPage.toString(), $scope.selectedOrderFilter).success(function(data){
 				updateAdmin($scope, data);
 			    }).error(function(error) {
 				$scope.errors.push("Error in loading list of records.");
@@ -130,7 +131,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 			}else if(queryType.indexOf("search") > -1){
 			    //If search term is not an empty string, use it to query database.
 			    if($scope.searchTerm !== ""){
-				recordService.searchAllRecords($scope.searchTerm, getCurrentPage(), $scope.recordsPerPage.toString(), $scope.selectedFilter).success(function(data){
+				recordService.searchAllRecords($scope.searchTerm, getCurrentPage(), $scope.recordsPerPage.toString(), $scope.selectedOrderFilter).success(function(data){
 				    updateAdmin($scope, data);
 				}).error(function(error) {
 				    $scope.errors.push("Error in loading list of records.");
@@ -179,16 +180,17 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		$scope.loadRecord = function(recordId){
 		    recordService.getRecordToEdit(recordId)
 			.success(function (data){
-			    
+			    console.log("In loadRecord!");
 			    sharedRecord.setRecord(data.record);
 
-			    /* Need to set baseController's $scope.newRecord to false or else
+			    /* Need to set baseController's $scope.$parent.$parent.newRecord to false or else
 			       baseController will save another copy with a different _id in the 
-			       database.
-			     */
-			    $scope.newRecord = false;
-			    $scope.currentRecord = data.record;
-			    $scope.isAdmin = true;
+			       database. BaseController is two scopes above this controller, so 
+			       have to go up 2 parent scopes.
+			    */
+			    $scope.$parent.$parentnewRecord = false;
+			    $scope.$parent.$parent.currentRecord = data.record;
+			    $scope.$parent.$parent.isAdmin = true;
 			    console.log("Added record to record sharing service.");
 
 			    //Change route to either ISO or Dublin form type based on record type.
@@ -206,7 +208,18 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		};
 
 		$scope.initAdminView = function(){
-		    recordService.getAllRecords(0, 10, 't').success(function(data){
+		    $scope.show = true;
+		    
+		    $scope.recordsPerPage = "10";
+		    
+		    //Records initially sorted by the publish date. This is the name of the publish date in the database.
+		    $scope.selectedOrderFilter = "md_pub_date";
+		    
+		    $scope.searchTerm = "";
+		    
+		    $scope.searchType = "browse";
+
+		    recordService.getAllRecords(0, 10, $scope.seletedOrderFilter).success(function(data){
 			updateAdmin($scope, data);
 		    }).error(function(error) {
 			$scope.errors.push("Error in loading list of records.");
@@ -230,7 +243,8 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 
 		$scope.recordsPerPage = "10";
 
-		$scope.selectedFilter = "title";
+		//Records initially sorted by the publish date. This is the name of the publish date in the database.
+		$scope.selectedFilter = "assigned_doi_ark";
 
 		$scope.searchTerm = "";
 
@@ -361,7 +375,18 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		$scope.initDoiView = function(){
 		    //Use 0 based index for pages (first argument to getAllRecords) to make math work in backend
 		    //for splicing results.
-		    recordService.getDoiArkRequests(0, 10, 't').success(function(data){
+		    $scope.showDoi = false;
+		    
+		    $scope.recordsPerPage = "10";
+		    
+		    //Records initially sorted by the publish date. This is the name of the publish date in the database.
+		    $scope.selectedFilter = "assigned_doi_ark";
+		    
+		    $scope.searchTerm = "";
+		    
+		    $scope.searchType = "browse";
+		    
+		    recordService.getDoiArkRequests(0, 10, $scope.selectedFilter).success(function(data){
 			updateAdmin($scope, data);
 		    }).error(function(error) {
 			$scope.errors.push("Error in loading list of records.");

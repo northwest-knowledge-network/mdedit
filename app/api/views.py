@@ -234,11 +234,15 @@ def get_doi_ark_requests(page_number, records_per_page, sort_on):
                     sort_by = 'md_pub_date'
                 elif sort_on == 'summary':
                     sort_by = 'summary'
+                elif sort_on == 'assigned_doi_ark':
+                    sort_by = 'assigned_doi_ark'
                 else:
                     sort_by = 'title'
 
+                #Look for published records with either DOI or ARK requests without DOI or ARK assigned, then records with DOI
+                #or ARK already assigned
                 record_list = Metadata.objects(__raw__={'$and': [{'published':'true'}, {'$or': [{'doi_ark_request':'DOI'}, {'doi_ark_request':'ARK'}]}]}).order_by(sort_by)
-                
+
                 arrayLowerBound = int(page_number) * int(records_per_page)
                 arrayUpperBound = int(page_number) * int(records_per_page) + int(records_per_page)
                 #Only return array elements between indicies. Don't want to return all possible values
