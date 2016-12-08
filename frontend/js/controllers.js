@@ -1410,6 +1410,9 @@ metadataEditorApp.controller('BaseController',
 	    console.log("Printing indecies: " + index);
 	    for(var i = 0; i < $scope.currentRecord.access.length; i++){
 		if($scope.currentRecord.access[i].name == $scope.accessNames[index]){
+		    if($scope.currentRecord.access[i].resource_url == null)
+			$scope.currentRecord.access[i].resource_url = [""];
+		    
 		    if($scope.currentRecord.access[i].resource_url[0] == "")
 			$scope.currentRecord.access[i].resource_url[0] = url;
 		    else
@@ -1421,20 +1424,23 @@ metadataEditorApp.controller('BaseController',
 	//Checks to see if contacts are associated with URLs in Resources section, and initialized drop down boxes to
 	//the associated name if a URL is associated with a name
 	function loadContactResource(){
-	    //Init accessNames array to length of currentRecord.online array. There will be at most this many associated urls.
-	    for(var i = 0; i < $scope.currentRecord.online.length; i++)
-		$scope.accessNames.push("");
-
-	    /* Check currentRecord.online urls against currentRecord.access's resource_urls to see if they are associated with
-	       a url. If so, put the name of the contact in accessNames array at the same array position as the currentRecord.online
-	       array. This will give the order needed to automatically select the associated contact's name when loaded.
-	    */
-	    for(var i = 0; i < $scope.currentRecord.access.length; i++){
-		for(var j = 0; j < $scope.currentRecord.access[i].resource_url.length; j++){
-		    for(var k = 0; k < $scope.currentRecord.online.length; k++){
-			if($scope.currentRecord.access[i].resource_url[j] == $scope.currentRecord.online[k]){
-			    console.log($scope.currentRecord.online[k]);
+	    //Handling legacy records: records created with previous version will not have resource_url
+	    if($scope.currentRecord.access[0].resource_url != null){
+ 		//Init accessNames array to length of currentRecord.online array. There will be at most this many associated urls.
+		for(var i = 0; i < $scope.currentRecord.online.length; i++)
+		    $scope.accessNames.push("");
+		
+		/* Check currentRecord.online urls against currentRecord.access's resource_urls to see if they are associated with
+		   a url. If so, put the name of the contact in accessNames array at the same array position as the currentRecord.online
+		   array. This will give the order needed to automatically select the associated contact's name when loaded.
+		*/
+		for(var i = 0; i < $scope.currentRecord.access.length; i++){
+		    for(var j = 0; j < $scope.currentRecord.access[i].resource_url.length; j++){
+			for(var k = 0; k < $scope.currentRecord.online.length; k++){
+			    if($scope.currentRecord.access[i].resource_url[j] == $scope.currentRecord.online[k]){
+				console.log($scope.currentRecord.online[k]);
 				$scope.accessNames[k] = $scope.currentRecord.access[i].name;
+			    }
 			}
 		    }
 		}
