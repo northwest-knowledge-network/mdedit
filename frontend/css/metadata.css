@@ -464,3 +464,14 @@ a.initial:after {
 .ui-view-container {
 	min-height:300px;
 }
+
+/* Setting the Resource url contact association select box to align
+   with sibling elements
+*/
+.resource-contact-description{
+    width: 100%;
+}
+
+.resource-contact-select, .resource-contact-description {
+    margin-left: 20px;
+}

@@ -34,10 +34,14 @@
 			ng-click="removeOnlineResource($index)">Remove </button>
               </div>
             </div>
-	    <!-- Associate a URL with a contact -->
-	    <h5>Is this resource associated with a contact?</h5>
-	    <select ng-model="accessNames[$index]" ng-options="contact.name as contact.name for contact in currentRecord.access" ng-change="associateContactResource($index, currentRecord.online[$index])">
-	    </select>
+	    <div class="row">
+	      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<!-- Associate a URL with a contact -->
+		<h5 class="resource-contact-description">If this URL is associated with a Data Access Contact, select Contact below:</h5>
+		<select  class="resource-contact-select" ng-model="accessNames[$index]" ng-options="contact.name as contact.name for contact in currentRecord.access" ng-change="associateContactResource($index, currentRecord.online[$index])">
+		</select>
+	      </div>
+	    </div>
           </div>
         </div>
       </div>
