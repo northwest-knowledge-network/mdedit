@@ -17,6 +17,7 @@ class Contact(db.EmbeddedDocument):
     country = db.StringField(max_length=255)
     zipcode = db.StringField(max_length=255)
     phone = db.StringField(max_length=255)
+    resource_url = db.ListField(db.StringField(max_length=255))
 
 
 class Metadata(db.Document):
