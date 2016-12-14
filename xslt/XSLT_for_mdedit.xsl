@@ -580,7 +580,20 @@
             </gmd:identificationInfo>
             <!--Distribution Info -->
             <gmd:distributionInfo>
-                <gmd:MD_Distribution>
+              <gmd:MD_Distribution>
+		<gmd:transferOptions>
+		  <gmd:MD_DigitalTransferOptions>
+		    <xsl:for-each select="/root/record/online/item">
+		      <gmd:onLine>
+	 	        <gmd:CI_OnlineResource>
+		          <gmd:linkage>
+		            <xsl:value-of select="url[not(.=/root/record/access/item/resource_url)]"/>
+		          </gmd:linkage>
+		        </gmd:CI_OnlineResource>
+		      </gmd:onLine>
+		    </xsl:for-each>
+		  </gmd:MD_DigitalTransferOptions>
+		</gmd:transferOptions>
                     <!-- Selects distribution information from the mdedit generic xml, including contact info and associated online resources for 
         data distributors (enabled for multiple entries). -->
                     <!-- Sets the contact block for NKN as the distributor of the data.
