@@ -882,9 +882,21 @@
                                             </gmd:name>
                                         </gmd:CI_OnlineResource>
                                     </gmd:onlineResource>
+                                    <gmd:onlineResource>
+                                      <gmd:CI_OnlineResource>
+					<gmd:function>
+                                          <gmd:CI_OnLineFunctionCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode" codeListValue="download">download</gmd:CI_OnLineFunctionCode>
+                                        </gmd:function>
+					<gmd:linkage>
+					  <gmd:URL>
+					    <xsl:value-of select="/root/record/download_url"/>
+                                          </gmd:URL>
+					</gmd:linkage>
+				      </gmd:CI_OnlineResource>
+                                    </gmd:onlineResource>
                                 </gmd:CI_Contact>
-                            </gmd:contactInfo>
-                            <gmd:role>
+                              </gmd:contactInfo>
+                              <gmd:role>
                                 <gmd:CI_RoleCode
                                     codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode"
                                     codeListValue="custodian">custodian</gmd:CI_RoleCode>
