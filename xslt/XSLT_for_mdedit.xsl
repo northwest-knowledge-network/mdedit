@@ -583,11 +583,11 @@
               <gmd:MD_Distribution>
 		<gmd:transferOptions>
 		  <gmd:MD_DigitalTransferOptions>
-		    <xsl:for-each select="/root/record/online/item">
+		    <xsl:for-each select="/root/record/online/item[not(.=/root/record/access/item/resource_url)]">
 		      <gmd:onLine>
 	 	        <gmd:CI_OnlineResource>
 		          <gmd:linkage>
-		            <xsl:value-of select="url[not(.=/root/record/access/item/resource_url)]"/>
+		            <xsl:value-of select="url"/>
 		          </gmd:linkage>
 		        </gmd:CI_OnlineResource>
 		      </gmd:onLine>
@@ -779,20 +779,6 @@
                                         </gmd:CI_OnlineResource>
                                       </gmd:onLine>
                                     </xsl:for-each>
-                                    <gmd:onLine>
-                                      <gmd:CI_OnlineResource>
-                                        <gmd:linkage>
-                                          <gmd:URL>
-					    <!--
-						<xsl:value-of select="/root/record/download_url"/>
-						-->
-                                          </gmd:URL>
-                                        </gmd:linkage>
-                                        <gmd:function>
-                                          <gmd:CI_OnLineFunctionCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode" codeListValue="download">download</gmd:CI_OnLineFunctionCode>
-                                        </gmd:function>
-                                      </gmd:CI_OnlineResource>
-                                    </gmd:onLine>
                                   </gmd:MD_DigitalTransferOptions>
                                 </gmd:distributorTransferOptions>
                               </gmd:MD_Distributor>
@@ -872,13 +858,13 @@
                                         </gmd:CI_Address>
                                     </gmd:address>
                                     <gmd:onlineResource>
-                                        <gmd:CI_OnlineResource>
-                                            <gmd:linkage>
-                                                <gmd:URL>http://www.northwestknowledge.net</gmd:URL>
+                                      <gmd:CI_OnlineResource>
+                                          <gmd:linkage>
+                                              <gmd:URL>http://www.northwestknowledge.net</gmd:URL>
                                             </gmd:linkage>
                                             <gmd:name>
-                                                <gco:CharacterString>The home page for the Northwest
-                                                  Knowledge Network</gco:CharacterString>
+                                              <gco:CharacterString>The home page for the Northwest
+                                                Knowledge Network</gco:CharacterString>
                                             </gmd:name>
                                         </gmd:CI_OnlineResource>
                                     </gmd:onlineResource>
