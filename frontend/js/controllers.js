@@ -95,7 +95,6 @@ metadataEditorApp.controller('BaseController',
         //=== set up hostname-related scope variables ===//
         // export to XML
         var exportAddr = function(oid, xmlType) {
-	    console.log("PRinting hostname in controller: " + hostname);
             return hostname + '/api/metadata/' + oid + '/' + xmlType;
         };
         $scope.export_ = function(type) {
@@ -1438,7 +1437,6 @@ metadataEditorApp.controller('BaseController',
 		    for(var j = 0; j < $scope.currentRecord.access[i].resource_url.length; j++){
 			for(var k = 0; k < $scope.currentRecord.online.length; k++){
 			    if($scope.currentRecord.access[i].resource_url[j] == $scope.currentRecord.online[k]){
-				console.log($scope.currentRecord.online[k]);
 				$scope.accessNames[k] = $scope.currentRecord.access[i].name;
 			    }
 			}
