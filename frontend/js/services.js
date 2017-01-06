@@ -250,6 +250,21 @@ metadataEditorApp
     attachments: [],
     published: 'false'
 })
+//This record is a reduced set of attributes used by Elasticsearch. 
+.value('searchableRecord', {
+    abstract:'',
+    ark:'',
+    contact: [''],
+    doi:'',
+    keyword: [''],
+    mdXmlPath:'',
+    sbeast:'',
+    sbnorth:'',
+    sbsouth:'',
+    sbwest:'',
+    title: '',
+    uid:''
+})
 .value('milesFields',
 {
     place_keywords: [
