@@ -78,6 +78,9 @@ class Metadata(db.Document):
     start_date = db.DateTimeField()
     end_date = db.DateTimeField()
 
+    #identifiers: ID, DOI, and ARK
+    identifiers = db.ListField(db.StringField(max_length=255))
+    
     # request for DOI or ARK
     doi_ark_request = db.StringField(max_length=255)
 
