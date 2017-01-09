@@ -10,6 +10,8 @@
   <br>
   <input type="radio" name="request-doi" value="ARK" ng-checked="currentRecord.doi_ark_request" ng-model="currentRecord.doi_ark_request" ng-click="applyForDOI('ARK')">This file is continually updated and I would like to request an ARK (A DOI can be issued once the file is complete).</input>
   <br>
+  <input type="radio" name="request-doi" value="both" ng-checked="currentRecord.doi_ark_request" ng-model="currentRecord.doi_ark_request" ng-click="applyForDOI('both')">I want a DOI and an ARK.</input>
+  <br>
   <input type="radio" name="request-doi" value="neither" ng-checked="currentRecord.doi_ark_request" ng-model="currentRecord.doi_ark_request" ng-click="applyForDOI('neither')">I do not want a DOI/ARK.</input>
   <br>
     

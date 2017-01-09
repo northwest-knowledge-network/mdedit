@@ -148,6 +148,81 @@ metadataEditorApp
 	scope.pageNumbers = numbers;
     }
 }])
+.factory('makeElasticsearchRecord', ['$log', function($log){
+    return function(scope, record){
+	
+	record.abstract = scope.currentRecord.summary;
+
+	//set all the identifiers
+	for(var i = 0; i < numberOfIdentifiers; i++){
+	    record.identifiers
+	}
+	record.ark = '';//Figure out how to decern ark from doi!!
+
+	//First, put all the access contacts' names in to elasticsearchRecord's contact array. 
+	for(var i = 0; i < scope.currentRecord.access.length; i++){
+	    //Services initializes first value of array to empty string ('') so we can't push
+	    //onto array this first value or else the first value will be empty string. 
+	    if((i == 0) && (scope.currentRecord.access[i] == ''))
+		record.contact[i] = scope.currentRecord.access[i].name;
+	    else
+		record.contact.push(scope.currentRecord.access[i].name);
+	}
+
+	//Now push citation contacts onto list
+	for(var i = 0; i < scope.currentRecord.citation.length; i++){
+	    //Services initializes first value of array to empty string ('') so we can't push
+	    //onto array this first value or else the first value will be empty string. 
+	    if((i == 0) && (scope.currentRecord.citation[i] == ''))
+		record.contact[i] = scope.currentRecord.citation[i].name;
+	    else
+		record.contact.push(scope.currentRecord.citation[i].name);
+	}
+
+	record.doi = '';//Figure out how to decern ark from doi!!
+
+	//Get all keywords (from thematic_keyworks and place_keywords lists) and put them in same list.
+	//First, get thematic_keyworks.
+	for(var i = 0; i < scope.currentRecord.thematic_keywords.length; i++){
+	    //Services initializes first value of array to empty string ('') so we can't push
+	    //onto array this first value or else the first value will be empty string. 
+	    if((i == 0) && (scope.currentRecord.thematic_keywords[i] == ''))
+		record.keyword[i] = scope.currentRecord.thematic_keywords[i];
+	    else
+		record.keyword.push(scope.currentRecord.thematic_keywords[i]);
+	}
+
+	//Now, get place_keywords
+	for(var i = 0; i < scope.currentRecord.place_keywords.length; i++){
+	    //Services initializes first value of array to empty string ('') so we can't push
+	    //onto array this first value or else the first value will be empty string. 
+	    if((i == 0) && (scope.currentRecord.place_keywords[i] == ''))
+		record.keyword[i] = scope.currentRecord.place_keywords[i];
+	    else
+		record.keyword.push(scope.currentRecord.place_keywords[i]);
+	}
+
+	//Not really sure how Geoportal is constructing urls. Could be using _id??  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<Not sure if this is correct! Need to talk to Ed to see what new url schema should be.
+
+	//Set record type to 'iso', and change if record is actually dublin core. Used for url building.
+	var recordType = 'iso';
+
+	if (scope.currentRecord.schema_type.indexOf("Non-Dataset (Dublin Core)") > -1)
+	    recordType = 'dc';
+	
+	record.mdXmlPath = "https://nknportal.nkn.uidaho.edu/api/metadata/" + scope.currentRecord._id + "/" + recordType;
+
+	//Set lat and lon coordinates 
+ 	record.sbeast = scope.currentRecord.east_lon;
+	record.sbnorth = scope.currentRecord.north_lat;
+	record.sbsouth = scope.currentRecord.south_lat;
+	record.sbwest = scope.currentRecord.west_lon;
+
+	//Set title and ID
+	record.title = scope.currentRecord.title;
+	record.uid = scope.currentRecord._id;
+    }
+}])
 .value('formElement', {
     form_name: '',
     label: '',
@@ -175,6 +250,8 @@ metadataEditorApp
     place_keywords: '',
     thematic_keywords: '',
     research_methods: '',
+
+    identifiers: [''],
     
     data_format: [''],
     compression_technique: '',
@@ -199,7 +276,7 @@ metadataEditorApp
     
     end_date: {$date:''},
     
-    doi_ark_request: '',
+    doi_ark_request: [''],
     assigned_doi_ark: '',
     data_one_search: 'false',
     reference_system: '',
@@ -219,6 +296,8 @@ metadataEditorApp
     topic_category: [''],
     place_keywords: '',
     thematic_keywords: '',
+
+    identifiers: [''],
 
     data_format: [''],
     compression_technique: '',
@@ -251,7 +330,7 @@ metadataEditorApp
     published: 'false'
 })
 //This record is a reduced set of attributes used by Elasticsearch. 
-.value('searchableRecord', {
+.value('elasticsearchRecord', {
     abstract:'',
     ark:'',
     contact: [''],
@@ -263,7 +342,8 @@ metadataEditorApp
     sbsouth:'',
     sbwest:'',
     title: '',
-    uid:''
+    uid:'',
+    identifiers:['']
 })
 .value('milesFields',
 {
@@ -467,6 +547,14 @@ metadataEditorApp
 
             return freshyDC;
         };
+
+	//Get reduced set record that is used in Elasticsearch (for search performance optimization).
+	//We don't want to index the entire index: that would decrease search efficiency.  
+	var getFreshElasticsearchRecord = function(){
+	    var freshyElasticsearch = angular.copy(elasticsearchRecord);
+
+	    return freshyElasticsearch;
+	};
 
         var getMilesDefaults = function() {
 

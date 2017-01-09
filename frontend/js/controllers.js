@@ -620,6 +620,8 @@ metadataEditorApp.controller('BaseController',
 		$scope.currentRecord.doi_ark_request = type;
 	    }else if(type.indexOf("ARK") > -1){
 		$scope.currentRecord.doi_ark_request = type;
+	    }else if(type.indexOf("both") > -1){
+		$scope.currentRecord.doi_ark_request = type;
 	    }else if(type.indexOf("neither") > -1){
 		$scope.currentRecord.doi_ark_request = type;
 	    }else{

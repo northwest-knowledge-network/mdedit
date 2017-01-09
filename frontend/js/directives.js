@@ -45,7 +45,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
             }
         };
 })
-    .directive("adminView", ['$location', 'recordService', 'updateAdmin', 'updateForms', 'sharedRecord', function($location, recordService, updateAdmin, updateForms, sharedRecord){
+    .directive("adminView", ['$location', 'recordService', 'updateAdmin', 'updateForms', 'sharedRecord', 'makeElasticsearchRecord', function($location, recordService, updateAdmin, updateForms, sharedRecord, makeElasticsearchRecord){
 	return{
 	    restrict: 'E',
 	    templateUrl: 'partials/allRecords.html',
@@ -224,6 +224,17 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		    }).error(function(error) {
 			$scope.errors.push("Error in loading list of records.");
 		    });
+		};
+
+		$scope.publishRecord = function(){
+		    var elasticsearchRecord = recordService.getFreshElasticsearchRecord();
+		    
+		    //Make searchableRecord (reduced set of currentRecord) to use in search system
+		    makeElasticsearchRecord($scope, elasticsearchRecord);
+		    
+		    //Send searchableRecord to Elasticsearch
+
+		    
 		};
 	    },
 	    controllerAs: 'adminViewCtrl'
