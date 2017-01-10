@@ -18,7 +18,13 @@ class Contact(db.EmbeddedDocument):
     zipcode = db.StringField(max_length=255)
     phone = db.StringField(max_length=255)
 
-
+    
+class Identifier(db.EmbeddedDocument):
+    """Class for Identifier, which holds DOI's, ARK's, and whatever other identifier you want"""
+    type = db.StringField(max_length=255)
+    id = db.StringField(max_length=255)
+    
+    
 class Metadata(db.Document):
     """MongoDB Document representation of metadata"""
     # basic info
@@ -79,7 +85,7 @@ class Metadata(db.Document):
     end_date = db.DateTimeField()
 
     #identifiers: ID, DOI, and ARK
-    identifiers = db.ListField(db.StringField(max_length=255))
+    identifiers = db.ListField(db.EmbeddedDocumentField('Identifier'))
     
     # request for DOI or ARK
     doi_ark_request = db.StringField(max_length=255)

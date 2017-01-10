@@ -149,57 +149,54 @@ metadataEditorApp
     }
 }])
 .factory('makeElasticsearchRecord', ['$log', function($log){
-    return function(scope, record){
+	    return function(completeRecord, elasticsearchRecord){
 	
-	record.abstract = scope.currentRecord.summary;
+	elasticsearchRecord.abstract = completeRecord.summary;
 
 	//set all the identifiers
-	for(var i = 0; i < numberOfIdentifiers; i++){
-	    record.identifiers
+	for(var i = 0; i < completeRecord.identifiers.length; i++){
+	    elasticsearchRecord.identifiers[i] = completeRecord.identifiers[i].type + " : " + completeRecord.identifiers[i].id; 
 	}
-	record.ark = '';//Figure out how to decern ark from doi!!
 
 	//First, put all the access contacts' names in to elasticsearchRecord's contact array. 
-	for(var i = 0; i < scope.currentRecord.access.length; i++){
+	for(var i = 0; i < completeRecord.access.length; i++){
 	    //Services initializes first value of array to empty string ('') so we can't push
 	    //onto array this first value or else the first value will be empty string. 
-	    if((i == 0) && (scope.currentRecord.access[i] == ''))
-		record.contact[i] = scope.currentRecord.access[i].name;
+	    if((i == 0) && (completeRecord.access[i] == ''))
+		elasticsearchRecord.contact[i] = completeRecord.access[i].name;
 	    else
-		record.contact.push(scope.currentRecord.access[i].name);
+		elasticsearchRecord.contact.push(completeRecord.access[i].name);
 	}
 
 	//Now push citation contacts onto list
-	for(var i = 0; i < scope.currentRecord.citation.length; i++){
+	for(var i = 0; i < completeRecord.citation.length; i++){
 	    //Services initializes first value of array to empty string ('') so we can't push
 	    //onto array this first value or else the first value will be empty string. 
-	    if((i == 0) && (scope.currentRecord.citation[i] == ''))
-		record.contact[i] = scope.currentRecord.citation[i].name;
+	    if((i == 0) && (completeRecord.citation[i] == ''))
+		elasticsearchRecord.contact[i] = completeRecord.citation[i].name;
 	    else
-		record.contact.push(scope.currentRecord.citation[i].name);
+		elasticsearchRecord.contact.push(completeRecord.citation[i].name);
 	}
-
-	record.doi = '';//Figure out how to decern ark from doi!!
 
 	//Get all keywords (from thematic_keyworks and place_keywords lists) and put them in same list.
 	//First, get thematic_keyworks.
-	for(var i = 0; i < scope.currentRecord.thematic_keywords.length; i++){
+	for(var i = 0; i < completeRecord.thematic_keywords.length; i++){
 	    //Services initializes first value of array to empty string ('') so we can't push
 	    //onto array this first value or else the first value will be empty string. 
-	    if((i == 0) && (scope.currentRecord.thematic_keywords[i] == ''))
-		record.keyword[i] = scope.currentRecord.thematic_keywords[i];
+	    if((i == 0) && (completeRecord.thematic_keywords[i] == ''))
+		elasticsearchRecord.keyword[i] = completeRecord.thematic_keywords[i];
 	    else
-		record.keyword.push(scope.currentRecord.thematic_keywords[i]);
+		elasticsearchRecord.keyword.push(completeRecord.thematic_keywords[i]);
 	}
 
 	//Now, get place_keywords
-	for(var i = 0; i < scope.currentRecord.place_keywords.length; i++){
+	for(var i = 0; i < completeRecord.place_keywords.length; i++){
 	    //Services initializes first value of array to empty string ('') so we can't push
 	    //onto array this first value or else the first value will be empty string. 
-	    if((i == 0) && (scope.currentRecord.place_keywords[i] == ''))
-		record.keyword[i] = scope.currentRecord.place_keywords[i];
+	    if((i == 0) && (completeRecord.place_keywords[i] == ''))
+		elasticsearchRecord.keyword[i] = completeRecord.place_keywords[i];
 	    else
-		record.keyword.push(scope.currentRecord.place_keywords[i]);
+		elasticsearchRecord.keyword.push(completeRecord.place_keywords[i]);
 	}
 
 	//Not really sure how Geoportal is constructing urls. Could be using _id??  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<Not sure if this is correct! Need to talk to Ed to see what new url schema should be.
@@ -207,20 +204,20 @@ metadataEditorApp
 	//Set record type to 'iso', and change if record is actually dublin core. Used for url building.
 	var recordType = 'iso';
 
-	if (scope.currentRecord.schema_type.indexOf("Non-Dataset (Dublin Core)") > -1)
+	if (completeRecord.schema_type.indexOf("Non-Dataset (Dublin Core)") > -1)
 	    recordType = 'dc';
 	
-	record.mdXmlPath = "https://nknportal.nkn.uidaho.edu/api/metadata/" + scope.currentRecord._id + "/" + recordType;
+	elasticsearchRecord.mdXmlPath = "https://nknportal.nkn.uidaho.edu/api/metadata/" + completeRecord._id.$oid + "/" + recordType;
 
 	//Set lat and lon coordinates 
- 	record.sbeast = scope.currentRecord.east_lon;
-	record.sbnorth = scope.currentRecord.north_lat;
-	record.sbsouth = scope.currentRecord.south_lat;
-	record.sbwest = scope.currentRecord.west_lon;
+ 	elasticsearchRecord.sbeast = completeRecord.east_lon;
+	elasticsearchRecord.sbnorth = completeRecord.north_lat;
+	elasticsearchRecord.sbsouth = completeRecord.south_lat;
+	elasticsearchRecord.sbwest = completeRecord.west_lon;
 
 	//Set title and ID
-	record.title = scope.currentRecord.title;
-	record.uid = scope.currentRecord._id;
+	elasticsearchRecord.title = completeRecord.title;
+	elasticsearchRecord.uid = completeRecord._id.$oid;
     }
 }])
 .value('formElement', {
@@ -251,7 +248,17 @@ metadataEditorApp
     thematic_keywords: '',
     research_methods: '',
 
-    identifiers: [''],
+    identifiers: [
+	{type:'nkn',
+	 id: ''
+	},
+	{type:'doi',
+	 id: ''
+	},
+	{type:'ark',
+	 id:''
+	}
+    ],
     
     data_format: [''],
     compression_technique: '',
@@ -276,7 +283,7 @@ metadataEditorApp
     
     end_date: {$date:''},
     
-    doi_ark_request: [''],
+    doi_ark_request: '',
     assigned_doi_ark: '',
     data_one_search: 'false',
     reference_system: '',
@@ -297,8 +304,18 @@ metadataEditorApp
     place_keywords: '',
     thematic_keywords: '',
 
-    identifiers: [''],
-
+    identifiers: [
+	{type:'nkn',
+	 id: ''
+	},
+	{type:'doi',
+	 id: ''
+	},
+	{type:'ark',
+	 id:''
+	}
+    ],
+	
     data_format: [''],
     compression_technique: '',
     online: [''],
@@ -332,9 +349,8 @@ metadataEditorApp
 //This record is a reduced set of attributes used by Elasticsearch. 
 .value('elasticsearchRecord', {
     abstract:'',
-    ark:'',
     contact: [''],
-    doi:'',
+    identifiers:[''],
     keyword: [''],
     mdXmlPath:'',
     sbeast:'',
@@ -342,8 +358,7 @@ metadataEditorApp
     sbsouth:'',
     sbwest:'',
     title: '',
-    uid:'',
-    identifiers:['']
+    uid:''
 })
 .value('milesFields',
 {
@@ -386,9 +401,9 @@ metadataEditorApp
 })
 .service('recordService',
 	 ['$http', '$q', '$log', '$location', 'hostname', 'session_id',
-     'emptyISORecord', 'emptyDCRecord', 'milesFields', 'nkn', 'formElement',
+     'emptyISORecord', 'emptyDCRecord', 'elasticsearchRecord', 'milesFields', 'nkn', 'formElement',
 	  function($http, $q, $log, $location, hostname, session_id,
-             emptyISORecord, emptyDCRecord, milesFields, nkn, formElement)
+             emptyISORecord, emptyDCRecord, elasticsearchRecord, milesFields, nkn, formElement)
     {
         /**
          * Private functions that will not be exposed to controller
@@ -749,6 +764,7 @@ metadataEditorApp
         return {
             getFreshISORecord: getFreshISORecord,
             getFreshDCRecord: getFreshDCRecord,
+	    getFreshElasticsearchRecord: getFreshElasticsearchRecord,
             getMilesDefaults: getMilesDefaults,
             getNKNAsDistributor: getNKNAsDistributor,
             getRecordToEdit: getRecordToEdit,

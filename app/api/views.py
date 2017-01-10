@@ -241,7 +241,7 @@ def get_doi_ark_requests(page_number, records_per_page, sort_on):
 
                 #Look for published records with either DOI or ARK requests without DOI or ARK assigned, then records with DOI
                 #or ARK already assigned
-                record_list = Metadata.objects(__raw__={'$and': [{'published':'true'}, {'$or': [{'doi_ark_request':'DOI'}, {'doi_ark_request':'ARK'}]}]}).order_by(sort_by)
+                record_list = Metadata.objects(__raw__={'$and': [{'published':'true'}, {'$or': [{'doi_ark_request':'DOI'}, {'doi_ark_request':'ARK'}, {'doi_ark_request':'both'}]}]}).order_by(sort_by)
 
                 arrayLowerBound = int(page_number) * int(records_per_page)
                 arrayUpperBound = int(page_number) * int(records_per_page) + int(records_per_page)

@@ -226,15 +226,21 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		    });
 		};
 
-		$scope.publishRecord = function(){
+		$scope.publishRecordToPortal = function(recordId){
 		    var elasticsearchRecord = recordService.getFreshElasticsearchRecord();
+		    recordService.getRecordToEdit(recordId)
+			.success(function (data){
 		    
-		    //Make searchableRecord (reduced set of currentRecord) to use in search system
-		    makeElasticsearchRecord($scope, elasticsearchRecord);
+		    		//Make searchableRecord (reduced set of currentRecord) to use in search system
+				makeElasticsearchRecord(data.record, elasticsearchRecord);
 		    
-		    //Send searchableRecord to Elasticsearch
+				//Send searchableRecord to Elasticsearch
+		    		console.log("Printing elasticsearchRecord: ");
+		    		console.log(elasticsearchRecord);
+		    		console.log("Printing currentRecord identifier: ");
 
-		    
+				//Do whatever else Geoportal is doing to publish records. Move to production directory?
+			});
 		};
 	    },
 	    controllerAs: 'adminViewCtrl'
