@@ -666,6 +666,7 @@
                     </gmd:distributor> -->
                     <!-- Enables entry for multiple distributors and parses each 'item' in the citiation list in the mdedit generic xml as a separate distributors -->
                     <xsl:for-each select="/root/record/access/item">
+		      <xsl:variable name="contact" select="." />
                         <gmd:distributor>
                             <gmd:MD_Distributor>
                                 <gmd:distributorContact>
@@ -751,32 +752,34 @@
                                 </xsl:for-each>
                                 <gmd:distributorTransferOptions>
                                     <gmd:MD_DigitalTransferOptions>
-                                        <xsl:for-each select="/root/record/online/item">
+				      <xsl:for-each select="$contact/resource_url/item">
                                         <gmd:onLine>
-                                            <gmd:CI_OnlineResource>
-                                                <gmd:linkage>
-                                                  <gmd:URL>
-                                                    <xsl:value-of select="url"/>
+                                          <gmd:CI_OnlineResource>
+                                            <gmd:linkage>
+                                              <gmd:URL>
+                                                <xsl:value-of select="."/>
                                                   </gmd:URL>
+                                            </gmd:linkage>
+                                            <gmd:function>
+                                              <gmd:CI_OnLineFunctionCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode" codeListValue="download">download</gmd:CI_OnLineFunctionCode>
+                                            </gmd:function>
+                                          </gmd:CI_OnlineResource>
+                                        </gmd:onLine>
+                                      </xsl:for-each>
+                                      <gmd:onLine>
+                                        <gmd:CI_OnlineResource>
+                                          <gmd:linkage>
+                                            <gmd:URL>
+					      <!--
+                                                  <xsl:value-of select="/root/record/download_url"/>
+					      -->
+                                            </gmd:URL>
                                                 </gmd:linkage>
                                                 <gmd:function>
-                                                    <gmd:CI_OnLineFunctionCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode" codeListValue="download">download</gmd:CI_OnLineFunctionCode>
+                                                  <gmd:CI_OnLineFunctionCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode" codeListValue="download">download</gmd:CI_OnLineFunctionCode>
                                                 </gmd:function>
-                                            </gmd:CI_OnlineResource>
-                                        </gmd:onLine>
-                                        </xsl:for-each>
-                                        <gmd:onLine>
-                                            <gmd:CI_OnlineResource>
-                                                <gmd:linkage>
-                                                    <gmd:URL>
-                                                        <xsl:value-of select="/root/record/download_url"/>
-                                                    </gmd:URL>
-                                                </gmd:linkage>
-                                                <gmd:function>
-                                                    <gmd:CI_OnLineFunctionCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode" codeListValue="download">download</gmd:CI_OnLineFunctionCode>
-                                                </gmd:function>
-                                            </gmd:CI_OnlineResource>
-                                        </gmd:onLine>
+                                        </gmd:CI_OnlineResource>
+                                      </gmd:onLine>
                                     </gmd:MD_DigitalTransferOptions>
                                 </gmd:distributorTransferOptions>
                             </gmd:MD_Distributor>

@@ -143,7 +143,7 @@ var metadataEditorApp = angular
     },
 
 	orderedContactFields: ['name', 'email', 'org', 'address', 'city',
-				       'state', 'zipcode', 'country', 'phone'],
+			       'state', 'zipcode', 'country', 'phone', 'resource_url'],
 
 	cfieldsMap:
     {
@@ -160,7 +160,8 @@ var metadataEditorApp = angular
 }
 ).constant('emptyContact', {
       'name': '', 'email': '', 'org': '', 'address': '',
-      'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': ''
+    'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': '',
+    'resource_url':['']
 })
 .run(function($rootScope, hostname){
     $rootScope.$on('$stateChangeStart', function(event, toState, toParams) {

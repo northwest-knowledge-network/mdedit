@@ -1,6 +1,7 @@
 <div class="row">
   
   <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+    
 
     <a class="anchor" name="online"></a>
     <h2 class="section-header optional-field-header">
@@ -33,6 +34,14 @@
 			ng-click="removeOnlineResource($index)">Remove </button>
               </div>
             </div>
+	    <div class="row">
+	      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<!-- Associate a URL with a contact -->
+		<h5 class="resource-contact-description">If this URL is associated with a Data Access Contact, select Contact below:</h5>
+		<select  class="resource-contact-select" ng-model="accessNames[$index]" ng-options="contact.name as contact.name for contact in currentRecord.access" ng-change="associateContactResource($index, currentRecord.online[$index])">
+		</select>
+	      </div>
+	    </div>
           </div>
         </div>
       </div>

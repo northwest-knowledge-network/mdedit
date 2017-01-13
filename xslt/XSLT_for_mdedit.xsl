@@ -580,7 +580,20 @@
             </gmd:identificationInfo>
             <!--Distribution Info -->
             <gmd:distributionInfo>
-                <gmd:MD_Distribution>
+              <gmd:MD_Distribution>
+		<gmd:transferOptions>
+		  <gmd:MD_DigitalTransferOptions>
+		    <xsl:for-each select="/root/record/online/item[not(.=/root/record/access/item/resource_url)]">
+		      <gmd:onLine>
+	 	        <gmd:CI_OnlineResource>
+		          <gmd:linkage>
+		            <xsl:value-of select="url"/>
+		          </gmd:linkage>
+		        </gmd:CI_OnlineResource>
+		      </gmd:onLine>
+		    </xsl:for-each>
+		  </gmd:MD_DigitalTransferOptions>
+		</gmd:transferOptions>
                     <!-- Selects distribution information from the mdedit generic xml, including contact info and associated online resources for 
         data distributors (enabled for multiple entries). -->
                     <!-- Sets the contact block for NKN as the distributor of the data.
@@ -666,6 +679,7 @@
                     </gmd:distributor> -->
                     <!-- Enables entry for multiple distributors and parses each 'item' in the citiation list in the mdedit generic xml as a separate distributors -->
                     <xsl:for-each select="/root/record/access/item">
+		      <xsl:variable name="contact" select="." />
                         <gmd:distributor>
                             <gmd:MD_Distributor>
                                 <gmd:distributorContact>
@@ -750,63 +764,51 @@
                                 </gmd:distributorFormat>
                                 </xsl:for-each>
                                 <gmd:distributorTransferOptions>
-                                    <gmd:MD_DigitalTransferOptions>
-                                        <xsl:for-each select="/root/record/online/item">
-                                        <gmd:onLine>
-                                            <gmd:CI_OnlineResource>
-                                                <gmd:linkage>
-                                                  <gmd:URL>
-                                                    <xsl:value-of select="url"/>
-                                                  </gmd:URL>
-                                                </gmd:linkage>
-                                                <gmd:function>
-                                                    <gmd:CI_OnLineFunctionCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode" codeListValue="download">download</gmd:CI_OnLineFunctionCode>
-                                                </gmd:function>
-                                            </gmd:CI_OnlineResource>
-                                        </gmd:onLine>
-                                        </xsl:for-each>
-                                        <gmd:onLine>
-                                            <gmd:CI_OnlineResource>
-                                                <gmd:linkage>
-                                                    <gmd:URL>
-                                                        <xsl:value-of select="/root/record/download_url"/>
-                                                    </gmd:URL>
-                                                </gmd:linkage>
-                                                <gmd:function>
-                                                    <gmd:CI_OnLineFunctionCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode" codeListValue="download">download</gmd:CI_OnLineFunctionCode>
-                                                </gmd:function>
-                                            </gmd:CI_OnlineResource>
-                                        </gmd:onLine>
-                                    </gmd:MD_DigitalTransferOptions>
+                                  <gmd:MD_DigitalTransferOptions>
+                                    <xsl:for-each select="$contact/resource_url/item">
+                                      <gmd:onLine>
+                                        <gmd:CI_OnlineResource>
+                                          <gmd:linkage>
+                                            <gmd:URL>
+                                              <xsl:value-of select="."/>
+                                            </gmd:URL>
+                                          </gmd:linkage>
+                                          <gmd:function>
+                                            <gmd:CI_OnLineFunctionCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode" codeListValue="download">download</gmd:CI_OnLineFunctionCode>
+                                          </gmd:function>
+                                        </gmd:CI_OnlineResource>
+                                      </gmd:onLine>
+                                    </xsl:for-each>
+                                  </gmd:MD_DigitalTransferOptions>
                                 </gmd:distributorTransferOptions>
-                            </gmd:MD_Distributor>
-                        </gmd:distributor>
-                    </xsl:for-each>
-                </gmd:MD_Distribution>
-            </gmd:distributionInfo>
-            <!-- Metadata background maintenance info, mostly hidden from mdedit web front end  -->
-            <gmd:metadataConstraints>
-                <!-- Sets the license use constraints according to NKN's terms of service and default use of a Creative Commons license. 
-        Because NKN is the distributor of the metadata record itself, this license will apply to all records created with the NKN metadata editor -->
-                <gmd:MD_Constraints>
-                    <gmd:useLimitation>
-                        <gco:CharacterString>This metadata record is licensed under a Creative
+                              </gmd:MD_Distributor>
+                            </gmd:distributor>
+			  </xsl:for-each>
+			</gmd:MD_Distribution>
+		      </gmd:distributionInfo>
+		      <!-- Metadata background maintenance info, mostly hidden from mdedit web front end  -->
+		      <gmd:metadataConstraints>
+			<!-- Sets the license use constraints according to NKN's terms of service and default use of a Creative Commons license. 
+			     Because NKN is the distributor of the metadata record itself, this license will apply to all records created with the NKN metadata editor -->
+			<gmd:MD_Constraints>
+			  <gmd:useLimitation>
+                            <gco:CharacterString>This metadata record is licensed under a Creative
                             Commons Attribution-NonCommercial-ShareAlike License. For more
                             information, see
                             http://www.northwestknowledge.net/terms_of_service</gco:CharacterString>
-                    </gmd:useLimitation>
-                </gmd:MD_Constraints>
-            </gmd:metadataConstraints>
-            <gmd:metadataMaintenance>
-                <!-- Sets update frequency of metadata in terms that NKN uses for all metadata records it maintains. This frequency is "As Needed." 
-        Because NKN is the distributor of the metadata record itself, these maintenance terms will apply to all records created with the NKN metadata editor -->
-                <gmd:MD_MaintenanceInformation>
-                    <gmd:maintenanceAndUpdateFrequency>
-                        <gmd:MD_MaintenanceFrequencyCode
+			  </gmd:useLimitation>
+			</gmd:MD_Constraints>
+		      </gmd:metadataConstraints>
+		      <gmd:metadataMaintenance>
+			<!-- Sets update frequency of metadata in terms that NKN uses for all metadata records it maintains. This frequency is "As Needed." 
+			     Because NKN is the distributor of the metadata record itself, these maintenance terms will apply to all records created with the NKN metadata editor -->
+			<gmd:MD_MaintenanceInformation>
+			  <gmd:maintenanceAndUpdateFrequency>
+                            <gmd:MD_MaintenanceFrequencyCode
                             codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml"
                             codeListValue="asNeeded">asNeeded</gmd:MD_MaintenanceFrequencyCode>
-                    </gmd:maintenanceAndUpdateFrequency>
-                    <gmd:maintenanceNote>
+			  </gmd:maintenanceAndUpdateFrequency>
+			  <gmd:maintenanceNote>
                         <gco:CharacterString>This metadata record may be updated when information
                             within it becomes obsolete.</gco:CharacterString>
                     </gmd:maintenanceNote>
@@ -856,19 +858,31 @@
                                         </gmd:CI_Address>
                                     </gmd:address>
                                     <gmd:onlineResource>
-                                        <gmd:CI_OnlineResource>
-                                            <gmd:linkage>
-                                                <gmd:URL>http://www.northwestknowledge.net</gmd:URL>
+                                      <gmd:CI_OnlineResource>
+                                          <gmd:linkage>
+                                              <gmd:URL>http://www.northwestknowledge.net</gmd:URL>
                                             </gmd:linkage>
                                             <gmd:name>
-                                                <gco:CharacterString>The home page for the Northwest
-                                                  Knowledge Network</gco:CharacterString>
+                                              <gco:CharacterString>The home page for the Northwest
+                                                Knowledge Network</gco:CharacterString>
                                             </gmd:name>
                                         </gmd:CI_OnlineResource>
                                     </gmd:onlineResource>
+                                    <gmd:onlineResource>
+                                      <gmd:CI_OnlineResource>
+					<gmd:function>
+                                          <gmd:CI_OnLineFunctionCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode" codeListValue="download">download</gmd:CI_OnLineFunctionCode>
+                                        </gmd:function>
+					<gmd:linkage>
+					  <gmd:URL>
+					    <xsl:value-of select="/root/record/download_url"/>
+                                          </gmd:URL>
+					</gmd:linkage>
+				      </gmd:CI_OnlineResource>
+                                    </gmd:onlineResource>
                                 </gmd:CI_Contact>
-                            </gmd:contactInfo>
-                            <gmd:role>
+                              </gmd:contactInfo>
+                              <gmd:role>
                                 <gmd:CI_RoleCode
                                     codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode"
                                     codeListValue="custodian">custodian</gmd:CI_RoleCode>
