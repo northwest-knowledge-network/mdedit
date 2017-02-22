@@ -786,14 +786,28 @@
 			  </xsl:for-each>
 			</gmd:MD_Distribution>
 		      </gmd:distributionInfo>
-		      <gmd:DQ_DataQuality>
-			<gmd:scope>
-			</gmd:scope>
-			<gmd:LI_Lineage>
-			  <gmd:LE_ProcessStep><xsl:value-of select="/root/record/research_methods"/>
-			  </gmd:LE_ProcessStep>
-			</gmd:LI_Lineage>
-		      </gmd:DQ_DataQuality>
+		      <gmd:dataQualityInfo>
+			<gmd:DQ_DataQuality>
+			  <gmd:scope>
+			    <gmd:DQ_Scope>
+			      <gmd:level>
+				<gmd:MD_ScopeCode codeList="http://www.ngdc.noaa.gov/metadata/published/xsd/schema/resources/Codelist/gmxCodelists.xml#MD_ScopeCode" codeListValue="dataset">dataset</gmd:MD_ScopeCode>
+			      </gmd:level>
+			    </gmd:DQ_Scope>
+			  </gmd:scope>
+			  <gmd:lineage>
+			    <gmd:LI_Lineage>
+			      <gmd:processStep>
+				<gmd:LI_ProcessStep>
+				  <gmd:description>
+				    <gco:CharacterString><xsl:value-of select="/root/record/research_methods"/></gco:CharacterString>
+				  </gmd:description>
+				</gmd:LI_ProcessStep>
+			      </gmd:processStep>
+			    </gmd:LI_Lineage>
+			  </gmd:lineage>
+			</gmd:DQ_DataQuality>
+		      </gmd:dataQualityInfo>
 		      <!-- Metadata background maintenance info, mostly hidden from mdedit web front end  -->
 		      <gmd:metadataConstraints>
 			<!-- Sets the license use constraints according to NKN's terms of service and default use of a Creative Commons license. 
