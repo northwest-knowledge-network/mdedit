@@ -786,6 +786,14 @@
 			  </xsl:for-each>
 			</gmd:MD_Distribution>
 		      </gmd:distributionInfo>
+		      <gmd:DQ_DataQuality>
+			<gmd:scope>
+			</gmd:scope>
+			<gmd:LI_Lineage>
+			  <gmd:LE_ProcessStep><xsl:value-of select="/root/record/research_methods"/>
+			  </gmd:LE_ProcessStep>
+			</gmd:LI_Lineage>
+		      </gmd:DQ_DataQuality>
 		      <!-- Metadata background maintenance info, mostly hidden from mdedit web front end  -->
 		      <gmd:metadataConstraints>
 			<!-- Sets the license use constraints according to NKN's terms of service and default use of a Creative Commons license. 
