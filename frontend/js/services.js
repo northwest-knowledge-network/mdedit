@@ -558,7 +558,8 @@ metadataEditorApp
 
             return $http.post(
                 '//' + hostname + '/api/metadata/' + currentId + '/publish',
-                {current, 'session_id': session_id}
+		{'record': current,
+		 'session_id': session_id}
             );
 	    
 	    

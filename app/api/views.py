@@ -172,14 +172,14 @@ def publish_metadata_record(_oid):
     # update or create record in database
     try:
         record = Metadata.objects.get_or_404(pk=_oid)
-        updater = Metadata.from_json(request.data)
+        updater = Metadata.from_json(request.json['record'])
         for f in record._fields:
             if f != 'id':
                 record[f] = updater[f]
 
     except ValidationError:
 
-        record = Metadata.from_json(request.data)
+        record = Metadata.from_json(request.json['record'])
         record.id = None
         record.placeholder = False
 
