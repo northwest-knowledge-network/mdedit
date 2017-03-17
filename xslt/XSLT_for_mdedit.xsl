@@ -57,7 +57,7 @@
                             <gmd:phone>
                                 <gmd:CI_Telephone>
                                     <gmd:voice>
-                                        <gco:CharacterString>(208) 885-8456</gco:CharacterString>
+                                        <gco:CharacterString>(208) 885-2080</gco:CharacterString>
                                     </gmd:voice>
                                 </gmd:CI_Telephone>
                             </gmd:phone>
@@ -76,7 +76,7 @@
                                         <gco:CharacterString>ID</gco:CharacterString>
                                     </gmd:administrativeArea>
                                     <gmd:postalCode>
-                                        <gco:CharacterString>83844-2350</gco:CharacterString>
+                                        <gco:CharacterString>83844-2358</gco:CharacterString>
                                     </gmd:postalCode>
                                     <gmd:country>
                                         <gco:CharacterString>USA</gco:CharacterString>
@@ -94,6 +94,9 @@
                                     <gmd:name>
                                         <gco:CharacterString>The home page for the Northwest Knowledge Network</gco:CharacterString>
                                     </gmd:name>
+				    <gmd:function>
+				      <gmd:CI_OnLineFunctionCode codeList='http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode' codeListValue='information'>information</gmd:CI_OnLineFunctionCode>
+				    </gmd:function>		    
                                 </gmd:CI_OnlineResource>
                             </gmd:onlineResource>
                         </gmd:CI_Contact>
@@ -578,22 +581,6 @@
                     </gmd:extent>
                 </gmd:MD_DataIdentification>
             </gmd:identificationInfo>
-            <!--Distribution Info -->
-            <gmd:distributionInfo>
-              <gmd:MD_Distribution>
-		<gmd:transferOptions>
-		  <gmd:MD_DigitalTransferOptions>
-		    <xsl:for-each select="/root/record/online/item[not(.=/root/record/access/item/resource_url)]">
-		      <gmd:onLine>
-	 	        <gmd:CI_OnlineResource>
-		          <gmd:linkage>
-		            <xsl:value-of select="url"/>
-		          </gmd:linkage>
-		        </gmd:CI_OnlineResource>
-		      </gmd:onLine>
-		    </xsl:for-each>
-		  </gmd:MD_DigitalTransferOptions>
-		</gmd:transferOptions>
                     <!-- Selects distribution information from the mdedit generic xml, including contact info and associated online resources for 
         data distributors (enabled for multiple entries). -->
                     <!-- Sets the contact block for NKN as the distributor of the data.
@@ -678,6 +665,11 @@
                         </gmd:MD_Distributor>                                   
                     </gmd:distributor> -->
                     <!-- Enables entry for multiple distributors and parses each 'item' in the citiation list in the mdedit generic xml as a separate distributors -->
+		    <!--Distribution Info -->
+		    
+		    <gmd:distributionInfo>
+		      <gmd:MD_Distribution>
+
                     <xsl:for-each select="/root/record/access/item">
 		      <xsl:variable name="contact" select="." />
                         <gmd:distributor>
@@ -749,20 +741,6 @@
                                         </gmd:role>
                                     </gmd:CI_ResponsibleParty>
                                 </gmd:distributorContact>
-                                <xsl:for-each select="/root/record/data_format/item">
-                                <gmd:distributorFormat>
-                                    <gmd:MD_Format>
-                                        <gmd:name>
-                                            <gco:CharacterString><xsl:value-of select="word"/></gco:CharacterString>
-                                        </gmd:name>
-                                            <gmd:version gco:nilReason="unknown"/>
-                                            <gmd:specification gco:nilReason="unknown"/>
-                                            <gmd:fileDecompressionTechnique>
-                                                <gco:CharacterString><xsl:value-of select="/root/record/compression_technique"/></gco:CharacterString>
-                                            </gmd:fileDecompressionTechnique>
-                                    </gmd:MD_Format>
-                                </gmd:distributorFormat>
-                                </xsl:for-each>
                                 <gmd:distributorTransferOptions>
                                   <gmd:MD_DigitalTransferOptions>
                                     <xsl:for-each select="$contact/resource_url/item">
@@ -839,28 +817,24 @@
                     <gmd:contact xlink:title="NKN">
                         <gmd:CI_ResponsibleParty uuid="0f370b7f-08ed-4727-b3f8-e98932ecd5e7">
                             <gmd:organisationName>
-                                <gco:CharacterString>Northwest Knowledge
-                                    Network</gco:CharacterString>
+                                <gco:CharacterString>Northwest Knowledge Network</gco:CharacterString>
                             </gmd:organisationName>
                             <gmd:contactInfo>
                                 <gmd:CI_Contact>
                                     <gmd:phone>
                                         <gmd:CI_Telephone>
                                             <gmd:voice>
-                                                <gco:CharacterString>(208)
-                                                  885-8456</gco:CharacterString>
+                                                <gco:CharacterString>(208) 885-2080</gco:CharacterString>
                                             </gmd:voice>
                                         </gmd:CI_Telephone>
                                     </gmd:phone>
                                     <gmd:address>
                                         <gmd:CI_Address>
                                             <gmd:deliveryPoint>
-                                                <gco:CharacterString>University of Idaho
-                                                  Library</gco:CharacterString>
+                                                <gco:CharacterString>University of Idaho Library</gco:CharacterString>
                                             </gmd:deliveryPoint>
                                             <gmd:deliveryPoint>
-                                                <gco:CharacterString>875 Perimeter Drive, MS
-                                                  2358</gco:CharacterString>
+                                                <gco:CharacterString>875 Perimeter Drive, MS 2358</gco:CharacterString>
                                             </gmd:deliveryPoint>
                                             <gmd:city>
                                                 <gco:CharacterString>Moscow</gco:CharacterString>
@@ -869,7 +843,7 @@
                                                 <gco:CharacterString>ID</gco:CharacterString>
                                             </gmd:administrativeArea>
                                             <gmd:postalCode>
-                                                <gco:CharacterString>83844-2350</gco:CharacterString>
+                                                <gco:CharacterString>83844-2358</gco:CharacterString>
                                             </gmd:postalCode>
                                             <gmd:country>
                                                 <gco:CharacterString>USA</gco:CharacterString>
@@ -885,16 +859,12 @@
                                               <gmd:URL>http://www.northwestknowledge.net</gmd:URL>
                                             </gmd:linkage>
                                             <gmd:name>
-                                              <gco:CharacterString>The home page for the Northwest
-                                                Knowledge Network</gco:CharacterString>
+                                              <gco:CharacterString>The home page for the Northwest Knowledge Network</gco:CharacterString>
                                             </gmd:name>
-                                        </gmd:CI_OnlineResource>
-                                    </gmd:onlineResource>
-                                    <gmd:onlineResource>
-                                      <gmd:CI_OnlineResource>
-					<gmd:function>
-                                          <gmd:CI_OnLineFunctionCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode" codeListValue="download">download</gmd:CI_OnLineFunctionCode>
-                                        </gmd:function>
+					    <gmd:function>
+                                              <gmd:CI_OnLineFunctionCode codeList='http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode' codeListValue='information'>information</gmd:CI_OnLineFunctionCode>
+                                            </gmd:function>
+					    <!-- _____________________________________________ended here _______________________________________ -->
 					<gmd:linkage>
 					  <gmd:URL>
 					    <xsl:value-of select="/root/record/download_url"/>
