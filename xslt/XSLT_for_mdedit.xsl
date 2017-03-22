@@ -22,7 +22,8 @@
             xsi:schemaLocation="http://www.isotc211.org/2005/gmd http://www.northwestknowledge.net/iso/xsd/schema.xsd">
             <!-- Selects unique file identifier from the mdedit generic xml; this id is created by the mongo db for the metadata record -->
             <gmd:fileIdentifier>
-                <gco:CharacterString>nkn:<xsl:value-of select="/root/record/_id/key"/></gco:CharacterString>
+                <gco:CharacterString>nkn:<xsl:value-of select="/root/record/_id/key"
+                    /></gco:CharacterString>
             </gmd:fileIdentifier>
             <!-- Sets language as English and character set as utf-8 as default for metadata record. We do not anticipate non-English entries. -->
             <gmd:language>
@@ -36,14 +37,18 @@
             </gmd:characterSet>
             <!-- Selects hierarchy level, either dataset or collection, from the generic mdedit xml. This is selected from the dropdown list in mdedit. -->
             <xsl:if test="root/record/hierarchy_level = 'series'">
-            <gmd:hierarchyLevel>
-                <gmd:MD_ScopeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ScopeCode" codeListValue="series">series</gmd:MD_ScopeCode>
-            </gmd:hierarchyLevel>
+                <gmd:hierarchyLevel>
+                    <gmd:MD_ScopeCode
+                        codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ScopeCode"
+                        codeListValue="series">series</gmd:MD_ScopeCode>
+                </gmd:hierarchyLevel>
             </xsl:if>
             <xsl:if test="root/record/hierarchy_level = 'dataset'">
-            <gmd:hierarchyLevel>
-                <gmd:MD_ScopeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ScopeCode" codeListValue="dataset">dataset</gmd:MD_ScopeCode>
-            </gmd:hierarchyLevel>
+                <gmd:hierarchyLevel>
+                    <gmd:MD_ScopeCode
+                        codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ScopeCode"
+                        codeListValue="dataset">dataset</gmd:MD_ScopeCode>
+                </gmd:hierarchyLevel>
             </xsl:if>
             <!-- Sets the contact for the metadata file to be NKN because NKN is the distributor of the metadata record itself, given that it was created
         on our mdedit application. This should be true for all records created with the NKN metadata editor -->
@@ -57,17 +62,19 @@
                             <gmd:phone>
                                 <gmd:CI_Telephone>
                                     <gmd:voice>
-                                        <gco:CharacterString>(208) 885-8456</gco:CharacterString>
+                                        <gco:CharacterString>(208) 885-2080</gco:CharacterString>
                                     </gmd:voice>
                                 </gmd:CI_Telephone>
                             </gmd:phone>
                             <gmd:address>
                                 <gmd:CI_Address>
                                     <gmd:deliveryPoint>
-                                        <gco:CharacterString>University of Idaho Library</gco:CharacterString>
+                                        <gco:CharacterString>University of Idaho
+                                            Library</gco:CharacterString>
                                     </gmd:deliveryPoint>
                                     <gmd:deliveryPoint>
-                                        <gco:CharacterString>875 Perimeter Drive, MS 2358</gco:CharacterString>
+                                        <gco:CharacterString>875 Perimeter Drive, MS
+                                            2358</gco:CharacterString>
                                     </gmd:deliveryPoint>
                                     <gmd:city>
                                         <gco:CharacterString>Moscow</gco:CharacterString>
@@ -76,7 +83,7 @@
                                         <gco:CharacterString>ID</gco:CharacterString>
                                     </gmd:administrativeArea>
                                     <gmd:postalCode>
-                                        <gco:CharacterString>83844-2350</gco:CharacterString>
+                                        <gco:CharacterString>83844-2358</gco:CharacterString>
                                     </gmd:postalCode>
                                     <gmd:country>
                                         <gco:CharacterString>USA</gco:CharacterString>
@@ -92,8 +99,15 @@
                                         <gmd:URL>http://www.northwestknowledge.net</gmd:URL>
                                     </gmd:linkage>
                                     <gmd:name>
-                                        <gco:CharacterString>The home page for the Northwest Knowledge Network</gco:CharacterString>
+                                        <gco:CharacterString>The home page for the Northwest
+                                            Knowledge Network</gco:CharacterString>
                                     </gmd:name>
+                                    <gmd:function>
+                                        <gmd:CI_OnLineFunctionCode
+                                            codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode"
+                                            codeListValue="information"
+                                            >information</gmd:CI_OnLineFunctionCode>
+                                    </gmd:function>
                                 </gmd:CI_OnlineResource>
                             </gmd:onlineResource>
                         </gmd:CI_Contact>
@@ -108,7 +122,9 @@
             <!-- Selects the date when the metadata record was last updated from the mdedit generic xml. 
         This is automatically generated by the metadata editor each time a metadata record is submitted -->
             <gmd:dateStamp>
-                <gco:DateTime><xsl:value-of select="/root/record/md_pub_date"/></gco:DateTime>
+                <gco:DateTime>
+                    <xsl:value-of select="/root/record/md_pub_date"/>
+                </gco:DateTime>
             </gmd:dateStamp>
             <!-- Sets the metadata standard information to the 2003 version of the ISO 19139 specification of the ISO 19115 Metadata Standard. 
         This is the version we have selected for the metadata editor-->
@@ -138,7 +154,10 @@
                                         </gco:Date>
                                     </gmd:date>
                                     <gmd:dateType>
-                                        <gmd:CI_DateTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" codeListValue="publication">publication</gmd:CI_DateTypeCode>
+                                        <gmd:CI_DateTypeCode
+                                            codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode"
+                                            codeListValue="publication"
+                                            >publication</gmd:CI_DateTypeCode>
                                     </gmd:dateType>
                                 </gmd:CI_Date>
                             </gmd:date>
@@ -222,15 +241,17 @@
                     </gmd:citation>
                     <!-- Selects the summary paragraph about the dataset from the mdedit generic xml -->
                     <gmd:abstract>
-                        <gco:CharacterString><xsl:value-of select="root/record/summary"/></gco:CharacterString>
+                        <gco:CharacterString>
+                            <xsl:value-of select="root/record/summary"/>
+                        </gco:CharacterString>
                     </gmd:abstract>
                     <!-- Selects status of the dataset from the mdedit generic xml. This is selected from the dropdown list in mdedit. -->
                     <xsl:if test="root/record/status = 'completed'">
-                    <gmd:status>
-                        <gmd:MD_ProgressCode
-                            codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ProgressCode"
-                            codeListValue="completed">completed</gmd:MD_ProgressCode>
-                    </gmd:status>
+                        <gmd:status>
+                            <gmd:MD_ProgressCode
+                                codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ProgressCode"
+                                codeListValue="completed">completed</gmd:MD_ProgressCode>
+                        </gmd:status>
                     </xsl:if>
                     <xsl:if test="root/record/status = 'continually updated'">
                         <gmd:status>
@@ -446,13 +467,13 @@
         frontend in html, at least for now-->
                     <gmd:descriptiveKeywords>
                         <gmd:MD_Keywords>
-                            <!-- Enables entry for multiple keywords and parses each 'item' in the keyword list in the mdedit generic xml as a separate keyword--> 
+                            <!-- Enables entry for multiple keywords and parses each 'item' in the keyword list in the mdedit generic xml as a separate keyword-->
                             <xsl:for-each select="/root/record/place_keywords/item">
-                            <gmd:keyword>
-                                <gco:CharacterString>
-                                    <xsl:value-of select="word"/>
-                                </gco:CharacterString>
-                            </gmd:keyword>
+                                <gmd:keyword>
+                                    <gco:CharacterString>
+                                        <xsl:value-of select="word"/>
+                                    </gco:CharacterString>
+                                </gmd:keyword>
                             </xsl:for-each>
                             <!-- Sets the type of keyword for all above as place keywords. -->
                             <gmd:type>
@@ -481,42 +502,58 @@
         Defaults for projects will be built into the front-end, for now -->
                             <gmd:otherConstraints>
                                 <xsl:if test="root/record/use_restrictions != ''">
-                                    <gco:CharacterString><xsl:value-of select="root/record/use_restrictions"/></gco:CharacterString>
+                                    <gco:CharacterString>
+                                        <xsl:value-of select="root/record/use_restrictions"/>
+                                    </gco:CharacterString>
                                 </xsl:if>
                             </gmd:otherConstraints>
                         </gmd:MD_LegalConstraints>
                     </gmd:resourceConstraints>
                     <!-- Uses an IF statement to select spatial representation type -->
-                <xsl:if test="root/record/spatial_dtype = 'vector'">
-                    <gmd:spatialRepresentationType>
-                        <gmd:MD_SpatialRepresentationTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_SpatialRepresentationTypeCode" codeListValue="vector">vector</gmd:MD_SpatialRepresentationTypeCode>
-                    </gmd:spatialRepresentationType>
-                </xsl:if>
-                <xsl:if test="root/record/spatial_dtype = 'grid'">
-                    <gmd:spatialRepresentationType>
-                            <gmd:MD_SpatialRepresentationTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_SpatialRepresentationTypeCode" codeListValue="grid">grid</gmd:MD_SpatialRepresentationTypeCode>
-                    </gmd:spatialRepresentationType>
-                </xsl:if>
-                <xsl:if test="root/record/spatial_dtype = 'table or text'">
-                    <gmd:spatialRepresentationType>
-                        <gmd:MD_SpatialRepresentationTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_SpatialRepresentationTypeCode" codeListValue="textTable">textTable</gmd:MD_SpatialRepresentationTypeCode>
-                    </gmd:spatialRepresentationType>
-                </xsl:if>
-                <xsl:if test="root/record/spatial_dtype = 'triangulated irregular network'">
-                    <gmd:spatialRepresentationType>
-                        <gmd:MD_SpatialRepresentationTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_SpatialRepresentationTypeCode" codeListValue="tin">tin</gmd:MD_SpatialRepresentationTypeCode>
-                    </gmd:spatialRepresentationType>
-                </xsl:if>
-                <xsl:if test="root/record/spatial_dtype = 'stereographic imaging'">
-                    <gmd:spatialRepresentationType>
-                        <gmd:MD_SpatialRepresentationTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_SpatialRepresentationTypeCode" codeListValue="stereoModel">stereoModel</gmd:MD_SpatialRepresentationTypeCode>
-                    </gmd:spatialRepresentationType>
-                </xsl:if>
-                <xsl:if test="root/record/spatial_dtype = 'video recording of a scene'">
-                    <gmd:spatialRepresentationType>
-                        <gmd:MD_SpatialRepresentationTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_SpatialRepresentationTypeCode" codeListValue="video">video</gmd:MD_SpatialRepresentationTypeCode>
-                    </gmd:spatialRepresentationType>
-                </xsl:if>
+                    <xsl:if test="root/record/spatial_dtype = 'vector'">
+                        <gmd:spatialRepresentationType>
+                            <gmd:MD_SpatialRepresentationTypeCode
+                                codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_SpatialRepresentationTypeCode"
+                                codeListValue="vector">vector</gmd:MD_SpatialRepresentationTypeCode>
+                        </gmd:spatialRepresentationType>
+                    </xsl:if>
+                    <xsl:if test="root/record/spatial_dtype = 'grid'">
+                        <gmd:spatialRepresentationType>
+                            <gmd:MD_SpatialRepresentationTypeCode
+                                codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_SpatialRepresentationTypeCode"
+                                codeListValue="grid">grid</gmd:MD_SpatialRepresentationTypeCode>
+                        </gmd:spatialRepresentationType>
+                    </xsl:if>
+                    <xsl:if test="root/record/spatial_dtype = 'table or text'">
+                        <gmd:spatialRepresentationType>
+                            <gmd:MD_SpatialRepresentationTypeCode
+                                codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_SpatialRepresentationTypeCode"
+                                codeListValue="textTable"
+                                >textTable</gmd:MD_SpatialRepresentationTypeCode>
+                        </gmd:spatialRepresentationType>
+                    </xsl:if>
+                    <xsl:if test="root/record/spatial_dtype = 'triangulated irregular network'">
+                        <gmd:spatialRepresentationType>
+                            <gmd:MD_SpatialRepresentationTypeCode
+                                codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_SpatialRepresentationTypeCode"
+                                codeListValue="tin">tin</gmd:MD_SpatialRepresentationTypeCode>
+                        </gmd:spatialRepresentationType>
+                    </xsl:if>
+                    <xsl:if test="root/record/spatial_dtype = 'stereographic imaging'">
+                        <gmd:spatialRepresentationType>
+                            <gmd:MD_SpatialRepresentationTypeCode
+                                codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_SpatialRepresentationTypeCode"
+                                codeListValue="stereoModel"
+                                >stereoModel</gmd:MD_SpatialRepresentationTypeCode>
+                        </gmd:spatialRepresentationType>
+                    </xsl:if>
+                    <xsl:if test="root/record/spatial_dtype = 'video recording of a scene'">
+                        <gmd:spatialRepresentationType>
+                            <gmd:MD_SpatialRepresentationTypeCode
+                                codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_SpatialRepresentationTypeCode"
+                                codeListValue="video">video</gmd:MD_SpatialRepresentationTypeCode>
+                        </gmd:spatialRepresentationType>
+                    </xsl:if>
                     <!-- Sets language as English and character set as utf-8 as default for the data. We do not anticipate non-English entries. -->
                     <gmd:language>
                         <gmd:LanguageCode
@@ -525,11 +562,11 @@
                     </gmd:language>
                     <!-- Selects the topic category from the mdedit generic xml. This is selected from a dropdown list in mdedit. -->
                     <xsl:for-each select="/root/record/topic_category/item">
-                    <gmd:topicCategory>
-                        <gmd:MD_TopicCategoryCode>
-                            <xsl:value-of select="word"/>
-                        </gmd:MD_TopicCategoryCode>
-                    </gmd:topicCategory>
+                        <gmd:topicCategory>
+                            <gmd:MD_TopicCategoryCode>
+                                <xsl:value-of select="word"/>
+                            </gmd:MD_TopicCategoryCode>
+                        </gmd:topicCategory>
                     </xsl:for-each>
                     <!-- Selects the decicmal degree coordinates entered for the 4 geographic bounds (rectangular) of the dataset from the mdedit generic xml. 
         These values need to constrained to prevent entries that don't meet the criteria of geographic bounding coordinates.-->
@@ -579,107 +616,96 @@
                 </gmd:MD_DataIdentification>
             </gmd:identificationInfo>
             <!--Distribution Info -->
+            
             <gmd:distributionInfo>
-              <gmd:MD_Distribution>
-		<gmd:transferOptions>
-		  <gmd:MD_DigitalTransferOptions>
-		    <xsl:for-each select="/root/record/online/item[not(.=/root/record/access/item/resource_url)]">
-		      <gmd:onLine>
-	 	        <gmd:CI_OnlineResource>
-		          <gmd:linkage>
-		            <xsl:value-of select="url"/>
-		          </gmd:linkage>
-		        </gmd:CI_OnlineResource>
-		      </gmd:onLine>
-		    </xsl:for-each>
-		  </gmd:MD_DigitalTransferOptions>
-		</gmd:transferOptions>
+                <gmd:MD_Distribution>
+
+                <!-- Sets the contact block for NKN as the distributor of the data.
+        This will be enabled as an 'if' statement based on if the download_url looks like an NKN download link -->
+                    <xsl:if test="contains(/root/record/download_url, 'https://www.northwestknowledge.net/data/download.php')">
+                        <gmd:distributor>
+                            <gmd:MD_Distributor>
+                                <gmd:distributorContact xlink:title="NKN">
+                                    <gmd:CI_ResponsibleParty uuid="390bb26a-184d-4c30-8b3e-d74fe0783e28">
+                                        <gmd:organisationName>
+                                            <gco:CharacterString>Northwest Knowledge Network</gco:CharacterString>
+                                        </gmd:organisationName>
+                                        <gmd:contactInfo>
+                                            <gmd:CI_Contact>
+                                                <gmd:phone>
+                                                    <gmd:CI_Telephone>
+                                                        <gmd:voice>
+                                                            <gco:CharacterString>(208) 885-8456</gco:CharacterString>
+                                                        </gmd:voice>
+                                                    </gmd:CI_Telephone>
+                                                </gmd:phone>
+                                                <gmd:address>
+                                                    <gmd:CI_Address>
+                                                        <gmd:deliveryPoint>
+                                                            <gco:CharacterString>University of Idaho Library</gco:CharacterString>
+                                                        </gmd:deliveryPoint>
+                                                        <gmd:deliveryPoint>
+                                                            <gco:CharacterString>875 Perimeter Drive, MS 2358</gco:CharacterString>
+                                                        </gmd:deliveryPoint>
+                                                        <gmd:city>
+                                                            <gco:CharacterString>Moscow</gco:CharacterString>
+                                                        </gmd:city>
+                                                        <gmd:administrativeArea>
+                                                            <gco:CharacterString>ID</gco:CharacterString>
+                                                        </gmd:administrativeArea>
+                                                        <gmd:postalCode>
+                                                            <gco:CharacterString>83844-2350</gco:CharacterString>
+                                                        </gmd:postalCode>
+                                                        <gmd:country>
+                                                            <gco:CharacterString>USA</gco:CharacterString>
+                                                        </gmd:country>
+                                                        <gmd:electronicMailAddress>
+                                                            <gco:CharacterString>info@northwestknowledge.net</gco:CharacterString>
+                                                        </gmd:electronicMailAddress>
+                                                    </gmd:CI_Address>
+                                                </gmd:address>
+                                                <gmd:onlineResource>
+                                                    <gmd:CI_OnlineResource>
+                                                        <gmd:linkage>
+                                                            <gmd:URL>http://www.northwestknowledge.net</gmd:URL>
+                                                        </gmd:linkage>
+                                                        <gmd:name>
+                                                            <gco:CharacterString>The home page for the Northwest Knowledge Network</gco:CharacterString>
+                                                        </gmd:name>
+                                                    </gmd:CI_OnlineResource>
+                                                </gmd:onlineResource>
+                                            </gmd:CI_Contact>
+                                        </gmd:contactInfo>
+                                        <gmd:role>
+                                            <gmd:CI_RoleCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="distributor">distributor</gmd:CI_RoleCode>
+                                        </gmd:role>
+                                    </gmd:CI_ResponsibleParty>
+                                </gmd:distributorContact>
+                                <gmd:distributorTransferOptions>
+                                    <gmd:MD_DigitalTransferOptions>
+                                        <gmd:onLine>
+                                            <gmd:CI_OnlineResource>
+                                                <gmd:linkage>
+                                                    <gmd:URL>
+                                                        <xsl:value-of select="/root/record/download_url"/>
+                                                    </gmd:URL>
+                                                </gmd:linkage>
+                                                <gmd:function>
+                                                    <gmd:CI_OnLineFunctionCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode" codeListValue="download">download</gmd:CI_OnLineFunctionCode>
+                                                </gmd:function>
+                                            </gmd:CI_OnlineResource>
+                                        </gmd:onLine>
+                                    </gmd:MD_DigitalTransferOptions>
+                                </gmd:distributorTransferOptions>
+                            </gmd:MD_Distributor>                                   
+                        </gmd:distributor>
+                    </xsl:if>
+                    
                     <!-- Selects distribution information from the mdedit generic xml, including contact info and associated online resources for 
         data distributors (enabled for multiple entries). -->
-                    <!-- Sets the contact block for NKN as the distributor of the data.
-        This will be enabled as an 'if' statement based on if the user selects Yes to a field asking Yes/No are these data stored with NKN?
-                    <xsl:if test="/root/record/DataStore ='Yes'">
-                    <gmd:distributor>
-                        <gmd:MD_Distributor>
-                            <gmd:distributorContact xlink:title="NKN">
-                                <gmd:CI_ResponsibleParty uuid="390bb26a-184d-4c30-8b3e-d74fe0783e28">
-                                    <gmd:organisationName>
-                                        <gco:CharacterString>Northwest Knowledge Network</gco:CharacterString>
-                                    </gmd:organisationName>
-                                    <gmd:contactInfo>
-                                        <gmd:CI_Contact>
-                                            <gmd:phone>
-                                                <gmd:CI_Telephone>
-                                                    <gmd:voice>
-                                                        <gco:CharacterString>(208) 885-8456</gco:CharacterString>
-                                                    </gmd:voice>
-                                                </gmd:CI_Telephone>
-                                            </gmd:phone>
-                                            <gmd:address>
-                                                <gmd:CI_Address>
-                                                    <gmd:deliveryPoint>
-                                                        <gco:CharacterString>University of Idaho Library</gco:CharacterString>
-                                                    </gmd:deliveryPoint>
-                                                    <gmd:deliveryPoint>
-                                                        <gco:CharacterString>875 Perimeter Drive, MS 2358</gco:CharacterString>
-                                                    </gmd:deliveryPoint>
-                                                    <gmd:city>
-                                                        <gco:CharacterString>Moscow</gco:CharacterString>
-                                                    </gmd:city>
-                                                    <gmd:administrativeArea>
-                                                        <gco:CharacterString>ID</gco:CharacterString>
-                                                    </gmd:administrativeArea>
-                                                    <gmd:postalCode>
-                                                        <gco:CharacterString>83844-2350</gco:CharacterString>
-                                                    </gmd:postalCode>
-                                                    <gmd:country>
-                                                        <gco:CharacterString>USA</gco:CharacterString>
-                                                    </gmd:country>
-                                                    <gmd:electronicMailAddress>
-                                                        <gco:CharacterString>info@northwestknowledge.net</gco:CharacterString>
-                                                    </gmd:electronicMailAddress>
-                                                </gmd:CI_Address>
-                                            </gmd:address>
-                                            <gmd:onlineResource>
-                                                <gmd:CI_OnlineResource>
-                                                    <gmd:linkage>
-                                                        <gmd:URL>http://www.northwestknowledge.net</gmd:URL>
-                                                    </gmd:linkage>
-                                                    <gmd:name>
-                                                        <gco:CharacterString>The home page for the Northwest Knowledge Network</gco:CharacterString>
-                                                    </gmd:name>
-                                                </gmd:CI_OnlineResource>
-                                            </gmd:onlineResource>
-                                        </gmd:CI_Contact>
-                                    </gmd:contactInfo>
-                                    <gmd:role>
-                                        <gmd:CI_RoleCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="distributor">distributor</gmd:CI_RoleCode>
-                                    </gmd:role>
-                                </gmd:CI_ResponsibleParty>
-                            </gmd:distributorContact>
-                            <gmd:distributorTransferOptions>
-                                <gmd:MD_DigitalTransferOptions>
-                                    <gmd:onLine>
-                                        <gmd:CI_OnlineResource>
-                                            <gmd:linkage>
-                                                <gmd:URL>https://www.northwestknowledge.net/data/uuid_for_download.html</gmd:URL>
-                                            </gmd:linkage>
-                                        </gmd:CI_OnlineResource>
-                                    </gmd:onLine>
-                                    <gmd:onLine>
-                                        <gmd:CI_OnlineResource>
-                                            <gmd:linkage>
-                                                <gmd:URL>https://www.northwestknowledge.net/services_web_address</gmd:URL>
-                                            </gmd:linkage>
-                                        </gmd:CI_OnlineResource>
-                                    </gmd:onLine>
-                                </gmd:MD_DigitalTransferOptions>
-                            </gmd:distributorTransferOptions>
-                        </gmd:MD_Distributor>                                   
-                    </gmd:distributor> -->
                     <!-- Enables entry for multiple distributors and parses each 'item' in the citiation list in the mdedit generic xml as a separate distributors -->
                     <xsl:for-each select="/root/record/access/item">
-		      <xsl:variable name="contact" select="." />
+                        <xsl:variable name="contact" select="."/>
                         <gmd:distributor>
                             <gmd:MD_Distributor>
                                 <gmd:distributorContact>
@@ -749,88 +775,104 @@
                                         </gmd:role>
                                     </gmd:CI_ResponsibleParty>
                                 </gmd:distributorContact>
-                                <xsl:for-each select="/root/record/data_format/item">
-                                <gmd:distributorFormat>
-                                    <gmd:MD_Format>
-                                        <gmd:name>
-                                            <gco:CharacterString><xsl:value-of select="word"/></gco:CharacterString>
-                                        </gmd:name>
-                                            <gmd:version gco:nilReason="unknown"/>
-                                            <gmd:specification gco:nilReason="unknown"/>
-                                            <gmd:fileDecompressionTechnique>
-                                                <gco:CharacterString><xsl:value-of select="/root/record/compression_technique"/></gco:CharacterString>
-                                            </gmd:fileDecompressionTechnique>
-                                    </gmd:MD_Format>
-                                </gmd:distributorFormat>
-                                </xsl:for-each>
                                 <gmd:distributorTransferOptions>
-                                  <gmd:MD_DigitalTransferOptions>
-                                    <xsl:for-each select="$contact/resource_url/item">
-                                      <gmd:onLine>
-                                        <gmd:CI_OnlineResource>
-                                          <gmd:linkage>
-                                            <gmd:URL>
-                                              <xsl:value-of select="."/>
-                                            </gmd:URL>
-                                          </gmd:linkage>
-                                          <gmd:function>
-                                            <gmd:CI_OnLineFunctionCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode" codeListValue="download">download</gmd:CI_OnLineFunctionCode>
-                                          </gmd:function>
-                                        </gmd:CI_OnlineResource>
-                                      </gmd:onLine>
-                                    </xsl:for-each>
-                                  </gmd:MD_DigitalTransferOptions>
+                                    <gmd:MD_DigitalTransferOptions>
+                                        <xsl:for-each select="$contact/resource_url/item">
+                                            <gmd:onLine>
+                                                <gmd:CI_OnlineResource>
+                                                  <gmd:linkage>
+                                                  <gmd:URL>
+                                                  <xsl:value-of select="."/>
+                                                  </gmd:URL>
+                                                  </gmd:linkage>
+                                                  <gmd:function>
+                                                  <gmd:CI_OnLineFunctionCode
+                                                  codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode"
+                                                  codeListValue="download"
+                                                  >download</gmd:CI_OnLineFunctionCode>
+                                                  </gmd:function>
+                                                </gmd:CI_OnlineResource>
+                                            </gmd:onLine>
+                                        </xsl:for-each>
+                                    </gmd:MD_DigitalTransferOptions>
                                 </gmd:distributorTransferOptions>
-                              </gmd:MD_Distributor>
-                            </gmd:distributor>
-			  </xsl:for-each>
-			</gmd:MD_Distribution>
-		      </gmd:distributionInfo>
-		      <gmd:dataQualityInfo>
-			<gmd:DQ_DataQuality>
-			  <gmd:scope>
-			    <gmd:DQ_Scope>
-			      <gmd:level>
-				<gmd:MD_ScopeCode codeList="http://www.ngdc.noaa.gov/metadata/published/xsd/schema/resources/Codelist/gmxCodelists.xml#MD_ScopeCode" codeListValue="dataset">dataset</gmd:MD_ScopeCode>
-			      </gmd:level>
-			    </gmd:DQ_Scope>
-			  </gmd:scope>
-			  <gmd:lineage>
-			    <gmd:LI_Lineage>
-			      <gmd:processStep>
-				<gmd:LI_ProcessStep>
-				  <gmd:description>
-				    <gco:CharacterString><xsl:value-of select="/root/record/research_methods"/></gco:CharacterString>
-				  </gmd:description>
-				</gmd:LI_ProcessStep>
-			      </gmd:processStep>
-			    </gmd:LI_Lineage>
-			  </gmd:lineage>
-			</gmd:DQ_DataQuality>
-		      </gmd:dataQualityInfo>
-		      <!-- Metadata background maintenance info, mostly hidden from mdedit web front end  -->
-		      <gmd:metadataConstraints>
-			<!-- Sets the license use constraints according to NKN's terms of service and default use of a Creative Commons license. 
+                            </gmd:MD_Distributor>
+                        </gmd:distributor>
+                    </xsl:for-each>
+                    
+                    <!-- Entries for anonymous resources, those unrelated to any data access contact -->
+                    <xsl:for-each select="/root/record/online/item/url[not(.=/root/record/access/item/resource_url/item)]">
+                        <gmd:distributor>
+                            <gmd:MD_Distributor>
+                                <gmd:distributorContact gco:nilReason="unknown" />
+                                <gmd:distributorTransferOptions>
+                                    <gmd:MD_DigitalTransferOptions>
+                                        <gmd:onLine>
+                                            <gmd:CI_OnlineResource>
+                                                <gmd:linkage>
+                                                    <gmd:URL>
+                                                        <xsl:value-of select="."/>
+                                                    </gmd:URL>
+                                                </gmd:linkage>
+                                            </gmd:CI_OnlineResource>
+                                        </gmd:onLine>
+                                    </gmd:MD_DigitalTransferOptions>
+                                </gmd:distributorTransferOptions>
+                            </gmd:MD_Distributor>
+                        </gmd:distributor>
+                    </xsl:for-each>
+                    
+                </gmd:MD_Distribution>
+            </gmd:distributionInfo>
+            <gmd:dataQualityInfo>
+                <gmd:DQ_DataQuality>
+                    <gmd:scope>
+                        <gmd:DQ_Scope>
+                            <gmd:level>
+                                <gmd:MD_ScopeCode
+                                    codeList="http://www.ngdc.noaa.gov/metadata/published/xsd/schema/resources/Codelist/gmxCodelists.xml#MD_ScopeCode"
+                                    codeListValue="dataset">dataset</gmd:MD_ScopeCode>
+                            </gmd:level>
+                        </gmd:DQ_Scope>
+                    </gmd:scope>
+                    <gmd:lineage>
+                        <gmd:LI_Lineage>
+                            <gmd:processStep>
+                                <gmd:LI_ProcessStep>
+                                    <gmd:description>
+                                        <gco:CharacterString>
+                                            <xsl:value-of select="/root/record/research_methods"/>
+                                        </gco:CharacterString>
+                                    </gmd:description>
+                                </gmd:LI_ProcessStep>
+                            </gmd:processStep>
+                        </gmd:LI_Lineage>
+                    </gmd:lineage>
+                </gmd:DQ_DataQuality>
+            </gmd:dataQualityInfo>
+            <!-- Metadata background maintenance info, mostly hidden from mdedit web front end  -->
+            <gmd:metadataConstraints>
+                <!-- Sets the license use constraints according to NKN's terms of service and default use of a Creative Commons license. 
 			     Because NKN is the distributor of the metadata record itself, this license will apply to all records created with the NKN metadata editor -->
-			<gmd:MD_Constraints>
-			  <gmd:useLimitation>
-                            <gco:CharacterString>This metadata record is licensed under a Creative
+                <gmd:MD_Constraints>
+                    <gmd:useLimitation>
+                        <gco:CharacterString>This metadata record is licensed under a Creative
                             Commons Attribution-NonCommercial-ShareAlike License. For more
                             information, see
                             http://www.northwestknowledge.net/terms_of_service</gco:CharacterString>
-			  </gmd:useLimitation>
-			</gmd:MD_Constraints>
-		      </gmd:metadataConstraints>
-		      <gmd:metadataMaintenance>
-			<!-- Sets update frequency of metadata in terms that NKN uses for all metadata records it maintains. This frequency is "As Needed." 
+                    </gmd:useLimitation>
+                </gmd:MD_Constraints>
+            </gmd:metadataConstraints>
+            <gmd:metadataMaintenance>
+                <!-- Sets update frequency of metadata in terms that NKN uses for all metadata records it maintains. This frequency is "As Needed." 
 			     Because NKN is the distributor of the metadata record itself, these maintenance terms will apply to all records created with the NKN metadata editor -->
-			<gmd:MD_MaintenanceInformation>
-			  <gmd:maintenanceAndUpdateFrequency>
-                            <gmd:MD_MaintenanceFrequencyCode
+                <gmd:MD_MaintenanceInformation>
+                    <gmd:maintenanceAndUpdateFrequency>
+                        <gmd:MD_MaintenanceFrequencyCode
                             codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml"
                             codeListValue="asNeeded">asNeeded</gmd:MD_MaintenanceFrequencyCode>
-			  </gmd:maintenanceAndUpdateFrequency>
-			  <gmd:maintenanceNote>
+                    </gmd:maintenanceAndUpdateFrequency>
+                    <gmd:maintenanceNote>
                         <gco:CharacterString>This metadata record may be updated when information
                             within it becomes obsolete.</gco:CharacterString>
                     </gmd:maintenanceNote>
@@ -848,7 +890,7 @@
                                         <gmd:CI_Telephone>
                                             <gmd:voice>
                                                 <gco:CharacterString>(208)
-                                                  885-8456</gco:CharacterString>
+                                                  885-2080</gco:CharacterString>
                                             </gmd:voice>
                                         </gmd:CI_Telephone>
                                     </gmd:phone>
@@ -869,7 +911,7 @@
                                                 <gco:CharacterString>ID</gco:CharacterString>
                                             </gmd:administrativeArea>
                                             <gmd:postalCode>
-                                                <gco:CharacterString>83844-2350</gco:CharacterString>
+                                                <gco:CharacterString>83844-2358</gco:CharacterString>
                                             </gmd:postalCode>
                                             <gmd:country>
                                                 <gco:CharacterString>USA</gco:CharacterString>
@@ -880,31 +922,25 @@
                                         </gmd:CI_Address>
                                     </gmd:address>
                                     <gmd:onlineResource>
-                                      <gmd:CI_OnlineResource>
-                                          <gmd:linkage>
-                                              <gmd:URL>http://www.northwestknowledge.net</gmd:URL>
+                                        <gmd:CI_OnlineResource>
+                                            <gmd:linkage>
+                                                <gmd:URL>http://www.northwestknowledge.net</gmd:URL>
                                             </gmd:linkage>
                                             <gmd:name>
-                                              <gco:CharacterString>The home page for the Northwest
-                                                Knowledge Network</gco:CharacterString>
+                                                <gco:CharacterString>The home page for the Northwest
+                                                  Knowledge Network</gco:CharacterString>
                                             </gmd:name>
+                                            <gmd:function>
+                                                <gmd:CI_OnLineFunctionCode
+                                                  codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode"
+                                                  codeListValue="information"
+                                                  >information</gmd:CI_OnLineFunctionCode>
+                                            </gmd:function>
                                         </gmd:CI_OnlineResource>
                                     </gmd:onlineResource>
-                                    <gmd:onlineResource>
-                                      <gmd:CI_OnlineResource>
-					<gmd:function>
-                                          <gmd:CI_OnLineFunctionCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode" codeListValue="download">download</gmd:CI_OnLineFunctionCode>
-                                        </gmd:function>
-					<gmd:linkage>
-					  <gmd:URL>
-					    <xsl:value-of select="/root/record/download_url"/>
-                                          </gmd:URL>
-					</gmd:linkage>
-				      </gmd:CI_OnlineResource>
-                                    </gmd:onlineResource>
                                 </gmd:CI_Contact>
-                              </gmd:contactInfo>
-                              <gmd:role>
+                            </gmd:contactInfo>
+                            <gmd:role>
                                 <gmd:CI_RoleCode
                                     codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode"
                                     codeListValue="custodian">custodian</gmd:CI_RoleCode>
