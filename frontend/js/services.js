@@ -558,8 +558,7 @@ metadataEditorApp
 
             return $http.post(
                 '//' + hostname + '/api/metadata/' + currentId + '/publish',
-		{'record': current,
-		 'session_id': session_id}
+		{'record': current,'session_id': session_id}
             );
 	    
 	    
@@ -596,8 +595,8 @@ metadataEditorApp
  * The attachment service must do two things: upload data to the datastore
  * and, if successful, request the download URL be added to the
  */
-.service('AttachmentService', ['$http', '$log', 'hostname',
-    function($http, $log, hostname) {
+.service('AttachmentService', ['$http', '$log', 'hostname', 'session_id',
+function($http, $log, hostname, session_id) {
 
     /* use a test uploadUrl for e2e tests.
         comment out following block and uncomment the next block to
@@ -632,13 +631,17 @@ metadataEditorApp
 
         return $http.post(uploadUrl, fd, {
             // transformRequest: angular.identity,
-            headers: {'Content-Type': undefined}
+            headers: {'Content-Type': undefined},
+	    'session_id': session_id
         });
     };
 
     var attachFile = function(attachmentUrl, recordId) {
         var attachRoute = attachBaseRoute + recordId + '/attachments';
-        return $http.post(attachRoute, {attachment: attachmentUrl});
+        return $http.post(attachRoute, {
+	    attachment: attachmentUrl,
+	    'session_id':session_id
+	});
     };
 
     /**
