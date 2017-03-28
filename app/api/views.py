@@ -117,145 +117,157 @@ def get_single_metadata(_oid):
     because their session_id sent with the request.
     """
     username = _authenticate_user_from_session(request)
-    try:
-        if request.method == 'PUT':
 
-            if ('record' in request.json and '_id' in request.json['record']):
+    if username:
 
-                existing_record = \
-                    Metadata.objects.get_or_404(pk=_oid,
-                                                username=username)
+        try:
+            if request.method == 'PUT':
 
-                updater = Metadata.from_json(
-                    json.dumps(request.json['record'])
-                )
+                if ('record' in request.json and '_id' in request.json['record']):
 
-                for f in existing_record._fields:
-                    existing_record[f] = updater[f]
+                    existing_record = \
+                        Metadata.objects.get_or_404(pk=_oid,
+                                                    username=username)
 
-                existing_record.save()
+                    updater = Metadata.from_json(
+                        json.dumps(request.json['record'])
+                    )
 
-                return jsonify(record=existing_record)
+                    for f in existing_record._fields:
+                        existing_record[f] = updater[f]
+
+                    existing_record.save()
+
+                    return jsonify(record=existing_record)
+
+                else:
+                    return Response('Bad or missing id', 400)
 
             else:
-                return Response('Bad or missing id', 400)
+                    record = Metadata.objects.get_or_404(
+                        pk=_oid, username=username
+                    )
+ 
+                    record.format_dates()
 
-        else:
-                record = Metadata.objects.get_or_404(
-                    pk=_oid, username=username
-                )
+                    return jsonify(record=record)
+        except:
 
-                record.format_dates()
+            return Response('Bad request for record with id ' + _oid, 400)
 
-                return jsonify(record=record)
-    except:
-
-        return Response('Bad request for record with id ' + _oid, 400)
-
+    else:
+        return Response('Bad or missing session id.', 401)
+        
 
 @api.route('/api/metadata/<string:_oid>/delete', methods=['POST'])
 @cross_origin(origin='*', methods=['POST'],
               headers=['X-Requested-With', 'Content-Type', 'Origin'])
 def delete_metadata_record(_oid):
 
-    md = Metadata.objects.get_or_404(pk=_oid)
-    md.delete()
+    username = _authenticate_user_from_session(request)
 
-    return jsonify({'message': 'Record successfully removed',
-                    'status': 'success'})
+    if username:
 
+        md = Metadata.objects.get_or_404(pk=_oid)
+        md.delete()
+
+        return jsonify({'message': 'Record successfully removed',
+                        'status': 'success'})
+    else:
+
+        return Response('Bad or missing session id.', 401)
 
 @api.route('/api/metadata/<string:_oid>/publish', methods=['POST'])
 @cross_origin(origin='*', methods=['POST'],
               headers=['X-Requested-With', 'Content-Type', 'Origin'])
 def publish_metadata_record(_oid):
-    # update or create record in database
-    try:
-        record = Metadata.objects.get_or_404(pk=_oid)
-        updater = Metadata.from_json(request.data)
-        for f in record._fields:
-            if f != 'id':
-                record[f] = updater[f]
+    # update or create record in databas
 
-    except ValidationError:
+    username = _authenticate_user_from_session(request)
 
-        record = Metadata.from_json(request.data)
-        record.id = None
-        record.placeholder = False
+    if username:
+        try:
+            record = Metadata.objects.get_or_404(pk=_oid)
+            updater = Metadata.from_json(json.dumps(request.json['record']))
+            for f in record._fields:
+                if f != 'id':
+                    record[f] = updater[f]
 
-    record.md_pub_date = datetime.utcnow()
-    record.save()
+        except ValidationError:
 
-    if record.schema_type == 'Dataset (ISO)':
+            record = Metadata.from_json(json.dumps(request.json['record']))
+            record.id = None
+            record.placeholder = False
 
-        # generate iso string
-        str_id = str(record.id)
-        iso = get_single_iso_metadata(str_id).data
+        record.md_pub_date = datetime.utcnow()
+        record.save()
 
-        # print app.config
-        save_dir = app.config['PREPROD_DIRECTORY']
-        save_path = os.path.join(save_dir,
-                             str_id,
-                             'metadata.xml')
+        if record.schema_type == 'Dataset (ISO)':
+            
+            # generate iso string
+            str_id = str(record.id)
+            iso = get_single_iso_metadata(str_id).data
+            
+            # print app.config
+            save_dir = app.config['PREPROD_DIRECTORY']
+            save_path = os.path.join(save_dir,
+                                     str_id,
+                                     'metadata.xml')
 
-        if not os.path.exists(os.path.dirname(save_path)):
-            os.mkdir(os.path.dirname(save_path))
+            if not os.path.exists(os.path.dirname(save_path)):
+                os.mkdir(os.path.dirname(save_path))
 
-        with open(save_path, 'w+') as f:
-            f.write(iso)
-        if app.config['PRODUCTION']:
+            with open(save_path, 'w+') as f:
+                f.write(iso)
+            if app.config['PRODUCTION']:
 
-            nkn_upload_url = \
-               "https://nknportal-dev.nkn.uidaho.edu" + \
-               "/portal/simpleUpload/upload.php"
+                nkn_upload_url = "https://nknportal-dev.nkn.uidaho.edu" + "/portal/simpleUpload/upload.php"
 
-            rep = requests.post(nkn_upload_url,
-                                {'uuid': str_id},
-                                files={'uploadedfile': open(save_path, 'rb')})
+                rep = requests.post(nkn_upload_url,{'uuid': str_id}, files={'uploadedfile': open(save_path, 'rb')})
 
-	#Save XML file of ISO record to backend server's file system
-        if 'localhost' not in request.base_url:
-            username = _authenticate_user_from_session(request)
-            gptInsert.gptInsertRecord(iso, record.title, str_id, username)
+	    #Save XML file of ISO record to backend server's file system
+            if 'localhost' not in request.base_url:
+                username = _authenticate_user_from_session(request)
+                gptInsert.gptInsertRecord(iso, record.title, str_id, username)
+                
+            return jsonify(record=record)
 
-        return jsonify(record=record)
+        else:
+
+            str_id = str(record.id)
+            dc = get_single_dc_metadata(str_id).data
+
+            # print app.config
+            save_dir = app.config['PREPROD_DIRECTORY']
+
+            save_path = os.path.join(save_dir, str_id, 'metadata.xml')
+
+            if not os.path.exists(os.path.dirname(save_path)):
+                os.mkdir(os.path.dirname(save_path))
+
+            with open(save_path, 'w+') as f:
+                f.write(dc)
+                f.close()
+
+            if app.config['PRODUCTION']:
+
+                nkn_upload_url = "https://nknportal-dev.nkn.uidaho.edu" + "/portal/simpleUpload/upload.php"
+                
+                rep = requests.post(nkn_upload_url,
+                                    {'uuid': str_id},
+                                    files={'uploadedfile': open(save_path, 'rb')})
+
+	    #Save XML file of Dublin record to backend server's file system
+            if 'localhost' not in request.base_url:
+    		username = _authenticate_user_from_session(request)
+                gptInsert.gptInsertRecord(dc, record.title, str_id, username)
+
+            return jsonify(record=record)
 
     else:
+        return Response('Bad or missing session id.', 401)
 
-        str_id = str(record.id)
-        dc = get_single_dc_metadata(str_id).data
-
-        # print app.config
-        save_dir = app.config['PREPROD_DIRECTORY']
-
-        save_path = os.path.join(save_dir,
-                             str_id,
-                             'metadata.xml')
-
-        if not os.path.exists(os.path.dirname(save_path)):
-            os.mkdir(os.path.dirname(save_path))
-
-        with open(save_path, 'w+') as f:
-            f.write(dc)
-            f.close()
-
-        if app.config['PRODUCTION']:
-
-            nkn_upload_url = \
-               "https://nknportal-dev.nkn.uidaho.edu" + \
-               "/portal/simpleUpload/upload.php"
-
-            rep = requests.post(nkn_upload_url,
-                                {'uuid': str_id},
-                                files={'uploadedfile': open(save_path, 'rb')})
-
-	#Save XML file of Dublin record to backend server's file system
-        if 'localhost' not in request.base_url:
-            username = _authenticate_user_from_session(request)
-            gptInsert.gptInsertRecord(dc, record.title, str_id, username)
-
-        return jsonify(record=record)
-
+        
 @api.route('/api/metadata/<string:_oid>/iso')
 @cross_origin(origin="*", methods=['GET'])
 def get_single_iso_metadata(_oid):
@@ -389,69 +401,75 @@ def attach_file(_oid, attachmentId=None):
     md = Metadata.objects.get_or_404(pk=_oid)
     attachment = ''
 
-    try:
+    username = _authenticate_user_from_session(request)
 
-        if request.method == 'POST':
+    if username:
+    
+        try:
 
-            attachment = request.json['attachment']
-            if 'localhost' in request.url_root:
-                attachment = attachment.replace(' ', '_')
+            if request.method == 'POST':
 
-            md.attachments.append(Attachment(url=attachment))
+                attachment = request.json['attachment']
+                if 'localhost' in request.url_root:
+                    attachment = attachment.replace(' ', '_')
 
-            md.save()
+                md.attachments.append(Attachment(url=attachment))
 
-        elif request.method == 'DELETE':
+                md.save()
 
-            try:
-                md = Metadata.objects.get(id=_oid)
+            elif request.method == 'DELETE':
 
                 try:
-                    # if developing locally we'll also want to remove file
-                    url = filter(
-                            lambda a: str(a.id) == attachmentId, md.attachments
-                        ).pop().url
+                    md = Metadata.objects.get(id=_oid)
 
-                    os.remove(
-                        os.path.join(
-                            app.config['UPLOADS_DEFAULT_DEST'],
-                            os.path.basename(url)
+                    try:
+                        # if developing locally we'll also want to remove file
+                        url = filter(
+                                lambda a: str(a.id) == attachmentId, md.attachments
+                            ).pop().url
+
+                        os.remove(
+                            os.path.join(
+                                app.config['UPLOADS_DEFAULT_DEST'],
+                                os.path.basename(url)
+                            )
                         )
+                    except (OSError, IndexError):
+                        pass
+
+                    # don't need to save after this since we're updating existing
+                    Metadata.objects(id=_oid).update_one(
+                        pull__attachments__id=attachmentId
                     )
-                except (OSError, IndexError):
+
+
+                    md = Metadata.objects.get(id=_oid)
+
+                # we'll just go ahead and not care if it doesn't exist
+                except ValueError:
                     pass
 
-                # don't need to save after this since we're updating existing
-                Metadata.objects(id=_oid).update_one(
-                    pull__attachments__id=attachmentId
-                )
+            else:
+                return jsonify({'message': 'HTTP Method must be DELETE or POST'},
+                               status=405)
 
+        except KeyError:
 
-                md = Metadata.objects.get(id=_oid)
+            keys = request.json.keys()
+            keys_str = ', '.join(keys)
+            return jsonify(
+                {
+                    'message':
+                        'Key(s) ' + keys_str + ' not recognized. ' +
+                        'Must contain \'attachment\''
+                },
+                status=400
+            )
 
-            # we'll just go ahead and not care if it doesn't exist
-            except ValueError:
-                pass
-
-        else:
-            return jsonify({'message': 'HTTP Method must be DELETE or POST'},
-                           status=405)
-
-    except KeyError:
-
-        keys = request.json.keys()
-        keys_str = ', '.join(keys)
-        return jsonify(
-            {
-                'message':
-                    'Key(s) ' + keys_str + ' not recognized. ' +
-                    'Must contain \'attachment\''
-            },
-            status=400
-        )
-
-    return jsonify(dict(message=attachment + ' successfully (at/de)tached!',
-                        record=md))
+        return jsonify(dict(message=attachment + ' successfully (at/de)tached!', record=md))
+ 
+    else:
+        return Response('Bad or missing session id.', 401)
 
 
 # Not actually used in mdedit production at NKN, only for testing.
@@ -483,7 +501,7 @@ def upload():
     else:
         return jsonify({'message': 'Error: must upload with POST'},
                        status=405)
-
+ 
 
 def _authenticate_user_from_session(request):
     """
