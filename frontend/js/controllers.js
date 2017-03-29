@@ -99,7 +99,6 @@ metadataEditorApp.controller('BaseController',
         //=== set up hostname-related scope variables ===//
         // export to XML
         var exportAddr = function(oid, xmlType) {
-	    console.log("PRinting hostname in controller: " + hostname);
             return hostname + '/api/metadata/' + oid + '/' + xmlType;
         };
         $scope.export_ = function(type) {
@@ -264,6 +263,7 @@ metadataEditorApp.controller('BaseController',
                     $scope.newRecord = false;
 
                     updateForms($scope, data.record);
+		    loadContactResource();
                 })
                 .error(function (error) {
                     $scope.errors.push("Error in loading record to edit");
@@ -274,6 +274,8 @@ metadataEditorApp.controller('BaseController',
 
 	    //Reset scope variables used in disclaimer.html checkboxes
 	    initScopeValues();
+
+
         };
 
         /**
@@ -434,11 +436,18 @@ metadataEditorApp.controller('BaseController',
           {
             $scope.currentRecord.online.splice(resourceIndex, 1);
           }
+
+	    //Remove the last resource url from the last access contact object because url has been removed from
+	    //the "Resources" section.
+	    $scope.currentRecord.access[$scope.currentRecord.access.length-1].resource_url.pop();
+	    $scope.accessNames.pop();
+	    
         };
 
         $scope.addOnlineResource = function()
         {
-          $scope.currentRecord.online.push("");
+            $scope.currentRecord.online.push("");
+	    $scope.accessNames.push("");
         };
 
         $scope.getBbox = function()
@@ -679,6 +688,7 @@ metadataEditorApp.controller('BaseController',
 	    $scope.hasSpatialData = false;
 	    $scope.coordinateInputVisible = false;
 
+	    $scope.accessNames = [];
 	    //Reset form validity 
 	    resetFormValidity();
 	    
@@ -1397,6 +1407,54 @@ metadataEditorApp.controller('BaseController',
 	    $location.path("/admin");
 	};
 	
+	$scope.accessNames = [];
+	$scope.accessNames.push("");
+	/* System pushes empty string onto accessNames array when new online element is added to online array, 
+	   then in HTML select element has ng-model that binds that element's value to element 
+	   in accessNames array. Element is removed fron accessNames array when online url is removed from frontend.
+
+	   This function adds the resource URL into an attribute in currentRecord for the specified access contact
+	   to associate that url with that contact.
+	  */
+	$scope.associateContactResource = function(index, url){
+	    console.log("Printing indecies: " + index);
+	    for(var i = 0; i < $scope.currentRecord.access.length; i++){
+		if($scope.currentRecord.access[i].name == $scope.accessNames[index]){
+		    if($scope.currentRecord.access[i].resource_url == null)
+			$scope.currentRecord.access[i].resource_url = [""];
+		    
+		    if($scope.currentRecord.access[i].resource_url[0] == "")
+			$scope.currentRecord.access[i].resource_url[0] = url;
+		    else
+			$scope.currentRecord.access[i].resource_url.push(url);
+		}
+	    }
+	};
+
+	//Checks to see if contacts are associated with URLs in Resources section, and initialized drop down boxes to
+	//the associated name if a URL is associated with a name
+	function loadContactResource(){
+	    //Handling legacy records: records created with previous version will not have resource_url
+	    if($scope.currentRecord.access[0].resource_url != null){
+ 		//Init accessNames array to length of currentRecord.online array. There will be at most this many associated urls.
+		for(var i = 0; i < $scope.currentRecord.online.length; i++)
+		    $scope.accessNames.push("");
+		
+		/* Check currentRecord.online urls against currentRecord.access's resource_urls to see if they are associated with
+		   a url. If so, put the name of the contact in accessNames array at the same array position as the currentRecord.online
+		   array. This will give the order needed to automatically select the associated contact's name when loaded.
+		*/
+		for(var i = 0; i < $scope.currentRecord.access.length; i++){
+		    for(var j = 0; j < $scope.currentRecord.access[i].resource_url.length; j++){
+			for(var k = 0; k < $scope.currentRecord.online.length; k++){
+			    if($scope.currentRecord.access[i].resource_url[j] == $scope.currentRecord.online[k]){
+				$scope.accessNames[k] = $scope.currentRecord.access[i].name;
+			    }
+			}
+		    }
+		}
+	    }
+	}
   } // end of callback for controller initialization
 ])
 .controller('ISOController', ['formOptions', function(formOptions) {

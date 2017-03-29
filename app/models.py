@@ -17,6 +17,7 @@ class Contact(db.EmbeddedDocument):
     country = db.StringField(max_length=255)
     zipcode = db.StringField(max_length=255)
     phone = db.StringField(max_length=255)
+    resource_url = db.ListField(db.StringField(max_length=255))
 
     
 class Identifier(db.EmbeddedDocument):
@@ -116,6 +117,43 @@ class Metadata(db.Document):
                        for k in self._fields_ordered])
 
 
+class Minimal_Metadata(db.document):
+    """MongoDB Document representation of subset of metadata for Elasticsearch. """
+    # basic info
+    title = db.StringField(max_length=255)
+    summary = db.StringField(max_length=3000)
+
+    # contacts
+    citation = db.ListField(db.EmbeddedDocumentField('Contact'))
+    access = db.ListField(db.EmbeddedDocumentField('Contact'))
+
+    # extents
+    west_lon = db.FloatField()
+    east_lon = db.FloatField()
+    south_lat = db.FloatField()
+    north_lat = db.FloatField()
+
+    #Keywords
+    thematic_keywords = db.ListField(db.StringField(max_length=255))
+    place_keywords = db.ListField(db.StringField(max_length=255))
+
+    #Path on file system to XML file
+    md_xml_path = db.StringField(max_length=256)
+    
+    #identifiers: ID, DOI, and ARK
+    identifiers = db.ListField(db.EmbeddedDocumentField('Identifier'))
+
+    uid = db.StringField(max_length=256)
+
+    meta = {'allow_inheritance': True}
+
+    def __str__(self):
+
+        return \
+            '\n'.join(["{}: {}".format(k, self[k])
+                       for k in self._fields_ordered])
+
+    
 class Attachment(db.EmbeddedDocument):
     id = db.ObjectIdField(required=True, default=ObjectId)
     url = db.StringField(required=True)

@@ -39,7 +39,7 @@ from mongoengine import ValidationError
 
 from . import api
 from .. import uploadedfiles
-from ..models import Metadata, Attachment
+from ..models import Metadata, Attachment, Minimal_Metadata
 
 import gptInsert
 
@@ -162,19 +162,14 @@ def get_all_metadata(page_number, records_per_page, sort_on):
     via POST because we must pass a session id so that the user is
     authenticated.
 
-    Access control is done here. A user can modify only their own records
-    because their session_id sent with the request.
+    Access control is done here. An admin is authenticated if their
+    session id is valid, and they are part of the admin group
     """
-    username = _authenticate_user_from_session(request)
-
-    #Need to put in database 'admin' attribute to verify if user is admin. Only let admins access to all records.
-    #username, admin = _authenticate_user_from_session(request)
+    
+    username = _authenticate_admin_from_session(request)
 
     #pageNumber is 0 based index. Need first page to start at 0 for math for setting arrayLowerBound and arrayUpperBound.
     try:
-        #if username && (admin == true):
-        #Change next line to something like previous line after admin authentication works! Now the system is letting
-        #any authenticated user modify any other record!
         if username:
             if request.method == 'POST':
                 #need to do input sanitization on all these values! Separating variables so outside does not have direct access to
@@ -214,16 +209,10 @@ def get_doi_ark_requests(page_number, records_per_page, sort_on):
     Access control is done here. A user can modify only their own records
     because their session_id sent with the request.
     """
-    username = _authenticate_user_from_session(request)
-
-    #Need to put in database 'admin' attribute to verify if user is admin. Only let admins access to all records.
-    #username, admin = _authenticate_user_from_session(request)
+    username = _authenticate_admin_from_session(request)
 
     #pageNumber is 0 based index. Need first page to start at 0 for math for setting arrayLowerBound and arrayUpperBound.
     try:
-        #if username && (admin == true):
-        #Change next line to something like previous line after admin authentication works! Now the system is letting
-        #any authenticated user modify any other record!
         if username:
             if request.method == 'POST':
                 #need to do input sanitization on all these values! Separating variables so outside does not have direct access to
@@ -266,15 +255,10 @@ def search_doi_ark_requests(search_term, page_number, records_per_page, sort_by)
     Access control is done here. A user can modify only their own records
     because their session_id sent with the request.
     """
-    username = _authenticate_user_from_session(request)
-
-    #Need to put in database 'admin' attribute to verify if user is admin. Only let admins access to all records.
-    #username, admin = _authenticate_user_from_session(request)
+    username = _authenticate_admin_from_session(request)
 
     #pageNumber is 0 based index. Need first page to start at 0 for math for setting arrayLowerBound and arrayUpperBound.
     try:
-        #if username && (admin == true):
-        #Change next line to previous line to only let admins search for records! Implement this when user database is updated for admin verification
         if username:
             if request.method == 'POST':
                 #need to do input sanitization on values on route! 
@@ -308,16 +292,10 @@ def set_doi_ark(page_number, records_per_page, sort_on, doi_ark_value):
     Access control is done here. A user can modify only their own records
     because their session_id sent with the request.
     """
-    username = _authenticate_user_from_session(request)
-
-    #Need to put in database 'admin' attribute to verify if user is admin. Only let admins access to all records.
-    #username, admin = _authenticate_user_from_session(request)
+    username = _authenticate_admin_from_session(request)
 
     #pageNumber is 0 based index. Need first page to start at 0 for math for setting arrayLowerBound and arrayUpperBound.
     try:
-        #if username && (admin == true):
-        #Change next line to something like previous line after admin authentication works! Now the system is letting
-        #any authenticated user modify any other record!
         if username:
             if request.method == 'POST':
                 #need to do input sanitization on all these values! Separating variables so outside does not have direct access to
@@ -356,15 +334,10 @@ def search_metadata(search_term, page_number, records_per_page, sort_by):
     Access control is done here. A user can modify only their own records
     because their session_id sent with the request.
     """
-    username = _authenticate_user_from_session(request)
-
-    #Need to put in database 'admin' attribute to verify if user is admin. Only let admins access to all records.
-    #username, admin = _authenticate_user_from_session(request)
+    username = _authenticate_admin_from_session(request)
 
     #pageNumber is 0 based index. Need first page to start at 0 for math for setting arrayLowerBound and arrayUpperBound.
     try:
-        #if username && (admin == true):
-        #Change next line to previous line to only let admins search for records! Implement this when user database is updated for admin verification
         if username:
             if request.method == 'POST':
                 #need to do input sanitization on values on route! 
@@ -419,6 +392,16 @@ def publish_metadata_record(_oid):
     record.md_pub_date = datetime.utcnow()
     record.save()
 
+
+    
+    #Create minimal subset of record fields to send to Elasticsearch
+    elastic_search_record = Minimal_Metadata()
+    for f in record._fields:
+        if f != 'id':
+            record[f] = updater[f]
+
+
+            
     if record.schema_type == 'Dataset (ISO)':
 
         # generate iso string
@@ -562,7 +545,7 @@ def get_single_xml_metadata(_oid):
 
     d_fmt = '%Y-%m-%d'
 
-    d_fmt1 = '%Y-%m-%d %I:%M %p GMT'
+    d_fmt1 = '%Y-%m-%dT%H:%M:%SZ'
 
     try:
         #start/end date might not exist yet
@@ -745,9 +728,52 @@ def _authenticate_user_from_session(request):
         res = requests.post(username_url, data=data)
 
         username = res.json()['username']
-        #admin = res.json()['admin']
+
         if username:
-            return username #, admin
+            return username
+        # username will be u'' if the session id was not valid; make explicit
+        else:
+            return None
+
+def _authenticate_admin_from_session(request):
+    """
+    Arguments:
+        (flask.Request) Incoming API request
+    Returns:
+        (str): username
+    """
+
+    # User is not admin by default. Only authenticated as admin after checking groups.
+    is_admin = False
+
+    # TODO remove the default setting here. This is saying use a service.
+    
+    username_url = (os.getenv('GETUSER_URL') or
+                    'https://nknportal-dev.nkn.uidaho.edu/getUsername/')
+    try:
+        session_id = request.json['session_id']
+    except:
+        session_id = 'local'
+
+    if session_id == 'local':
+        return 'local_user'
+
+    else:
+        data = {
+            'session_id': session_id,
+            'config_kw': 'nknportal'
+        }
+
+        res = requests.post(username_url, data=data)
+
+        username = res.json()['username']
+        groups = res.json()['groups']
+        
+        if "cn=publisher,cn=nknportal" in groups:
+            is_admin = true
+
+        if username and is_admin:
+            return username
         # username will be u'' if the session id was not valid; make explicit
         else:
             return None

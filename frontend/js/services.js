@@ -267,11 +267,13 @@ metadataEditorApp
 
     citation: [{
       'name': '', 'email': '', 'org': '', 'address': '',
-      'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': ''
+	'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': '',
+	'resource_url': ['']
     }],
     access: [{
       'name': '', 'email': '', 'org': '', 'address': '',
-      'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': ''
+      'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': '',
+	'resource_url': ['']
     }],
 
     west_lon: '',
@@ -323,11 +325,13 @@ metadataEditorApp
 
     citation: [{
       'name': '', 'email': '', 'org': '', 'address': '',
-      'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': ''
+      'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': '',
+	'resource_url': ['']
     }],
     access: [{
       'name': '', 'email': '', 'org': '', 'address': '',
-      'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': ''
+      'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': '',
+	'resource_url': ['']
     }],
 
     west_lon: '',
