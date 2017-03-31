@@ -628,19 +628,19 @@ function($http, $log, hostname, session_id) {
 
         fd.append('uploadedfile', file);
         fd.append('uuid', recordId);
-
+	fd.append('session_id', session_id);
+	
         return $http.post(uploadUrl, fd, {
             // transformRequest: angular.identity,
             headers: {'Content-Type': undefined},
-	    'session_id': session_id
-        });
+	});
     };
 
     var attachFile = function(attachmentUrl, recordId) {
         var attachRoute = attachBaseRoute + recordId + '/attachments';
         return $http.post(attachRoute, {
 	    attachment: attachmentUrl,
-	    'session_id':session_id
+	    'session_id': session_id
 	});
     };
 
