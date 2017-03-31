@@ -640,7 +640,7 @@ function($http, $log, hostname, session_id) {
         var attachRoute = attachBaseRoute + recordId + '/attachments';
         return $http.post(attachRoute, {
 	    attachment: attachmentUrl,
-	    'session_id':session_id
+	    'session_id': session_id
 	});
     };
 
