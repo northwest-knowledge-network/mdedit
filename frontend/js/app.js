@@ -96,7 +96,7 @@ var metadataEditorApp = angular
 	envServiceProvider.config({
 	    domains: {
 		development: ['localhost', 'localhost:8000', 'locahost:8000/frontend'],
-		developmentServer: [ 'https://nkn-dev.nkn.uidaho.edu/metadata-editor' ],
+		developmentServer: [ 'https://nkn-dev/nkn.uidaho.edu', 'https://nkn-dev.nkn.uidaho.edu/metadata-editor' ],
 		production: ['https://northwestknowledge.net/metadata-editor']
 	    },
 	    vars: {
