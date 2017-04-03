@@ -23,7 +23,6 @@ class Config:
 
     ATTACHMENT_DOWNLOAD_BASE_URL = 'http://example.com/downloads?uuid='
 
-    #SIMPLE_UPLOAD_URL = "https://nknportal-dev.nkn.uidaho.edu/portal/simpleUpload/upload.php"
     SIMPLE_UPLOAD_URL = "http://localhost:4000/app/upload"
     
     @staticmethod
