@@ -96,8 +96,8 @@ var metadataEditorApp = angular
 	envServiceProvider.config({
 	    domains: {
 		development: ['localhost', 'localhost:8000', 'locahost:8000/frontend'],
-		developmentServer: [ 'https://nkn-dev.nkn.uidaho.edu', 'https://nkn-dev.nkn.uidaho.edu/metadata-editor', 'https://nkn-dev.nkn.uidaho.edu/metadata-editor/', 'https://nkn-dev.nkn.uidaho.edu/metadata-editor#/iso', 'https://nkn-dev.nkn.uidaho.edu/metadata-editor#/dublin'],
-		production: ['https://northwestknowledge.net/metadata-editor', 'https://northwestknowledge.net/metadata-editor/', 'https://northwestknowledge.net/metadata-editor#/iso', 'https://northwestknowledge.net/metadata-editor#/dublin']
+		developmentServer: [ 'nkn-dev.nkn.uidaho.edu', 'nkn-dev.nkn.uidaho.edu/metadata-editor', 'nkn-dev.nkn.uidaho.edu/metadata-editor/', 'nkn-dev.nkn.uidaho.edu/metadata-editor#/iso', 'nkn-dev.nkn.uidaho.edu/metadata-editor#/dublin'],
+		production: ['northwestknowledge.net/metadata-editor', 'northwestknowledge.net/metadata-editor/', 'northwestknowledge.net/metadata-editor#/iso', 'northwestknowledge.net/metadata-editor#/dublin']
 	    },
 	    vars: {
 		development: {
