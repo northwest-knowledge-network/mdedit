@@ -1,8 +1,8 @@
 'use strict';
 
 var metadataEditorApp = angular
-    .module('metadataEditor', ['ngRoute', 'ui.date', 'ngMap', 'ngAnimate', 'ui.router', 'ngRoute'])
-    .config(function($compileProvider, $stateProvider, $urlRouterProvider, $routeProvider, $locationProvider) {
+    .module('metadataEditor', ['ngRoute', 'ui.date', 'ngMap', 'ngAnimate', 'ui.router', 'ngRoute', 'environment'])
+    .config(function($compileProvider, $stateProvider, $urlRouterProvider, $routeProvider, $locationProvider, envServiceProvider) {
 	// $compileProvider.aHrefSanitizationWhitelist(/localhost:/);
 	
 	var partialsPrefix = "partials/form/";
@@ -91,6 +91,28 @@ var metadataEditorApp = angular
 	    .when(/iso/i, '/iso')
 	    .when(/dublin/i, '/dublin')
 	    .otherwise('/iso');
+
+	//Set Angular environment variables
+	envServiceProvider.config({
+	    domains: {
+		development: ['localhost', 'localhost:8000', 'locahost:8000/frontend'],
+		developmentServer: [ 'https://nkn-dev.nkn.uidaho.edu/metadata-editor' ],
+		production: ['https://northwestknowledge.net/metadata-editor']
+	    },
+	    vars: {
+		development: {
+		    uploadUrl: 'http://localhost:4000/api/upload'
+		},
+		developmentServer: {
+		    uploadUrl: 'https://nknportal-dev.nkn.uidaho.edu/portal/simpleUpload/upload.php'
+		},
+		production: {
+		    uploadUrl: 'https://nknportal-prod.nkn.uidaho.edu/portal/simpleUpload/upload.php'
+		}
+	    }
+	});
+
+	envServiceProvider.check();
 })
 .constant('formOptions',  {
 

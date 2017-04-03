@@ -222,7 +222,8 @@ def publish_metadata_record(_oid):
                 f.write(iso)
             if app.config['PRODUCTION']:
 
-                nkn_upload_url = "https://nknportal-dev.nkn.uidaho.edu" + "/portal/simpleUpload/upload.php"
+                nkn_upload_url = app.config['SIMPLE_UPLOAD_URL']
+                #nkn_upload_url = "https://nknportal-dev.nkn.uidaho.edu" + "/portal/simpleUpload/upload.php"
 
                 rep = requests.post(nkn_upload_url,{'uuid': str_id, 'session_id': session_id}, files={'uploadedfile': open(save_path, 'rb')})
 
@@ -251,8 +252,8 @@ def publish_metadata_record(_oid):
                 f.close()
 
             if app.config['PRODUCTION']:
-
-                nkn_upload_url = "https://nknportal-dev.nkn.uidaho.edu" + "/portal/simpleUpload/upload.php"
+                nkn_upload_url = app.config['SIMPLE_UPLOAD_URL']
+                #nkn_upload_url = "https://nknportal-dev.nkn.uidaho.edu" + "/portal/simpleUpload/upload.php"
                 
                 rep = requests.post(nkn_upload_url,
                                     {'uuid': str_id,
