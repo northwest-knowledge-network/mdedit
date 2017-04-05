@@ -829,24 +829,15 @@ metadataEditorApp
  * The attachment service must do two things: upload data to the datastore
  * and, if successful, request the download URL be added to the
  */
-.service('AttachmentService', ['$http', '$log', 'hostname', 'session_id',
-function($http, $log, hostname, session_id) {
-
+    .service('AttachmentService', ['$http', '$log', 'hostname', 'session_id', 'envService', function($http, $log, hostname, session_id, envService) {
+    //Get Angular enviroment variables
+    var environment = envService.get();	
+	
     /* use a test uploadUrl for e2e tests.
         comment out following block and uncomment the next block to
         test with NKN resources
     */
-    //var uploadUrl;
-    //if (hostname === 'localhost:4000') {
-        //uploadUrl = 'http://localhost:4000/api/upload';
-    //}
-    //else {
-        //uploadUrl =
-            //'https://nknportal-dev.nkn.uidaho.edu/portal/simpleUpload/upload.php';
-    //}
-    /**** COMMENT OUT ABOVE, UNCOMMENT BELOW TO TEST YOUR REMOTE SERVER ***/
-    var uploadUrl =
-        'https://nknportal-dev.nkn.uidaho.edu/portal/simpleUpload/upload.php';
+	var uploadUrl = envService.read('uploadUrl');
 
     var attachBaseRoute;
 	if (hostname !== 'localhost:4000') {
@@ -862,19 +853,19 @@ function($http, $log, hostname, session_id) {
 
         fd.append('uploadedfile', file);
         fd.append('uuid', recordId);
-
+	fd.append('session_id', session_id);
+	
         return $http.post(uploadUrl, fd, {
             // transformRequest: angular.identity,
             headers: {'Content-Type': undefined},
-	    'session_id': session_id
-        });
+	});
     };
 
     var attachFile = function(attachmentUrl, recordId) {
         var attachRoute = attachBaseRoute + recordId + '/attachments';
         return $http.post(attachRoute, {
 	    attachment: attachmentUrl,
-	    'session_id':session_id
+	    'session_id': session_id
 	});
     };
 

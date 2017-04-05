@@ -448,7 +448,8 @@ def publish_metadata_record(_oid):
     # update or create record in databas
 
     username = _authenticate_user_from_session(request)
-
+    session_id = request.json['session_id']
+    
     if username:
         try:
             record = Metadata.objects.get_or_404(pk=_oid)
@@ -485,9 +486,9 @@ def publish_metadata_record(_oid):
                 f.write(iso)
             if app.config['PRODUCTION']:
 
-                nkn_upload_url = "https://nknportal-dev.nkn.uidaho.edu" + "/portal/simpleUpload/upload.php"
+                nkn_upload_url = app.config['SIMPLE_UPLOAD_URL']
 
-                rep = requests.post(nkn_upload_url,{'uuid': str_id}, files={'uploadedfile': open(save_path, 'rb')})
+                rep = requests.post(nkn_upload_url,{'uuid': str_id, 'session_id': session_id}, files={'uploadedfile': open(save_path, 'rb')})
 
 	    #Save XML file of ISO record to backend server's file system
             if 'localhost' not in request.base_url:
@@ -514,11 +515,11 @@ def publish_metadata_record(_oid):
                 f.close()
 
             if app.config['PRODUCTION']:
-
-                nkn_upload_url = "https://nknportal-dev.nkn.uidaho.edu" + "/portal/simpleUpload/upload.php"
+                nkn_upload_url = app.config['SIMPLE_UPLOAD_URL']
                 
                 rep = requests.post(nkn_upload_url,
-                                    {'uuid': str_id},
+                                    {'uuid': str_id,
+                                     'session_id': session_id},
                                     files={'uploadedfile': open(save_path, 'rb')})
 
 	    #Save XML file of Dublin record to backend server's file system

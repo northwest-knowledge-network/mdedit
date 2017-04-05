@@ -185,11 +185,6 @@
                                                   <gmd:CI_Address>
                                                   <gmd:deliveryPoint>
                                                   <gco:CharacterString>
-                                                  <xsl:value-of select="name"/>
-                                                  </gco:CharacterString>
-                                                  </gmd:deliveryPoint>
-                                                  <gmd:deliveryPoint>
-                                                  <gco:CharacterString>
                                                   <xsl:value-of select="org"/>
                                                   </gco:CharacterString>
                                                   </gmd:deliveryPoint>

@@ -493,7 +493,7 @@ This will be explained soon.
                 will need to Save your record before you can Publish it.
             </p>
             <p>
-                Please contact <a href="mailto:publish@northwestknowledge.net"> NKN</a>
+                Please contact <a href="mailto:portal@northwestknowledge.net"> NKN</a>
                 if you have additional questions or if the data associated with your
                 record are larger than 10GB.
 
