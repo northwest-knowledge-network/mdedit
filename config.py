@@ -23,6 +23,8 @@ class Config:
 
     ATTACHMENT_DOWNLOAD_BASE_URL = 'http://example.com/downloads?uuid='
 
+    SIMPLE_UPLOAD_URL = "http://localhost:4000/app/upload"
+    
     @staticmethod
     def init_app(app):
         pass
@@ -43,6 +45,8 @@ class TestingConfig(Config):
     ATTACHMENT_DOWNLOAD_BASE_URL = \
         'http://example.com//data/download.php?uuid='
 
+    SIMPLE_UPLOAD_URL = "http://localhost:4000/app/upload"
+
     if not os.path.exists(PREPROD_DIRECTORY):
         os.makedirs(PREPROD_DIRECTORY)
 
@@ -53,7 +57,8 @@ class ProductionConfig(Config):
     ATTACHMENT_DOWNLOAD_BASE_URL = \
         'https://www.northwestknowledge.net/data/download.php?uuid='
 
-
+    SIMPLE_UPLOAD_URL = "https://nknportal-prod.nkn.uidaho.edu/portal/simpleUpload/upload.php"
+    
 config = {
     'development': DevelopmentConfig,
     'testing': TestingConfig,
