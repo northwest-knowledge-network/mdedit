@@ -39,7 +39,7 @@ from mongoengine import ValidationError
 
 from . import api
 from .. import uploadedfiles
-from ..models import Metadata, Attachment, Minimal_Metadata
+from ..models import Metadata, Attachment, Metadata_Subset
 
 import gptInsert
 
@@ -383,6 +383,64 @@ def delete_metadata_record(_oid):
 
         return Response('Bad or missing session id.', 401)
 
+
+
+
+@api.route('/api/metadata/<string:_oid>/admin-publish', methods=['POST'])
+@cross_origin(origin='*', methods=['POST'],
+              headers=['X-Requested-With', 'Content-Type', 'Origin'])
+def admin_publish_metadata_record(_oid):
+
+    username = _authenticate_admin_from_session(request)
+    
+    if username:
+
+        elasticsearch_record = Metadata_Subset.from_json(json.dumps(request.json['elasticsearch_record']))
+
+        str_id = str(record.uid)
+        
+        elasticsearch_url = "http://localhost:9200"
+        
+       
+        #Move file from pre-prod directory to production directory
+        
+        #...
+        preprod_dir = app.config['PREPROD_DIRECTORY']
+
+        prod_dir = app.config['PROD_DIRECTORY']
+        
+        if os.path.exists(os.path.dirname(preprod_path)):
+            
+            preprod_path = os.path.join(preprod_dir,
+                                        str_id,
+                                        'metadata.xml')
+
+            prod_path = os.path.join(prod_dir, str_id, 'metadata.xml')
+
+            #Make the directory in the production directory
+            os.mkdir(os.path.dirname(prod_path))
+
+            if os.path.exists(os.path.dirname(prod_path)):
+
+                #Move the XML file from the preprod directory to the prod directory
+                os.rename(preprod_path, prod_path)
+
+                #set permissions on the new directory in prod: All directories read and execute, and all files read only
+                
+                #Send smaller representation of record to ElasticSearch 
+                requests.post(elasticsearch_url, request.json['elasticsearch_record'])
+                #error check posting to elasticsearch
+
+
+        else:
+            return Response('Pre-production directory does not exist!', 500)
+                      
+        #Profit!
+        
+    else:
+        return Response('Bad or missing session id.', 401)
+
+    
 @api.route('/api/metadata/<string:_oid>/publish', methods=['POST'])
 @cross_origin(origin='*', methods=['POST'],
               headers=['X-Requested-With', 'Content-Type', 'Origin'])
@@ -407,13 +465,6 @@ def publish_metadata_record(_oid):
 
         record.md_pub_date = datetime.utcnow()
         record.save()
-
-        #Create minimal subset of record fields to send to Elasticsearch
-        elastic_search_record = Minimal_Metadata()
-        for f in record._fields:
-            if f != 'id':
-                record[f] = updater[f]
-
 
         if record.schema_type == 'Dataset (ISO)':
             

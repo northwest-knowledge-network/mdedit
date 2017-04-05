@@ -45,14 +45,12 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
             }
         };
 })
-    .directive("adminView", ['$location', 'recordService', 'updateAdmin', 'updateForms', 'sharedRecord', 'makeElasticsearchRecord', function($location, recordService, updateAdmin, updateForms, sharedRecord, makeElasticsearchRecord){
+    .directive("adminView", ['$location', 'recordService', 'updateAdmin', 'updateForms', 'sharedRecord', 'makeElasticsearchRecord', 'elasticsearchRecord', function($location, recordService, updateAdmin, updateForms, sharedRecord, makeElasticsearchRecord, elasticsearchRecord){
 	return{
 	    restrict: 'E',
 	    templateUrl: 'partials/allRecords.html',
 	    controller: function($scope, recordService){
 		var currentPage = 0;
-
-		console.log("inside adminView");
 
 		$scope.show = true;
 
@@ -226,20 +224,37 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		    });
 		};
 
+
+		/** 
+		 * Make a new smaller record that is a subset of the complete record for use by Elasticsearch
+		 */
+		var createElasticsearchRecord = function(){
+		    recordService.getFreshElasticsearchRecord()
+			.success(function(data){
+			    
+			    makeElasticsearchRecord($scope, data);
+			    console.log("Testing elasticsearchRecord: ");
+			    console.log($scope.elasticsearchRecord);
+			})
+			.error(function(error) {
+			    $scope.errors.push("Error in creating Elastic search record (subset of complete record)");
+			});
+		};
+		
+		
 		$scope.publishRecordToPortal = function(recordId){
 		    var elasticsearchRecord = recordService.getFreshElasticsearchRecord();
 		    recordService.getRecordToEdit(recordId)
 			.success(function (data){
 		    
-		    		//Make searchableRecord (reduced set of currentRecord) to use in search system
-				makeElasticsearchRecord(data.record, elasticsearchRecord);
-		    
-				//Send searchableRecord to Elasticsearch
-		    		console.log("Printing elasticsearchRecord: ");
-		    		console.log(elasticsearchRecord);
-		    		console.log("Printing currentRecord identifier: ");
+			    createElasticsearchRecord();
+			    
+			    //Send searchableRecord to Elasticsearch
+		    	    console.log("Printing elasticsearchRecord: ");
+		    	    console.log($scope.elasticsearchRecord);
+		    	    console.log("Printing currentRecord identifier: ");
 
-				//Do whatever else Geoportal is doing to publish records. Move to production directory?
+			    adminApprovePublish(recordId, $scope.elasticsearchRecord);
 			});
 		};
 	    },

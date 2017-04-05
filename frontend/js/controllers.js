@@ -4,7 +4,7 @@
 // for minification, explicitly declare dependencies $scope and $http
 metadataEditorApp.controller('BaseController',
     ['$scope', '$http', '$log', '$window', '$timeout', '$location', '$state', 'formOptions', 'updateForms', 'recordService',
-     'AttachmentService', 'Geoprocessing', 'hostname', 'session_id', 'partialsPrefix', 'sharedRecord',
+     'AttachmentService', 'Geoprocessing', 'hostname', 'session_id', 'partialsPrefix', 'sharedRecord', 'elasticsearchRecord',
      
      function($scope, $http, $log, $window, $timeout, $location, $state, formOptions, updateForms,
         recordService, AttachmentService, Geoprocessing, hostname, session_id,
@@ -1502,6 +1502,7 @@ metadataEditorApp.controller('BaseController',
   })
 .controller('adminController',function($scope, $compile, NgMap)
   {
+      
       $scope.adminView = true;
       $scope.doiAssignView = false;
 

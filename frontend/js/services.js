@@ -149,8 +149,10 @@ metadataEditorApp
     }
 }])
 .factory('makeElasticsearchRecord', ['$log', function($log){
-	    return function(completeRecord, elasticsearchRecord){
+	    return function($scope, elasticsearchRecord){
 	
+	completeRecord = $scope.currentRecord;
+
 	elasticsearchRecord.abstract = completeRecord.summary;
 
 	//set all the identifiers
@@ -163,9 +165,9 @@ metadataEditorApp
 	    //Services initializes first value of array to empty string ('') so we can't push
 	    //onto array this first value or else the first value will be empty string. 
 	    if((i == 0) && (completeRecord.access[i] == ''))
-		elasticsearchRecord.contact[i] = completeRecord.access[i].name;
+		elasticsearchRecord.contacts[i] = completeRecord.access[i].name;
 	    else
-		elasticsearchRecord.contact.push(completeRecord.access[i].name);
+		elasticsearchRecord.contacts.push(completeRecord.access[i].name);
 	}
 
 	//Now push citation contacts onto list
@@ -173,9 +175,9 @@ metadataEditorApp
 	    //Services initializes first value of array to empty string ('') so we can't push
 	    //onto array this first value or else the first value will be empty string. 
 	    if((i == 0) && (completeRecord.citation[i] == ''))
-		elasticsearchRecord.contact[i] = completeRecord.citation[i].name;
+		elasticsearchRecord.contacts[i] = completeRecord.citation[i].name;
 	    else
-		elasticsearchRecord.contact.push(completeRecord.citation[i].name);
+		elasticsearchRecord.contacts.push(completeRecord.citation[i].name);
 	}
 
 	//Get all keywords (from thematic_keyworks and place_keywords lists) and put them in same list.
@@ -184,9 +186,9 @@ metadataEditorApp
 	    //Services initializes first value of array to empty string ('') so we can't push
 	    //onto array this first value or else the first value will be empty string. 
 	    if((i == 0) && (completeRecord.thematic_keywords[i] == ''))
-		elasticsearchRecord.keyword[i] = completeRecord.thematic_keywords[i];
+		elasticsearchRecord.keywords[i] = completeRecord.thematic_keywords[i];
 	    else
-		elasticsearchRecord.keyword.push(completeRecord.thematic_keywords[i]);
+		elasticsearchRecord.keywords.push(completeRecord.thematic_keywords[i]);
 	}
 
 	//Now, get place_keywords
@@ -194,9 +196,9 @@ metadataEditorApp
 	    //Services initializes first value of array to empty string ('') so we can't push
 	    //onto array this first value or else the first value will be empty string. 
 	    if((i == 0) && (completeRecord.place_keywords[i] == ''))
-		elasticsearchRecord.keyword[i] = completeRecord.place_keywords[i];
+		elasticsearchRecord.keywords[i] = completeRecord.place_keywords[i];
 	    else
-		elasticsearchRecord.keyword.push(completeRecord.place_keywords[i]);
+		elasticsearchRecord.keywords.push(completeRecord.place_keywords[i]);
 	}
 
 	//Not really sure how Geoportal is constructing urls. Could be using _id??  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<Not sure if this is correct! Need to talk to Ed to see what new url schema should be.
@@ -218,6 +220,8 @@ metadataEditorApp
 	//Set title and ID
 	elasticsearchRecord.title = completeRecord.title;
 	elasticsearchRecord.uid = completeRecord._id.$oid;
+
+	$scope.elasticsearchRecord = elasticsearchRecord;
     }
 }])
 .value('formElement', {
@@ -353,14 +357,15 @@ metadataEditorApp
 //This record is a reduced set of attributes used by Elasticsearch. 
 .value('elasticsearchRecord', {
     abstract:'',
-    contact: [''],
+    contacts: [''],
     identifiers:[''],
-    keyword: [''],
+    keywords: [''],
     mdXmlPath:'',
     sbeast:'',
     sbnorth:'',
     sbsouth:'',
     sbwest:'',
+    record_source:'metadata_editor',
     title: '',
     uid:''
 })
@@ -660,6 +665,17 @@ metadataEditorApp
 		    record = data.record;
 		});
 	};
+
+	/* This function publishes the record to Elasticsearch and the production directory by the admin.
+	 */
+	var adminApprovePublish = function(recordID, elasticsearchRecord){
+	    return $http.post(
+	                   '//' + hostname + '/api/metadata/' + recordID + '/admin-publish',
+		           {'session_id':session_id,
+			    'elasticsearch_record': elasticsearchRecord
+			   }
+	           );
+	};
 	
         /**
          * Remove a draft record from the server. Does not effect published
@@ -759,13 +775,14 @@ metadataEditorApp
 
             return $http.post(
                 '//' + hostname + '/api/metadata/' + currentId + '/publish',
-		{'record': current,'session_id': session_id}
+		{'record': current, 'elasticsearch_record': $scope.elasticsearchRecord, 'session_id': session_id}
             );
 	    
 	    
         };
 
         return {
+	    adminApprovePublish: adminApprovePublish,
             getFreshISORecord: getFreshISORecord,
             getFreshDCRecord: getFreshDCRecord,
 	    getFreshElasticsearchRecord: getFreshElasticsearchRecord,

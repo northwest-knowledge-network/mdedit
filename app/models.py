@@ -117,33 +117,34 @@ class Metadata(db.Document):
                        for k in self._fields_ordered])
 
 
-class Minimal_Metadata(db.document):
+class Metadata_Subset(db.Document):
     """MongoDB Document representation of subset of metadata for Elasticsearch. """
     # basic info
     title = db.StringField(max_length=255)
-    summary = db.StringField(max_length=3000)
+    abstract = db.StringField(max_length=3000)
 
     # contacts
-    citation = db.ListField(db.EmbeddedDocumentField('Contact'))
-    access = db.ListField(db.EmbeddedDocumentField('Contact'))
+    contacts = db.ListField(db.EmbeddedDocumentField('Contact'))
 
     # extents
-    west_lon = db.FloatField()
-    east_lon = db.FloatField()
-    south_lat = db.FloatField()
-    north_lat = db.FloatField()
+    sbeast = db.FloatField()
+    sbnorth = db.FloatField()
+    sbsouth = db.FloatField()
+    sbwest = db.FloatField()
 
     #Keywords
-    thematic_keywords = db.ListField(db.StringField(max_length=255))
-    place_keywords = db.ListField(db.StringField(max_length=255))
-
+    keywords = db.ListField(db.StringField(max_length=512))
+    
     #Path on file system to XML file
-    md_xml_path = db.StringField(max_length=256)
+    mdXmlPath = db.StringField(max_length=256)
     
     #identifiers: ID, DOI, and ARK
     identifiers = db.ListField(db.EmbeddedDocumentField('Identifier'))
 
     uid = db.StringField(max_length=256)
+
+    #Source of the record: metadata editor or harvest?
+    record_source = db.StringField(max_length=255)
 
     meta = {'allow_inheritance': True}
 

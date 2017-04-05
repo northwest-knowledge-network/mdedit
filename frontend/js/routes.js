@@ -16,6 +16,7 @@ function($routeProvider, partialsPrefixProvider) {
         }).
 	when('/admin', {
 	    templateUrl: prefix + 'partials/admin.html',
+	    controller: 'adminController'
 	}).
         otherwise({
             redirectTo: '/',
