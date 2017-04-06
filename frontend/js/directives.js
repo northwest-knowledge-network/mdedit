@@ -148,7 +148,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		
 		//Use 0 based index for pages (first argument to getAllRecords) to make math work in backend
 		//for splicing results.
-		recordService.getAllRecords(0, 10, 't').success(function(data){
+		recordService.getAllRecords(0, 10, $scope.selectedOrderFilter).success(function(data){
 		    updateAdmin($scope, data);
 		}).error(function(error, status) {
 		    $scope.errors.push("Error in loading list of records.");
