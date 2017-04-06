@@ -410,9 +410,9 @@ metadataEditorApp
 })
 .service('recordService',
 	 ['$http', '$q', '$log', '$location', 'hostname', 'session_id',
-     'emptyISORecord', 'emptyDCRecord', 'elasticsearchRecord', 'milesFields', 'nkn', 'formElement',
+	  'emptyISORecord', 'emptyDCRecord', 'elasticsearchRecord', 'milesFields', 'nkn', 'formElement', 'envService',
 	  function($http, $q, $log, $location, hostname, session_id,
-             emptyISORecord, emptyDCRecord, elasticsearchRecord, milesFields, nkn, formElement)
+		   emptyISORecord, emptyDCRecord, elasticsearchRecord, milesFields, nkn, formElement, envService)
     {
         /**
          * Private functions that will not be exposed to controller
@@ -617,25 +617,23 @@ metadataEditorApp
                     }
             );
         };
-	
+
 	/**
 	 * Get all records for admin view. Returns a paginated list: only 10
 	 * records at a time, but has access to all records if the user is an admin.
 	 */
 	var getAllRecords = function(pageNumber, recordsPerPage, sortBy) {
 	    var record = {};
-	    
-	    return $http.post(
-                '//' + hostname + '/api/metadata/admin/' + pageNumber + '/' + recordsPerPage + '/' + sortBy,
-                {'session_id': session_id}).success(function(data){
-		    record = data.record;
-		});
+	    return $http.post('//' + hostname + '/api/metadata/admin/' + pageNumber + '/' + recordsPerPage + '/' + sortBy,
+				      {'session_id': session_id}).success(function(data){
+					  record = data.record;
+				      });
 	};
 
 	var searchAllRecords = function(searchTerm, pageNumber, recordsPerPage, sortBy) {
 	    var record = {};
 	    console.log("In searchAllRecords: ");
-	    return $http.post(
+	    return  $http.post(
                 '//' + hostname + '/api/metadata/admin/search/' + searchTerm + "/" + pageNumber + "/" + recordsPerPage + "/" + sortBy,
                 {'session_id': session_id}).success(function(data){
 		    record = data.record;
@@ -646,7 +644,6 @@ metadataEditorApp
 	 */
 	var getDoiArkRequests = function(pageNumber, recordsPerPage, sortBy) {
 	    var record = {};
-	    
 	    return $http.post(
                 '//' + hostname + '/api/metadata/doiark/' + pageNumber + '/' + recordsPerPage + '/' + sortBy,
                 {'session_id': session_id}).success(function(data){
@@ -674,9 +671,25 @@ metadataEditorApp
 		           {'session_id':session_id,
 			    'elasticsearch_record': elasticsearchRecord
 			   }
-	           );
+	    );
 	};
-	
+
+
+	/* Check if response object from backend authenticated the user correctly. 
+	 * If not, then return false.
+	 */
+	var checkAdmin = function(status){
+	    if((status == 401)
+	     || (status == 403)){
+		/* Change page to ISO record because
+		 *  the user was not authenticated as an admin. Either the
+		 * response came from the wrong url, or the response code 
+		 * was not 200.
+		 */
+		$location.path('/iso');
+	    }
+	};
+
         /**
          * Remove a draft record from the server. Does not effect published
          * records.
@@ -783,6 +796,7 @@ metadataEditorApp
 
         return {
 	    adminApprovePublish: adminApprovePublish,
+	    checkAdmin: checkAdmin,
             getFreshISORecord: getFreshISORecord,
             getFreshDCRecord: getFreshDCRecord,
 	    getFreshElasticsearchRecord: getFreshElasticsearchRecord,

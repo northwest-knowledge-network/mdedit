@@ -101,7 +101,7 @@ def metadata():
             return jsonify(record=new_md)
 
     else:
-        return Response('Bad or missing session id.', 401)
+        return Response('Bad or missing session id.', status=401)
 
 
 @api.route('/api/metadata/<string:_oid>', methods=['POST', 'PUT'])
@@ -156,8 +156,36 @@ def get_single_metadata(_oid):
             return Response('Bad request for record with id ' + _oid, 400)
 
     else:
-        return Response('Bad or missing session id.', 401)
+        return Response('Bad or missing session id.', status=401)
+
+    
+@api.route('/api/metadata/admin/authenticate', methods=['POST'])
+@cross_origin(origin='*', methods=['POST'],
+              headers=['X-Requested-With', 'Content-Type', 'Origin'])
+def authenticate_admin():
+    """
+    Retrieve all metadata records for admin view. Retrieval is done
+    via POST because we must pass a session id so that the user is
+    authenticated.
+
+    Access control is done here. An admin is authenticated if their
+    session id is valid, and they are part of the admin group
+    """
+    
+    username = _authenticate_admin_from_session(request)
+
+    #pageNumber is 0 based index. Need first page to start at 0 for math for setting arrayLowerBound and arrayUpperBound.
+    try:
+        if username:
+            return Response('Valid session', status=200)
         
+        else:
+            return Response('Bad or missing session id.', status=HTTP_401_UNAUTHORIZED)
+        
+    except:
+
+        return Response('Bad request for records', status=400)
+
 
 @api.route('/api/metadata/admin/<string:page_number>/<string:records_per_page>/<string:sort_on>', methods=['POST'])
 @cross_origin(origin='*', methods=['POST'],
@@ -196,6 +224,9 @@ def get_all_metadata(page_number, records_per_page, sort_on):
                 #Only return array elements between indicies. Don't want to return all possible values
                 #and overload browser with too much data. This is a version of 'pagination.'
                 return jsonify(dict(results=record_list[arrayLowerBound:arrayUpperBound], num_entries=(len(record_list)/int(records_per_page))))
+            
+        else:
+            return Response('Bad or missing session id.', status=401)
 
     except:
 
@@ -244,6 +275,9 @@ def get_doi_ark_requests(page_number, records_per_page, sort_on):
                 #and overload browser with too much data. This is a version of 'pagination.'
                 return jsonify(dict(results=record_list[arrayLowerBound:arrayUpperBound], num_entries=(len(record_list)/int(records_per_page))))
 
+        else:
+            return Response('Bad or missing session id.', status=401)
+
     except:
 
         return Response('Bad request for records', 400)
@@ -279,6 +313,9 @@ def search_doi_ark_requests(search_term, page_number, records_per_page, sort_by)
                 #Only return array elements between indicies. Don't want to return all possible values
                 #and overload browser with too much data. This is a version of 'pagination.'
                 return jsonify(dict(results=record_list[arrayLowerBound:arrayUpperBound], num_entries=(len(record_list)/int(records_per_page))))
+
+        else:
+            return Response('Bad or missing session id.', status=401)
             
     except:
 
@@ -323,6 +360,9 @@ def set_doi_ark(page_number, records_per_page, sort_on, doi_ark_value):
                 #and overload browser with too much data. This is a version of 'pagination.'
                 return jsonify(dict(results=record_list[arrayLowerBound:arrayUpperBound], num_entries=(len(record_list)/int(records_per_page))))
 
+        else:
+            return Response('Bad or missing session id.', status=401)
+
     except:
 
         return Response('Bad request for records', 400)
@@ -358,7 +398,10 @@ def search_metadata(search_term, page_number, records_per_page, sort_by):
                 #Only return array elements between indicies. Don't want to return all possible values
                 #and overload browser with too much data. This is a version of 'pagination.'
                 return jsonify(dict(results=record_list[arrayLowerBound:arrayUpperBound], num_entries=(len(record_list)/int(records_per_page))))
-            
+
+        else:
+            return Response('Bad or missing session id.', status=401)
+           
     except:
 
         return Response('Bad request for records', 400)
@@ -381,7 +424,7 @@ def delete_metadata_record(_oid):
                         'status': 'success'})
     else:
 
-        return Response('Bad or missing session id.', 401)
+        return Response('Bad or missing session id.', status=401)
 
 
 
@@ -438,7 +481,7 @@ def admin_publish_metadata_record(_oid):
         #Profit!
         
     else:
-        return Response('Bad or missing session id.', 401)
+        return Response('Bad or missing session id.', status=401)
 
     
 @api.route('/api/metadata/<string:_oid>/publish', methods=['POST'])
@@ -530,7 +573,7 @@ def publish_metadata_record(_oid):
             return jsonify(record=record)
 
     else:
-        return Response('Bad or missing session id.', 401)
+        return Response('Bad or missing session id.', status=401)
 
         
 @api.route('/api/metadata/<string:_oid>/iso')
@@ -734,7 +777,7 @@ def attach_file(_oid, attachmentId=None):
         return jsonify(dict(message=attachment + ' successfully (at/de)tached!', record=md))
  
     else:
-        return Response('Bad or missing session id.', 401)
+        return Response('Bad or missing session id.', status=401)
 
 
 # Not actually used in mdedit production at NKN, only for testing.

@@ -123,16 +123,19 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 			if(queryType.indexOf("browse") > -1){
 			    recordService.getAllRecords(getCurrentPage(), $scope.recordsPerPage.toString(), $scope.selectedOrderFilter).success(function(data){
 				updateAdmin($scope, data);
-			    }).error(function(error) {
+			    }).error(function(error, status) {
+				recordService.checkAdmin(status);
 				$scope.errors.push("Error in loading list of records.");
 			    });
 			}else if(queryType.indexOf("search") > -1){
 			    //If search term is not an empty string, use it to query database.
 			    if($scope.searchTerm !== ""){
 				recordService.searchAllRecords($scope.searchTerm, getCurrentPage(), $scope.recordsPerPage.toString(), $scope.selectedOrderFilter).success(function(data){
+
 				    updateAdmin($scope, data);
-				}).error(function(error) {
+ 				}).error(function(error, status) {
 				    $scope.errors.push("Error in loading list of records.");
+				    recordService.checkAdmin(status);
 				});
 			    }else{
 				console.log("queryType is " + queryType);
@@ -147,8 +150,9 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		//for splicing results.
 		recordService.getAllRecords(0, 10, 't').success(function(data){
 		    updateAdmin($scope, data);
-		}).error(function(error) {
+		}).error(function(error, status) {
 		    $scope.errors.push("Error in loading list of records.");
+		    recordService.checkAdmin(status);
 		});
 
 		$scope.searchAllRecords = function() {
@@ -200,8 +204,9 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 			    updateForms($scope, data.record);
 			    $location.path(path);
 			})
-			.error(function (error) {
+			.error(function (error, status) {
 			    $scope.errors.push("Error in loading record to edit");
+			    recordService.checkAdmin(status);
 			});
 		};
 
@@ -218,9 +223,11 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		    $scope.searchType = "browse";
 
 		    recordService.getAllRecords(0, 10, $scope.seletedOrderFilter).success(function(data){
+			//Update the page with response data
 			updateAdmin($scope, data);
-		    }).error(function(error) {
+		    }).error(function(error, status) {
 			$scope.errors.push("Error in loading list of records.");
+			recordService.checkAdmin(status);
 		    });
 		};
 
@@ -231,13 +238,13 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		var createElasticsearchRecord = function(){
 		    recordService.getFreshElasticsearchRecord()
 			.success(function(data){
-			    
 			    makeElasticsearchRecord($scope, data);
 			    console.log("Testing elasticsearchRecord: ");
 			    console.log($scope.elasticsearchRecord);
 			})
-			.error(function(error) {
+			.error(function(error, status) {
 			    $scope.errors.push("Error in creating Elastic search record (subset of complete record)");
+			    recordService.checkAdmin(status);
 			});
 		};
 		
@@ -246,7 +253,6 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		    var elasticsearchRecord = recordService.getFreshElasticsearchRecord();
 		    recordService.getRecordToEdit(recordId)
 			.success(function (data){
-		    
 			    createElasticsearchRecord();
 			    
 			    //Send searchableRecord to Elasticsearch
@@ -255,6 +261,8 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		    	    console.log("Printing currentRecord identifier: ");
 
 			    adminApprovePublish(recordId, $scope.elasticsearchRecord);
+			}).error(function(error, status){
+			    recordService.checkAdmin(status);
 			});
 		};
 	    },
@@ -341,17 +349,25 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		    else{
 			if(queryType.indexOf("browse") > -1){
 			    recordService.getDoiArkRequests(getCurrentPage(), $scope.recordsPerPage.toString(), $scope.selectedFilter).success(function(data){
+				console.log("Printing data : ");
+				console.log(data);
+				
 				updateAdmin($scope, data);
-			    }).error(function(error) {
+			    }).error(function(error, status) {
 				$scope.errors.push("Error in loading list of records.");
+				recordService.checkAdmin(status);
 			    });
 			}else if(queryType.indexOf("search") > -1){
 			    //If search term is not an empty string, use it to query database.
 			    if($scope.searchTerm !== ""){
 				recordService.searchDoiArkRequests($scope.searchTerm, getCurrentPage(), $scope.recordsPerPage.toString(), $scope.selectedFilter).success(function(data){
+				    console.log("Printing data : ");
+				    console.log(data);
+				    
 				    updateAdmin($scope, data);
-				}).error(function(error) {
+				}).error(function(error, status) {
 				    $scope.errors.push("Error in loading list of records.");
+				    recordService.checkAdmin(status);
 				});
 			    }else{
 				//If Search term is empty string, then use empty record to return "No results" message.
@@ -419,9 +435,14 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		    $scope.searchType = "browse";
 		    
 		    recordService.getDoiArkRequests(0, 10, $scope.selectedFilter).success(function(data){
+			console.log("Printing data : ");
+			console.log(data);
+			
+			//Update admin page with response data
 			updateAdmin($scope, data);
-		    }).error(function(error) {
+		    }).error(function(error, status) {
 			$scope.errors.push("Error in loading list of records.");
+			recordService.checkAdmin(status); 
 		    });
 		};
 	    },
