@@ -180,7 +180,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		};
 
 		$scope.loadRecord = function(recordId){
-		    recordService.getRecordToEdit(recordId)
+		    recordService.adminGetUsersRecord(recordId)
 			.success(function (data){
 			    console.log("In loadRecord!");
 			    sharedRecord.setRecord(data.record);
@@ -251,7 +251,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		
 		$scope.publishRecordToPortal = function(recordId){
 		    var elasticsearchRecord = recordService.getFreshElasticsearchRecord();
-		    recordService.getRecordToEdit(recordId)
+		    recordService.adminGetUsersRecord(recordId)
 			.success(function (data){
 			    createElasticsearchRecord();
 			    

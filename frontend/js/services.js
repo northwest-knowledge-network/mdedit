@@ -179,7 +179,7 @@ metadataEditorApp
 	    else
 		elasticsearchRecord.contacts.push(completeRecord.citation[i].name);
 	}
-
+ 
 	//Get all keywords (from thematic_keyworks and place_keywords lists) and put them in same list.
 	//First, get thematic_keyworks.
 	for(var i = 0; i < completeRecord.thematic_keywords.length; i++){
@@ -618,6 +618,25 @@ metadataEditorApp
             );
         };
 
+
+	/* When an admin needs to edit someone else's record, then they 
+	 * will use this route in the backend. It athenicates only admins.
+	 */
+	var adminGetUsersRecord = function(recordId)
+        {
+            var record = {};
+
+            return $http.post('//' + hostname + '/api/metadata/load-record' + recordId,
+                              {'session_id': session_id})
+
+                    .success(function(data)
+                    {
+                        record = data.record;
+                    }
+            );
+        };
+
+
 	/**
 	 * Get all records for admin view. Returns a paginated list: only 10
 	 * records at a time, but has access to all records if the user is an admin.
@@ -796,6 +815,7 @@ metadataEditorApp
 
         return {
 	    adminApprovePublish: adminApprovePublish,
+	    adminGetUsersRecord: adminGetUsersRecord,
 	    checkAdmin: checkAdmin,
             getFreshISORecord: getFreshISORecord,
             getFreshDCRecord: getFreshDCRecord,

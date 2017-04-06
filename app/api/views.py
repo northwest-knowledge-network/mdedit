@@ -104,6 +104,67 @@ def metadata():
         return Response('Bad or missing session id.', status=401)
 
 
+@api.route('/api/metadata/load-record', methods=['POST', 'PUT'])
+@cross_origin(origin='*', methods=['POST', 'PUT'],
+              headers=['X-Requested-With', 'Content-Type', 'Origin'])
+def get_record():
+    """
+    Handle get and push requests coming to metadata server
+
+    POST is an update of an existing record.
+
+    PUT is a new record being created.
+
+    Access control is done here. A user can modify only their own records
+    because their session_id sent with the request.
+
+    returns:
+        Response with newly created or edited record as data.
+    """
+    username = _authenticate_admin_from_session(request)
+
+    if username:
+        if request.method == 'POST':
+
+            # execute raw MongoDB query and return all of the user's records
+            recs = Metadata.objects(__raw__={'username': username})
+            return jsonify(dict(results=recs))
+
+        if request.method == 'PUT':
+
+            new_md = Metadata.from_json(json.dumps(request.json['record']))
+
+            new_md.id = None
+            new_md.placeholder = False
+            new_md.default = None
+            new_md.username = username
+
+            new_md.topic_category
+
+            # this avoids errors in submitting None where a list is expected.
+            # string -> dict -> string seems wasteful, but don't see other way
+            new_md = Metadata.from_json(
+                        json.dumps(
+                            {
+                                k: v
+                                for (k, v) in json.loads(
+                                        new_md.to_json()
+                                    ).iteritems()
+                                if v != ''
+                            }
+                        )
+            )
+
+            new_md.save()
+
+            # return a JSON record of new metadata to load into the page
+            return jsonify(record=new_md)
+
+    else:
+        return Response('Bad or missing session id.', status=401)
+
+
+
 @api.route('/api/metadata/<string:_oid>', methods=['POST', 'PUT'])
 @cross_origin(origin='*', methods=['POST', 'PUT'],
               headers=['X-Requested-With', 'Content-Type', 'Origin'])
@@ -159,34 +220,6 @@ def get_single_metadata(_oid):
         return Response('Bad or missing session id.', status=401)
 
     
-@api.route('/api/metadata/admin/authenticate', methods=['POST'])
-@cross_origin(origin='*', methods=['POST'],
-              headers=['X-Requested-With', 'Content-Type', 'Origin'])
-def authenticate_admin():
-    """
-    Retrieve all metadata records for admin view. Retrieval is done
-    via POST because we must pass a session id so that the user is
-    authenticated.
-
-    Access control is done here. An admin is authenticated if their
-    session id is valid, and they are part of the admin group
-    """
-    
-    username = _authenticate_admin_from_session(request)
-
-    #pageNumber is 0 based index. Need first page to start at 0 for math for setting arrayLowerBound and arrayUpperBound.
-    try:
-        if username:
-            return Response('Valid session', status=200)
-        
-        else:
-            return Response('Bad or missing session id.', status=HTTP_401_UNAUTHORIZED)
-        
-    except:
-
-        return Response('Bad request for records', status=400)
-
-
 @api.route('/api/metadata/admin/<string:page_number>/<string:records_per_page>/<string:sort_on>', methods=['POST'])
 @cross_origin(origin='*', methods=['POST'],
               headers=['X-Requested-With', 'Content-Type', 'Origin'])
