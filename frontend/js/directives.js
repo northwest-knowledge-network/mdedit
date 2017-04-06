@@ -45,10 +45,10 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
             }
         };
 })
-    .directive("adminView", ['$location', 'recordService', 'updateAdmin', 'updateForms', 'sharedRecord', 'makeElasticsearchRecord', 'elasticsearchRecord', function($location, recordService, updateAdmin, updateForms, sharedRecord, makeElasticsearchRecord, elasticsearchRecord){
+    .directive("adminView", ['$location', 'recordService', 'updateAdmin', 'updateForms', 'sharedRecord', 'makeElasticsearchRecord', 'elasticsearchRecord', 'partialsPrefix', function($location, recordService, updateAdmin, updateForms, sharedRecord, makeElasticsearchRecord, elasticsearchRecord, partialsPrefix){
 	return{
 	    restrict: 'E',
-	    templateUrl: 'partials/allRecords.html',
+	    templateUrl: partialsPrefix + 'partials/allRecords.html',
 	    controller: function($scope, recordService){
 		var currentPage = 0;
 
@@ -270,10 +270,10 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 	}
     }])
 
-    .directive("doiArkAssignView", ['$location', 'recordService', 'updateAdmin', 'updateForms', 'sharedRecord', function($location, recordService, updateAdmin, updateForms, sharedRecord){
+    .directive("doiArkAssignView", ['$location', 'recordService', 'updateAdmin', 'updateForms', 'sharedRecord', 'partialsPrefix', function($location, recordService, updateAdmin, updateForms, sharedRecord, partialsPrefix){
 	return{
 	    restrict: 'E',
-	    templateUrl: 'partials/doiArkAssign.html',
+	    templateUrl: partialsPrefix + 'partials/doiArkAssign.html',
 	    controller: function($scope, recordService){
 		var currentPage = 0;
 
