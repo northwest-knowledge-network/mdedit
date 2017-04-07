@@ -1,4 +1,4 @@
-'use strict';
+`'use strict';
 
 /* Directives */
 metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {

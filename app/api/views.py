@@ -104,7 +104,7 @@ def metadata():
         return Response('Bad or missing session id.', status=401)
 
 
-@api.route('/api/metadata/load-record', methods=['POST', 'PUT'])
+@api.route('/api/metadata/load-record/<string:oid>', methods=['POST'])
 @cross_origin(origin='*', methods=['POST', 'PUT'],
               headers=['X-Requested-With', 'Content-Type', 'Origin'])
 def get_record():
@@ -124,41 +124,10 @@ def get_record():
     username = _authenticate_admin_from_session(request)
 
     if username:
-        if request.method == 'POST':
 
-            # execute raw MongoDB query and return all of the user's records
-            recs = Metadata.objects(__raw__={'username': username})
-            return jsonify(dict(results=recs))
-
-        if request.method == 'PUT':
-
-            new_md = Metadata.from_json(json.dumps(request.json['record']))
-
-            new_md.id = None
-            new_md.placeholder = False
-            new_md.default = None
-            new_md.username = username
-
-            new_md.topic_category
-
-            # this avoids errors in submitting None where a list is expected.
-            # string -> dict -> string seems wasteful, but don't see other way
-            new_md = Metadata.from_json(
-                        json.dumps(
-                            {
-                                k: v
-                                for (k, v) in json.loads(
-                                        new_md.to_json()
-                                    ).iteritems()
-                                if v != ''
-                            }
-                        )
-            )
-
-            new_md.save()
-
-            # return a JSON record of new metadata to load into the page
-            return jsonify(record=new_md)
+        # execute raw MongoDB query and return the record with the specified oid.
+        recs = Metadata.objects.get_or_404(pk=_oid)
+        return jsonify(dict(results=recs))
 
     else:
         return Response('Bad or missing session id.', status=401)
@@ -178,7 +147,8 @@ def get_single_metadata(_oid):
     because their session_id sent with the request.
     """
     username = _authenticate_user_from_session(request)
-
+    admin_username = _authenticate_admin_from_session(request)
+    
     if username:
 
         try:
@@ -216,6 +186,41 @@ def get_single_metadata(_oid):
 
             return Response('Bad request for record with id ' + _oid, 400)
 
+
+    elif admin_username:
+
+        try:
+            if request.method == 'PUT':
+
+                if ('record' in request.json and '_id' in request.json['record']):
+
+                    existing_record = \
+                        Metadata.objects.get_or_404(pk=_oid)
+
+                    updater = Metadata.from_json(
+                        json.dumps(request.json['record'])
+                    )
+
+                    for f in existing_record._fields:
+                        existing_record[f] = updater[f]
+
+                    existing_record.save()
+
+                    return jsonify(record=existing_record)
+
+                else:
+                    return Response('Bad or missing id', 400)
+
+            else:
+                    record = Metadata.objects.get_or_404(pk=_oid)
+ 
+                    record.format_dates()
+
+                    return jsonify(record=record)
+        except:
+
+            return Response('Bad request for record with id ' + _oid, 400)
+        
     else:
         return Response('Bad or missing session id.', status=401)
 

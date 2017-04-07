@@ -626,7 +626,7 @@ metadataEditorApp
         {
             var record = {};
 
-            return $http.post('//' + hostname + '/api/metadata/load-record' + recordId,
+            return $http.post('//' + hostname + '/api/metadata/load-record/' + recordId,
                               {'session_id': session_id})
 
                     .success(function(data)
