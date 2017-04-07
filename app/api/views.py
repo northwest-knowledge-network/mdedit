@@ -917,7 +917,7 @@ def _authenticate_admin_from_session(request):
         username = res.json()['username']
         groups = res.json()['groups']
         
-        if "cn=publisher,cn=nknportal" in groups:
+        if "cn=publisher,cn=nknportal,cn=nknWebsites,ou=groups,dc=nkn,dc=uidaho,dc=edu" in groups:
             is_admin = true
 
         if username and is_admin:
