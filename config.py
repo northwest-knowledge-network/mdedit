@@ -16,6 +16,9 @@ class Config:
     PREPROD_DIRECTORY = (os.environ.get('MDEDIT_PREPROD_DIRECTORY') or
                          'local-preprod-directory')
 
+    PROD_DIRECTORY = (os.environ.get('MDEDIT_PROD_DIRECTORY') or
+                         'local-prod-directory')
+
     UPLOADS_DEFAULT_DEST = 'app/static/uploads'
 
     if not os.path.exists(PREPROD_DIRECTORY):

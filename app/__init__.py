@@ -6,6 +6,7 @@ from flask_moment import Moment
 from flask_mongoengine import MongoEngine
 from flask_cors import CORS
 from flask_uploads import UploadSet, ALL, configure_uploads
+from flask.ext.elasticsearch import FlaskElasticsearch
 
 # if there is an exception, we are running tests
 try:
@@ -17,12 +18,12 @@ except ImportError:
 moment = Moment()
 db = MongoEngine()
 cors = CORS(resources={r'/app/metadata': {"origins": '*'}})
-
 uploadedfiles = UploadSet('uploadedfiles', ALL)
-
+es = FlaskElasticsearch()
 
 def create_app(config_name):
     app = Flask(__name__)
+
     app.config.from_object(config[config_name])
     app.config['CORS_HEADERS'] = 'Content-Type'
     config[config_name].init_app(app)
@@ -32,7 +33,7 @@ def create_app(config_name):
     moment.init_app(app)
     db.init_app(app)
     cors.init_app(app)
-
+    es.init_app(app)
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
 

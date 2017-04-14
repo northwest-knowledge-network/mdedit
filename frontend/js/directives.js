@@ -250,7 +250,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		
 		
 		$scope.publishRecordToPortal = function(recordId){
-		    var elasticsearchRecord = recordService.getFreshElasticsearchRecord();
+		    var elasticsearchRecord = createElasticsearchRecord();
 		    recordService.adminGetUsersRecord(recordId)
 			.success(function (data){
 			    createElasticsearchRecord();
@@ -260,7 +260,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		    	    console.log($scope.elasticsearchRecord);
 		    	    console.log("Printing currentRecord identifier: ");
 
-			    adminApprovePublish(recordId, $scope.elasticsearchRecord);
+			    recordService.adminApprovePublish(recordId, $scope.elasticsearchRecord);
 			}).error(function(error, status){
 			    recordService.checkAdmin(status);
 			});
