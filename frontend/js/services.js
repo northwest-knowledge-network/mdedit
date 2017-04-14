@@ -149,79 +149,97 @@ metadataEditorApp
     }
 }])
 .factory('makeElasticsearchRecord', ['$log', function($log){
-	    return function($scope, elasticsearchRecord){
-	
-	completeRecord = $scope.currentRecord;
+    return function(scope, record, elasticsearchRecord){
+	console.log("Printing record ");
+	console.log(record);
 
-	elasticsearchRecord.abstract = completeRecord.summary;
+	elasticsearchRecord.abstract = record.summary;
 
 	//set all the identifiers
-	for(var i = 0; i < completeRecord.identifiers.length; i++){
-	    elasticsearchRecord.identifiers[i] = completeRecord.identifiers[i].type + " : " + completeRecord.identifiers[i].id; 
+	for(var i = 0; i < record.identifiers.length; i++){
+		if(i == 0)		
+	    		elasticsearchRecord.identifiers[i] = record.identifiers[i].type + " : " + record.identifiers[i].id; 
+		else
+			elasticsearchRecord.identifiers.push(record.identifiers[i].type + " : " + record.identifiers[i].id); 
+
 	}
 
 	//First, put all the access contacts' names in to elasticsearchRecord's contact array. 
-	for(var i = 0; i < completeRecord.access.length; i++){
+	for(var i = 0; i < record.access.length; i++){
 	    //Services initializes first value of array to empty string ('') so we can't push
 	    //onto array this first value or else the first value will be empty string. 
-	    if((i == 0) && (completeRecord.access[i] == ''))
-		elasticsearchRecord.contacts[i] = completeRecord.access[i].name;
+	    if((i == 0) && (record.access[i] == ''))
+		elasticsearchRecord.contacts[i] = record.access[i].name;
 	    else
-		elasticsearchRecord.contacts.push(completeRecord.access[i].name);
+		elasticsearchRecord.contacts.push(record.access[i].name);
 	}
 
 	//Now push citation contacts onto list
-	for(var i = 0; i < completeRecord.citation.length; i++){
+	for(var i = 0; i < record.citation.length; i++){
 	    //Services initializes first value of array to empty string ('') so we can't push
 	    //onto array this first value or else the first value will be empty string. 
-	    if((i == 0) && (completeRecord.citation[i] == ''))
-		elasticsearchRecord.contacts[i] = completeRecord.citation[i].name;
+	    if((i == 0) && (record.citation[i] == ''))
+		elasticsearchRecord.contacts[i] = record.citation[i].name;
 	    else
-		elasticsearchRecord.contacts.push(completeRecord.citation[i].name);
+		elasticsearchRecord.contacts.push(record.citation[i].name);
 	}
  
 	//Get all keywords (from thematic_keyworks and place_keywords lists) and put them in same list.
 	//First, get thematic_keyworks.
-	for(var i = 0; i < completeRecord.thematic_keywords.length; i++){
+	for(var i = 0; i < record.thematic_keywords.length; i++){
 	    //Services initializes first value of array to empty string ('') so we can't push
 	    //onto array this first value or else the first value will be empty string. 
-	    if((i == 0) && (completeRecord.thematic_keywords[i] == ''))
-		elasticsearchRecord.keywords[i] = completeRecord.thematic_keywords[i];
+	    if((i == 0) && (record.thematic_keywords[i] == ''))
+		elasticsearchRecord.keywords[i] = record.thematic_keywords[i];
 	    else
-		elasticsearchRecord.keywords.push(completeRecord.thematic_keywords[i]);
+		elasticsearchRecord.keywords.push(record.thematic_keywords[i]);
 	}
 
 	//Now, get place_keywords
-	for(var i = 0; i < completeRecord.place_keywords.length; i++){
+	for(var i = 0; i < record.place_keywords.length; i++){
 	    //Services initializes first value of array to empty string ('') so we can't push
 	    //onto array this first value or else the first value will be empty string. 
-	    if((i == 0) && (completeRecord.place_keywords[i] == ''))
-		elasticsearchRecord.keywords[i] = completeRecord.place_keywords[i];
+	    if((i == 0) && (record.place_keywords[i] == ''))
+		elasticsearchRecord.keywords[i] = record.place_keywords[i];
 	    else
-		elasticsearchRecord.keywords.push(completeRecord.place_keywords[i]);
+		elasticsearchRecord.keywords.push(record.place_keywords[i]);
 	}
+
+	//Put topic_category in the keywords list too
+	for(var i = 0; i < record.topic_category.length; i++){
+	    //Services initializes first value of array to empty string ('') so we can't push
+	    //onto array this first value or else the first value will be empty string. 
+	    if((i == 0) && (record.topic_category[i] == ''))
+		elasticsearchRecord.keywords[i] = record.topic_category[i];
+	    else
+		elasticsearchRecord.keywords.push(record.topic_category[i]);
+	}
+
 
 	//Not really sure how Geoportal is constructing urls. Could be using _id??  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<Not sure if this is correct! Need to talk to Ed to see what new url schema should be.
 
 	//Set record type to 'iso', and change if record is actually dublin core. Used for url building.
 	var recordType = 'iso';
 
-	if (completeRecord.schema_type.indexOf("Non-Dataset (Dublin Core)") > -1)
+	if (record.schema_type.indexOf("Non-Dataset (Dublin Core)") > -1)
 	    recordType = 'dc';
-	
-	elasticsearchRecord.mdXmlPath = "https://nknportal.nkn.uidaho.edu/api/metadata/" + completeRecord._id.$oid + "/" + recordType;
+
+	console.log("Printing currentRecord: ");
+	console.log(record);
+	elasticsearchRecord.mdXmlPath = "https://nknportal.nkn.uidaho.edu/api/metadata/" + record._id.$oid + "/" + recordType;
 
 	//Set lat and lon coordinates 
- 	elasticsearchRecord.sbeast = completeRecord.east_lon;
-	elasticsearchRecord.sbnorth = completeRecord.north_lat;
-	elasticsearchRecord.sbsouth = completeRecord.south_lat;
-	elasticsearchRecord.sbwest = completeRecord.west_lon;
+ 	elasticsearchRecord.sbeast = record.east_lon;
+	elasticsearchRecord.sbnorth = record.north_lat;
+	elasticsearchRecord.sbsouth = record.south_lat;
+	elasticsearchRecord.sbwest = record.west_lon;
 
 	//Set title and ID
-	elasticsearchRecord.title = completeRecord.title;
-	elasticsearchRecord.uid = completeRecord._id.$oid;
+	elasticsearchRecord.title = record.title;
+	elasticsearchRecord.uid = record._id.$oid;
 
-	$scope.elasticsearchRecord = elasticsearchRecord;
+	//Assign created elasticsearch object to scope object
+	scope.elasticsearchRecord = elasticsearchRecord;
     }
 }])
 .value('formElement', {
@@ -432,6 +450,9 @@ metadataEditorApp
 
             var serverReady = angular.copy(record);
 
+	    console.log("Printing currentRecord in prepareRecordForSave: ");
+	    console.log(record);
+
             // server requires list of strings
 
 	    if ((typeof record.place_keywords !== "undefined")
@@ -463,9 +484,13 @@ metadataEditorApp
             }
 
             // getTime returns Unix epoch seconds (or ms, don't remember)
-            if (record.hasOwnProperty('start_date') && record.start_date.$date != ''
-                && typeof record.start_date.$date !== "undefined")
+            if ((record.hasOwnProperty('start_date'))
+		 && (record.start_date.$date != '')
+                && (typeof record.start_date.$date !== "undefined")
+		&& (typeof record.start_date.$date !== "number"))
             {
+		console.log("Printing start_date:")
+		console.log(record.start_date);
                 serverReady.start_date.$date =
                     record.start_date.$date.getTime();
             }
@@ -475,8 +500,11 @@ metadataEditorApp
                 delete serverReady.start_date;
             }
 
-            if (record.hasOwnProperty('end_date') && record.end_date.$date != ''
-                && typeof record.end_date.$date !== "undefined")
+            if ((record.hasOwnProperty('end_date'))
+		 && (record.end_date.$date != '')
+                 && (typeof record.end_date.$date !== "undefined")
+		&& (typeof record.end_date.$date !== "number"))
+
             {
 
                 serverReady.end_date.$date =
@@ -488,8 +516,11 @@ metadataEditorApp
                 delete serverReady.end_date;
             }
 
-            if (record.hasOwnProperty('first_pub_date') && record.first_pub_date.$date != ''
-                && typeof record.first_pub_date.$date !== "undefined")
+            if ((record.hasOwnProperty('first_pub_date'))
+		&& (record.first_pub_date.$date != '')
+                && (typeof record.first_pub_date.$date !== "undefined")
+		&& (typeof record.first_pub_date.$date !== "number"))
+
             {
                 serverReady.first_pub_date.$date =
                     record.first_pub_date.$date.getTime();
@@ -500,8 +531,11 @@ metadataEditorApp
                 delete serverReady.first_pub_date;
             }
 
-            if (record.hasOwnProperty('md_pub_date') && record.md_pub_date.$date != ''
-		&& typeof record.md_pub_date.$date !== "undefined"){
+            if ((record.hasOwnProperty('md_pub_date')) 
+		&& (record.md_pub_date.$date != '')
+		&& (typeof record.md_pub_date.$date !== "undefined")
+		&& (typeof record.md_pub_date.$date !== "number")){
+
 		    serverReady.md_pub_date.$date = new Date().getTime();
             }else{
 		delete serverReady.md_pub_date;
@@ -684,8 +718,17 @@ metadataEditorApp
 
 	/* This function publishes the record to Elasticsearch and the production directory by the admin.
 	 */
-	var adminApprovePublish = function(recordID, elasticsearchRecord){
-	    return $http.post(
+	var adminApprovePublish = function(recordID, elasticsearchRecord, scope){
+		console.log("Printing elasticsearchRecord in adminApprovePublish: ");
+		console.log(elasticsearchRecord);
+		//Set current record's published attribute to 'true' string since the 
+		//record is no longer in the pending publishing state.
+		scope.currentRecord.published = 'true';
+		console.log("Printing scope.currentRecord in adminApprovePublish: ");
+		console.log(scope.currentRecord);
+		saveDraft(scope);
+
+	    	return $http.post(
 	                   '//' + hostname + '/api/metadata/' + recordID + '/admin-publish',
 		           {'session_id':session_id,
 			    'elasticsearch_record': elasticsearchRecord
@@ -746,6 +789,7 @@ metadataEditorApp
             }
             else
             {
+		console.log("Not a new record <<<<<<<<<<<<<<<<<<<<<<<<<<<<");
                 var currentId = scope.currentRecord._id.$oid;
 
                 q = $http.put('//' + hostname + '/api/metadata/' +
@@ -796,7 +840,7 @@ metadataEditorApp
 	    scope.md_pub_date = currentDate;
 
 	    //Change record's 'published' attribute to 'true' to allow for search by admin
-	    scope.published = 'true';
+	    scope.currentRecord.published = 'pending';
 	    
             var serverReady = angular.copy(record);
 
@@ -807,7 +851,7 @@ metadataEditorApp
 
             return $http.post(
                 '//' + hostname + '/api/metadata/' + currentId + '/publish',
-		{'record': current, 'elasticsearch_record': $scope.elasticsearchRecord, 'session_id': session_id}
+		{'record': current, 'session_id': session_id}
             );
 	    
 	    

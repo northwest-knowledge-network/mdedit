@@ -183,25 +183,34 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		    recordService.adminGetUsersRecord(recordId)
 			.success(function (data){
 			    console.log("In loadRecord!");
-			    sharedRecord.setRecord(data.record);
+			    console.log(data);
+			    sharedRecord.setRecord(data.results);
+
+			    var record = data.results;
 
 			    /* Need to set baseController's $scope.$parent.$parent.newRecord to false or else
 			       baseController will save another copy with a different _id in the 
 			       database. BaseController is two scopes above this controller, so 
 			       have to go up 2 parent scopes.
 			    */
+			    /*
 			    $scope.$parent.$parentnewRecord = false;
-			    $scope.$parent.$parent.currentRecord = data.record;
+			    $scope.$parent.$parent.currentRecord = record;
 			    $scope.$parent.$parent.isAdmin = true;
+			    */
+			    $scope.$parentnewRecord = false;
+			    $scope.$parent.currentRecord = record;
+			    $scope.$parent.isAdmin = true;
+
 			    console.log("Added record to record sharing service.");
 
 			    //Change route to either ISO or Dublin form type based on record type.
 			    var path = "/iso";
-			    if(data.record.schema_type.indexOf("Dublin Core") > -1)
+			    if(record.schema_type.indexOf("Dublin Core") > -1)
 				path = "/dublin";
 
 			    console.log("Printing url: " + $location.path());
-			    updateForms($scope, data.record);
+			    updateForms($scope, record);
 			    $location.path(path);
 			})
 			.error(function (error, status) {
@@ -235,32 +244,45 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		/** 
 		 * Make a new smaller record that is a subset of the complete record for use by Elasticsearch
 		 */
-		var createElasticsearchRecord = function(){
-		    recordService.getFreshElasticsearchRecord()
-			.success(function(data){
-			    makeElasticsearchRecord($scope, data);
-			    console.log("Testing elasticsearchRecord: ");
-			    console.log($scope.elasticsearchRecord);
-			})
-			.error(function(error, status) {
-			    $scope.errors.push("Error in creating Elastic search record (subset of complete record)");
-			    recordService.checkAdmin(status);
-			});
+		var createElasticsearchRecord = function(record){
+		    var elasticsearchRecord = recordService.getFreshElasticsearchRecord();
+		    makeElasticsearchRecord($scope, record, elasticsearchRecord)
+		    console.log("Testing elasticsearchRecord: ");
+		    console.log($scope.elasticsearchRecord);
 		};
 		
 		
 		$scope.publishRecordToPortal = function(recordId){
-		    var elasticsearchRecord = createElasticsearchRecord();
 		    recordService.adminGetUsersRecord(recordId)
 			.success(function (data){
-			    createElasticsearchRecord();
+			    createElasticsearchRecord(data.results);
 			    
 			    //Send searchableRecord to Elasticsearch
 		    	    console.log("Printing elasticsearchRecord: ");
 		    	    console.log($scope.elasticsearchRecord);
 		    	    console.log("Printing currentRecord identifier: ");
 
-			    recordService.adminApprovePublish(recordId, $scope.elasticsearchRecord);
+			    $scope.currentRecord = data.results;
+			    //Not a new record. Need to set this to false or else it will try and make a new copy in the database. 
+			    $scope.newRecord = false;
+	
+
+			    recordService.adminApprovePublish(recordId, $scope.elasticsearchRecord, $scope).success(function(response){
+				console.log("Printing return from backend: ");
+				console.log(response);
+
+				//Display results of Elasticsearch function from backend
+				if(response.created != null && response.created == true)
+					alert("Record published successfully!");
+				else
+					alert("Record published failed!");
+			     	
+				//Reload the list of pending records to display in the page
+				queryDatabase(getSearchType());
+
+			    }).error(function(error, status){
+ 			    	recordService.checkAdmin(status);
+			    });
 			}).error(function(error, status){
 			    recordService.checkAdmin(status);
 			});
