@@ -29,6 +29,7 @@ import geocoder
 import os
 import requests
 import urllib
+import stat
 
 from datetime import datetime
 from dicttoxml import dicttoxml
@@ -523,7 +524,10 @@ def admin_publish_metadata_record(_oid):
                 return "Moving file on backend filesystem error"
 
                 #set permissions on the new directory in prod: All directories read and execute, and all files read only
-#            os.chmod(prod_path, stat.S_IRUSR | stat.S_IXUSR | stat.S_IRGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IXOTH)
+	    try:
+                os.chmod(prod_path, stat.S_IRUSR | stat.S_IXUSR | stat.S_IRGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IXOTH)
+	    except OSError:
+		return "chmod error on record's directory."
 
 	try:
 	        res = es.index(index='test_metadata', doc_type='metadata', body=elasticsearch_record)
