@@ -271,11 +271,22 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 				console.log("Printing return from backend: ");
 				console.log(response);
 
+				if(typeof response === 'string'){
+					if(response.indexOf("filesystem error"))
+						alert("Error moving dataset from pending publish directory to published directory. This could be because the dataset has alreay been published, so the system cannot overwrite the existing published copy of the dataset.")
+					else if(response.indexOf("Elasticsearch error"))
+						alert("Error submitting the record to Elasticsearch. This record will not be searchable on the portal's search page.")
+				}
 				//Display results of Elasticsearch function from backend
-				if(response.created != null && response.created == true)
+				if(response.created != null && response.created == true){
 					alert("Record published successfully!");
-				else
+					//Set published to true only if there are no errors in the publishing process
+					$scope.currentRecord.published = "true";
+				}else{
 					alert("Record published failed!");
+					//Publishing has failed at this point, so reset published variable in record to "pending"
+					$scope.currentRecord.published = "pending";
+				}
 			     	
 				//Reload the list of pending records to display in the page
 				queryDatabase(getSearchType());

@@ -226,6 +226,8 @@ metadataEditorApp
 
 	console.log("Printing currentRecord: ");
 	console.log(record);
+
+	//Change to hostname service function instead of hard coded host name
 	elasticsearchRecord.mdXmlPath = "https://nknportal.nkn.uidaho.edu/api/metadata/" + record._id.$oid + "/" + recordType;
 
 	//Set lat and lon coordinates 
@@ -721,9 +723,6 @@ metadataEditorApp
 	var adminApprovePublish = function(recordID, elasticsearchRecord, scope){
 		console.log("Printing elasticsearchRecord in adminApprovePublish: ");
 		console.log(elasticsearchRecord);
-		//Set current record's published attribute to 'true' string since the 
-		//record is no longer in the pending publishing state.
-		scope.currentRecord.published = 'true';
 		console.log("Printing scope.currentRecord in adminApprovePublish: ");
 		console.log(scope.currentRecord);
 		saveDraft(scope);
@@ -736,6 +735,11 @@ metadataEditorApp
 	    );
 	};
 
+	//Unpublish a record
+	var unpublishRecord = function(recordID, scope){
+		scope.currentRecord.published = "pending";
+		//Call backend route to move file from production to pre-production.
+	};
 
 	/* Check if response object from backend authenticated the user correctly. 
 	 * If not, then return false.
