@@ -139,7 +139,9 @@ class Metadata_Subset(db.Document):
     mdXmlPath = db.StringField(max_length=256)
     
     #identifiers: ID, DOI, and ARK
-    identifiers = db.ListField(db.EmbeddedDocumentField('Identifier'))
+    #identifiers = db.ListField(db.EmbeddedDocumentField('Identifier'))
+    identifiers = db.ListField(db.StringField(max_length=255))
+
 
     uid = db.StringField(max_length=256)
 

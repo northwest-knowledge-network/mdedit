@@ -294,7 +294,6 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 			    }).error(function(error, status){
  			    	recordService.checkAdmin(status);
 			    });
-
 			}).error(function(error, status){
 			    recordService.checkAdmin(status);
 			});

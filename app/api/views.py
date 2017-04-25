@@ -38,6 +38,7 @@ from flask_cors import cross_origin
 from mongoengine import ValidationError
 
 from . import api
+from .. import es
 from .. import uploadedfiles
 from ..models import Metadata, Attachment, Metadata_Subset
 
@@ -62,6 +63,7 @@ def metadata():
         Response with newly created or edited record as data.
     """
     username = _authenticate_user_from_session(request)
+    admin_username = _authenticate_admin_from_session(request)
 
     if username:
         if request.method == 'POST':
@@ -105,9 +107,9 @@ def metadata():
 
 
 @api.route('/api/metadata/load-record/<string:oid>', methods=['POST'])
-@cross_origin(origin='*', methods=['POST', 'PUT'],
+@cross_origin(origin='*', methods=['POST'],
               headers=['X-Requested-With', 'Content-Type', 'Origin'])
-def get_record():
+def get_record(oid):
     """
     Handle get and push requests coming to metadata server
 
@@ -121,12 +123,14 @@ def get_record():
     returns:
         Response with newly created or edited record as data.
     """
+
     username = _authenticate_admin_from_session(request)
+#   return Response("Got this far", 409)
 
     if username:
 
         # execute raw MongoDB query and return the record with the specified oid.
-        recs = Metadata.objects.get_or_404(pk=_oid)
+        recs = Metadata.objects.get_or_404(pk=oid)
         return jsonify(dict(results=recs))
 
     else:
@@ -237,12 +241,14 @@ def get_all_metadata(page_number, records_per_page, sort_on):
     Access control is done here. An admin is authenticated if their
     session id is valid, and they are part of the admin group
     """
-    
     username = _authenticate_admin_from_session(request)
+    #return Response("Got this far", 409)
 
     #pageNumber is 0 based index. Need first page to start at 0 for math for setting arrayLowerBound and arrayUpperBound.
     try:
         if username:
+	    #return Response("Got this far", 409)
+
             if request.method == 'POST':
                 #need to do input sanitization on all these values! Separating variables so outside does not have direct access to
                 #database query.
@@ -255,7 +261,10 @@ def get_all_metadata(page_number, records_per_page, sort_on):
                 else:
                     sort_by = 'title'
 
-                record_list = Metadata.objects(__raw__={'published':'true'}).order_by(sort_by)
+
+ 		#return Response("Got this far", 409)
+
+                record_list = Metadata.objects(__raw__={'published':'pending'}).order_by(sort_by)
                 
                 arrayLowerBound = int(page_number) * int(records_per_page)
                 arrayUpperBound = int(page_number) * int(records_per_page) + int(records_per_page)
@@ -305,7 +314,7 @@ def get_doi_ark_requests(page_number, records_per_page, sort_on):
 
                 #Look for published records with either DOI or ARK requests without DOI or ARK assigned, then records with DOI
                 #or ARK already assigned
-                record_list = Metadata.objects(__raw__={'$and': [{'published':'true'}, {'$or': [{'doi_ark_request':'DOI'}, {'doi_ark_request':'ARK'}, {'doi_ark_request':'both'}]}]}).order_by(sort_by)
+                record_list = Metadata.objects(__raw__={'$and': [{'published':'pending'}, {'$or': [{'doi_ark_request':'DOI'}, {'doi_ark_request':'ARK'}, {'doi_ark_request':'both'}]}]}).order_by(sort_by)
 
                 arrayLowerBound = int(page_number) * int(records_per_page)
                 arrayUpperBound = int(page_number) * int(records_per_page) + int(records_per_page)
@@ -343,7 +352,7 @@ def search_doi_ark_requests(search_term, page_number, records_per_page, sort_by)
                 
                 #This query returns a list of records that have been published and either the title, summary, or one of the authors have the
                 #search term in it.
-                record_list = Metadata.objects(__raw__={'$and':[{'published':'true'}, {'$or': [{'doi_ark_request':'DOI'}, {'doi_ark_request':'ARK'}]}, {'$or':[{'title':{'$regex':".*" + search_term + ".*", '$options': '-i'}}, {'summary':{'$regex':".*" + search_term + ".*", '$options': '-i'}}, {'citation': {'$elemMatch':{'name':{'$regex':".*" + search_term + ".*", '$options': '-i'}}}}]}]}).order_by(sort_by)
+                record_list = Metadata.objects(__raw__={'$and':[{'published':'pending'}, {'$or': [{'doi_ark_request':'DOI'}, {'doi_ark_request':'ARK'}]}, {'$or':[{'title':{'$regex':".*" + search_term + ".*", '$options': '-i'}}, {'summary':{'$regex':".*" + search_term + ".*", '$options': '-i'}}, {'citation': {'$elemMatch':{'name':{'$regex':".*" + search_term + ".*", '$options': '-i'}}}}]}]}).order_by(sort_by)
 
                 arrayLowerBound = int(page_number) * int(records_per_page)
                 arrayUpperBound = int(page_number) * int(records_per_page) + int(records_per_page)
@@ -390,7 +399,7 @@ def set_doi_ark(page_number, records_per_page, sort_on, doi_ark_value):
                 else:
                     sort_by = 'title'
 
-                record_list = Metadata.objects(__raw__={'published':'true'}).order_by(sort_by)
+                record_list = Metadata.objects(__raw__={'published':'pending'}).order_by(sort_by)
                 
                 arrayLowerBound = int(page_number) * int(records_per_page)
                 arrayUpperBound = int(page_number) * int(records_per_page) + int(records_per_page)
@@ -428,7 +437,7 @@ def search_metadata(search_term, page_number, records_per_page, sort_by):
                 
                 #This query returns a list of records that have been published and either the title, summary, or one of the authors have the
                 #search term in it.
-                record_list = Metadata.objects(__raw__={'$and':[{'published':'true'}, {'$or':[{'title':{'$regex':".*" + search_term + ".*", '$options': '-i'}}, {'summary':{'$regex':".*" + search_term + ".*", '$options': '-i'}}, {'citation': {'$elemMatch':{'name':{'$regex':".*" + search_term + ".*", '$options': '-i'}}}}]}]}).order_by(sort_by)
+                record_list = Metadata.objects(__raw__={'$and':[{'published':'pending'}, {'$or':[{'title':{'$regex':".*" + search_term + ".*", '$options': '-i'}}, {'summary':{'$regex':".*" + search_term + ".*", '$options': '-i'}}, {'citation': {'$elemMatch':{'name':{'$regex':".*" + search_term + ".*", '$options': '-i'}}}}]}]}).order_by(sort_by)
 
                 arrayLowerBound = int(page_number) * int(records_per_page)
                 arrayUpperBound = int(page_number) * int(records_per_page) + int(records_per_page)
@@ -473,51 +482,58 @@ def delete_metadata_record(_oid):
 def admin_publish_metadata_record(_oid):
 
     username = _authenticate_admin_from_session(request)
-    
+   
     if username:
 
-        elasticsearch_record = Metadata_Subset.from_json(json.dumps(request.json['elasticsearch_record']))
+        elasticsearch_record = request.json['elasticsearch_record']
 
-        str_id = str(record.uid)
-        
-        elasticsearch_url = "http://localhost:9200"
-        
-       
+	str_id = elasticsearch_record["uid"]
+	
+ 	#return Response("Got this far", 409)      
         #Move file from pre-prod directory to production directory
         
         #...
+
         preprod_dir = app.config['PREPROD_DIRECTORY']
 
         prod_dir = app.config['PROD_DIRECTORY']
-        
-        if os.path.exists(os.path.dirname(preprod_path)):
-            
-            preprod_path = os.path.join(preprod_dir,
-                                        str_id,
-                                        'metadata.xml')
+	
+	
 
-            prod_path = os.path.join(prod_dir, str_id, 'metadata.xml')
+        if os.path.exists(os.path.dirname(preprod_dir)):
+            
+            preprod_path = os.path.join(preprod_dir, str_id)
+
+            prod_path = os.path.join(prod_dir, str_id)
+
+
+#	Set 555 on directory, set files inside (metadata.xml) to 444 (permissions)
+#	Move folder from preprod-datastore/uploads to preprod-datastore/published/
+
 
             #Make the directory in the production directory
-            os.mkdir(os.path.dirname(prod_path))
 
-            if os.path.exists(os.path.dirname(prod_path)):
+#            if not os.path.exists(os.path.dirname(prod_path)):
 
                 #Move the XML file from the preprod directory to the prod directory
+            #return prod_path
+            try:
                 os.rename(preprod_path, prod_path)
+            except OSError:
+                return "Moving file on backend filesystem error"
 
                 #set permissions on the new directory in prod: All directories read and execute, and all files read only
-                
-                #Send smaller representation of record to ElasticSearch 
-                requests.post(elasticsearch_url, request.json['elasticsearch_record'])
-                #error check posting to elasticsearch
+#            os.chmod(prod_path, stat.S_IRUSR | stat.S_IXUSR | stat.S_IRGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IXOTH)
 
+	try:
+	        res = es.index(index='test_metadata', doc_type='metadata', body=elasticsearch_record)
+	except:
+		#Move file back to preprod directory since complete publishing failed
+		os.rename(prod_path, preprod_path)
+		return "Elasticsearch posting error"
 
-        else:
-            return Response('Pre-production directory does not exist!', 500)
-                      
-        #Profit!
-        
+	return jsonify(res)
+
     else:
         return Response('Bad or missing session id.', status=401)
 
@@ -572,9 +588,9 @@ def publish_metadata_record(_oid):
                 rep = requests.post(nkn_upload_url,{'uuid': str_id, 'session_id': session_id}, files={'uploadedfile': open(save_path, 'rb')})
 
 	    #Save XML file of ISO record to backend server's file system
-            if 'localhost' not in request.base_url:
-                username = _authenticate_user_from_session(request)
-                gptInsert.gptInsertRecord(iso, record.title, str_id, username)
+#            if 'localhost' not in request.base_url:
+#                username = _authenticate_user_from_session(request)
+#                gptInsert.gptInsertRecord(iso, record.title, str_id, username)
                 
             return jsonify(record=record)
 
@@ -604,9 +620,9 @@ def publish_metadata_record(_oid):
                                     files={'uploadedfile': open(save_path, 'rb')})
 
 	    #Save XML file of Dublin record to backend server's file system
-            if 'localhost' not in request.base_url:
-    		username = _authenticate_user_from_session(request)
-                gptInsert.gptInsertRecord(dc, record.title, str_id, username)
+#            if 'localhost' not in request.base_url:
+#    		username = _authenticate_user_from_session(request)
+#                gptInsert.gptInsertRecord(dc, record.title, str_id, username)
 
             return jsonify(record=record)
 
