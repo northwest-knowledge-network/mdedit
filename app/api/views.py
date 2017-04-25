@@ -487,26 +487,24 @@ def admin_publish_metadata_record(_oid):
 
         elasticsearch_record = request.json['elasticsearch_record']
 
-        #str_id = elasticsearch_record.uid
-	#es = FlaskElasticsearch({'host':'localhost','port':9200})
-		
+	str_id = elasticsearch_record["uid"]
+	
  	#return Response("Got this far", 409)      
         #Move file from pre-prod directory to production directory
         
         #...
 
-#        preprod_dir = app.config['PREPROD_DIRECTORY']
+        preprod_dir = app.config['PREPROD_DIRECTORY']
 
-#        prod_dir = app.config['PROD_DIRECTORY']
+        prod_dir = app.config['PROD_DIRECTORY']
 	
 	
 
-#        if os.path.exists(os.path.dirname(preprod_path)):
+        if os.path.exists(os.path.dirname(preprod_dir)):
             
-#            preprod_path = os.path.join(preprod_dir,
-#                                        str_id)
+            preprod_path = os.path.join(preprod_dir, str_id)
 
-#            prod_path = os.path.join(prod_dir, str_id)
+            prod_path = os.path.join(prod_dir, str_id)
 
 
 #	Set 555 on directory, set files inside (metadata.xml) to 444 (permissions)
@@ -514,28 +512,25 @@ def admin_publish_metadata_record(_oid):
 
 
             #Make the directory in the production directory
-#            os.mkdir(os.path.dirname(prod_path))
 
-#            if os.path.exists(os.path.dirname(prod_path)):
+#            if not os.path.exists(os.path.dirname(prod_path)):
 
                 #Move the XML file from the preprod directory to the prod directory
-#                os.rename(preprod_path, prod_path)
+            #return prod_path
+            try:
+                os.rename(preprod_path, prod_path)
+            except OSError:
+                return "Moving file on backend filesystem error"
 
                 #set permissions on the new directory in prod: All directories read and execute, and all files read only
-                
-                #Send smaller representation of record to ElasticSearch 
-#                requests.post(elasticsearch_url, request.json['elasticsearch_record'])
-                #error check posting to elasticsearch
+#            os.chmod(prod_path, stat.S_IRUSR | stat.S_IXUSR | stat.S_IRGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IXOTH)
 
-#        else:
-#            return Response('Pre-production directory does not exist!', 500)
-        #Profit!
-  
-#	return jsonify(elasticsearch_record)
 	try:
 	        res = es.index(index='test_metadata', doc_type='metadata', body=elasticsearch_record)
 	except:
-		return Response("Got here", 409)
+		#Move file back to preprod directory since complete publishing failed
+		os.rename(prod_path, preprod_path)
+		return "Elasticsearch posting error"
 
 	return jsonify(res)
 

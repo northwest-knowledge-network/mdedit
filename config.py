@@ -24,6 +24,9 @@ class Config:
     if not os.path.exists(PREPROD_DIRECTORY):
         os.makedirs(PREPROD_DIRECTORY)
 
+    if not os.path.exists(PROD_DIRECTORY):
+	os.makedirs(PROD_DIRECTORY)
+
     ATTACHMENT_DOWNLOAD_BASE_URL = 'http://example.com/downloads?uuid='
 
     SIMPLE_UPLOAD_URL = "http://localhost:4000/app/upload"
@@ -35,6 +38,9 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
+
+    PREPROD_DIRECTORY = "/datastore-pre/uploads"
+    PROD_DIRECTORY = "/datastore-pre/published"
 
 
 class TestingConfig(Config):
@@ -61,6 +67,8 @@ class ProductionConfig(Config):
         'https://www.northwestknowledge.net/data/download.php?uuid='
 
     SIMPLE_UPLOAD_URL = "https://nknportal-prod.nkn.uidaho.edu/portal/simpleUpload/upload.php"
+    PREPROD_DIRECTORY = "/datastore-prod/uploads"
+    PROD_DIRECTORY = "/datastore-prod/published"
     
 config = {
     'development': DevelopmentConfig,
