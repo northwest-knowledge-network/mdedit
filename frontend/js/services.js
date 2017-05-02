@@ -677,9 +677,9 @@ metadataEditorApp
 	 * Get all records for admin view. Returns a paginated list: only 10
 	 * records at a time, but has access to all records if the user is an admin.
 	 */
-	var getAllRecords = function(pageNumber, recordsPerPage, sortBy) {
+	var getAllRecords = function(pageNumber, recordsPerPage, sortBy, publishState) {
 	    var record = {};
-	    return $http.post('//' + hostname + '/api/metadata/admin/' + pageNumber + '/' + recordsPerPage + '/' + sortBy,
+	    return $http.post('//' + hostname + '/api/metadata/admin/' + pageNumber + '/' + recordsPerPage + '/' + sortBy + '/' + publishState,
 				      {'session_id': session_id}).success(function(data){
 					  record = data.record;
 				      });

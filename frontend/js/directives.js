@@ -63,6 +63,8 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 
 		$scope.searchType = "browse";
 
+		$scope.publishState = "";
+
 		//Get current search type 
 		function getSearchType(){
 		    return $scope.searchType;
@@ -121,7 +123,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 			console.log("Error: tried to set page number to less than 0.");
 		    else{
 			if(queryType.indexOf("browse") > -1){
-			    recordService.getAllRecords(getCurrentPage(), $scope.recordsPerPage.toString(), $scope.selectedOrderFilter).success(function(data){
+			    recordService.getAllRecords(getCurrentPage(), $scope.recordsPerPage.toString(), $scope.selectedOrderFilter, $scope.publishState).success(function(data){
 				updateAdmin($scope, data);
 			    }).error(function(error, status) {
 				recordService.checkAdmin(status);
@@ -130,7 +132,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 			}else if(queryType.indexOf("search") > -1){
 			    //If search term is not an empty string, use it to query database.
 			    if($scope.searchTerm !== ""){
-				recordService.searchAllRecords($scope.searchTerm, getCurrentPage(), $scope.recordsPerPage.toString(), $scope.selectedOrderFilter).success(function(data){
+				recordService.searchAllRecords($scope.searchTerm, getCurrentPage(), $scope.recordsPerPage.toString(), $scope.selectedOrderFilter, $scope.publishState).success(function(data){
 
 				    updateAdmin($scope, data);
  				}).error(function(error, status) {

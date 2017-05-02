@@ -230,10 +230,10 @@ def get_single_metadata(_oid):
         return Response('Bad or missing session id.', status=401)
 
     
-@api.route('/api/metadata/admin/<string:page_number>/<string:records_per_page>/<string:sort_on>', methods=['POST'])
+@api.route('/api/metadata/admin/<string:page_number>/<string:records_per_page>/<string:sort_on>/<string:current_publish_state>', methods=['POST'])
 @cross_origin(origin='*', methods=['POST'],
               headers=['X-Requested-With', 'Content-Type', 'Origin'])
-def get_all_metadata(page_number, records_per_page, sort_on):
+def get_all_metadata(page_number, records_per_page, sort_on, current_publish_state):
     """
     Retrieve all metadata records for admin view. Retrieval is done
     via POST because we must pass a session id so that the user is
@@ -243,30 +243,29 @@ def get_all_metadata(page_number, records_per_page, sort_on):
     session id is valid, and they are part of the admin group
     """
     username = _authenticate_admin_from_session(request)
-    #return Response("Got this far", 409)
 
     #pageNumber is 0 based index. Need first page to start at 0 for math for setting arrayLowerBound and arrayUpperBound.
     try:
         if username:
-	    #return Response("Got this far", 409)
+
+	    publishing_states = ['false', 'pending', 'true']
+	    sort_attributes = ['title', 'md_pub_date', 'summary']
 
             if request.method == 'POST':
                 #need to do input sanitization on all these values! Separating variables so outside does not have direct access to
                 #database query.
-                if sort_on == 'title':
-                    sort_by = 'title'
-                elif sort_on == 'md_pub_date':
-                    sort_by = 'md_pub_date'
-                elif sort_on == 'summary':
-                    sort_by = 'summary'
-                else:
-                    sort_by = 'title'
+		if sort_on in sort_attributes:
+			sort_by = sort_on
+		else:
+			sort_by = 'title'
 
+		if current_publish_state in publishing_states:
+			publish_status = current_publish_state
+		else:
+			publish_status = 'pending'
 
- 		#return Response("Got this far", 409)
+                record_list = Metadata.objects(__raw__={'published':publish_status}).order_by(sort_by)
 
-                record_list = Metadata.objects(__raw__={'published':'pending'}).order_by(sort_by)
-                
                 arrayLowerBound = int(page_number) * int(records_per_page)
                 arrayUpperBound = int(page_number) * int(records_per_page) + int(records_per_page)
                 #Only return array elements between indicies. Don't want to return all possible values
@@ -279,7 +278,6 @@ def get_all_metadata(page_number, records_per_page, sort_on):
     except:
 
         return Response('Bad request for records', 400)
-
 
 
 @api.route('/api/metadata/doiark/<string:page_number>/<string:records_per_page>/<string:sort_on>', methods=['POST'])

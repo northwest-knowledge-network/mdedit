@@ -23,7 +23,8 @@ sys.path.insert(0, '/var/www/shared/mdedit')
 
 import os
 #Change for production!
-os.environ["MDEDIT_PREPROD_DIRECTORY"] = '/datastore-pre/uploads/'
+#os.environ["MDEDIT_PREPROD_DIRECTORY"] = '/datastore-pre/uploads/'
+os.environ["MDEDIT_PREPROD_DIRECTORY"] = '/local-datastore/'
 os.environ["MDEDIT_PROD_DIRECTORY"] = '/datastore-pre/published/'
 os.environ["FLASKCONFIG"] = 'development'
 

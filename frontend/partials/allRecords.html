@@ -31,6 +31,17 @@
     </tr>
     <tr>
       <td>
+	Record State:
+	<br>
+	<select ng-model="publishState" ng-change="switchLayout()">
+	  <option value="true" selected="selected">Published</option>
+	  <option value="false">Not Submitted For Review</option>
+	  <option value="pending">Awaiting Review</option>
+	</select>
+      </td>
+    </tr>
+    <tr>
+      <td>
 	Number of records per page:
 	<br>
 	<select ng-model="recordsPerPage" ng-change="switchLayout()">
