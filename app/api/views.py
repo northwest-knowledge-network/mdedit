@@ -460,8 +460,9 @@ def search_metadata(search_term, page_number, records_per_page, sort_by):
 def delete_metadata_record(_oid):
 
     username = _authenticate_user_from_session(request)
-
-    if username:
+    admin_username = _authenticate_user_from_session(request)
+    
+    if username or admin_username:
 
         md = Metadata.objects.get_or_404(pk=_oid)
         md.delete()

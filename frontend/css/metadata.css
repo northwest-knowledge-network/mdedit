@@ -545,3 +545,9 @@ a.initial:after {
 .resource-contact-select, .resource-contact-description {
     margin-left: 20px;
 }
+
+/* Admin Panel Styling */
+/* Delete selected records button styling */
+#delete-selected-records {
+	float:right;
+}

@@ -65,6 +65,8 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 
 		$scope.publishState = "";
 
+		var selectedRecordIds = [];
+		
 		//Get current search type 
 		function getSearchType(){
 		    return $scope.searchType;
@@ -89,6 +91,32 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 			console.log("Error: tried to set current page to non-number");
 		}
 
+		$scope.selectRecord = function(idValue){
+		    var index = selectedRecordIds.indexOf(idValue);
+		    
+		    if( index > -1)
+			selectedRecordIds = selectedRecordIds.splice(index, 1);
+		    else
+			selectedRecordIds.push(idValue);
+
+		    console.log(selectedRecordIds);
+		};
+
+		$scope.deleteSelectedRecords = function(){
+		    //For each record id in the list, make API call to Python backend to delete that record
+		    for(var id in selectedRecordIds){
+			recordService.delete_(id).success(function(data){
+			    console.log("Deleting record...");
+			    console.log(data);
+			}).error(function(error, status) {
+			    $scope.errors.push("Error in loading list of records.");
+			    console.log("Error in deleting record " + id);
+			    console.log(error);
+			    console.log(status);
+			});
+		    }
+		};
+
 		$scope.incCurrentRecordsPage = function(){
 		    var newPage = getCurrentPage() + 1;
 		    if(newPage < 0)
@@ -99,7 +127,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 			setCurrentPage(getCurrentPage() + 1);
 
 		    queryDatabase(getSearchType());
-		}
+		};
 
 		$scope.decCurrentRecordsPage = function(){
 		    var newPage = getCurrentPage() -1;
@@ -111,7 +139,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 			setCurrentPage(getCurrentPage() - 1);
  		    
 		    queryDatabase(getSearchType());
-		}
+		};
 
 		function queryDatabase(queryType){
 		    //Contstruct empty record to display text that no results found. Don't want ng-repeat loop in partials/allRecords to try and
