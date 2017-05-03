@@ -463,7 +463,7 @@ def delete_metadata_record(_oid):
     admin_username = _authenticate_user_from_session(request)
     
     if username or admin_username:
-
+	
         md = Metadata.objects.get_or_404(pk=_oid)
         md.delete()
 
