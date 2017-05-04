@@ -117,6 +117,8 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 			    console.log(status);
 			});
 		    }
+		    //Reset array to empty array
+		    selectedRecordIds = [];
 		};
 
 		$scope.incCurrentRecordsPage = function(){
