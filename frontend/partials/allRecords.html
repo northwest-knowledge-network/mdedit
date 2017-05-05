@@ -1,3 +1,26 @@
+<!-- Modal for deleting records -->
+<div class="modal fade" id="deleteRecordModal" tabindex="-1" role="dialog" aria-labelledby="deleteRecordModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="submitModalLabel">Are you sure you want to delete?</h4>
+      </div>
+      <div class="modal-body">
+        <p>Click "OK" to delete the selected record(s), or click "Cancel" to abort. </p>
+	<ul>
+		<li><strong>All selected records will be deleted!</strong></li>
+		<li><strong>Warning: deleting a record cannot be undone!</strong></li>
+	</ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="deleteSelectedRecords()">Delete Record(s) Permanently</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Sidebar -->
 <div class="col-md-3">
   <table class="admin-menu">
     <th>Search for record:</th>
@@ -61,6 +84,7 @@
     </tr>
   </table>
 </div>
+<!-- List of records -->
 <div class="col-md-9">
   <table class="admin-results-table table-hover table">
     <tr>
@@ -82,7 +106,8 @@
   </table>
 </div>
 <div>
-  <button id="delete-selected-records" class="btn btn-danger" ng-click="deleteSelectedRecords()">Delete Selected Records</button>
+  <button id="delete-selected-records" class="btn btn-danger" 	href="#"
+        data-toggle="modal" data-target="#deleteRecordModal">Delete Selected Records</button>
   <table class="page-table">
     <tr>
       <td class="page-numbers" ng-click="decCurrentRecordsPage()">Previous </td><td ng-repeat="i in pageNumbers" class="page-numbers" ng-value="i" ng-click="switchRecordsResultsPage(i);">{{ i }}</td><td class="page-numbers" ng-click="incCurrentRecordsPage()"> Next</td>

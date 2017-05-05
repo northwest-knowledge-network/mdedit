@@ -378,6 +378,7 @@ metadataEditorApp
 .value('elasticsearchRecord', {
     abstract:'',
     contacts: [''],
+    collection: '',
     identifiers:[''],
     keywords: [''],
     mdXmlPath:'',
@@ -843,8 +844,8 @@ metadataEditorApp
 	    scope.md_pub_date = {};
 	    scope.md_pub_date = currentDate;
 
-	    //Change record's 'published' attribute to 'true' to allow for search by admin
-	    scope.currentRecord.published = 'pending';
+	    //Change record's 'published' attribute to 'pending' to allow for search by admin
+	    scope.currentRecord.published = "pending";
 	    
             var serverReady = angular.copy(record);
 
