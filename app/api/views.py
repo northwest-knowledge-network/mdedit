@@ -30,6 +30,7 @@ import os
 import requests
 import urllib
 import stat
+import shutil
 
 from datetime import datetime
 from dicttoxml import dicttoxml
@@ -467,13 +468,20 @@ def delete_metadata_record(_oid):
         md = Metadata.objects.get_or_404(pk=_oid)
         md.delete()
 
-        return jsonify({'message': 'Record successfully removed',
-                        'status': 'success'})
+	if md.published == "false" or md.published == "pending":
+		#Delete uploaded files from file system
+	        preprod_dir = app.config['PREPROD_DIRECTORY']
+		preprod_path = os.path.join(preprod_dir, _oid)
+
+		try:
+		        shutil.rmtree(preprod_path)
+		except ValueError:
+			pass
+
+	return jsonify({"message":"File deleted!"})
     else:
 
         return Response('Bad or missing session id.', status=401)
-
-
 
 
 @api.route('/api/metadata/<string:_oid>/admin-publish', methods=['POST'])
@@ -944,3 +952,4 @@ def _authenticate_admin_from_session(request):
         # username will be u'' if the session id was not valid; make explicit
         else:
             return None
+
