@@ -104,17 +104,21 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 
 		$scope.deleteSelectedRecords = function(){
 		    //For each record id in the list, make API call to Python backend to delete that record
-		    for(var id in selectedRecordIds){
-			recordService.delete_(id).success(function(data){
+		    console.log("Printing selectedRecordIds: ");
+		    console.log(selectedRecordIds);
+		    for(var i = 0; i < selectedRecordIds.length; i++){
+			recordService.delete(selectedRecordIds[i]).success(function(data){
 			    console.log("Deleting record...");
 			    console.log(data);
 			}).error(function(error, status) {
 			    $scope.errors.push("Error in loading list of records.");
-			    console.log("Error in deleting record " + id);
+			    console.log("Error in deleting record " + selectedRecordIds[i]);
 			    console.log(error);
 			    console.log(status);
 			});
 		    }
+		    //Reset array to empty array
+		    selectedRecordIds = [];
 		};
 
 		$scope.incCurrentRecordsPage = function(){
