@@ -63,7 +63,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 
 		$scope.searchType = "browse";
 
-		$scope.publishState = "";
+		$scope.publishState = "pending";
 
 		var selectedRecordIds = [];
 		
@@ -110,6 +110,9 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 			recordService.delete(selectedRecordIds[i]).success(function(data){
 			    console.log("Deleting record...");
 			    console.log(data);
+			    //Query database to refresh page with updated list of records
+		            queryDatabase(getSearchType());
+
 			}).error(function(error, status) {
 			    $scope.errors.push("Error in loading list of records.");
 			    console.log("Error in deleting record " + selectedRecordIds[i]);
@@ -119,6 +122,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		    }
 		    //Reset array to empty array
 		    selectedRecordIds = [];
+	
 		};
 
 		$scope.incCurrentRecordsPage = function(){
