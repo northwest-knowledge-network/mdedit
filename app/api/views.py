@@ -470,13 +470,16 @@ def delete_metadata_record(_oid):
 
 	if md.published == "false" or md.published == "pending":
 		#Delete uploaded files from file system
-	        preprod_dir = app.config['PREPROD_DIRECTORY']
+		preprod_dir = app.config['PREPROD_DIRECTORY']
 		preprod_path = os.path.join(preprod_dir, _oid)
 
 		try:
 		        shutil.rmtree(preprod_path)
 		except ValueError:
 			pass
+
+	else:
+		return jsonify({"message":"File has already been published. Cannot delete!"})
 
 	return jsonify({"message":"File deleted!"})
     else:
