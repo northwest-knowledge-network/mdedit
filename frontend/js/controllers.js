@@ -1502,7 +1502,17 @@ metadataEditorApp.controller('BaseController',
   })
 .controller('adminController',function($scope, $compile, NgMap)
   {
-      
+	//List of possible states for admin view
+	var adminStates = [
+		"admin.browseRecords",
+		"admin.doiArkAssign"
+	];
+
+	$scope.adminView = "admin.browseRecords";   
+
+	$scope.switchAdminView = function(){
+		$state.go($scope.adminView);
+   	};
       $scope.adminView = true;
       $scope.doiAssignView = false;
 

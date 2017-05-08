@@ -32,10 +32,13 @@
 	<button class="btn btn-primary" ng-click="searchAllRecords()">Search</button>
       </td>
     </tr>
-    <th>Browse All Records</th>
+    <th>Record Task:</th>
     <tr>
       <td>
-	<button class="btn btn-primary" ng-click="browseAllRecords()">Browse All</button>
+	<select ng-model="adminViewMode" ng-change="switchLayout()">
+	  <option value="browse" selected="selected" ng-click="changeToDoiView(); initDoiView();">Browse</option>
+	  <option value="assign_ark_doi" ng-click="changeToRecordsView()">Assign DOI/ARK</option>
+	</select>
       </td>
     </tr>
     <th>
@@ -57,9 +60,9 @@
 	Record State:
 	<br>
 	<select ng-model="publishState" ng-change="switchLayout()">
-	  <option value="true" selected="selected">Published</option>
 	  <option value="false">Not Submitted For Review</option>
-	  <option value="pending">Awaiting Review</option>
+	  <option value="pending" selected="selected">Awaiting Review</option>
+	  <option value="true">Published</option>
 	</select>
       </td>
     </tr>
@@ -88,7 +91,7 @@
 <div class="col-md-9">
   <table class="admin-results-table table-hover table">
     <tr>
-      <td class="col-md-4">Title</td><td class="col-md-3">Author</td><td class="col-md-1">Publish Date</td><td class="col-md-3">Summary</td><td class="col-md-1">Publish</td>
+      <td class="col-md-1"></td><td class="col-md-3">Title</td><td class="col-md-3">Author</td><td class="col-md-1">Publish Date</td><td class="col-md-3">Summary</td><td class="col-md-1">Actions</td>
     </tr>
     <tr ng-repeat="record in recordsList.results" class="results-row">
       <td class="col-md-1">
@@ -101,13 +104,13 @@
       </td>
       <td class="col-md-1"> {{record.md_pub_date}} </td>
       <td class="col-md-3"> {{record.summary}} </td>
-      <td class="col-md-1"><button class="btn btn-primary" ng-click="publishRecordToPortal(record._id.$oid)">Publish</button>
+      <td class="col-md-1"><button class="btn btn-primary" ng-show="canPublish" ng-click="publishRecordToPortal(record._id.$oid)">Publish</button>
     </tr>
   </table>
 </div>
 <div>
   <button id="delete-selected-records" class="btn btn-danger" 	href="#"
-        data-toggle="modal" data-target="#deleteRecordModal">Delete Selected Records</button>
+        data-toggle="modal" data-target="#deleteRecordModal" ng-show="canDelete">Delete Selected Records</button>
   <table class="page-table">
     <tr>
       <td class="page-numbers" ng-click="decCurrentRecordsPage()">Previous </td><td ng-repeat="i in pageNumbers" class="page-numbers" ng-value="i" ng-click="switchRecordsResultsPage(i);">{{ i }}</td><td class="page-numbers" ng-click="incCurrentRecordsPage()"> Next</td>

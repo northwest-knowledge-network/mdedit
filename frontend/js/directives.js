@@ -65,6 +65,12 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 
 		$scope.publishState = "pending";
 
+		//Boolean value for showing hor hiding the publish button in the view
+		$scope.canPublish = false;
+
+		//Boolean value for showing or hiding the delete button in the view
+		$scope.canDelete = true;
+	
 		var selectedRecordIds = [];
 		
 		//Get current search type 
@@ -214,6 +220,29 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		};
 
 		$scope.switchLayout = function(){
+		    switch($scope.publishState){
+		    	case "pending":
+				$scope.canDelete = true;
+				$scope.canPublish = true;
+				break;
+		   	case "true":
+				$scope.canDelete = false;
+				$scope.canPublish = false;
+				break;
+			default:
+				$scope.canDelete = true;
+				$scope.canPublish = false;
+				break;
+		    }
+
+		    switch($scope.adminViewMode){
+			case "assign_ark_doi":
+				changeToDoiView();
+				break;
+			default:
+				
+		    }
+		    //Populate list on page with records
 		    queryDatabase(getSearchType());
 		};
 

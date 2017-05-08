@@ -85,6 +85,14 @@ var metadataEditorApp = angular
 	    }) 
 	    .state('dublinForm.contacts', {
 		templateUrl:  partialsPrefix + 'contacts.html'
+	    })
+
+	    //Admin view panels
+	    .state('admin.browseRecords', {
+		templateUrl: 'partials/allRecords.html'
+	    })		
+	    .state('admin.assignDoiArk', {
+		templateUrl: 'partials/doiArkAssign.html'
 	    });
 
  	$urlRouterProvider
