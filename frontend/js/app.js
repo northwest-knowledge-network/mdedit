@@ -87,7 +87,10 @@ var metadataEditorApp = angular
 		templateUrl:  partialsPrefix + 'contacts.html'
 	    })
 
-	    //Admin view panels
+	//Admin view panels
+	    .state('admin', {
+		templateURl: 'partials/admin.html'
+	    })
 	    .state('admin.browseRecords', {
 		templateUrl: 'partials/allRecords.html'
 	    })		

@@ -45,6 +45,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
             }
         };
 })
+/*
     .directive("adminView", ['$location', 'recordService', 'updateAdmin', 'updateForms', 'sharedRecord', 'makeElasticsearchRecord', 'elasticsearchRecord', 'partialsPrefix', function($location, recordService, updateAdmin, updateForms, sharedRecord, makeElasticsearchRecord, elasticsearchRecord, partialsPrefix){
 	return{
 	    restrict: 'E',
@@ -210,9 +211,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		};
 
 		$scope.switchRecordsResultsPage = function(pageNumber){
-		    /* Need to translate 'pageNumber' into 0 based index, decrement 'pageNumber' for calling
-		       getAllRecords(pageNumber, numberOfRecords)
-		    */
+
 		    pageNumber--;
 		    setCurrentPage(pageNumber);
 
@@ -255,16 +254,6 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 
 			    var record = data.results;
 
-			    /* Need to set baseController's $scope.$parent.$parent.newRecord to false or else
-			       baseController will save another copy with a different _id in the 
-			       database. BaseController is two scopes above this controller, so 
-			       have to go up 2 parent scopes.
-			    */
-			    /*
-			    $scope.$parent.$parentnewRecord = false;
-			    $scope.$parent.$parent.currentRecord = record;
-			    $scope.$parent.$parent.isAdmin = true;
-			    */
 			    $scope.$parentnewRecord = false;
 			    $scope.$parent.currentRecord = record;
 			    $scope.$parent.isAdmin = true;
@@ -308,9 +297,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		};
 
 
-		/** 
-		 * Make a new smaller record that is a subset of the complete record for use by Elasticsearch
-		 */
+
 		var createElasticsearchRecord = function(record){
 		    var elasticsearchRecord = recordService.getFreshElasticsearchRecord();
 		    makeElasticsearchRecord($scope, record, elasticsearchRecord)
@@ -477,15 +464,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 			}
 		    }
 		}
-/*		
-		//Use 0 based index for pages (first argument to getAllRecords) to make math work in backend
-		//for splicing results.
-		recordService.getDoiArkRequests(0, 10, 't').success(function(data){
-		    updateAdmin($scope, data);
-		}).error(function(error) {
-		    $scope.errors.push("Error in loading list of records.");
-		});
-*/
+
 		$scope.searchForRecord = function() {
 		    setSearchType("search");
 		    queryDatabase(getSearchType());
@@ -497,9 +476,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		};
 
 		$scope.switchAdminResultsPage = function(pageNumber){
-		    /* Need to translate 'pageNumber' into 0 based index, decrement 'pageNumber' for calling
-		       getAllRecords(pageNumber, numberOfRecords)
-		    */
+
 		    pageNumber--;
 		    setCurrentPage(pageNumber);
 
@@ -550,3 +527,4 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 	}
     }]);
 
+*/

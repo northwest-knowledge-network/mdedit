@@ -23,6 +23,13 @@
 <!-- Sidebar -->
 <div class="col-md-3">
   <table class="admin-menu">
+    <th>Record Task:</th>
+    <tr>
+      <td>
+	<button class="btn" ng-click="setMode('admin.browseRecords')">Browse</button>
+	<button class="btn" ng-click="setMode('admin.assignDoiArk')">Assign DOI/ARK</button>
+      </td>
+    </tr>
     <th>Search for record:</th>
     <tr class="admin-search">
       <td>
@@ -30,15 +37,6 @@
 	  <input type="text" name="search" ng-model="searchTerm"></input>
 	</form>
 	<button class="btn btn-primary" ng-click="searchAllRecords()">Search</button>
-      </td>
-    </tr>
-    <th>Record Task:</th>
-    <tr>
-      <td>
-	<select ng-model="adminViewMode" ng-change="switchLayout()">
-	  <option value="browse" selected="selected" ng-click="changeToDoiView(); initDoiView();">Browse</option>
-	  <option value="assign_ark_doi" ng-click="changeToRecordsView()">Assign DOI/ARK</option>
-	</select>
       </td>
     </tr>
     <th>
