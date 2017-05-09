@@ -44,7 +44,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
                 });
             }
         };
-})
+});
 /*
     .directive("adminView", ['$location', 'recordService', 'updateAdmin', 'updateForms', 'sharedRecord', 'makeElasticsearchRecord', 'elasticsearchRecord', 'partialsPrefix', function($location, recordService, updateAdmin, updateForms, sharedRecord, makeElasticsearchRecord, elasticsearchRecord, partialsPrefix){
 	return{

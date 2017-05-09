@@ -22,14 +22,11 @@
 </div>
 <!-- Sidebar -->
 <div class="col-md-3">
+  <ul class="nav nav-tabs">
+    <li class="active"><a ng-click="setMode('admin.browseRecords')">Browse</a></li>
+    <li><a ng-click="setMode('admin.assignDoiArk')">Assign DOI/ARK</a></li>
+  </ul>
   <table class="admin-menu">
-    <th>Record Task:</th>
-    <tr>
-      <td>
-	<button class="btn" ng-click="setMode('admin.browseRecords')">Browse</button>
-	<button class="btn" ng-click="setMode('admin.assignDoiArk')">Assign DOI/ARK</button>
-      </td>
-    </tr>
     <th>Search for record:</th>
     <tr class="admin-search">
       <td>

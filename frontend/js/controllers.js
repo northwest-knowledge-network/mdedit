@@ -1500,7 +1500,7 @@ metadataEditorApp.controller('BaseController',
         $scope.currentRecord.west_lon = vm.sw.lng();
     };
   })
-    .controller('adminController', ['$scope', '$compile', '$state', '$location', 'recordService', 'updateAdmin', 'updateForms', 'sharedRecord', 'partialsPrefix', function($scope, $compile, $state, location, recordService, updateAdmin, updateForms, sharedRecord, partialsPrefix)
+    .controller('adminController', ['$scope', '$compile', '$state', '$location', 'recordService', 'updateAdmin', 'updateForms', 'sharedRecord', 'makeElasticsearchRecord', 'elasticsearchRecord', 'partialsPrefix', function($scope, $compile, $state, $location, recordService, updateAdmin, updateForms, sharedRecord, makeElasticsearchRecord, elasticsearchRecord, partialsPrefix)
   {
 
       var adminViews = {
@@ -1659,10 +1659,12 @@ metadataEditorApp.controller('BaseController',
 	else{
 	    if(queryType.indexOf("browse") > -1){
 		recordService.getAllRecords(getCurrentPage(), $scope.recordsPerPage.toString(), $scope.selectedOrderFilter, $scope.publishState).success(function(data){
+		    console.log("updating admin: currentPage : " + getCurrentPage() + " :: recordsPerPage : " + $scope.recordsPerPage.toString() + " :: selectedOrderFilter : " + $scope.selectedOrderFilter + " :: $scope.publshState: " + $scope.publishState);
+		    console.log(data);
 		    updateAdmin($scope, data);
 		}).error(function(error, status) {
 		    recordService.checkAdmin(status);
-				$scope.errors.push("Error in loading list of records.");
+		    $scope.errors.push("Error in loading list of records.");
 		});
 	    }else if(queryType.indexOf("search") > -1){
 		//If search term is not an empty string, use it to query database.
@@ -1685,7 +1687,7 @@ metadataEditorApp.controller('BaseController',
     
     //Use 0 based index for pages (first argument to getAllRecords) to make math work in backend
     //for splicing results.
-    recordService.getAllRecords(0, 10, $scope.selectedOrderFilter).success(function(data){
+    recordService.getAllRecords(0, 10, $scope.selectedOrderFilter, $scope.publishState).success(function(data){
 	updateAdmin($scope, data);
     }).error(function(error, status) {
 	$scope.errors.push("Error in loading list of records.");
@@ -1729,7 +1731,7 @@ metadataEditorApp.controller('BaseController',
 
 	    
 	} 
-	
+	console.log("querying database...");
 	//Populate list on page with records
 	queryDatabase(getSearchType());
     };
@@ -1774,17 +1776,8 @@ metadataEditorApp.controller('BaseController',
 	    });
     };
     
-    $scope.initAdminView = function(){
-	$scope.show = true;
-	
+/*
 	$scope.recordsPerPage = "10";
-	
-	//Records initially sorted by the publish date. This is the name of the publish date in the database.
-	$scope.selectedOrderFilter = "md_pub_date";
-	
-	$scope.searchTerm = "";
-	
-	$scope.searchType = "browse";
 	
 	recordService.getAllRecords(0, 10, $scope.seletedOrderFilter).success(function(data){
 	    //Update the page with response data
@@ -1793,8 +1786,7 @@ metadataEditorApp.controller('BaseController',
 	    $scope.errors.push("Error in loading list of records.");
 	    recordService.checkAdmin(status);
 	});
-    };
-    
+  */  
     
     /** 
      * Make a new smaller record that is a subset of the complete record for use by Elasticsearch
