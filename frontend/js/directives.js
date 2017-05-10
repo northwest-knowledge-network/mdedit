@@ -44,8 +44,8 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
                 });
             }
         };
-});
-/*
+})
+
     .directive("adminView", ['$location', 'recordService', 'updateAdmin', 'updateForms', 'sharedRecord', 'makeElasticsearchRecord', 'elasticsearchRecord', 'partialsPrefix', function($location, recordService, updateAdmin, updateForms, sharedRecord, makeElasticsearchRecord, elasticsearchRecord, partialsPrefix){
 	return{
 	    restrict: 'E',
@@ -53,7 +53,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 	    controller: function($scope, recordService){
 		var currentPage = 0;
 
-		$scope.show = true;
+		$scope.showBrowse = true;
 
 		$scope.recordsPerPage = "10";
 
@@ -527,4 +527,4 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 	}
     }]);
 
-*/
+

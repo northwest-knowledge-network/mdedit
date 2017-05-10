@@ -304,13 +304,13 @@ a.dropdown-toggle, a.btn {
 }
     
 /* enter animation */
-#form-views.ng-enter            { 
+#form-views.ng-enter { 
     -webkit-animation:slideInRight 0.5s both ease;
 	-moz-animation:slideInRight 0.5s both ease;
 	animation:slideInRight 0.5s both ease; 
 }
 
-#form-views.ng-leave            { 
+#form-views.ng-leave { 
     -webkit-animation:slideOutLeft 0.5s both ease;
 	-moz-animation:slideOutLeft 0.5s both ease;
 	animation:slideOutLeft 0.5s both ease; 
