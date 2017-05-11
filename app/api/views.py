@@ -552,12 +552,14 @@ def admin_publish_metadata_record(_oid):
 	#Create checksum for record's directory
 	md5 = hashlib.md5()
 
-	with open(prod_path, 'rb') as f:
-	    while True:
-        	data = f.read(BUF_SIZE)
-	        if not data:
-        	    break
-	        md5.update(data)
+	for root, dirs, files in os.walk(prod_path):
+		for file in files:
+			with open(os.path.join(prod_path, file), 'rb') as f:
+
+			    #while (data = f.read(BUF_SIZE)) is not None:
+			    for data in iter(lambda: f.read(BUF_SIZE), b''):
+      		        	md5.update(data)
+
 
 	checksum = md5.hexdigest()
 
@@ -567,9 +569,8 @@ def admin_publish_metadata_record(_oid):
     	conn_param = dict(config.items('checksum'))
 
     	#Set up and execute the query
-    	query = "INSERT INTO dbo.file-dev (md5, isMetadata, isCanonicalMetadata, metadataStandard, created, published) VALUES (" + checksum + ", true, true, " + schema_type + ", " + datetime.utcnow() + ", true);"
-    	with pymssql.connect(conn_param['host'], conn_param['user'],
-                         conn_param['password'], conn_param['database']) as conn:
+    	query = "INSERT INTO " + conn_param['table'] + " (md5, isMetadata, isCanonicalMetadata, metadataStandard, created, published) VALUES (" + checksum + ", true, true, " + schema_type + ", " + str(datetime.utcnow()) + ", true);"
+    	with pymssql.connect(conn_param['host'], conn_param['user'], conn_param['password'], conn_param['database']) as conn:
         	with conn.cursor() as cursor:
             		cursor.execute(query)
 
