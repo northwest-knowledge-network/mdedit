@@ -731,7 +731,8 @@ metadataEditorApp
 	    	return $http.post(
 	                   '//' + hostname + '/api/metadata/' + recordID + '/admin-publish',
 		           {'session_id':session_id,
-			    'elasticsearch_record': elasticsearchRecord
+			    'elasticsearch_record': elasticsearchRecord,
+			    'schema_type': scope.currentRecord.schema_type
 			   }
 	    );
 	};
