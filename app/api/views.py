@@ -31,6 +31,9 @@ import requests
 import urllib
 import stat
 import shutil
+import pymssql
+import hashlib
+import ConfigParser
 
 from datetime import datetime
 from dicttoxml import dicttoxml
@@ -67,12 +70,15 @@ def metadata():
     username = _authenticate_user_from_session(request)
     admin_username = _authenticate_admin_from_session(request)
 
-    if username:
+    if username or admin_username:
         if request.method == 'POST':
 
             # execute raw MongoDB query and return all of the user's records
-            recs = Metadata.objects(__raw__={'username': username})
-            return jsonify(dict(results=recs))
+	    if username:
+	            recs = Metadata.objects(__raw__={'username': username})
+        	    return jsonify(dict(results=recs))
+	    elif admin_username:
+		return jsonify({"message":"Admin cannot use POST on this route."})
 
         if request.method == 'PUT':
 
@@ -127,7 +133,6 @@ def get_record(oid):
     """
 
     username = _authenticate_admin_from_session(request)
-#   return Response("Got this far", 409)
 
     if username:
 
@@ -495,21 +500,21 @@ def admin_publish_metadata_record(_oid):
     username = _authenticate_admin_from_session(request)
    
     if username:
+	#Buffer size we will break file into for hashing files. Need this for large files!
+	BUF_SIZE = 65536  # lets read stuff in 64kb chunks!
+
+	#Config file is 'getUsername.conf' located in the current directory
+    	config_file = os.path.dirname(__file__) + '/checksum.conf'
 
         elasticsearch_record = request.json['elasticsearch_record']
 
 	str_id = elasticsearch_record["uid"]
 	
- 	#return Response("Got this far", 409)      
+	schema_type = request.json['schema_type']
+
         #Move file from pre-prod directory to production directory
-        
-        #...
-
         preprod_dir = app.config['PREPROD_DIRECTORY']
-
         prod_dir = app.config['PROD_DIRECTORY']
-	
-	
 
         if os.path.exists(os.path.dirname(preprod_dir)):
             
@@ -517,34 +522,56 @@ def admin_publish_metadata_record(_oid):
 
             prod_path = os.path.join(prod_dir, str_id)
 
-
-#	Set 555 on directory, set files inside (metadata.xml) to 444 (permissions)
-#	Move folder from preprod-datastore/uploads to preprod-datastore/published/
-
-
             #Make the directory in the production directory
-
-#            if not os.path.exists(os.path.dirname(prod_path)):
-
-                #Move the XML file from the preprod directory to the prod directory
-            #return prod_path
+            #Move the XML file from the preprod directory to the prod directory
             try:
                 os.rename(preprod_path, prod_path)
             except OSError:
                 return "Moving file on backend filesystem error"
 
-                #set permissions on the new directory in prod: All directories read and execute, and all files read only
+            #set permissions on the new directory in prod: record's directory: read and execute; directories inside record's directory: read only;  and all files read only
 	    try:
-                os.chmod(prod_path, stat.S_IRUSR | stat.S_IXUSR | stat.S_IRGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IXOTH)
+		for root, dirs, files in os.walk(prod_path):
+			for f in files:
+				os.chmod(os.path.join(prod_path, f), stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH)
+
+	        os.chmod(prod_path, stat.S_IRUSR | stat.S_IXUSR | stat.S_IRGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IXOTH)
 	    except OSError:
 		return "chmod error on record's directory."
-
+	
+	else:
+		return "Error: path of record's file does not exist."	
+	
 	try:
 	        res = es.index(index='test_metadata', doc_type='metadata', body=elasticsearch_record)
 	except:
 		#Move file back to preprod directory since complete publishing failed
 		os.rename(prod_path, preprod_path)
 		return "Elasticsearch posting error"
+
+	#Create checksum for record's directory
+	md5 = hashlib.md5()
+
+	with open(prod_path, 'rb') as f:
+	    while True:
+        	data = f.read(BUF_SIZE)
+	        if not data:
+        	    break
+	        md5.update(data)
+
+	checksum = md5.hexdigest()
+
+	#Connect to checksum database and insert checksum
+	config = get_config(config_file)
+
+    	conn_param = dict(config.items('checksum'))
+
+    	#Set up and execute the query
+    	query = "INSERT INTO dbo.file-dev (md5, isMetadata, isCanonicalMetadata, metadataStandard, created, published) VALUES (" + checksum + ", true, true, " + schema_type + ", " + datetime.utcnow() + ", true);"
+    	with pymssql.connect(conn_param['host'], conn_param['user'],
+                         conn_param['password'], conn_param['database']) as conn:
+        	with conn.cursor() as cursor:
+            		cursor.execute(query)
 
 	return jsonify(res)
 
@@ -955,4 +982,19 @@ def _authenticate_admin_from_session(request):
         # username will be u'' if the session id was not valid; make explicit
         else:
             return None
+
+
+def get_config(config_file):
+    """Provide user with a ConfigParser that has read the `config_file`
+        Returns:
+            (ConfigParser) Config parser with a section for each config
+    """
+    assert os.path.isfile(config_file), "Config file %s does not exist!" \
+        % os.path.abspath(config_file)
+
+    config = ConfigParser.ConfigParser()
+    config.read(config_file)
+
+    return config
+
 
