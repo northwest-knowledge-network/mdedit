@@ -794,7 +794,6 @@ metadataEditorApp
             }
             else
             {
-		console.log("Not a new record <<<<<<<<<<<<<<<<<<<<<<<<<<<<");
                 var currentId = scope.currentRecord._id.$oid;
 
                 q = $http.put('//' + hostname + '/api/metadata/' +
