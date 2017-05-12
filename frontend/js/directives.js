@@ -335,6 +335,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 				if(response.created != null && response.created == true){
 					//Set published to true only if there are no errors in the publishing process
 					$scope.currentRecord.published = "true";
+	
 					recordService.saveDraft($scope).success(function(response){
 						alert("Record published successfully!");
 							
