@@ -34,6 +34,7 @@ import shutil
 import pymssql
 import hashlib
 import ConfigParser
+import re
 
 from datetime import datetime
 from dicttoxml import dicttoxml
@@ -547,7 +548,9 @@ def admin_publish_metadata_record(_oid):
 	except:
 		#Move file back to preprod directory since complete publishing failed
 		os.rename(prod_path, preprod_path)
+		#Need to reset permissions on file too... TODO!!
 		return "Elasticsearch posting error"
+
 
 	#Create checksum for record's directory
 	md5 = hashlib.md5()
@@ -567,12 +570,25 @@ def admin_publish_metadata_record(_oid):
 	config = get_config(config_file)
 
     	conn_param = dict(config.items('checksum'))
+	time = datetime.now().strftime("%Y-%m-%dT%H:%M:%S") 
 
+	#Take /datastore-pre or /datastore-prod out of path to allow for different mount points in path
+	path_without_mount_dir = re.sub(r'^/datastore./', "", prod_path)
     	#Set up and execute the query
-    	query = "INSERT INTO " + conn_param['table'] + " (md5, isMetadata, isCanonicalMetadata, metadataStandard, created, published) VALUES (" + checksum + ", true, true, " + schema_type + ", " + str(datetime.utcnow()) + ", true);"
-    	with pymssql.connect(conn_param['host'], conn_param['user'], conn_param['password'], conn_param['database']) as conn:
-        	with conn.cursor() as cursor:
-            		cursor.execute(query)
+    	query = "INSERT INTO " + conn_param['database'] + "." + conn_param['table'] + " ([path], [md5], [isMetadata], [isCanonicalMetadata], [metadataStandard], [created], [published]) VALUES ('" + path_without_mount_dir  + "', '" + checksum + "', 'true', 'true', '" + schema_type + "', '" + time + "', '" + time + "');"
+
+	try:
+	    	with pymssql.connect(host=conn_param['host'], user=conn_param['user'], password=conn_param['password'], database=conn_param['database']) as conn:
+			try:
+        			with conn.cursor() as cursor:
+            				cursor.execute(query)
+					conn.commit()
+			except:
+				#Should move file back to preprod directory in case of failure too
+				return "Error: checksum database insertion query failure."
+	except:
+		#Should move file back to preprod directory in case of failure too
+		return "Error: checksum database connection failure."
 
 	return jsonify(res)
 
@@ -901,6 +917,7 @@ def upload():
         except KeyError:
             return jsonify({'message': 'Error: file with css name ' +
                                        '\'uploadedfile\' not found'})
+
 
     else:
         return jsonify({'message': 'Error: must upload with POST'},
