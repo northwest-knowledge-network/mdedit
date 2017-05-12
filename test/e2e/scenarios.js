@@ -89,7 +89,7 @@ function waitForAnimation(item){
     var EC = protractor.ExpectedConditions;
     var itemID = element(by.id(item));
     var isClickable = EC.elementToBeClickable(itemID);
-    browser.wait(isClickable, 3000);
+    browser.wait(isClickable, 5000);
 }
 
 function contactsTest() {

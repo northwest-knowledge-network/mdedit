@@ -59,7 +59,9 @@ class TestingConfig(Config):
     if not os.path.exists(PREPROD_DIRECTORY):
         os.makedirs(PREPROD_DIRECTORY)
 
-
+    PREPROD_DIRECTORY = "/local-datastore/"
+#    PROD_DIRECTORY = "/local-prod-datastore/"
+ 
 class ProductionConfig(Config):
     PRODUCTION = True
 
@@ -67,8 +69,8 @@ class ProductionConfig(Config):
         'https://www.northwestknowledge.net/data/download.php?uuid='
 
     SIMPLE_UPLOAD_URL = "https://nknportal-prod.nkn.uidaho.edu/portal/simpleUpload/upload.php"
-    PREPROD_DIRECTORY = "/datastore-prod/uploads"
-    PROD_DIRECTORY = "/datastore-prod/published"
+#    PREPROD_DIRECTORY = "/datastore-prod/uploads"
+#    PROD_DIRECTORY = "/datastore-prod/published"
     
 config = {
     'development': DevelopmentConfig,
