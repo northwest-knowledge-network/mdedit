@@ -563,7 +563,6 @@ def admin_publish_metadata_record(_oid):
 			    for data in iter(lambda: f.read(BUF_SIZE), b''):
       		        	md5.update(data)
 
-
 	checksum = md5.hexdigest()
 
 	#Connect to checksum database and insert checksum
