@@ -333,9 +333,15 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 				}
 				//Display results of Elasticsearch function from backend
 				if(response.created != null && response.created == true){
-					alert("Record published successfully!");
 					//Set published to true only if there are no errors in the publishing process
 					$scope.currentRecord.published = "true";
+	
+					recordService.saveDraft($scope).success(function(response){
+						alert("Record published successfully!");
+							
+					}).error(function(error, status){
+						alert("Record published failed! System failed to update MongoDB published attribute.");					
+					});
 				}else{
 					alert("Record published failed!");
 					//Publishing has failed at this point, so reset published variable in record to "pending"
