@@ -470,19 +470,22 @@ def delete_metadata_record(_oid):
     admin_username = _authenticate_user_from_session(request)
     
     if username or admin_username:
-	
-        md = Metadata.objects.get_or_404(pk=_oid)
-        md.delete()
-
+	md = Metadata.objects.get_or_404(pk=_oid)
+ 
 	if md.published == "false" or md.published == "pending":
-		#Delete uploaded files from file system
-		preprod_dir = app.config['PREPROD_DIRECTORY']
-		preprod_path = os.path.join(preprod_dir, _oid)
+		#Delete from MongoDB
+        	md.delete()
 
-		try:
-		        shutil.rmtree(preprod_path)
-		except ValueError:
-			pass
+		#Only delete files on file system if the record has been submitted for publication. Otherwise, files will not exist.
+		if md.published == "pending":
+			#Delete uploaded files from file system
+			preprod_dir = app.config['PREPROD_DIRECTORY']
+			preprod_path = os.path.join(preprod_dir, _oid)
+
+			try:
+			        shutil.rmtree(preprod_path)
+			except ValueError:
+				pass
 
 	else:
 		return jsonify({"message":"File has already been published. Cannot delete!"})

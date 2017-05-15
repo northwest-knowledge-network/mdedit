@@ -59,10 +59,12 @@ testDynamicFormAddition('dublin');
 testReviewSection('iso');
 testReviewSection('dublin');
 
+//Admin tests not ready yet
+/*
 testAdminView("iso");
 testAdminView("dublin");
 testAdminView("admin");
-
+*/
 describe('ISO and Dublin Core editing views', function () {
 
      it('should go to #/dublin when the dublin core button is pressed', function () {
@@ -1213,6 +1215,23 @@ function testReviewSection(schemaType) {
 		       input: '04/08/2012'}
         };
 
+
+        if (schemaType === 'iso')
+        {
+            var isoFields = {
+                status: 'stored in an offline facility',
+                spatial_dtype: 'grid',
+                hierarchy_level: 'dataset',
+                topic_category: ['biota', 'economy'],
+                compression_technique: 'zlib'
+            };
+
+            for (var field in isoFields)
+            {
+                newRecord[field] = isoFields[field];
+            }
+        }
+
             beforeEach( function () {
 		clearCollection();
 		browser.get('/frontend');
@@ -1251,7 +1270,9 @@ function testReviewSection(schemaType) {
 	       element(by.model('currentRecord.summary')).sendKeys(newRecord.summary);
 	       element(by.model('currentRecord.place_keywords')).sendKeys(newRecord.place_keywords);
 	       element(by.model('currentRecord.thematic_keywords')).sendKeys(newRecord.thematic_keywords);
-	       element(by.model('currentRecord.topic_category')).sendKeys(newRecord.topic_category);
+	       if((typeof newRecord.topic_category !== 'undefined')
+		 && (newRecord.topic_category.length > 0))
+		       element(by.model('currentRecord.topic_category')).sendKeys(newRecord.topic_category.join(", "));
 
 	       //If iso form type, then fill out detailed info page too
 	       if(formType.indexOf('dublin') == -1){
@@ -1387,8 +1408,9 @@ function testReviewSection(schemaType) {
 			       compareBbox(key, newRecord);
 			   }
 			   //Otherwise, then just compare value in review.html results table to value in newRecord.
-			   else
-			       expect(element(by.id(key + '-1')).getText()).toEqual(parseKeyValues(newRecord[key]));
+			   else{
+			       	expect(element(by.id(key + '-1')).getText()).toEqual(parseKeyValues(newRecord[key]));
+		           }
 		       }
 		   }
 	       }
