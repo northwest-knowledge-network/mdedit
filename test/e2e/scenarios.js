@@ -26,8 +26,8 @@ var clearCollection = function () {
 clearCollection();
 
 
-//testNknAsDistributor('iso');
-//testNknAsDistributor('dublin');
+testNknAsDistributor('iso');
+testNknAsDistributor('dublin');
 
 
 /* XXX perhaps issue w/ webdriver version, but testExportISO is getting stuck */
@@ -36,28 +36,28 @@ clearCollection();
 //testExportISO('dublin');
 
 
-//testLoadDeleteDropdown('iso');
-//testLoadDeleteDropdown('dublin');
+testLoadDeleteDropdown('iso');
+testLoadDeleteDropdown('dublin');
 
-//testMilesDefaults('iso');
-//testMilesDefaults('dublin');
+testMilesDefaults('iso');
+testMilesDefaults('dublin');
 
-//deleteRecordTest('iso');
-//deleteRecordTest('dublin');
+deleteRecordTest('iso');
+deleteRecordTest('dublin');
 
-//attachFileTest('iso');
-//attachFileTest('dublin');
+attachFileTest('iso');
+attachFileTest('dublin');
 
-//contactsTest();
+contactsTest();
 
-//testAnimation('iso');
-//testAnimation('dublin');
+testAnimation('iso');
+testAnimation('dublin');
 
-//testDynamicFormAddition('iso');
-//testDynamicFormAddition('dublin');
+testDynamicFormAddition('iso');
+testDynamicFormAddition('dublin');
 
 testReviewSection('iso');
-//testReviewSection('dublin');
+testReviewSection('dublin');
 
 //Admin tests not ready yet
 /*
@@ -333,7 +333,7 @@ function testLoadDeleteDropdown(schemaType) {
         if (schemaType === 'iso')
         {
             var isoFields = {
-                status: 'stored in an offline facility',
+                status: 'historicalArchive',
                 spatial_dtype: 'grid',
                 hierarchy_level: 'dataset',
                 topic_category: ['biota', 'economy'],
@@ -1219,7 +1219,7 @@ function testReviewSection(schemaType) {
         if (schemaType === 'iso')
         {
             var isoFields = {
-                status: 'stored in an offline facility',
+                status: 'historicalArchive',
                 spatial_dtype: 'grid',
                 hierarchy_level: 'dataset',
                 topic_category: ['biota', 'economy'],
