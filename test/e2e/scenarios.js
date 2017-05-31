@@ -26,8 +26,8 @@ var clearCollection = function () {
 clearCollection();
 
 
-testNknAsDistributor('iso');
-testNknAsDistributor('dublin');
+//testNknAsDistributor('iso');
+//testNknAsDistributor('dublin');
 
 
 /* XXX perhaps issue w/ webdriver version, but testExportISO is getting stuck */
@@ -36,28 +36,28 @@ testNknAsDistributor('dublin');
 //testExportISO('dublin');
 
 
-testLoadDeleteDropdown('iso');
-testLoadDeleteDropdown('dublin');
+//testLoadDeleteDropdown('iso');
+//testLoadDeleteDropdown('dublin');
 
-testMilesDefaults('iso');
-testMilesDefaults('dublin');
+//testMilesDefaults('iso');
+//testMilesDefaults('dublin');
 
-deleteRecordTest('iso');
-deleteRecordTest('dublin');
+//deleteRecordTest('iso');
+//deleteRecordTest('dublin');
 
-attachFileTest('iso');
-attachFileTest('dublin');
+//attachFileTest('iso');
+//attachFileTest('dublin');
 
-contactsTest();
+//contactsTest();
 
-testAnimation('iso');
-testAnimation('dublin');
+//testAnimation('iso');
+//testAnimation('dublin');
 
-testDynamicFormAddition('iso');
-testDynamicFormAddition('dublin');
+//testDynamicFormAddition('iso');
+//testDynamicFormAddition('dublin');
 
 testReviewSection('iso');
-testReviewSection('dublin');
+//testReviewSection('dublin');
 
 //Admin tests not ready yet
 /*
@@ -1271,8 +1271,11 @@ function testReviewSection(schemaType) {
 	       element(by.model('currentRecord.place_keywords')).sendKeys(newRecord.place_keywords);
 	       element(by.model('currentRecord.thematic_keywords')).sendKeys(newRecord.thematic_keywords);
 	       if((typeof newRecord.topic_category !== 'undefined')
-		 && (newRecord.topic_category.length > 0))
-		       element(by.model('currentRecord.topic_category')).sendKeys(newRecord.topic_category.join(", "));
+		 && (newRecord.topic_category.length > 0)){
+			//Click on select menu to expose options
+			for(var i = 0; i < newRecord.topic_category.length; i++) 
+				element(by.css('[label="' + newRecord.topic_category[i] + '"]')).click();
+		}
 
 	       //If iso form type, then fill out detailed info page too
 	       if(formType.indexOf('dublin') == -1){
