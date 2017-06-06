@@ -737,6 +737,16 @@ metadataEditorApp
 	    );
 	};
 
+	/** 
+ 	 * Check if current user is admin by authenticating admin though backend route
+ 	 */
+	var authenticateAdmin = function(){
+		return $http.post(
+	                   '//' + hostname + '/api/authenticate-admin/',
+		           {'session_id':session_id}
+		);
+	};
+
 	//Unpublish a record
 	var unpublishRecord = function(recordID, scope){
 		scope.currentRecord.published = "pending";
@@ -865,6 +875,7 @@ metadataEditorApp
         return {
 	    adminApprovePublish: adminApprovePublish,
 	    adminGetUsersRecord: adminGetUsersRecord,
+	    authenticateAdmin: authenticateAdmin,
 	    checkAdmin: checkAdmin,
             getFreshISORecord: getFreshISORecord,
             getFreshDCRecord: getFreshDCRecord,
