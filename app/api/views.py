@@ -922,6 +922,17 @@ def upload():
         return jsonify({'message': 'Error: must upload with POST'},
                        status=405)
  
+#Check if user is admin.
+@api.route('/api/metadata/authenticate-admin', methods=['POST'])
+@cross_origin(origin='*', methods=['POST'],
+              headers=['X-Requested-With', 'Content-Type', 'Origin'])
+def authenticate_admin():
+    username = _authenticate_admin_from_session(request)    	
+    if username:
+        return Response(200)
+    else:
+        return Response(401)
+
 
 def _authenticate_user_from_session(request):
     """
