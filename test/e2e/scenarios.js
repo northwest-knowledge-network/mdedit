@@ -1294,7 +1294,10 @@ function testReviewSection(schemaType) {
 	       
 	       //If not dubin form, then form is 'iso' type, and check extra form fields in this seciton
 	       if(formType.indexOf("dublin") == -1){
-		   element(by.model('currentRecord.status')).sendKeys(newRecord.status);
+		   /* For some reason, status has "string:" concatinated to the beginning of the select option's value. So we need to add "string:" to the beginning here 
+		    * or we won't find the select element's option correctly. 
+		    */
+		   element(by.model('currentRecord.status')).sendKeys("string:" + newRecord.status);
 		   element(by.model('currentRecord.update_frequency')).sendKeys(newRecord.update_frequency);
 		   element(by.model('currentRecord.hierarchy_level')).sendKeys(newRecord.hierarchy_level);		   
 	       }
@@ -1412,7 +1415,11 @@ function testReviewSection(schemaType) {
 			   }
 			   //Otherwise, then just compare value in review.html results table to value in newRecord.
 			   else{
-			       	expect(element(by.id(key + '-1')).getText()).toEqual(parseKeyValues(newRecord[key]));
+				/* If the attribute in the JSON object is an emtpy string, then the review.html page will not add it to the page. 
+				 * Therefore, we only check attributes that are not the empty string.
+				 */ 
+				if(newRecord[key] != '')
+				       	expect(element(by.id(key + '-1')).getText()).toEqual(parseKeyValues(newRecord[key]));
 		           }
 		       }
 		   }

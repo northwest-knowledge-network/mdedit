@@ -42,7 +42,6 @@ class DevelopmentConfig(Config):
     PREPROD_DIRECTORY = "/datastore-pre/uploads"
     PROD_DIRECTORY = "/datastore-pre/published"
 
-
 class TestingConfig(Config):
     TESTING = True
 
@@ -60,7 +59,7 @@ class TestingConfig(Config):
         os.makedirs(PREPROD_DIRECTORY)
 
     PREPROD_DIRECTORY = "/local-datastore/"
-#    PROD_DIRECTORY = "/local-prod-datastore/"
+    PROD_DIRECTORY = "/local-prod-datastore/"
  
 class ProductionConfig(Config):
     PRODUCTION = True
