@@ -59,10 +59,12 @@ testDynamicFormAddition('dublin');
 testReviewSection('iso');
 testReviewSection('dublin');
 
+//Admin tests not ready yet
+/*
 testAdminView("iso");
 testAdminView("dublin");
 testAdminView("admin");
-
+*/
 describe('ISO and Dublin Core editing views', function () {
 
      it('should go to #/dublin when the dublin core button is pressed', function () {
@@ -89,7 +91,7 @@ function waitForAnimation(item){
     var EC = protractor.ExpectedConditions;
     var itemID = element(by.id(item));
     var isClickable = EC.elementToBeClickable(itemID);
-    browser.wait(isClickable, 3000);
+    browser.wait(isClickable, 5000);
 }
 
 function contactsTest() {
@@ -331,7 +333,7 @@ function testLoadDeleteDropdown(schemaType) {
         if (schemaType === 'iso')
         {
             var isoFields = {
-                status: 'stored in an offline facility',
+                status: 'historicalArchive',
                 spatial_dtype: 'grid',
                 hierarchy_level: 'dataset',
                 topic_category: ['biota', 'economy'],
@@ -1213,6 +1215,23 @@ function testReviewSection(schemaType) {
 		       input: '04/08/2012'}
         };
 
+
+        if (schemaType === 'iso')
+        {
+            var isoFields = {
+                status: 'historicalArchive',
+                spatial_dtype: 'grid',
+                hierarchy_level: 'dataset',
+                topic_category: ['biota', 'economy'],
+                compression_technique: 'zlib'
+            };
+
+            for (var field in isoFields)
+            {
+                newRecord[field] = isoFields[field];
+            }
+        }
+
             beforeEach( function () {
 		clearCollection();
 		browser.get('/frontend');
@@ -1251,7 +1270,12 @@ function testReviewSection(schemaType) {
 	       element(by.model('currentRecord.summary')).sendKeys(newRecord.summary);
 	       element(by.model('currentRecord.place_keywords')).sendKeys(newRecord.place_keywords);
 	       element(by.model('currentRecord.thematic_keywords')).sendKeys(newRecord.thematic_keywords);
-	       element(by.model('currentRecord.topic_category')).sendKeys(newRecord.topic_category);
+	       if((typeof newRecord.topic_category !== 'undefined')
+		 && (newRecord.topic_category.length > 0)){
+			//Click on select menu to expose options
+			for(var i = 0; i < newRecord.topic_category.length; i++) 
+				element(by.css('[label="' + newRecord.topic_category[i] + '"]')).click();
+		}
 
 	       //If iso form type, then fill out detailed info page too
 	       if(formType.indexOf('dublin') == -1){
@@ -1270,7 +1294,10 @@ function testReviewSection(schemaType) {
 	       
 	       //If not dubin form, then form is 'iso' type, and check extra form fields in this seciton
 	       if(formType.indexOf("dublin") == -1){
-		   element(by.model('currentRecord.status')).sendKeys(newRecord.status);
+		   /* For some reason, status has "string:" concatinated to the beginning of the select option's value. So we need to add "string:" to the beginning here 
+		    * or we won't find the select element's option correctly. 
+		    */
+		   element(by.model('currentRecord.status')).sendKeys("string:" + newRecord.status);
 		   element(by.model('currentRecord.update_frequency')).sendKeys(newRecord.update_frequency);
 		   element(by.model('currentRecord.hierarchy_level')).sendKeys(newRecord.hierarchy_level);		   
 	       }
@@ -1387,8 +1414,13 @@ function testReviewSection(schemaType) {
 			       compareBbox(key, newRecord);
 			   }
 			   //Otherwise, then just compare value in review.html results table to value in newRecord.
-			   else
-			       expect(element(by.id(key + '-1')).getText()).toEqual(parseKeyValues(newRecord[key]));
+			   else{
+				/* If the attribute in the JSON object is an emtpy string, then the review.html page will not add it to the page. 
+				 * Therefore, we only check attributes that are not the empty string.
+				 */ 
+				if(newRecord[key] != '')
+				       	expect(element(by.id(key + '-1')).getText()).toEqual(parseKeyValues(newRecord[key]));
+		           }
 		       }
 		   }
 	       }
