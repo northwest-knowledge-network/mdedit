@@ -36,11 +36,17 @@ class Config:
         pass
 
 
-class DevelopmentConfig(Config):
+class DevelopmentServerConfig(Config):
     DEBUG = True
 
     PREPROD_DIRECTORY = "/datastore-pre/uploads"
     PROD_DIRECTORY = "/datastore-pre/published"
+
+class DevelopmentConfig(Config):
+    DEBUG = True
+
+    PREPROD_DIRECTORY = "/local-datastore/uploads"
+    PROD_DIRECTORY = "/local-datastore/published"
 
 class TestingConfig(Config):
     TESTING = True
@@ -58,8 +64,8 @@ class TestingConfig(Config):
     if not os.path.exists(PREPROD_DIRECTORY):
         os.makedirs(PREPROD_DIRECTORY)
 
-    PREPROD_DIRECTORY = "/local-datastore/"
-    PROD_DIRECTORY = "/local-prod-datastore/"
+    #PREPROD_DIRECTORY = "/local-datastore/uploads"
+    #PROD_DIRECTORY = "/local-prod-datastore/published"
  
 class ProductionConfig(Config):
     PRODUCTION = True
