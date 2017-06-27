@@ -341,7 +341,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 						alert("Record published successfully!");
 							
 					}).error(function(error, status){
-						alert("Record published failed! System failed to update MongoDB published attribute.");					
+						alert("Record published failed! System failed to update MongoDB published attribute. Status: " + status);					
 					});
 				}else{
 					alert("Record published failed!");

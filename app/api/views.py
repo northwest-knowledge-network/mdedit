@@ -161,7 +161,41 @@ def get_single_metadata(_oid):
     username = _authenticate_user_from_session(request)
     admin_username = _authenticate_admin_from_session(request)
     
-    if username:
+    if admin_username:
+
+        try:
+            if request.method == 'PUT':
+
+                if ('record' in request.json and '_id' in request.json['record']):
+
+                    existing_record = \
+                        Metadata.objects.get_or_404(pk=_oid)
+
+                    updater = Metadata.from_json(
+                        json.dumps(request.json['record'])
+                    )
+
+                    for f in existing_record._fields:
+                        existing_record[f] = updater[f]
+
+                    existing_record.save()
+
+                    return jsonify(record=existing_record)
+
+                else:
+                    return Response('Bad or missing id', 400)
+
+            else:
+                    record = Metadata.objects.get_or_404(pk=_oid)
+ 
+                    record.format_dates()
+
+                    return jsonify(record=record)
+        except:
+
+            return Response('Bad request for record with id ' + _oid, 400)
+        
+    elif username:
 
         try:
             if request.method == 'PUT':
@@ -198,43 +232,9 @@ def get_single_metadata(_oid):
 
             return Response('Bad request for record with id ' + _oid, 400)
 
-
-    elif admin_username:
-
-        try:
-            if request.method == 'PUT':
-
-                if ('record' in request.json and '_id' in request.json['record']):
-
-                    existing_record = \
-                        Metadata.objects.get_or_404(pk=_oid)
-
-                    updater = Metadata.from_json(
-                        json.dumps(request.json['record'])
-                    )
-
-                    for f in existing_record._fields:
-                        existing_record[f] = updater[f]
-
-                    existing_record.save()
-
-                    return jsonify(record=existing_record)
-
-                else:
-                    return Response('Bad or missing id', 400)
-
-            else:
-                    record = Metadata.objects.get_or_404(pk=_oid)
- 
-                    record.format_dates()
-
-                    return jsonify(record=record)
-        except:
-
-            return Response('Bad request for record with id ' + _oid, 400)
-        
     else:
         return Response('Bad or missing session id.', status=401)
+
 
     
 @api.route('/api/metadata/admin/<string:page_number>/<string:records_per_page>/<string:sort_on>/<string:current_publish_state>', methods=['POST'])
@@ -927,18 +927,6 @@ def upload():
         return jsonify({'message': 'Error: must upload with POST'},
                        status=405)
  
-#Check if user is admin.
-@api.route('/api/metadata/authenticate-admin', methods=['POST'])
-@cross_origin(origin='*', methods=['POST'],
-              headers=['X-Requested-With', 'Content-Type', 'Origin'])
-def authenticate_admin():
-    username = _authenticate_admin_from_session(request)    	
-    if username:
-        return Response(200)
-    else:
-        return Response(401)
-
-
 
 @api.route('/api/metadata/authenticate-admin', methods=['POST'])
 @cross_origin(origin='*', methods=['POST'],

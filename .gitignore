@@ -10,6 +10,7 @@ frontend/bower_components
 node_modules
 mdedit_preprod/*
 gptInsert.conf
+checksum.conf
 mdedit_preprod_test/
 *uploads*
 docs/_build
