@@ -1515,12 +1515,13 @@ metadataEditorApp.controller('BaseController',
     .controller('AdminController', ['$scope', '$compile', '$state', '$location', 'recordService', 'updateAdmin', 'updateForms', 'sharedRecord', 'makeElasticsearchRecord', 'elasticsearchRecord', 'partialsPrefix', function($scope, $compile, $state, $location, recordService, updateAdmin, updateForms, sharedRecord, makeElasticsearchRecord, elasticsearchRecord, partialsPrefix)
   {
 
-      $scope.setMode = function(){
-
-	  $scope.showBrowse = !$scope.showBrowse;
-	  $scope.showDoi = !$scope.showDoi;
-
-	  console.log("Going to new state");
+      $scope.changeToAllRecords = function(){
+	  $scope.showBrowse = true;
+	  $scope.showDoi = false;
       };
 
+      $scope.changeToDoiRequests = function(){
+	  $scope.showBrowse = false;
+	  $scope.showDoi = true;
+      };
   }]);

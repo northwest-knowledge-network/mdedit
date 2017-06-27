@@ -204,6 +204,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		$scope.searchAllRecords = function() {
 		    setSearchType("search");
 		    queryDatabase(getSearchType());
+		    setSearchType("browse");
 		};
 
 		$scope.browseAllRecords = function(){
@@ -277,7 +278,6 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		};
 
 		$scope.initAdminView = function(){
-		    $scope.show = true;
 		    
 		    $scope.recordsPerPage = "10";
 		    
@@ -296,8 +296,6 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 			recordService.checkAdmin(status);
 		    });
 		};
-
-
 
 		var createElasticsearchRecord = function(record){
 		    var elasticsearchRecord = recordService.getFreshElasticsearchRecord();
@@ -475,6 +473,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		$scope.searchForRecord = function() {
 		    setSearchType("search");
 		    queryDatabase(getSearchType());
+		    setSearchType("browse");
 		};
 
 		$scope.browseRecords = function(){
@@ -507,7 +506,6 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		$scope.initDoiView = function(){
 		    //Use 0 based index for pages (first argument to getAllRecords) to make math work in backend
 		    //for splicing results.
-		    $scope.showDoi = false;
 		    
 		    $scope.recordsPerPage = "10";
 		    

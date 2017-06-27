@@ -1,7 +1,7 @@
 <div class="col-md-3">
   <ul class="nav nav-tabs">
-    <li><a id="browse-records-button-assign" ng-click="setMode()">Browse</a></li>
-    <li class="active"><a id="assign-doi-ark-button-assign" ng-click="setMode()">Assign DOI/ARK</a></li>
+    <li><a id="browse-records-button-assign" ng-click="changeToAllRecords(); initAdminView();">Browse</a></li>
+    <li class="active"><a id="assign-doi-ark-button-assign" ng-click="changeToDoiRequests(); initDoiView();">Assign DOI/ARK</a></li>
   </ul> 
   <table class="admin-menu">
     <th>Search for record:</th>
