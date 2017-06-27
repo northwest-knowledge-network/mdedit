@@ -23,8 +23,8 @@
 <!-- Sidebar -->
 <div class="col-md-3">
   <ul class="nav nav-tabs">
-    <li class="active"><a ng-click="setMode()">Browse</a></li>
-    <li><a ng-click="setMode()">Assign DOI/ARK</a></li>
+    <li class="active"><a id="browse-records-button-browse" ng-click="setMode()">Browse</a></li>
+    <li><a id="assign-doi-ark-button-browse" ng-click="setMode()">Assign DOI/ARK</a></li>
   </ul>
   <table class="admin-menu">
     <th>Search for record:</th>
@@ -54,7 +54,7 @@
       <td>
 	Record State:
 	<br>
-	<select ng-model="publishState" ng-change="switchLayout()">
+	<select id="record-state" ng-model="publishState" ng-change="switchLayout()">
 	  <option value="false">Not Submitted For Review</option>
 	  <option value="pending" selected="selected">Awaiting Review</option>
 	  <option value="true">Published</option>
@@ -65,12 +65,15 @@
       <td>
 	Number of records per page:
 	<br>
-	<select ng-model="recordsPerPage" ng-change="switchLayout()">
+	<select id="admin-records-list-amount-select" ng-model="recordsPerPage" ng-change="switchLayout()">
+	  <option value="5">5</option>
 	  <option value="10" selected="selected">10</option>
 	  <option value="20">20</option>
 	  <option value="30">30</option>
 	  <option value="40">40</option>
+<!--
 	  <option value="50">50</option>
+-->
 	</select>
       </td>
     </tr>
@@ -78,22 +81,22 @@
 </div>
 <!-- List of records -->
 <div class="col-md-9">
-  <table class="admin-results-table table-hover table">
+  <table class="admin-results-table table-hover table browse-records-table">
     <tr>
       <td class="col-md-1"></td><td class="col-md-3">Title</td><td class="col-md-3">Author</td><td class="col-md-1">Publish Date</td><td class="col-md-3">Summary</td><td class="col-md-1">Actions</td>
     </tr>
-    <tr ng-repeat="record in recordsList.results" class="results-row">
+    <tr ng-repeat="record in recordsList.results" id="record-{{$index}}-{{publishState}}" class="results-row">
       <td class="col-md-1">
 	<input type="checkbox" ng-click="selectRecord(record._id.$oid)"></input>
       </td>
-      <td class="col-md-3" ng-click="loadRecord(record._id.$oid)"><h4> {{record.title}} </h4></td>
+      <td id="record-{{$index}}-title" class="col-md-3" ng-click="loadRecord(record._id.$oid)"><h4> {{record.title}} </h4></td>
       
       <td class="col-md-3">
 	<div ng-repeat="author in record.citation" ng-if="author.name != ''"> - {{author.name}} </div>
       </td>
       <td class="col-md-1"> {{record.md_pub_date}} </td>
       <td class="col-md-3"> {{record.summary}} </td>
-      <td class="col-md-1"><button class="btn btn-primary" ng-show="canPublish" ng-click="publishRecordToPortal(record._id.$oid)">Publish</button>
+      <td class="col-md-1"><button id="admin-publish-button" class="btn btn-primary" ng-show="canPublish" ng-click="publishRecordToPortal(record._id.$oid)">Publish</button>
     </tr>
   </table>
 </div>

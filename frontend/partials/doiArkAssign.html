@@ -1,7 +1,7 @@
 <div class="col-md-3">
   <ul class="nav nav-tabs">
-    <li><a  ng-click="setMode()">Browse</a></li>
-    <li class="active"><a ng-click="setMode()">Assign DOI/ARK</a></li>
+    <li><a id="browse-records-button-assign" ng-click="setMode()">Browse</a></li>
+    <li class="active"><a id="assign-doi-ark-button-assign" ng-click="setMode()">Assign DOI/ARK</a></li>
   </ul> 
   <table class="admin-menu">
     <th>Search for record:</th>
@@ -44,7 +44,7 @@
   </table>
 </div>
 <div class="col-md-9">
-  <table class="admin-results-table table-hover table">
+  <table class="admin-results-table table-hover table assign-doi-ark-table">
     <tr>
       <td class="col-md-1">Assign DOI/ARK</td><td class="col-md-3">Title</td><td class="col-md-2">Author</td><td class="col-md-1">Publish Date</td><td class="col-md-3">Summary</td><td class="col-md-2">DOI/ARK Request</td>
     </tr>
