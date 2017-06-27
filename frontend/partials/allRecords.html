@@ -23,8 +23,8 @@
 <!-- Sidebar -->
 <div class="col-md-3">
   <ul class="nav nav-tabs">
-    <li class="active"><a id="browse-records-button-browse" ng-click="setMode()">Browse</a></li>
-    <li><a id="assign-doi-ark-button-browse" ng-click="setMode()">Assign DOI/ARK</a></li>
+    <li class="active"><a id="browse-records-button-browse" ng-click="changeToAllRecords(); initAdminView();">Browse</a></li>
+    <li><a id="assign-doi-ark-button-browse" ng-click="changeToDoiRequests(); initDoiView();">Assign DOI/ARK</a></li>
   </ul>
   <table class="admin-menu">
     <th>Search for record:</th>
