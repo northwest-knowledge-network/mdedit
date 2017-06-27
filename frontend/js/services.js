@@ -524,7 +524,7 @@ metadataEditorApp
                 && (typeof record.first_pub_date.$date !== "undefined")
 		&& (typeof record.first_pub_date.$date !== "number"))
 
-            {
+		{
                 serverReady.first_pub_date.$date =
                     record.first_pub_date.$date.getTime();
             }
@@ -722,10 +722,6 @@ metadataEditorApp
 	/* This function publishes the record to Elasticsearch and the production directory by the admin.
 	 */
 	var adminApprovePublish = function(recordID, elasticsearchRecord, scope){
-		console.log("Printing elasticsearchRecord in adminApprovePublish: ");
-		console.log(elasticsearchRecord);
-		console.log("Printing scope.currentRecord in adminApprovePublish: ");
-		console.log(scope.currentRecord);
 		saveDraft(scope);
 
 	    	return $http.post(
@@ -757,6 +753,15 @@ metadataEditorApp
 		$location.path('/iso');
 	    }
 	};
+	
+	var authenticateAdmin = function() {
+	    var record = {};
+
+	    return $http.post(
+                '//' + hostname + '/api/metadata/authenticate-admin',
+	        {'session_id': session_id});
+	};
+
 
         /**
          * Remove a draft record from the server. Does not effect published
@@ -845,19 +850,23 @@ metadataEditorApp
 	    scope.md_pub_date = currentDate;
 
 	    //Change record's 'published' attribute to 'pending' to allow for search by admin
-	    scope.currentRecord.published = "pending";
+	    record.published = "pending";
+
+	    console.log("Printing record state: >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + scope.currentRecord.published);
 	    
             var serverReady = angular.copy(record);
 
             // do this sync (1/26 um.. what? -mt)
-            saveDraft(scope);
+            saveDraft(scope).then(function(){
 
-            var currentId = scope.currentRecord._id.$oid;
-
-            return $http.post(
-                '//' + hostname + '/api/metadata/' + currentId + '/publish',
-		{'record': current, 'session_id': session_id}
-            );
+		    var currentId = scope.currentRecord._id.$oid;
+		    
+		    return $http.post(
+				      '//' + hostname + '/api/metadata/' + currentId + '/publish',
+			      {'record': record, 'session_id': session_id}
+				      );
+		    
+		});
 	    
 	    
         };
@@ -865,6 +874,7 @@ metadataEditorApp
         return {
 	    adminApprovePublish: adminApprovePublish,
 	    adminGetUsersRecord: adminGetUsersRecord,
+	    authenticateAdmin: authenticateAdmin,
 	    checkAdmin: checkAdmin,
             getFreshISORecord: getFreshISORecord,
             getFreshDCRecord: getFreshDCRecord,

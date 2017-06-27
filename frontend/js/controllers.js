@@ -84,6 +84,17 @@ metadataEditorApp.controller('BaseController',
 	    {"stateName":"dublinForm.review","buttonLabel":"Review"}
 	];
 
+	//Check to see if user is an admin. If so, redirect to admin page. 
+	recordService.authentiateAdmin().success(function(status){
+		//User has been authenticated as an admin. Redirecting to admin page
+		$location.path("/iso");
+	    }).error(function(error, status){
+		    //If the status code is not 401, then some other error happened. If it 
+		    //is 401, then the user is not admin. 
+		    if(status != 401)
+			console.log("Error: " + error + " :: status : " + status);
+	    });
+
 	//Initalize button lists and scope values for fresh record
 	initFormLists();
 

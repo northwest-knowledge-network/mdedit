@@ -126,8 +126,8 @@ def get_record(oid):
 
     PUT is a new record being created.
 
-    Access control is done here. A user can modify only their own records
-    because their session_id sent with the request.
+    Access control is done here. An admin can modify anyone's records
+    but they must be an admin in the authenication database.
 
     returns:
         Response with newly created or edited record as data.
@@ -614,6 +614,8 @@ def publish_metadata_record(_oid):
             for f in record._fields:
                 if f != 'id':
                     record[f] = updater[f]
+                if f == 'published':
+                    print "Printing published in backend: " + str(record[f])
 
         except ValidationError:
 
@@ -925,6 +927,26 @@ def upload():
         return jsonify({'message': 'Error: must upload with POST'},
                        status=405)
  
+
+@api.route('/api/metadata/authenticate-admin/', methods=['POST'])
+@cross_origin(origin='*', methods=['POST'],
+              headers=['X-Requested-With', 'Content-Type', 'Origin'])
+def authenticate_admin():
+    """
+    Checks if user is admin or not. If they are, then return 200,
+    else return 401 (authentication error).
+    
+    """
+
+    username = _authenticate_admin_from_session(request)
+
+    if username:
+        return Response(status=200)
+
+    else:
+        return Response('Bad or missing session id.', status=401)
+
+
 
 def _authenticate_user_from_session(request):
     """

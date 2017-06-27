@@ -66,8 +66,9 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 
 		$scope.publishState = "pending";
 
-		//Boolean value for showing hor hiding the publish button in the view
-		$scope.canPublish = false;
+		//Boolean value for showing hor hiding the publish button in the view. The page starts on the "Awaiting Review" records, which can be 
+		//published, so set this initially to true. 
+		$scope.canPublish = true;
 
 		//Boolean value for showing or hiding the delete button in the view
 		$scope.canDelete = true;
