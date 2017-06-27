@@ -928,6 +928,7 @@ def upload():
                        status=405)
  
 
+
 @api.route('/api/metadata/authenticate-admin', methods=['POST'])
 @cross_origin(origin='*', methods=['POST'],
               headers=['X-Requested-With', 'Content-Type', 'Origin'])
@@ -937,6 +938,7 @@ def authenticate_admin():
     else return 401 (authentication error).
     
     """
+
     print request.json['session_id']
     username = _authenticate_admin_from_session(request)
 

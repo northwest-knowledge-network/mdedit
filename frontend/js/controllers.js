@@ -85,7 +85,6 @@ metadataEditorApp.controller('BaseController',
 	];
 
 	//Check to see if user is an admin. If so, redirect to admin page. 
-	
 	recordService.authenticateAdmin().success(function(data, status){
 		//User has been authenticated as an admin. Redirecting to admin page
 		if(data != 'local_user')
@@ -96,7 +95,7 @@ metadataEditorApp.controller('BaseController',
 		    if(status != 401)
 			console.log("Error: " + error + " :: status : " + status);
 	    });
-	
+
 	//Initalize button lists and scope values for fresh record
 	initFormLists();
 
