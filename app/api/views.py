@@ -266,10 +266,11 @@ def get_all_metadata(page_number, records_per_page, sort_on, current_publish_sta
 		else:
 			sort_by = 'title'
 
-		if current_publish_state in publishing_states:
-			publish_status = current_publish_state
+		if current_publish_state not in publishing_states:
+                    return Response("Error: specified publish state not supported.", 400)
+
 		else:
-			publish_status = 'pending'
+                    publish_status = current_publish_state
 
                 record_list = Metadata.objects(__raw__={'published':publish_status}).order_by(sort_by)
 
