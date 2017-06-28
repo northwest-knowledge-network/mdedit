@@ -124,8 +124,6 @@ def get_record(oid):
 
     POST is an update of an existing record.
 
-    PUT is a new record being created.
-
     Access control is done here. An admin can modify anyone's records
     but they must be an admin in the authenication database.
 
