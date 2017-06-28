@@ -255,7 +255,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 
 			    var record = data.results;
 
-			    $scope.$parentnewRecord = false;
+			    $scope.$parent.newRecord = false;
 			    $scope.$parent.currentRecord = record;
 			    $scope.$parent.isAdmin = true;
 

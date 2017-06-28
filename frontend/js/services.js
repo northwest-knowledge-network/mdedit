@@ -668,6 +668,8 @@ metadataEditorApp
 
                     .success(function(data)
                     {
+			console.log("Printing out the id: ");
+			console.log(data.record);
                         record = data.record;
                     }
             );
