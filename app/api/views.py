@@ -9,7 +9,7 @@ Workflow proceeds as follows:
     they will be able to see all records in the database. If not, the user
     will only be able to see their own records.
 
-    * To submit a new record, the user makes a PUT request to `api/metadata`;
+    * To submit a new record, the user makes a PUT request to `api/metadata
     to see all metadata records, the user makes a POST request to
     `api/metadata`. The response from the PUT request contains the record's
     ID.
@@ -161,7 +161,41 @@ def get_single_metadata(_oid):
     username = _authenticate_user_from_session(request)
     admin_username = _authenticate_admin_from_session(request)
     
-    if username:
+    if admin_username:
+
+        try:
+            if request.method == 'PUT':
+
+                if ('record' in request.json and '_id' in request.json['record']):
+
+                    existing_record = \
+                        Metadata.objects.get_or_404(pk=_oid)
+
+                    updater = Metadata.from_json(
+                        json.dumps(request.json['record'])
+                    )
+
+                    for f in existing_record._fields:
+                        existing_record[f] = updater[f]
+
+                    existing_record.save()
+
+                    return jsonify(record=existing_record)
+
+                else:
+                    return Response('Bad or missing id', 400)
+
+            else:
+                    record = Metadata.objects.get_or_404(pk=_oid)
+ 
+                    record.format_dates()
+
+                    return jsonify(record=record)
+        except:
+
+            return Response('Bad request for record with id ' + _oid, 400)
+        
+    elif username:
 
         try:
             if request.method == 'PUT':
@@ -198,43 +232,9 @@ def get_single_metadata(_oid):
 
             return Response('Bad request for record with id ' + _oid, 400)
 
-
-    elif admin_username:
-
-        try:
-            if request.method == 'PUT':
-
-                if ('record' in request.json and '_id' in request.json['record']):
-
-                    existing_record = \
-                        Metadata.objects.get_or_404(pk=_oid)
-
-                    updater = Metadata.from_json(
-                        json.dumps(request.json['record'])
-                    )
-
-                    for f in existing_record._fields:
-                        existing_record[f] = updater[f]
-
-                    existing_record.save()
-
-                    return jsonify(record=existing_record)
-
-                else:
-                    return Response('Bad or missing id', 400)
-
-            else:
-                    record = Metadata.objects.get_or_404(pk=_oid)
- 
-                    record.format_dates()
-
-                    return jsonify(record=record)
-        except:
-
-            return Response('Bad request for record with id ' + _oid, 400)
-        
     else:
         return Response('Bad or missing session id.', status=401)
+
 
     
 @api.route('/api/metadata/admin/<string:page_number>/<string:records_per_page>/<string:sort_on>/<string:current_publish_state>', methods=['POST'])
@@ -266,10 +266,11 @@ def get_all_metadata(page_number, records_per_page, sort_on, current_publish_sta
 		else:
 			sort_by = 'title'
 
-		if current_publish_state in publishing_states:
-			publish_status = current_publish_state
+		if current_publish_state not in publishing_states:
+                    return Response("Error: specified publish state not supported.", 400)
+
 		else:
-			publish_status = 'pending'
+                    publish_status = current_publish_state
 
                 record_list = Metadata.objects(__raw__={'published':publish_status}).order_by(sort_by)
 
@@ -438,12 +439,18 @@ def search_metadata(search_term, page_number, records_per_page, sort_by):
     #pageNumber is 0 based index. Need first page to start at 0 for math for setting arrayLowerBound and arrayUpperBound.
     try:
         if username:
+            record_state = request.json['record_state']
+            #sanitize record_state
+            record_publish_states = ['false', 'pending', 'true']
+               
             if request.method == 'POST':
-                #need to do input sanitization on values on route! 
-                
+                #Input sanitization on record_state
+                if record_state not in record_publish_states:
+                    return Response("Error: record_state value not one of the allowed states.", 400)
+
                 #This query returns a list of records that have been published and either the title, summary, or one of the authors have the
                 #search term in it.
-                record_list = Metadata.objects(__raw__={'$and':[{'published':'pending'}, {'$or':[{'title':{'$regex':".*" + search_term + ".*", '$options': '-i'}}, {'summary':{'$regex':".*" + search_term + ".*", '$options': '-i'}}, {'citation': {'$elemMatch':{'name':{'$regex':".*" + search_term + ".*", '$options': '-i'}}}}]}]}).order_by(sort_by)
+                record_list = Metadata.objects(__raw__={'$and':[{'published':record_state}, {'$or':[{'title':{'$regex':".*" + search_term + ".*", '$options': '-i'}}, {'summary':{'$regex':".*" + search_term + ".*", '$options': '-i'}}, {'citation': {'$elemMatch':{'name':{'$regex':".*" + search_term + ".*", '$options': '-i'}}}}]}]}).order_by(sort_by)
 
                 arrayLowerBound = int(page_number) * int(records_per_page)
                 arrayUpperBound = int(page_number) * int(records_per_page) + int(records_per_page)
@@ -927,7 +934,6 @@ def upload():
         return jsonify({'message': 'Error: must upload with POST'},
                        status=405)
  
-
 
 @api.route('/api/metadata/authenticate-admin', methods=['POST'])
 @cross_origin(origin='*', methods=['POST'],

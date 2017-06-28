@@ -309,7 +309,7 @@ metadataEditorApp
     
     end_date: {$date:''},
     
-    doi_ark_request: '',
+    doi_ark_request: 'neither',
     assigned_doi_ark: '',
     data_one_search: 'false',
     reference_system: '',
@@ -367,7 +367,7 @@ metadataEditorApp
     
     end_date: {	$date:''},
     
-    doi_ark_request: '',
+    doi_ark_request: 'neither',
     assigned_doi_ark: '',
     data_one_search: 'false',
     reference_system: '',
@@ -680,18 +680,22 @@ metadataEditorApp
 	 */
 	var getAllRecords = function(pageNumber, recordsPerPage, sortBy, publishState) {
 	    var record = {};
+	    console.log("Printing current state: ");
+	    console.log(publishState);
 	    return $http.post('//' + hostname + '/api/metadata/admin/' + pageNumber + '/' + recordsPerPage + '/' + sortBy + '/' + publishState,
 				      {'session_id': session_id}).success(function(data){
 					  record = data.record;
 				      });
 	};
 
-	var searchAllRecords = function(searchTerm, pageNumber, recordsPerPage, sortBy) {
+	var searchAllRecords = function(searchTerm, pageNumber, recordsPerPage, sortBy, recordState) {
 	    var record = {};
 	    console.log("In searchAllRecords: ");
 	    return  $http.post(
                 '//' + hostname + '/api/metadata/admin/search/' + searchTerm + "/" + pageNumber + "/" + recordsPerPage + "/" + sortBy,
-                {'session_id': session_id}).success(function(data){
+	        {'session_id': session_id,
+		'record_state': recordState
+		}).success(function(data){
 		    record = data.record;
 		});
 	};

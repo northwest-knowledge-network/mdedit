@@ -194,7 +194,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		
 		//Use 0 based index for pages (first argument to getAllRecords) to make math work in backend
 		//for splicing results.
-		recordService.getAllRecords(0, 10, $scope.selectedOrderFilter).success(function(data){
+		recordService.getAllRecords(0, 10, $scope.selectedOrderFilter, $scope.publishState).success(function(data){
 		    updateAdmin($scope, data);
 		}).error(function(error, status) {
 		    $scope.errors.push("Error in loading list of records.");
@@ -204,7 +204,6 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		$scope.searchAllRecords = function() {
 		    setSearchType("search");
 		    queryDatabase(getSearchType());
-		    setSearchType("browse");
 		};
 
 		$scope.browseAllRecords = function(){
@@ -286,9 +285,9 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		    
 		    $scope.searchTerm = "";
 		    
-		    $scope.searchType = "browse";
+		    setSearchType("browse");
 
-		    recordService.getAllRecords(0, 10, $scope.seletedOrderFilter).success(function(data){
+		    recordService.getAllRecords(0, 10, $scope.seletedOrderFilter, $scope.publishState).success(function(data){
 			//Update the page with response data
 			updateAdmin($scope, data);
 		    }).error(function(error, status) {
@@ -339,7 +338,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 						alert("Record published successfully!");
 							
 					}).error(function(error, status){
-						alert("Record published failed! System failed to update MongoDB published attribute.");					
+						alert("Record published failed! System failed to update MongoDB published attribute. Status: " + status);					
 					});
 				}else{
 					alert("Record published failed!");
@@ -473,7 +472,6 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		$scope.searchForRecord = function() {
 		    setSearchType("search");
 		    queryDatabase(getSearchType());
-		    setSearchType("browse");
 		};
 
 		$scope.browseRecords = function(){
@@ -506,7 +504,8 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		$scope.initDoiView = function(){
 		    //Use 0 based index for pages (first argument to getAllRecords) to make math work in backend
 		    //for splicing results.
-		    
+
+		    setSearchType("browse");
 		    $scope.recordsPerPage = "10";
 		    
 		    //Records initially sorted by the publish date. This is the name of the publish date in the database.
