@@ -9,7 +9,7 @@ Workflow proceeds as follows:
     they will be able to see all records in the database. If not, the user
     will only be able to see their own records.
 
-    * To submit a new record, the user makes a PUT request to `api/metadata`;
+    * To submit a new record, the user makes a PUT request to `api/metadata
     to see all metadata records, the user makes a POST request to
     `api/metadata`. The response from the PUT request contains the record's
     ID.
@@ -438,12 +438,18 @@ def search_metadata(search_term, page_number, records_per_page, sort_by):
     #pageNumber is 0 based index. Need first page to start at 0 for math for setting arrayLowerBound and arrayUpperBound.
     try:
         if username:
+            record_state = request.json['record_state']
+            #sanitize record_state
+            record_publish_states = ['false', 'pending', 'true']
+               
             if request.method == 'POST':
-                #need to do input sanitization on values on route! 
-                
+                #Input sanitization on record_state
+                if record_state not in record_publish_states:
+                    return Response("Error: record_state value not one of the allowed states.", 400)
+
                 #This query returns a list of records that have been published and either the title, summary, or one of the authors have the
                 #search term in it.
-                record_list = Metadata.objects(__raw__={'$and':[{'published':'pending'}, {'$or':[{'title':{'$regex':".*" + search_term + ".*", '$options': '-i'}}, {'summary':{'$regex':".*" + search_term + ".*", '$options': '-i'}}, {'citation': {'$elemMatch':{'name':{'$regex':".*" + search_term + ".*", '$options': '-i'}}}}]}]}).order_by(sort_by)
+                record_list = Metadata.objects(__raw__={'$and':[{'published':record_state}, {'$or':[{'title':{'$regex':".*" + search_term + ".*", '$options': '-i'}}, {'summary':{'$regex':".*" + search_term + ".*", '$options': '-i'}}, {'citation': {'$elemMatch':{'name':{'$regex':".*" + search_term + ".*", '$options': '-i'}}}}]}]}).order_by(sort_by)
 
                 arrayLowerBound = int(page_number) * int(records_per_page)
                 arrayUpperBound = int(page_number) * int(records_per_page) + int(records_per_page)

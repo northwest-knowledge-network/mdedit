@@ -686,12 +686,14 @@ metadataEditorApp
 				      });
 	};
 
-	var searchAllRecords = function(searchTerm, pageNumber, recordsPerPage, sortBy) {
+	var searchAllRecords = function(searchTerm, pageNumber, recordsPerPage, sortBy, recordState) {
 	    var record = {};
 	    console.log("In searchAllRecords: ");
 	    return  $http.post(
                 '//' + hostname + '/api/metadata/admin/search/' + searchTerm + "/" + pageNumber + "/" + recordsPerPage + "/" + sortBy,
-                {'session_id': session_id}).success(function(data){
+	        {'session_id': session_id,
+		'record_state': recordState
+		}).success(function(data){
 		    record = data.record;
 		});
 	};
