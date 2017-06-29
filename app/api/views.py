@@ -9,7 +9,7 @@ Workflow proceeds as follows:
     they will be able to see all records in the database. If not, the user
     will only be able to see their own records.
 
-    * To submit a new record, the user makes a PUT request to `api/metadata`;
+    * To submit a new record, the user makes a PUT request to `api/metadata
     to see all metadata records, the user makes a POST request to
     `api/metadata`. The response from the PUT request contains the record's
     ID.
@@ -29,6 +29,12 @@ import geocoder
 import os
 import requests
 import urllib
+import stat
+import shutil
+import pymssql
+import hashlib
+import ConfigParser
+import re
 
 from datetime import datetime
 from dicttoxml import dicttoxml
@@ -38,8 +44,9 @@ from flask_cors import cross_origin
 from mongoengine import ValidationError
 
 from . import api
+from .. import es
 from .. import uploadedfiles
-from ..models import Metadata, Attachment
+from ..models import Metadata, Attachment, Metadata_Subset
 
 import gptInsert
 
@@ -62,13 +69,17 @@ def metadata():
         Response with newly created or edited record as data.
     """
     username = _authenticate_user_from_session(request)
+    admin_username = _authenticate_admin_from_session(request)
 
-    if username:
+    if username or admin_username:
         if request.method == 'POST':
 
             # execute raw MongoDB query and return all of the user's records
-            recs = Metadata.objects(__raw__={'username': username})
-            return jsonify(dict(results=recs))
+	    if username:
+	            recs = Metadata.objects(__raw__={'username': username})
+        	    return jsonify(dict(results=recs))
+	    elif admin_username:
+		return jsonify({"message":"Admin cannot use POST on this route."})
 
         if request.method == 'PUT':
 
@@ -101,7 +112,36 @@ def metadata():
             return jsonify(record=new_md)
 
     else:
-        return Response('Bad or missing session id.', 401)
+        return Response('Bad or missing session id.', status=401)
+
+
+@api.route('/api/metadata/load-record/<string:oid>', methods=['POST'])
+@cross_origin(origin='*', methods=['POST'],
+              headers=['X-Requested-With', 'Content-Type', 'Origin'])
+def get_record(oid):
+    """
+    Handle get and push requests coming to metadata server
+
+    POST is an update of an existing record.
+
+    Access control is done here. An admin can modify anyone's records
+    but they must be an admin in the authenication database.
+
+    returns:
+        Response with newly created or edited record as data.
+    """
+
+    username = _authenticate_admin_from_session(request)
+
+    if username:
+
+        # execute raw MongoDB query and return the record with the specified oid.
+        recs = Metadata.objects.get_or_404(pk=oid)
+        return jsonify(dict(results=recs))
+
+    else:
+        return Response('Bad or missing session id.', status=401)
+
 
 
 @api.route('/api/metadata/<string:_oid>', methods=['POST', 'PUT'])
@@ -117,8 +157,43 @@ def get_single_metadata(_oid):
     because their session_id sent with the request.
     """
     username = _authenticate_user_from_session(request)
+    admin_username = _authenticate_admin_from_session(request)
+    
+    if admin_username:
 
-    if username:
+        try:
+            if request.method == 'PUT':
+
+                if ('record' in request.json and '_id' in request.json['record']):
+
+                    existing_record = \
+                        Metadata.objects.get_or_404(pk=_oid)
+
+                    updater = Metadata.from_json(
+                        json.dumps(request.json['record'])
+                    )
+
+                    for f in existing_record._fields:
+                        existing_record[f] = updater[f]
+
+                    existing_record.save()
+
+                    return jsonify(record=existing_record)
+
+                else:
+                    return Response('Bad or missing id', 400)
+
+            else:
+                    record = Metadata.objects.get_or_404(pk=_oid)
+ 
+                    record.format_dates()
+
+                    return jsonify(record=record)
+        except:
+
+            return Response('Bad request for record with id ' + _oid, 400)
+        
+    elif username:
 
         try:
             if request.method == 'PUT':
@@ -156,27 +231,378 @@ def get_single_metadata(_oid):
             return Response('Bad request for record with id ' + _oid, 400)
 
     else:
-        return Response('Bad or missing session id.', 401)
-        
+        return Response('Bad or missing session id.', status=401)
 
+
+    
+@api.route('/api/metadata/admin/<string:page_number>/<string:records_per_page>/<string:sort_on>/<string:current_publish_state>', methods=['POST'])
+@cross_origin(origin='*', methods=['POST'],
+              headers=['X-Requested-With', 'Content-Type', 'Origin'])
+def get_all_metadata(page_number, records_per_page, sort_on, current_publish_state):
+    """
+    Retrieve all metadata records for admin view. Retrieval is done
+    via POST because we must pass a session id so that the user is
+    authenticated.
+
+    Access control is done here. An admin is authenticated if their
+    session id is valid, and they are part of the admin group
+    """
+    username = _authenticate_admin_from_session(request)
+
+    #pageNumber is 0 based index. Need first page to start at 0 for math for setting arrayLowerBound and arrayUpperBound.
+    try:
+        if username:
+
+	    publishing_states = ['false', 'pending', 'true']
+	    sort_attributes = ['title', 'md_pub_date', 'summary']
+
+            if request.method == 'POST':
+                #need to do input sanitization on all these values! Separating variables so outside does not have direct access to
+                #database query.
+		if sort_on in sort_attributes:
+			sort_by = sort_on
+		else:
+			sort_by = 'title'
+
+		if current_publish_state not in publishing_states:
+                    return Response("Error: specified publish state not supported.", 400)
+
+		else:
+                    publish_status = current_publish_state
+
+                record_list = Metadata.objects(__raw__={'published':publish_status}).order_by(sort_by)
+
+                arrayLowerBound = int(page_number) * int(records_per_page)
+                arrayUpperBound = int(page_number) * int(records_per_page) + int(records_per_page)
+                #Only return array elements between indicies. Don't want to return all possible values
+                #and overload browser with too much data. This is a version of 'pagination.'
+                return jsonify(dict(results=record_list[arrayLowerBound:arrayUpperBound], num_entries=(len(record_list)/int(records_per_page))))
+            
+        else:
+            return Response('Bad or missing session id.', status=401)
+
+    except:
+
+        return Response('Bad request for records', 400)
+
+
+@api.route('/api/metadata/doiark/<string:page_number>/<string:records_per_page>/<string:sort_on>', methods=['POST'])
+@cross_origin(origin='*', methods=['POST'],
+              headers=['X-Requested-With', 'Content-Type', 'Origin'])
+def get_doi_ark_requests(page_number, records_per_page, sort_on):
+    """
+    Retrieve all metadata records for admin view. Retrieval is done
+    via POST because we must pass a session id so that the user is
+    authenticated.
+
+    Access control is done here. A user can modify only their own records
+    because their session_id sent with the request.
+    """
+    username = _authenticate_admin_from_session(request)
+
+    #pageNumber is 0 based index. Need first page to start at 0 for math for setting arrayLowerBound and arrayUpperBound.
+    try:
+        if username:
+            if request.method == 'POST':
+                #need to do input sanitization on all these values! Separating variables so outside does not have direct access to
+                #database query.
+                if sort_on == 'title':
+                    sort_by = 'title'
+                elif sort_on == 'md_pub_date':
+                    sort_by = 'md_pub_date'
+                elif sort_on == 'summary':
+                    sort_by = 'summary'
+                elif sort_on == 'assigned_doi_ark':
+                    sort_by = 'assigned_doi_ark'
+                else:
+                    sort_by = 'title'
+
+                #Look for published records with either DOI or ARK requests without DOI or ARK assigned, then records with DOI
+                #or ARK already assigned
+                record_list = Metadata.objects(__raw__={'$and': [{'published':'pending'}, {'$or': [{'doi_ark_request':'DOI'}, {'doi_ark_request':'ARK'}, {'doi_ark_request':'both'}]}]}).order_by(sort_by)
+
+                arrayLowerBound = int(page_number) * int(records_per_page)
+                arrayUpperBound = int(page_number) * int(records_per_page) + int(records_per_page)
+                #Only return array elements between indicies. Don't want to return all possible values
+                #and overload browser with too much data. This is a version of 'pagination.'
+                return jsonify(dict(results=record_list[arrayLowerBound:arrayUpperBound], num_entries=(len(record_list)/int(records_per_page))))
+
+        else:
+            return Response('Bad or missing session id.', status=401)
+
+    except:
+
+        return Response('Bad request for records', 400)
+
+
+@api.route('/api/metadata/doiark/search/<string:search_term>/<string:page_number>/<string:records_per_page>/<string:sort_by>', methods=['POST'])
+@cross_origin(origin='*', methods=['POST'],
+              headers=['X-Requested-With', 'Content-Type', 'Origin'])
+def search_doi_ark_requests(search_term, page_number, records_per_page, sort_by):
+    """
+    Retrieve all metadata records for admin view. Retrieval is done
+    via POST because we must pass a session id so that the user is
+    authenticated.
+
+    Access control is done here. A user can modify only their own records
+    because their session_id sent with the request.
+    """
+    username = _authenticate_admin_from_session(request)
+
+    #pageNumber is 0 based index. Need first page to start at 0 for math for setting arrayLowerBound and arrayUpperBound.
+    try:
+        if username:
+            if request.method == 'POST':
+                #need to do input sanitization on values on route! 
+                
+                #This query returns a list of records that have been published and either the title, summary, or one of the authors have the
+                #search term in it.
+                record_list = Metadata.objects(__raw__={'$and':[{'published':'pending'}, {'$or': [{'doi_ark_request':'DOI'}, {'doi_ark_request':'ARK'}]}, {'$or':[{'title':{'$regex':".*" + search_term + ".*", '$options': '-i'}}, {'summary':{'$regex':".*" + search_term + ".*", '$options': '-i'}}, {'citation': {'$elemMatch':{'name':{'$regex':".*" + search_term + ".*", '$options': '-i'}}}}]}]}).order_by(sort_by)
+
+                arrayLowerBound = int(page_number) * int(records_per_page)
+                arrayUpperBound = int(page_number) * int(records_per_page) + int(records_per_page)
+
+                #Only return array elements between indicies. Don't want to return all possible values
+                #and overload browser with too much data. This is a version of 'pagination.'
+                return jsonify(dict(results=record_list[arrayLowerBound:arrayUpperBound], num_entries=(len(record_list)/int(records_per_page))))
+
+        else:
+            return Response('Bad or missing session id.', status=401)
+            
+    except:
+
+        return Response('Bad request for records', 400)
+
+
+    
+@api.route('/api/metadata/doi/<string:page_number>/<string:records_per_page>/<string:sort_on>/<string:doi_ark_value>', methods=['POST'])
+@cross_origin(origin='*', methods=['POST'],
+              headers=['X-Requested-With', 'Content-Type', 'Origin'])
+def set_doi_ark(page_number, records_per_page, sort_on, doi_ark_value):
+    """
+    Retrieve all metadata records for admin view. Retrieval is done
+    via POST because we must pass a session id so that the user is
+    authenticated.
+
+    Access control is done here. A user can modify only their own records
+    because their session_id sent with the request.
+    """
+    username = _authenticate_admin_from_session(request)
+
+    #pageNumber is 0 based index. Need first page to start at 0 for math for setting arrayLowerBound and arrayUpperBound.
+    try:
+        if username:
+            if request.method == 'POST':
+                #need to do input sanitization on all these values! Separating variables so outside does not have direct access to
+                #database query.
+                if sort_on == 'title':
+                    sort_by = 'title'
+                elif sort_on == 'md_pub_date':
+                    sort_by = 'md_pub_date'
+                elif sort_on == 'summary':
+                    sort_by = 'summary'
+                else:
+                    sort_by = 'title'
+
+                record_list = Metadata.objects(__raw__={'published':'pending'}).order_by(sort_by)
+                
+                arrayLowerBound = int(page_number) * int(records_per_page)
+                arrayUpperBound = int(page_number) * int(records_per_page) + int(records_per_page)
+                #Only return array elements between indicies. Don't want to return all possible values
+                #and overload browser with too much data. This is a version of 'pagination.'
+                return jsonify(dict(results=record_list[arrayLowerBound:arrayUpperBound], num_entries=(len(record_list)/int(records_per_page))))
+
+        else:
+            return Response('Bad or missing session id.', status=401)
+
+    except:
+
+        return Response('Bad request for records', 400)
+
+    
+@api.route('/api/metadata/admin/search/<string:search_term>/<string:page_number>/<string:records_per_page>/<string:sort_by>', methods=['POST'])
+@cross_origin(origin='*', methods=['POST'],
+              headers=['X-Requested-With', 'Content-Type', 'Origin'])
+def search_metadata(search_term, page_number, records_per_page, sort_by):
+    """
+    Retrieve all metadata records for admin view. Retrieval is done
+    via POST because we must pass a session id so that the user is
+    authenticated.
+
+    Access control is done here. A user can modify only their own records
+    because their session_id sent with the request.
+    """
+    username = _authenticate_admin_from_session(request)
+
+    #pageNumber is 0 based index. Need first page to start at 0 for math for setting arrayLowerBound and arrayUpperBound.
+    try:
+        if username:
+            record_state = request.json['record_state']
+            #sanitize record_state
+            record_publish_states = ['false', 'pending', 'true']
+               
+            if request.method == 'POST':
+                #Input sanitization on record_state
+                if record_state not in record_publish_states:
+                    return Response("Error: record_state value not one of the allowed states.", 400)
+
+                #This query returns a list of records that have been published and either the title, summary, or one of the authors have the
+                #search term in it.
+                record_list = Metadata.objects(__raw__={'$and':[{'published':record_state}, {'$or':[{'title':{'$regex':".*" + search_term + ".*", '$options': '-i'}}, {'summary':{'$regex':".*" + search_term + ".*", '$options': '-i'}}, {'citation': {'$elemMatch':{'name':{'$regex':".*" + search_term + ".*", '$options': '-i'}}}}]}]}).order_by(sort_by)
+
+                arrayLowerBound = int(page_number) * int(records_per_page)
+                arrayUpperBound = int(page_number) * int(records_per_page) + int(records_per_page)
+
+                #Only return array elements between indicies. Don't want to return all possible values
+                #and overload browser with too much data. This is a version of 'pagination.'
+                return jsonify(dict(results=record_list[arrayLowerBound:arrayUpperBound], num_entries=(len(record_list)/int(records_per_page))))
+
+        else:
+            return Response('Bad or missing session id.', status=401)
+           
+    except:
+
+        return Response('Bad request for records', 400)
+
+
+    
 @api.route('/api/metadata/<string:_oid>/delete', methods=['POST'])
 @cross_origin(origin='*', methods=['POST'],
               headers=['X-Requested-With', 'Content-Type', 'Origin'])
 def delete_metadata_record(_oid):
 
     username = _authenticate_user_from_session(request)
+    admin_username = _authenticate_user_from_session(request)
+    
+    if username or admin_username:
+	md = Metadata.objects.get_or_404(pk=_oid)
+ 
+	if md.published == "false" or md.published == "pending":
+		#Delete from MongoDB
+        	md.delete()
 
-    if username:
+		#Only delete files on file system if the record has been submitted for publication. Otherwise, files will not exist.
+		if md.published == "pending":
+			#Delete uploaded files from file system
+			preprod_dir = app.config['PREPROD_DIRECTORY']
+			preprod_path = os.path.join(preprod_dir, _oid)
 
-        md = Metadata.objects.get_or_404(pk=_oid)
-        md.delete()
+			try:
+			        shutil.rmtree(preprod_path)
+			except ValueError:
+				pass
 
-        return jsonify({'message': 'Record successfully removed',
-                        'status': 'success'})
+	else:
+		return jsonify({"message":"File has already been published. Cannot delete!"})
+
+	return jsonify({"message":"File deleted!"})
     else:
 
-        return Response('Bad or missing session id.', 401)
+        return Response('Bad or missing session id.', status=401)
 
+
+@api.route('/api/metadata/<string:_oid>/admin-publish', methods=['POST'])
+@cross_origin(origin='*', methods=['POST'],
+              headers=['X-Requested-With', 'Content-Type', 'Origin'])
+def admin_publish_metadata_record(_oid):
+
+    username = _authenticate_admin_from_session(request)
+   
+    if username:
+	#Buffer size we will break file into for hashing files. Need this for large files!
+	BUF_SIZE = 65536  # lets read stuff in 64kb chunks!
+
+	#Config file is 'getUsername.conf' located in the current directory
+    	config_file = os.path.dirname(__file__) + '/checksum.conf'
+
+        elasticsearch_record = request.json['elasticsearch_record']
+
+	str_id = elasticsearch_record["uid"]
+	
+	schema_type = request.json['schema_type']
+
+        #Move file from pre-prod directory to production directory
+        preprod_dir = app.config['PREPROD_DIRECTORY']
+        prod_dir = app.config['PROD_DIRECTORY']
+
+        if os.path.exists(os.path.dirname(preprod_dir)):
+            
+            preprod_path = os.path.join(preprod_dir, str_id)
+
+            prod_path = os.path.join(prod_dir, str_id)
+
+            #Make the directory in the production directory
+            #Move the XML file from the preprod directory to the prod directory
+            try:
+                os.rename(preprod_path, prod_path)
+            except OSError:
+                return "Moving file on backend filesystem error"
+
+            #set permissions on the new directory in prod: record's directory: read and execute; directories inside record's directory: read only;  and all files read only
+	    try:
+		for root, dirs, files in os.walk(prod_path):
+			for f in files:
+				os.chmod(os.path.join(prod_path, f), stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH)
+
+	        os.chmod(prod_path, stat.S_IRUSR | stat.S_IXUSR | stat.S_IRGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IXOTH)
+	    except OSError:
+		return "chmod error on record's directory."
+	
+	else:
+		return "Error: path of record's file does not exist."	
+	
+	try:
+	        res = es.index(index='test_metadata', doc_type='metadata', body=elasticsearch_record)
+	except:
+		#Move file back to preprod directory since complete publishing failed
+		os.rename(prod_path, preprod_path)
+		#Need to reset permissions on file too... TODO!!
+		return "Elasticsearch posting error"
+
+
+	#Create checksum for record's directory
+	md5 = hashlib.md5()
+
+	for root, dirs, files in os.walk(prod_path):
+		for file in files:
+			with open(os.path.join(prod_path, file), 'rb') as f:
+
+			    #while (data = f.read(BUF_SIZE)) is not None:
+			    for data in iter(lambda: f.read(BUF_SIZE), b''):
+      		        	md5.update(data)
+
+	checksum = md5.hexdigest()
+
+	#Connect to checksum database and insert checksum
+	config = get_config(config_file)
+
+    	conn_param = dict(config.items('checksum'))
+	time = datetime.now().strftime("%Y-%m-%dT%H:%M:%S") 
+
+	#Take /datastore-pre or /datastore-prod out of path to allow for different mount points in path
+	path_without_mount_dir = re.sub(r'^/datastore./', "", prod_path)
+    	#Set up and execute the query
+    	query = "INSERT INTO " + conn_param['database'] + "." + conn_param['table'] + " ([path], [md5], [isMetadata], [isCanonicalMetadata], [metadataStandard], [created], [published]) VALUES ('" + path_without_mount_dir  + "', '" + checksum + "', 'true', 'true', '" + schema_type + "', '" + time + "', '" + time + "');"
+
+	try:
+	    	with pymssql.connect(host=conn_param['host'], user=conn_param['user'], password=conn_param['password'], database=conn_param['database']) as conn:
+			try:
+        			with conn.cursor() as cursor:
+            				cursor.execute(query)
+					conn.commit()
+			except:
+				#Should move file back to preprod directory in case of failure too
+				return "Error: checksum database insertion query failure."
+	except:
+		#Should move file back to preprod directory in case of failure too
+		return "Error: checksum database connection failure."
+
+	return jsonify(res)
+
+    else:
+        return Response('Bad or missing session id.', status=401)
+
+    
 @api.route('/api/metadata/<string:_oid>/publish', methods=['POST'])
 @cross_origin(origin='*', methods=['POST'],
               headers=['X-Requested-With', 'Content-Type', 'Origin'])
@@ -193,6 +619,8 @@ def publish_metadata_record(_oid):
             for f in record._fields:
                 if f != 'id':
                     record[f] = updater[f]
+                if f == 'published':
+                    print "Printing published in backend: " + str(record[f])
 
         except ValidationError:
 
@@ -227,9 +655,9 @@ def publish_metadata_record(_oid):
                 rep = requests.post(nkn_upload_url,{'uuid': str_id, 'session_id': session_id}, files={'uploadedfile': open(save_path, 'rb')})
 
 	    #Save XML file of ISO record to backend server's file system
-            if 'localhost' not in request.base_url:
-                username = _authenticate_user_from_session(request)
-                gptInsert.gptInsertRecord(iso, record.title, str_id, username)
+#            if 'localhost' not in request.base_url:
+#                username = _authenticate_user_from_session(request)
+#                gptInsert.gptInsertRecord(iso, record.title, str_id, username)
                 
             return jsonify(record=record)
 
@@ -259,14 +687,14 @@ def publish_metadata_record(_oid):
                                     files={'uploadedfile': open(save_path, 'rb')})
 
 	    #Save XML file of Dublin record to backend server's file system
-            if 'localhost' not in request.base_url:
-    		username = _authenticate_user_from_session(request)
-                gptInsert.gptInsertRecord(dc, record.title, str_id, username)
+#            if 'localhost' not in request.base_url:
+#    		username = _authenticate_user_from_session(request)
+#                gptInsert.gptInsertRecord(dc, record.title, str_id, username)
 
             return jsonify(record=record)
 
     else:
-        return Response('Bad or missing session id.', 401)
+        return Response('Bad or missing session id.', status=401)
 
         
 @api.route('/api/metadata/<string:_oid>/iso')
@@ -470,7 +898,7 @@ def attach_file(_oid, attachmentId=None):
         return jsonify(dict(message=attachment + ' successfully (at/de)tached!', record=md))
  
     else:
-        return Response('Bad or missing session id.', 401)
+        return Response('Bad or missing session id.', status=401)
 
 
 # Not actually used in mdedit production at NKN, only for testing.
@@ -499,10 +927,35 @@ def upload():
             return jsonify({'message': 'Error: file with css name ' +
                                        '\'uploadedfile\' not found'})
 
+
     else:
         return jsonify({'message': 'Error: must upload with POST'},
                        status=405)
  
+
+@api.route('/api/metadata/authenticate-admin', methods=['POST'])
+@cross_origin(origin='*', methods=['POST'],
+              headers=['X-Requested-With', 'Content-Type', 'Origin'])
+def authenticate_admin():
+    """
+    Checks if user is admin or not. If they are, then return 200,
+    else return 401 (authentication error).
+    
+    """
+
+    print request.json['session_id']
+    username = _authenticate_admin_from_session(request)
+
+    if username:
+        if username == 'local_user':
+            return Response("local_user", 200)
+        else:
+            return Response(status=200)
+
+    else:
+        return Response('Bad or missing session id.', status=401)
+
+
 
 def _authenticate_user_from_session(request):
     """
@@ -531,8 +984,68 @@ def _authenticate_user_from_session(request):
         res = requests.post(username_url, data=data)
 
         username = res.json()['username']
+
         if username:
             return username
         # username will be u'' if the session id was not valid; make explicit
         else:
             return None
+
+def _authenticate_admin_from_session(request):
+    """
+    Arguments:
+        (flask.Request) Incoming API request
+    Returns:
+        (str): username
+    """
+
+    # User is not admin by default. Only authenticated as admin after checking groups.
+    is_admin = False
+
+    # TODO remove the default setting here. This is saying use a service.
+    
+    username_url = (os.getenv('GETUSER_URL') or
+                    'https://nknportal-dev.nkn.uidaho.edu/getUsername/')
+    try:
+        session_id = request.json['session_id']
+    except:
+        session_id = 'local'
+
+    if session_id == 'local':
+        return 'local_user'
+
+    else:
+        data = {
+            'session_id': session_id,
+            'config_kw': 'nknportal'
+        }
+
+        res = requests.post(username_url, data=data)
+
+        username = res.json()['username']
+        groups = res.json()['groups']
+        
+        if "cn=publisher,cn=nknportal,cn=nknWebsites,ou=groups,dc=nkn,dc=uidaho,dc=edu" in groups:
+            is_admin = True
+
+        if username and is_admin:
+            return username
+        # username will be u'' if the session id was not valid; make explicit
+        else:
+            return None
+
+
+def get_config(config_file):
+    """Provide user with a ConfigParser that has read the `config_file`
+        Returns:
+            (ConfigParser) Config parser with a section for each config
+    """
+    assert os.path.isfile(config_file), "Config file %s does not exist!" \
+        % os.path.abspath(config_file)
+
+    config = ConfigParser.ConfigParser()
+    config.read(config_file)
+
+    return config
+
+

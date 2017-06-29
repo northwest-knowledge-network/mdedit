@@ -1,0 +1,111 @@
+<!-- Modal for deleting records -->
+<div class="modal fade" id="deleteRecordModal" tabindex="-1" role="dialog" aria-labelledby="deleteRecordModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="submitModalLabel">Are you sure you want to delete?</h4>
+      </div>
+      <div class="modal-body">
+        <p>Click "OK" to delete the selected record(s), or click "Cancel" to abort. </p>
+	<ul>
+		<li><strong>All selected records will be deleted!</strong></li>
+		<li><strong>Warning: deleting a record cannot be undone!</strong></li>
+	</ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="deleteSelectedRecords()">Delete Record(s) Permanently</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Sidebar -->
+<div class="col-md-3">
+  <ul class="nav nav-tabs">
+    <li class="active"><a id="browse-records-button-browse" ng-click="changeToAllRecords(); initAdminView();">Browse</a></li>
+    <li><a id="assign-doi-ark-button-browse" ng-click="changeToDoiRequests(); initDoiView();">Assign DOI/ARK</a></li>
+  </ul>
+  <table class="admin-menu">
+    <th>Search for record:</th>
+    <tr class="admin-search">
+      <td>
+	<form>
+	  <input type="text" name="search" ng-model="searchTerm"></input>
+	</form>
+	<button class="btn btn-primary" ng-click="searchAllRecords()">Search</button>
+      </td>
+    </tr>
+    <th>
+      Sort Results:
+    </th>
+    <tr>
+      <td>
+	Sort by:
+	<br>
+	<select ng-model="selectedOrderFilter" ng-change="switchLayout()">
+	  <option value="md_pub_date" selected="selected">Publish Date</option>
+	  <option value="title">Title</option>
+	  <option value="summary">Summary</option>
+	</select>
+      </td>
+    </tr>
+    <tr>
+      <td>
+	Record State:
+	<br>
+	<select id="record-state" ng-model="publishState" ng-change="switchLayout()">
+	  <option value="false">Not Submitted For Review</option>
+	  <option value="pending" selected="selected">Awaiting Review</option>
+	  <option value="true">Published</option>
+	</select>
+      </td>
+    </tr>
+    <tr>
+      <td>
+	Number of records per page:
+	<br>
+	<select id="admin-records-list-amount-select" ng-model="recordsPerPage" ng-change="switchLayout()">
+	  <option value="5">5</option>
+	  <option value="10" selected="selected">10</option>
+	  <option value="20">20</option>
+	  <option value="30">30</option>
+	  <option value="40">40</option>
+<!--
+	  <option value="50">50</option>
+-->
+	</select>
+      </td>
+    </tr>
+  </table>
+</div>
+<!-- List of records -->
+<div class="col-md-9">
+  <table class="admin-results-table table-hover table browse-records-table">
+    <tr>
+      <td class="col-md-1"></td><td class="col-md-3">Title</td><td class="col-md-3">Author</td><td class="col-md-1">Publish Date</td><td class="col-md-3">Summary</td><td class="col-md-1">Actions</td>
+    </tr>
+    <tr ng-repeat="record in recordsList.results" id="record-{{$index}}-{{publishState}}" class="results-row">
+      <td class="col-md-1">
+	<input type="checkbox" ng-click="selectRecord(record._id.$oid)"></input>
+      </td>
+      <td id="record-{{$index}}-title" class="col-md-3" ng-click="loadRecord(record._id.$oid)"><h4> {{record.title}} </h4></td>
+      
+      <td class="col-md-3">
+	<div ng-repeat="author in record.citation" ng-if="author.name != ''"> - {{author.name}} </div>
+      </td>
+      <td class="col-md-1"> {{record.md_pub_date}} </td>
+      <td class="col-md-3"> {{record.summary}} </td>
+      <td class="col-md-1"><button id="admin-publish-button" class="btn btn-primary" ng-show="canPublish" ng-click="publishRecordToPortal(record._id.$oid)">Publish</button>
+    </tr>
+  </table>
+</div>
+<div>
+  <button id="delete-selected-records" class="btn btn-danger" 	href="#"
+        data-toggle="modal" data-target="#deleteRecordModal" ng-show="canDelete">Delete Selected Records</button>
+  <table class="page-table">
+    <tr>
+      <td class="page-numbers" ng-click="decCurrentRecordsPage()">Previous </td><td ng-repeat="i in pageNumbers" class="page-numbers" ng-value="i" ng-click="switchRecordsResultsPage(i);">{{ i }}</td><td class="page-numbers" ng-click="incCurrentRecordsPage()"> Next</td>
+    </tr>
+  </table>
+</div>

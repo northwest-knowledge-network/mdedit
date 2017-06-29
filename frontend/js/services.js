@@ -117,12 +117,133 @@ metadataEditorApp
         }
 
         scope.currentRecord.place_keywords = record.place_keywords.join(', ');
-	//Had to get rid of trailing witespace after comma because after every page
+	//Had to get rid of trailing witespace after comma because save after every page
 	//change was adding extra whitespaces between words.
         scope.currentRecord.thematic_keywords = record.thematic_keywords.join(',');
     };
 }])
+.factory('updateAdmin', ['$log', function($log){
+    return function(scope, record){
+	//Contstruct empty record to display text that no results found. Don't want ng-repeat loop in partials/allRecords to try and
+	//print variable that is not defined.
+	var noResultsRecord = {"results":{}};
+	noResultsRecord.results = [{"title":"No results!", "summary":"", "citation":[{"name":""}], "md_pub_date":""}];
 
+	console.log("Printing inside updateAdmin: ");
+	console.log(record);
+	console.log("Printing record: " + record.results.length);
+	if(record.results.length == 0)
+	    scope.recordsList = noResultsRecord;
+	else
+	    scope.recordsList = record;
+	scope.pageNumbers = [];
+	var numbers = [];
+	if(scope.recordsList.num_entries == 0){
+	    numbers.push(1);
+	}else{
+	    for(var i = 0; i <= scope.recordsList.num_entries; i++){
+		numbers.push(i+1);
+	    }
+	}
+	scope.pageNumbers = numbers;
+    }
+}])
+.factory('makeElasticsearchRecord', ['$log', function($log){
+    return function(scope, record, elasticsearchRecord){
+	console.log("Printing record ");
+	console.log(record);
+
+	elasticsearchRecord.abstract = record.summary;
+
+	//set all the identifiers
+	for(var i = 0; i < record.identifiers.length; i++){
+		if(i == 0)		
+	    		elasticsearchRecord.identifiers[i] = record.identifiers[i].type + " : " + record.identifiers[i].id; 
+		else
+			elasticsearchRecord.identifiers.push(record.identifiers[i].type + " : " + record.identifiers[i].id); 
+
+	}
+
+	//First, put all the access contacts' names in to elasticsearchRecord's contact array. 
+	for(var i = 0; i < record.access.length; i++){
+	    //Services initializes first value of array to empty string ('') so we can't push
+	    //onto array this first value or else the first value will be empty string. 
+	    if((i == 0) && (record.access[i] == ''))
+		elasticsearchRecord.contacts[i] = record.access[i].name;
+	    else
+		elasticsearchRecord.contacts.push(record.access[i].name);
+	}
+
+	//Now push citation contacts onto list
+	for(var i = 0; i < record.citation.length; i++){
+	    //Services initializes first value of array to empty string ('') so we can't push
+	    //onto array this first value or else the first value will be empty string. 
+	    if((i == 0) && (record.citation[i] == ''))
+		elasticsearchRecord.contacts[i] = record.citation[i].name;
+	    else
+		elasticsearchRecord.contacts.push(record.citation[i].name);
+	}
+ 
+	//Get all keywords (from thematic_keyworks and place_keywords lists) and put them in same list.
+	//First, get thematic_keyworks.
+	for(var i = 0; i < record.thematic_keywords.length; i++){
+	    //Services initializes first value of array to empty string ('') so we can't push
+	    //onto array this first value or else the first value will be empty string. 
+	    if((i == 0) && (record.thematic_keywords[i] == ''))
+		elasticsearchRecord.keywords[i] = record.thematic_keywords[i];
+	    else
+		elasticsearchRecord.keywords.push(record.thematic_keywords[i]);
+	}
+
+	//Now, get place_keywords
+	for(var i = 0; i < record.place_keywords.length; i++){
+	    //Services initializes first value of array to empty string ('') so we can't push
+	    //onto array this first value or else the first value will be empty string. 
+	    if((i == 0) && (record.place_keywords[i] == ''))
+		elasticsearchRecord.keywords[i] = record.place_keywords[i];
+	    else
+		elasticsearchRecord.keywords.push(record.place_keywords[i]);
+	}
+
+	//Put topic_category in the keywords list too
+	for(var i = 0; i < record.topic_category.length; i++){
+	    //Services initializes first value of array to empty string ('') so we can't push
+	    //onto array this first value or else the first value will be empty string. 
+	    if((i == 0) && (record.topic_category[i] == ''))
+		elasticsearchRecord.keywords[i] = record.topic_category[i];
+	    else
+		elasticsearchRecord.keywords.push(record.topic_category[i]);
+	}
+
+
+	//Not really sure how Geoportal is constructing urls. Could be using _id??  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<Not sure if this is correct! Need to talk to Ed to see what new url schema should be.
+
+	//Set record type to 'iso', and change if record is actually dublin core. Used for url building.
+	var recordType = 'iso';
+
+	if (record.schema_type.indexOf("Non-Dataset (Dublin Core)") > -1)
+	    recordType = 'dc';
+
+	console.log("Printing currentRecord: ");
+	console.log(record);
+
+	//Change to hostname service function instead of hard coded host name
+	elasticsearchRecord.mdXmlPath = "https://nknportal.nkn.uidaho.edu/api/metadata/" + record._id.$oid + "/" + recordType;
+
+	//Set lat and lon coordinates 
+ 	elasticsearchRecord.sbeast = record.east_lon;
+	elasticsearchRecord.sbnorth = record.north_lat;
+	elasticsearchRecord.sbsouth = record.south_lat;
+	elasticsearchRecord.sbwest = record.west_lon;
+
+	//Set title and ID
+	elasticsearchRecord.title = record.title;
+	elasticsearchRecord.uid = record._id.$oid;
+
+	//Assign created elasticsearch object to scope object
+	scope.elasticsearchRecord = elasticsearchRecord;
+    }
+}])
 .value('formElement', {
     form_name: '',
     label: '',
@@ -150,6 +271,18 @@ metadataEditorApp
     place_keywords: '',
     thematic_keywords: '',
     research_methods: '',
+
+    identifiers: [
+	{type:'nkn',
+	 id: ''
+	},
+	{type:'doi',
+	 id: ''
+	},
+	{type:'ark',
+	 id:''
+	}
+    ],
     
     data_format: [''],
     compression_technique: '',
@@ -176,10 +309,12 @@ metadataEditorApp
     
     end_date: {$date:''},
     
-    doi_ark_request: '',
+    doi_ark_request: 'neither',
+    assigned_doi_ark: '',
     data_one_search: 'false',
     reference_system: '',
-    attachments: []
+    attachments: [],
+    published: 'false'
 })
 
 .value('emptyDCRecord',
@@ -195,6 +330,18 @@ metadataEditorApp
     place_keywords: '',
     thematic_keywords: '',
 
+    identifiers: [
+	{type:'nkn',
+	 id: ''
+	},
+	{type:'doi',
+	 id: ''
+	},
+	{type:'ark',
+	 id:''
+	}
+    ],
+	
     data_format: [''],
     compression_technique: '',
     online: [''],
@@ -220,10 +367,28 @@ metadataEditorApp
     
     end_date: {	$date:''},
     
-    doi_ark_request: '',
+    doi_ark_request: 'neither',
+    assigned_doi_ark: '',
     data_one_search: 'false',
     reference_system: '',
-    attachments: []
+    attachments: [],
+    published: 'false'
+})
+//This record is a reduced set of attributes used by Elasticsearch. 
+.value('elasticsearchRecord', {
+    abstract:'',
+    contacts: [''],
+    collection: '',
+    identifiers:[''],
+    keywords: [''],
+    mdXmlPath:'',
+    sbeast:'',
+    sbnorth:'',
+    sbsouth:'',
+    sbwest:'',
+    record_source:'metadata_editor',
+    title: '',
+    uid:''
 })
 .value('milesFields',
 {
@@ -265,10 +430,10 @@ metadataEditorApp
         "zipcode": "83844-2358"
 })
 .service('recordService',
-    ['$http', '$q', '$log', 'hostname', 'session_id',
-     'emptyISORecord', 'emptyDCRecord', 'milesFields', 'nkn', 'formElement',
-    function($http, $q, $log, hostname, session_id,
-             emptyISORecord, emptyDCRecord, milesFields, nkn, formElement)
+	 ['$http', '$q', '$log', '$location', 'hostname', 'session_id',
+	  'emptyISORecord', 'emptyDCRecord', 'elasticsearchRecord', 'milesFields', 'nkn', 'formElement', 'envService',
+	  function($http, $q, $log, $location, hostname, session_id,
+		   emptyISORecord, emptyDCRecord, elasticsearchRecord, milesFields, nkn, formElement, envService)
     {
         /**
          * Private functions that will not be exposed to controller
@@ -288,26 +453,32 @@ metadataEditorApp
 
             var serverReady = angular.copy(record);
 
+	    console.log("Printing currentRecord in prepareRecordForSave: ");
+	    console.log(record);
+
             // server requires list of strings
 
-            if (typeof record.place_keywords !== "undefined")
-
-                serverReady.place_keywords =
-                    serverReady.place_keywords.split(',')
-                        .map(function(el) { return el.trim(); });
-
-            if (typeof record.thematic_keywords !== "undefined")
+	    if ((typeof record.place_keywords !== "undefined")
+		&& ($location.url().indexOf('admin') == -1)){
+		    console.log("Printing place_keywords: " + serverReady.place_keywords );
+		    serverReady.place_keywords =
+			serverReady.place_keywords.split(',')
+			.map(function(el) { return el.trim(); });
+	    }
+	
+	    if ((typeof record.thematic_keywords !== "undefined")
+		&& ($location.url().indexOf('admin') == -1)){
 
                 serverReady.thematic_keywords =
                     serverReady.thematic_keywords.split(',');
-
+	    }
+	    
             if (typeof record.data_format !== "undefined")
 
                 serverReady.data_format = scope.dataFormats.iso;
 
 
-            if (scope.dataFormats.aux)
-            {
+            if (scope.dataFormats.aux){
                 var auxList = scope.dataFormats.aux.split(',')
                                 .map(function(el) { return el.trim(); });
 
@@ -316,9 +487,13 @@ metadataEditorApp
             }
 
             // getTime returns Unix epoch seconds (or ms, don't remember)
-            if (record.hasOwnProperty('start_date') && record.start_date.$date != ''
-                && typeof record.start_date.$date !== "undefined")
+            if ((record.hasOwnProperty('start_date'))
+		 && (record.start_date.$date != '')
+                && (typeof record.start_date.$date !== "undefined")
+		&& (typeof record.start_date.$date !== "number"))
             {
+		console.log("Printing start_date:")
+		console.log(record.start_date);
                 serverReady.start_date.$date =
                     record.start_date.$date.getTime();
             }
@@ -328,8 +503,11 @@ metadataEditorApp
                 delete serverReady.start_date;
             }
 
-            if (record.hasOwnProperty('end_date') && record.end_date.$date != ''
-                && typeof record.end_date.$date !== "undefined")
+            if ((record.hasOwnProperty('end_date'))
+		 && (record.end_date.$date != '')
+                 && (typeof record.end_date.$date !== "undefined")
+		&& (typeof record.end_date.$date !== "number"))
+
             {
 
                 serverReady.end_date.$date =
@@ -341,9 +519,12 @@ metadataEditorApp
                 delete serverReady.end_date;
             }
 
-            if (record.hasOwnProperty('first_pub_date') && record.first_pub_date.$date != ''
-                && typeof record.first_pub_date.$date !== "undefined")
-            {
+            if ((record.hasOwnProperty('first_pub_date'))
+		&& (record.first_pub_date.$date != '')
+                && (typeof record.first_pub_date.$date !== "undefined")
+		&& (typeof record.first_pub_date.$date !== "number"))
+
+		{
                 serverReady.first_pub_date.$date =
                     record.first_pub_date.$date.getTime();
             }
@@ -353,8 +534,11 @@ metadataEditorApp
                 delete serverReady.first_pub_date;
             }
 
-            if (record.hasOwnProperty('md_pub_date') && record.md_pub_date.$date != ''
-		&& typeof record.md_pub_date.$date !== "undefined"){
+            if ((record.hasOwnProperty('md_pub_date')) 
+		&& (record.md_pub_date.$date != '')
+		&& (typeof record.md_pub_date.$date !== "undefined")
+		&& (typeof record.md_pub_date.$date !== "number")){
+
 		    serverReady.md_pub_date.$date = new Date().getTime();
             }else{
 		delete serverReady.md_pub_date;
@@ -425,6 +609,14 @@ metadataEditorApp
             return freshyDC;
         };
 
+	//Get reduced set record that is used in Elasticsearch (for search performance optimization).
+	//We don't want to index the entire index: that would decrease search efficiency.  
+	var getFreshElasticsearchRecord = function(){
+	    var freshyElasticsearch = angular.copy(elasticsearchRecord);
+
+	    return freshyElasticsearch;
+	};
+
         var getMilesDefaults = function() {
 
             var milesy = angular.copy(milesFields);
@@ -463,6 +655,119 @@ metadataEditorApp
             );
         };
 
+
+	/* When an admin needs to edit someone else's record, then they 
+	 * will use this route in the backend. It athenicates only admins.
+	 */
+	var adminGetUsersRecord = function(recordId)
+        {
+            var record = {};
+
+            return $http.post('//' + hostname + '/api/metadata/load-record/' + recordId,
+                              {'session_id': session_id})
+
+                    .success(function(data)
+                    {
+			console.log("Printing out the id: ");
+			console.log(data.record);
+                        record = data.record;
+                    }
+            );
+        };
+
+
+	/**
+	 * Get all records for admin view. Returns a paginated list: only 10
+	 * records at a time, but has access to all records if the user is an admin.
+	 */
+	var getAllRecords = function(pageNumber, recordsPerPage, sortBy, publishState) {
+	    var record = {};
+	    console.log("Printing current state: ");
+	    console.log(publishState);
+	    return $http.post('//' + hostname + '/api/metadata/admin/' + pageNumber + '/' + recordsPerPage + '/' + sortBy + '/' + publishState,
+				      {'session_id': session_id}).success(function(data){
+					  record = data.record;
+				      });
+	};
+
+	var searchAllRecords = function(searchTerm, pageNumber, recordsPerPage, sortBy, recordState) {
+	    var record = {};
+	    console.log("In searchAllRecords: ");
+	    return  $http.post(
+                '//' + hostname + '/api/metadata/admin/search/' + searchTerm + "/" + pageNumber + "/" + recordsPerPage + "/" + sortBy,
+	        {'session_id': session_id,
+		'record_state': recordState
+		}).success(function(data){
+		    record = data.record;
+		});
+	};
+
+	/* Get records that want a DOI or ARK associated with them
+	 */
+	var getDoiArkRequests = function(pageNumber, recordsPerPage, sortBy) {
+	    var record = {};
+	    return $http.post(
+                '//' + hostname + '/api/metadata/doiark/' + pageNumber + '/' + recordsPerPage + '/' + sortBy,
+                {'session_id': session_id}).success(function(data){
+		    record = data.record;
+		});
+	};
+
+	/* Get records that want a DOI or ARK associated with them
+	 */
+	var searchDoiArkRequests = function(searchTerm, pageNumber, recordsPerPage, sortBy) {
+	    var record = {};
+
+	    return $http.post(
+                '//' + hostname + '/api/metadata/doiark/search/' + searchTerm + "/" + pageNumber + "/" + recordsPerPage + "/" + sortBy,
+                {'session_id': session_id}).success(function(data){
+		    record = data.record;
+		});
+	};
+
+	/* This function publishes the record to Elasticsearch and the production directory by the admin.
+	 */
+	var adminApprovePublish = function(recordID, elasticsearchRecord, scope){
+		saveDraft(scope);
+
+	    	return $http.post(
+	                   '//' + hostname + '/api/metadata/' + recordID + '/admin-publish',
+		           {'session_id':session_id,
+			    'elasticsearch_record': elasticsearchRecord,
+			    'schema_type': scope.currentRecord.schema_type
+			   }
+	    );
+	};
+
+	//Unpublish a record
+	var unpublishRecord = function(recordID, scope){
+		scope.currentRecord.published = "pending";
+		//Call backend route to move file from production to pre-production.
+	};
+
+	/* Check if response object from backend authenticated the user correctly. 
+	 * If not, then return false.
+	 */
+	var checkAdmin = function(status){
+	    if((status == 401)
+	     || (status == 403)){
+		/* Change page to ISO record because
+		 *  the user was not authenticated as an admin. Either the
+		 * response came from the wrong url, or the response code 
+		 * was not 200.
+		 */
+		$location.path('/iso');
+	    }
+	};
+	
+	var authenticateAdmin = function() {
+	    var record = {};
+	    return $http.post(
+                '//' + hostname + '/api/metadata/authenticate-admin',
+	{'session_id': session_id});
+	};
+
+
         /**
          * Remove a draft record from the server. Does not effect published
          * records.
@@ -471,7 +776,7 @@ metadataEditorApp
          * @returns {Promise}
          */
         var delete_ = function (recordId) {
-            $log.log('record deleted');
+            $log.log('record deleted: ' + recordId);
             return $http.post(
                 '//' + hostname + '/api/metadata/' + recordId + '/delete',
                 {'session_id': session_id});
@@ -548,28 +853,44 @@ metadataEditorApp
 
 	    scope.md_pub_date = {};
 	    scope.md_pub_date = currentDate;
+
+	    //Change record's 'published' attribute to 'pending' to allow for search by admin
+	    record.published = "pending";
+
+	    console.log("Printing record state: >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + scope.currentRecord.published);
 	    
             var serverReady = angular.copy(record);
 
             // do this sync (1/26 um.. what? -mt)
-            saveDraft(scope);
+            saveDraft(scope).then(function(){
 
-            var currentId = scope.currentRecord._id.$oid;
-
-            return $http.post(
-                '//' + hostname + '/api/metadata/' + currentId + '/publish',
-		{'record': current,'session_id': session_id}
-            );
+		    var currentId = scope.currentRecord._id.$oid;
+		    
+		    return $http.post(
+				      '//' + hostname + '/api/metadata/' + currentId + '/publish',
+			      {'record': record, 'session_id': session_id}
+				      );
+		    
+		});
 	    
 	    
         };
 
         return {
+	    adminApprovePublish: adminApprovePublish,
+	    adminGetUsersRecord: adminGetUsersRecord,
+	    authenticateAdmin: authenticateAdmin,
+	    checkAdmin: checkAdmin,
             getFreshISORecord: getFreshISORecord,
             getFreshDCRecord: getFreshDCRecord,
+	    getFreshElasticsearchRecord: getFreshElasticsearchRecord,
             getMilesDefaults: getMilesDefaults,
             getNKNAsDistributor: getNKNAsDistributor,
             getRecordToEdit: getRecordToEdit,
+	    getDoiArkRequests: getDoiArkRequests,
+	    getAllRecords: getAllRecords,
+	    searchAllRecords: searchAllRecords,
+	    searchDoiArkRequests: searchDoiArkRequests,
             saveDraft: saveDraft,
             delete: delete_,
             list: list,
@@ -578,7 +899,18 @@ metadataEditorApp
         };
     }
 ])
+.service('sharedRecord', function(){
+	var record;
 
+	return {
+	    getRecord: function() {
+		return record;
+	    },
+	    setRecord: function(value) {
+		record = value;
+	    }
+	};
+})
 .service('Geoprocessing', ['$http', '$q', 'hostname', function($http, $q, hostname) {
     var getBbox = function(placeName) {
         var baseUrl = '//' + hostname + '/api/geocode/';

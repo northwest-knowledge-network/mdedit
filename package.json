@@ -13,7 +13,7 @@
     "karma-firefox-launcher": "^0.1.6",
     "karma-jasmine": "^0.1.5",
     "mongodb": "^2.1.0",
-    "protractor": "*",
+    "protractor": "5.1.2",
     "shelljs": "^0.2.6",
     "tmp": "0.0.23"
   },

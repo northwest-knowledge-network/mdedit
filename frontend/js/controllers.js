@@ -4,11 +4,11 @@
 // for minification, explicitly declare dependencies $scope and $http
 metadataEditorApp.controller('BaseController',
     ['$scope', '$http', '$log', '$window', '$timeout', '$location', '$state', 'formOptions', 'updateForms', 'recordService',
-     'AttachmentService', 'Geoprocessing', 'hostname', 'session_id', 'partialsPrefix',
+     'AttachmentService', 'Geoprocessing', 'hostname', 'session_id', 'partialsPrefix', 'sharedRecord', 'elasticsearchRecord',
      
      function($scope, $http, $log, $window, $timeout, $location, $state, formOptions, updateForms,
         recordService, AttachmentService, Geoprocessing, hostname, session_id,
-              partialsPrefix)
+              partialsPrefix, sharedRecord)
     {
         // initialize list of existing metadata records
         $scope.allRecords = [];
@@ -38,6 +38,10 @@ metadataEditorApp.controller('BaseController',
 	//Used to allow publishing of record, but not saved in the database.
 	$scope.noSensitiveInformation = false;
 
+	$scope.currentRecord = sharedRecord.getRecord();
+
+	$scope.isAdmin = false;
+	
 	//Objects for background colors of buttons used in ng-style tags in iso.html and dublin.html 
 	var backgroundColor = {"background-color": "#cccccc"};
 	var selectedColor = {"background-color": "#00BC8C"};
@@ -79,6 +83,18 @@ metadataEditorApp.controller('BaseController',
 	    {"stateName":"dublinForm.optionsAndDisclaimer","buttonLabel":"Disclaimer"},
 	    {"stateName":"dublinForm.review","buttonLabel":"Review"}
 	];
+
+	//Check to see if user is an admin. If so, redirect to admin page. 
+	recordService.authenticateAdmin().success(function(data, status){
+		//User has been authenticated as an admin. Redirecting to admin page
+		if(data != 'local_user')
+		    $location.path("/admin");
+	    }).error(function(error, status){
+		    //If the status code is not 401, then some other error happened. If it 
+		    //is 401, then the user is not admin. 
+		    if(status != 401)
+			console.log("Error: " + error + " :: status : " + status);
+	    });
 
 	//Initalize button lists and scope values for fresh record
 	initFormLists();
@@ -279,7 +295,6 @@ metadataEditorApp.controller('BaseController',
          * and makes sure the form is current.
          */
         $scope.submitDraftRecord = function() {
-	    //Remove all HTML tags from currentRecord
 		recordService.saveDraft($scope)
                     .success( function (data) {
 			// need to update the sheet with the ID
@@ -625,6 +640,9 @@ metadataEditorApp.controller('BaseController',
 	    if(type.indexOf("DOI") > -1){
 		$scope.currentRecord.doi_ark_request = type;
 	    }else if(type.indexOf("ARK") > -1){
+		$scope.currentRecord.doi_ark_request = type;
+	    }else if(type.indexOf("both") > -1){
+		console.log("Inside both if statement");
 		$scope.currentRecord.doi_ark_request = type;
 	    }else if(type.indexOf("neither") > -1){
 		$scope.currentRecord.doi_ark_request = type;
@@ -1396,6 +1414,11 @@ metadataEditorApp.controller('BaseController',
 	    }, 700);
 	};
 
+	$scope.showAdminView = function() {
+	    //Change route to admin view
+	    $location.path("/admin");
+	};
+	
 	$scope.accessNames = [];
 	$scope.accessNames.push("");
 	/* System pushes empty string onto accessNames array when new online element is added to online array, 
@@ -1444,7 +1467,6 @@ metadataEditorApp.controller('BaseController',
 		}
 	    }
 	}
-
   } // end of callback for controller initialization
 ])
 .controller('ISOController', ['formOptions', function(formOptions) {
@@ -1489,4 +1511,17 @@ metadataEditorApp.controller('BaseController',
         $scope.currentRecord.east_lon = vm.ne.lng();
         $scope.currentRecord.west_lon = vm.sw.lng();
     };
-  });
+  })
+    .controller('AdminController', ['$scope', '$compile', '$state', '$location', 'recordService', 'updateAdmin', 'updateForms', 'sharedRecord', 'makeElasticsearchRecord', 'elasticsearchRecord', 'partialsPrefix', function($scope, $compile, $state, $location, recordService, updateAdmin, updateForms, sharedRecord, makeElasticsearchRecord, elasticsearchRecord, partialsPrefix)
+  {
+
+      $scope.changeToAllRecords = function(){
+	  $scope.showBrowse = true;
+	  $scope.showDoi = false;
+      };
+
+      $scope.changeToDoiRequests = function(){
+	  $scope.showBrowse = false;
+	  $scope.showDoi = true;
+      };
+  }]);

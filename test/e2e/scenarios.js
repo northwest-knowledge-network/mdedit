@@ -1,4 +1,3 @@
-
 'use strict';
 
 var mongo = require('mongodb');
@@ -59,6 +58,9 @@ testDynamicFormAddition('dublin');
 testReviewSection('iso');
 testReviewSection('dublin');
 
+//Admin tests not ready yet
+testAdminView("admin");
+
 describe('ISO and Dublin Core editing views', function () {
 
      it('should go to #/dublin when the dublin core button is pressed', function () {
@@ -85,7 +87,7 @@ function waitForAnimation(item){
     var EC = protractor.ExpectedConditions;
     var itemID = element(by.id(item));
     var isClickable = EC.elementToBeClickable(itemID);
-    browser.wait(isClickable, 3000);
+    browser.wait(isClickable, 5000);
 }
 
 function contactsTest() {
@@ -261,11 +263,12 @@ function deleteRecordTest(schemaType) {
 
 //Set which form type we are using
 function setFormType(type) {
-    if((type == "iso")
-       || (type == "dublin"))
+    if((type.indexOf("iso") > -1)
+       || (type.indexOf("dublin") > -1)
+       || (type.indexOf("admin") > -1))
 	form = type;
     else
-	console.log("Error: tried to set form to unsupported type. Current supported types are \"iso\" and \"dublin\"");
+	console.log("Error: tried to set form to unsupported type. Current supported types are \"iso\", \"dublin\", and \"admin\"");
 }
 
 //Get the current form type. Current types are "iso" or "dublin".
@@ -275,8 +278,10 @@ function getFormType(){
 	return "form.";
     else if(form == "dublin")
 	return "dublinForm.";
+    else if(form.indexOf("admin") > -1)
+	return "admin";
     else{
-	console.log("Error: tried to set form to unsupported from type.");
+	console.log("Error: tried to get unsupported from type.");
 	return "";
     }
 }
@@ -324,7 +329,7 @@ function testLoadDeleteDropdown(schemaType) {
         if (schemaType === 'iso')
         {
             var isoFields = {
-                status: 'stored in an offline facility',
+                status: 'historicalArchive',
                 spatial_dtype: 'grid',
                 hierarchy_level: 'dataset',
                 topic_category: ['biota', 'economy'],
@@ -763,10 +768,12 @@ function testMilesDefaults(schemaType) {
 
 function getUrl(){
     var url = browser.driver.getCurrentUrl();
-    if(url.includes("iso"))
+    if(url.indexOf("iso") > -1)
 	return "iso";
-    else if(url.includes("dublin"))
+    else if(url.indexOf("dublin") > -1)
 	return "dublin";
+    else if(url.indexOf("admin") > -1)
+	return "admin";
     else
 	console.log("Error: unsupported url.");
 
@@ -1204,6 +1211,23 @@ function testReviewSection(schemaType) {
 		       input: '04/08/2012'}
         };
 
+
+        if (schemaType === 'iso')
+        {
+            var isoFields = {
+                status: 'historicalArchive',
+                spatial_dtype: 'grid',
+                hierarchy_level: 'dataset',
+                topic_category: ['biota', 'economy'],
+                compression_technique: 'zlib'
+            };
+
+            for (var field in isoFields)
+            {
+                newRecord[field] = isoFields[field];
+            }
+        }
+
             beforeEach( function () {
 		clearCollection();
 		browser.get('/frontend');
@@ -1236,13 +1260,23 @@ function testReviewSection(schemaType) {
 
         it('should complete the form, then test the review page against the input',
            function () {
-	       var formType = getFormType();
+	  
+ 	       var formType = getFormType();
+
+	       fillOutForm(newRecord);
+
+	       /*
 	       exposeFormElement(formType, "basic");
 	       element(by.model('currentRecord.title')).sendKeys(newRecord.title);
 	       element(by.model('currentRecord.summary')).sendKeys(newRecord.summary);
 	       element(by.model('currentRecord.place_keywords')).sendKeys(newRecord.place_keywords);
 	       element(by.model('currentRecord.thematic_keywords')).sendKeys(newRecord.thematic_keywords);
-	       element(by.model('currentRecord.topic_category')).sendKeys(newRecord.topic_category);
+	       if((typeof newRecord.topic_category !== 'undefined')
+		 && (newRecord.topic_category.length > 0)){
+			//Click on select menu to expose options
+			for(var i = 0; i < newRecord.topic_category.length; i++) 
+				element(by.css('[label="' + newRecord.topic_category[i] + '"]')).click();
+		}
 
 	       //If iso form type, then fill out detailed info page too
 	       if(formType.indexOf('dublin') == -1){
@@ -1261,7 +1295,10 @@ function testReviewSection(schemaType) {
 	       
 	       //If not dubin form, then form is 'iso' type, and check extra form fields in this seciton
 	       if(formType.indexOf("dublin") == -1){
-		   element(by.model('currentRecord.status')).sendKeys(newRecord.status);
+		   // For some reason, status has "string:" concatinated to the beginning of the select option's value. So we need to add "string:" to the beginning here 
+		    // or we won't find the select element's option correctly. 
+		    
+		   element(by.model('currentRecord.status')).sendKeys("string:" + newRecord.status);
 		   element(by.model('currentRecord.update_frequency')).sendKeys(newRecord.update_frequency);
 		   element(by.model('currentRecord.hierarchy_level')).sendKeys(newRecord.hierarchy_level);		   
 	       }
@@ -1334,7 +1371,7 @@ function testReviewSection(schemaType) {
 
 	       //Check review page
 	       exposeFormElement(formType, "review");
-
+*/
 	       //Check all parts of the form except _cls, _id, access, citation, last_mod_date, dataFormats.aux, and data_formats_aux
 	       //dataFormats.aux gets added on to data_format, so we need to do the same before checking data_format. Also, last_mod_date is
 	       //set on the last time the record was saved, so hard to check that. access and citation are checked later since they are arrays of objects.
@@ -1378,8 +1415,13 @@ function testReviewSection(schemaType) {
 			       compareBbox(key, newRecord);
 			   }
 			   //Otherwise, then just compare value in review.html results table to value in newRecord.
-			   else
-			       expect(element(by.id(key + '-1')).getText()).toEqual(parseKeyValues(newRecord[key]));
+			   else{
+				/* If the attribute in the JSON object is an emtpy string, then the review.html page will not add it to the page. 
+				 * Therefore, we only check attributes that are not the empty string.
+				 */ 
+				if(newRecord[key] != '')
+				       	expect(element(by.id(key + '-1')).getText()).toEqual(parseKeyValues(newRecord[key]));
+		           }
 		       }
 		   }
 	       }
@@ -1401,6 +1443,332 @@ function testReviewSection(schemaType) {
 	   });
 	    
 	});
+}
+
+function testAdminView(schemaType) {
+	/*
+	 * Need to add a couple records in to the system here before running these tests. 
+	 */
+	var newRecords = [
+		{title: "record a",
+		 summary: "a summary"},
+		{title: "record b",
+		 summary: "b summary"},
+		{title: "record c",
+		 summary: "c summary"},
+		{title: "record d",
+		 summary: "d summary"},
+		{title: "record e",
+		 summary: "e summary"},
+		{title: "record f",
+		 summary: "f summary"},
+		{title: "record g",
+		 summary: "g summary"}
+	];
+
+	var completeRecord = createRecordObject();
+
+	describe('Admin panel tests: ', function() {
+		
+		beforeEach( function () {
+			clearCollection();
+			browser.get('/frontend');
+			setFormType("admin");
+			var formType = getFormType();
+			
+			browser.get('frontend/#/admin');
+			
+			setFormType(schemaType);
+			formType = getFormType();
+		    });
+		
+		//afterEach(clearCollection);
+		
+		it('the admin view button should not be clickable from /iso or /dublin paths, but should be visible on /admin',
+		   function () {
+			var formType = getFormType();
+			if(formType.indexOf("admin") == -1)
+			    expect(element(by.id("admin-view-button")).isDisplayed()).toBe(false);
+		   });
+		
+		it('Should change the number of records listed on the page', 
+		   function(done) {
+		       var formType;
+		       browser.get('/frontend');
+		       setFormType("iso");
+		       formType = getFormType();
+
+		       newRecords.forEach(function(item){
+			       
+			       //Click on setup page button		
+			       exposeFormElement(formType, "setup");
+			       
+			       element(by.id('create-new-dataset')).click();
+			       
+			       //Change to "basic" information page where the title and summary form input are
+			       exposeFormElement(formType, "basic");
+			       
+			       //Add a title and summary so we can differentiate between these test records
+			       element(by.model('currentRecord.title')).sendKeys(item["title"]);
+			       element(by.model('currentRecord.summary')).sendKeys(item["summary"]);
+			       
+			       //Need to change to the next form section to save the record
+			       exposeFormElement(formType, "detailed");
+			       
+			   });
+		       
+		       browser.get('/frontend');
+		       setFormType("admin");
+		       formType = getFormType();
+		       browser.get('frontend/#/admin');
+		       
+		       var dipslayedRecordsCount = 5;
+		       var recordState = {"optionLabel":"Not Submitted For Review",
+					  "value": "false"};
+		       
+		       //Set number of displayed records on page to 5 by selecting "5" from the "Number of records per page:" selector
+		       element(by.id('admin-records-list-amount-select')).sendKeys(dipslayedRecordsCount.toString());
+		       //Change the "Record State:" element to records that have not been submitted yet ("Not Submitted For Review").
+		       element(by.id('record-state')).sendKeys(recordState.optionLabel);
+		       
+		       element(by.id("record-state")).getAttribute('value').then( (val) => {
+			       expect(val).toBe(recordState.value);	
+			   });
+		       
+		       //Check if only 5 records are on page. Can't use element.all(by.css()) because for some reason the DOM is not clearning from 10 to 5 rows (even though only 5 are showing).
+		       for(var i = 0; i < dipslayedRecordsCount; i++){
+			   expect(element(by.id("record-" + i.toString() + "-false")).isPresent()).toBe(true);
+		       }
+		       
+		       //The 6th element should not be on the page
+		       expect(element(by.id("record-5-false")).isPresent()).toBe(false);
+		       
+		       //Now change the max records per page to 10, and check to see if all 7 records are displaying on the page
+		       dipslayedRecordsCount = 10;
+		       
+		       element(by.id('admin-records-list-amount-select')).sendKeys(dipslayedRecordsCount.toString());
+		       
+		       //Check to make sure we are still showing non-submitted and non-published records
+		       element(by.id("record-state")).getAttribute('value').then( (val) => {
+			       expect(val).toBe('false');	
+			   });
+		       
+		       //Check if all 7 records are on page. 
+		       for(var i = 0; i < newRecords.length; i++){
+			   expect(element(by.id("record-" + i.toString() + "-false")).isPresent()).toBe(true);
+		       }
+		       
+		       //There should not be an 8th element on the page
+		       expect(element(by.id("record-7-false")).isPresent()).toBe(false);
+		       
+		       done();
+		   });
+		
+		
+		it('Should change page from the publishing page to the DOI/ARK assignment page, then back to publishing page.', 
+		   function() {
+		       
+		       
+		       /**
+			*	This test will check if the displayed page in the admin panel will change from the "Browse" records section
+			*  	to the "Assign DOI/ARK" section.
+			*/
+		       
+		       //Click on button in sidebar to switch to "Assign DOI/ARK" section
+		       element(by.id("assign-doi-ark-button-browse")).click();
+		       
+		       //Check if table on Assign DOI/ARK page is showing
+		       expect(element(by.css(".assign-doi-ark-table")).isDisplayed()).toBeTruthy();
+		       expect(element(by.css(".browse-records-table")).isDisplayed()).toBeFalsy();
+		       
+		       //Click on button in sidebar to switch to "Browse" section
+		       element(by.id("browse-records-button-assign")).click();
+		       
+		       //Check if table on Assign DOI/ARK page is showing
+		       expect(element(by.css(".assign-doi-ark-table")).isDisplayed()).toBeFalsy();
+		       expect(element(by.css(".browse-records-table")).isDisplayed()).toBeTruthy();
+		       
+		       
+		   }); 
+		
+		
+		
+		it('Should change the visible records from records not submitted yet, to submitted records, then to published records',
+		   function() {
+		       
+		       // This test checks to see if the displayed records are of the correct type: not submitted yet, submitted and awainting review,
+		       //  and published records. 
+		       
+		       /* Fill out one record, but don't publish. Only need to fill out partial data to save 
+			* (also saves time during testing to not complete record).
+			*/
+		       
+		       var formType;
+		       browser.get('/frontend');
+		       setFormType("iso");
+		       formType = getFormType();
+		       
+		       //Click on setup page button		
+		       exposeFormElement(formType, "setup");
+		       
+		       element(by.id('create-new-dataset')).click();
+		       
+		       //Change to "basic" information page where the title and summary form input are
+		       exposeFormElement(formType, "basic");
+		       
+		       //Add a title and summary so we can differentiate between these test records
+		       element(by.model('currentRecord.title')).sendKeys(completeRecord.title);
+		       element(by.model('currentRecord.summary')).sendKeys(completeRecord.summary);
+		       
+		       //Need to change to the next form section to save the record
+		       exposeFormElement(formType, "detailed");
+		       
+		       //Fill out complete record
+		       exposeFormElement(formType, "setup");
+		       
+		       //Creating an ISO record, so click on the appropriate button.
+		       element(by.id('create-new-dataset')).click();
+		       
+		       element(by.id("add-coordinate-system")).click();
+		       
+		       /* Make a copy of the record object and change the title */
+		       var submittedRecord = createRecordObject();
+		       submittedRecord.title = "Record Two";
+		       
+		       fillOutForm(submittedRecord);
+		       
+		       //Now, on the review page, click "Submit"
+		       element(by.id('record-options-publish')).click();
+		       //Make sure submit modal appears
+		       expect(element(by.id("submitModal")).isPresent()).toBe(true);
+		       //Close the modal
+		       element(by.id('close-modal-button')).click();
+		       
+		       //Now change to admin panel to inspect records
+		       setFormType("admin");
+		       formType = getFormType();
+		       browser.get('frontend/#/admin');
+		       
+		       //By default, the record showing on page load are the submitted records. Change to unsubmitted records to make sure the first record is displaying there.
+		       changeRecordsDisplayed("not-submitted");
+		       
+		       browser.sleep(1000);
+		       
+		       //There should be one record with the title "Record One"
+		       expect(element(by.id("record-0-false")).isPresent()).toBe(true);
+		       element(by.id('record-0-title')).getText().then( (text) => {
+			       expect(text.trim()).toBe('Record One');
+			   });
+		       
+		       //There should be one record showing in the list with the title "Record Two" 
+		       //changeRecordsDisplayed("submitted");
+		       element(by.id('record-state')).sendKeys("Awaiting Review");
+		       browser.sleep(1000);
+		       //There should be one record with the title "Record Two"
+		       expect(element(by.id("record-0-pending")).isPresent()).toBe(true);
+		       element(by.id('record-0-title')).getText().then( (text) => {
+			       expect(text.trim()).toBe('Record Two');
+			   });
+		       
+		       //There should be no records displayed for published records
+		       element(by.id('record-state')).sendKeys("Published");
+		       browser.sleep(1000);
+		       //There should be one record with the title "Record Two"
+		       expect(element(by.id("record-0-true")).isPresent()).toBe(true);
+		       element(by.id('record-0-title')).getText().then( (text) => {
+			       expect(text.trim()).toBe('No results!');
+			   });
+		       
+		       //Now we publish the record, and check to see if it is in the "Published" state
+		       //element(by.id('admin-publish-button')).click();
+		       //Need to come up with backend routes that can mimic Elasticsearch response
+		       
+		   });
+		
+	clearCollection();
+  });
+}
+
+/**
+ * Changes the Record State drop down in admin view. Changes the displayed records list
+ * from not submitted, submitted, and published states in the metadata editor workflow.
+ * @param {String} recordState
+ * Options: not-submitted, submitted, or published.
+ */
+function changeRecordsDisplayed(recordState){
+    switch(recordState){
+    case "not-submitted":
+	//Change the "Record State:" element to records that have not been submitted yet ("Not Submitted For Review").
+	element(by.id('record-state')).sendKeys("Not Submitted For Review");
+	break;
+    case "submitted":
+	console.log("Changing record state");
+	element(by.id('record-state')).sendKeys("Awaiting Review");
+	break;
+    case "published":
+	element(by.id('record-state')).sendKeys("Published");
+	break;
+    default:
+	break;
+    }
+}
+
+
+/** This function returns an ISO record object 
+ */
+function createRecordObject(){
+
+       var completeRecord = {
+
+            title: 'Record One',
+            summary: 'A good dataset',
+            last_mod_date: {$date: new Date(2002, 0, 1),
+			    input: '01/01/2002'},
+            first_pub_date: {$date: new Date(2006, 1, 4),
+			     input: '02/04/2006'},
+
+            place_keywords: 'Idaho, Treasure Valley',
+            thematic_keywords: 'Agriculture, Water',
+
+            data_format: ['netCDF'],
+	    data_format_aux: 'mp4',
+            online: ['http://example.com/mynetcdfs/33422525'],
+            use_restrictions: 'None',
+	    spatial_dtype: 'vector',
+	    
+            citation: [{
+		'name': 'Matt', 'email': 'matt@example.com', 'org': 'NKN', 'address': '34 Concord',
+		'city': 'Rochester', 'state': 'Idaho', 'zipcode': '83843', 'country': 'USA', 'phone': '555-5555'
+            }, {
+		'name': 'Rodney Dangerfield', 'email': 'rodang@example.com', 'org': 'FunnyMen.org', 'address': '443 Broadway',
+		'city': 'New York', 'state': 'New York', 'zipcode': '10003', 'country': 'USA', 'phone': '202-555-5555'
+            }],
+	    
+            access: [{
+		'name': 'Marisa', 'email': 'nkn@example.com', 'org': 'NKN', 'address': '875 Perimeter',
+		'city': 'Moscow', 'state': 'Idaho', 'zipcode': '83844', 'country': 'USA', 'phone': '208-555-5555'
+            }],
+	    
+            west_lon: '-116.1',
+            east_lon: '-110.6',
+            north_lat: '46.5',
+            south_lat: '35.4',
+
+	    status: 'completed',
+	    update_frequency: 'daily',
+	    hierarchy_level: 'dataset',
+
+	    research_methods: 'Observational research, correlational research, stratified sampling',
+	    compression_technique: 'zip, jar',
+	    reference_system: 'UTM, NAD83',
+	    
+            start_date: {$date: new Date(2009, 2, 6),
+			 input: '03/06/2009'},
+            end_date: {$date: new Date(2012, 3, 8),
+		       input: '04/08/2012'}
+        };
+       
+       return completeRecord;
 }
 
 function compareBbox(dir, newRecord) {
@@ -1673,3 +2041,115 @@ function switchFormPage(key, formType, schemaType){
     //});
 //}
 
+function fillOutForm(newRecord){
+   
+    var formType = getFormType();
+    exposeFormElement(formType, "basic");
+    element(by.model('currentRecord.title')).sendKeys(newRecord.title);
+    element(by.model('currentRecord.summary')).sendKeys(newRecord.summary);
+    element(by.model('currentRecord.place_keywords')).sendKeys(newRecord.place_keywords);
+    element(by.model('currentRecord.thematic_keywords')).sendKeys(newRecord.thematic_keywords);
+    if((typeof newRecord.topic_category !== 'undefined')
+       && (newRecord.topic_category.length > 0)){
+	//Click on select menu to expose options
+	for(var i = 0; i < newRecord.topic_category.length; i++) 
+	    element(by.css('[label="' + newRecord.topic_category[i] + '"]')).click();
+    }
+    
+    //If iso form type, then fill out detailed info page too
+    if(formType.indexOf('dublin') == -1){
+	exposeFormElement(formType, "detailed");
+	element(by.model('currentRecord.research_methods')).sendKeys(newRecord.research_methods);
+    }
+    
+    exposeFormElement(formType, "onlineResourcesAndRestrictions");
+    element(by.id('online')).sendKeys(newRecord.online[0]);
+    element(by.model('currentRecord.use_restrictions')).sendKeys(newRecord.use_restrictions);
+    
+    exposeFormElement(formType, "temporalExtent");
+    element(by.id('start-date')).clear().sendKeys(newRecord.start_date.input).sendKeys(protractor.Key.TAB);;
+    element(by.id('end-date')).clear().sendKeys(newRecord.end_date.input).sendKeys(protractor.Key.TAB);;
+    element(by.id('first-pub-date-input')).clear().sendKeys(newRecord.first_pub_date.input).sendKeys(protractor.Key.TAB);;
+    
+    //If not dubin form, then form is 'iso' type, and check extra form fields in this seciton
+    if(formType.indexOf("dublin") == -1){
+	/* For some reason, status has "string:" concatinated to the beginning of the select option's value. So we need to add "string:" to the beginning here 
+	 * or we won't find the select element's option correctly. 
+	 */
+	element(by.model('currentRecord.status')).sendKeys("string:" + newRecord.status);
+	element(by.model('currentRecord.update_frequency')).sendKeys(newRecord.update_frequency);
+	element(by.model('currentRecord.hierarchy_level')).sendKeys(newRecord.hierarchy_level);		   
+    }
+    
+    //Fill out contacts
+    exposeFormElement(formType, "contacts");
+    
+    var addCitationButton =
+	element(by.css('[ng-click="addContactCitation()"]'));
+    
+    var citationContacts =
+	element.all(by.repeater('contact in currentRecord.citation'));
+    
+    var accessContacts =
+	element.all(by.repeater('contact in currentRecord.access'));
+    
+    for (var i = 0; i < 2; i++){
+	var c = newRecord.citation[i];
+	var contactFieldIdx = 0;
+	for (var k in c){
+	    element(by.id('citation-' + k + '-' + i)).sendKeys(c[k]);
+	    
+	}
+	if (i === 0){
+	    addCitationButton.click();
+	}
+    }
+    
+    var ca = newRecord.access[0];
+    for (var ka in ca){
+	element(by.id('access-' + ka + '-0')).sendKeys(ca[ka]);
+    }
+    
+    //Check file upload page
+    exposeFormElement(formType, "dataFormats");
+    element(by.model('dataFormats.iso')).sendKeys(newRecord.data_format[0]);
+    element(by.model('dataFormats.aux')).sendKeys(newRecord.data_format_aux);
+    
+    //Attach file
+    // send keys to give the file name desired
+    var fname1 = 'file1.txt',
+	f1 = path.resolve(__dirname, fname1),
+	fname2 = 'file2.nc',
+	f2 = path.resolve(__dirname, fname2);
+    
+    // upload 1
+    
+    element(by.id('attachment-select')).sendKeys(f1);
+    browser.executeScript('window.scrollTo(0,0);');
+    element(by.css('[ng-click="attachFile()"]')).click();
+    
+    //If not dublin form type, then send keys to exta form elements in 'iso' type
+    if(formType.indexOf("dublin") == -1){
+	element(by.model('currentRecord.spatial_dtype')).sendKeys(newRecord.spatial_dtype);
+	element(by.model('currentRecord.compression_technique')).sendKeys(newRecord.compression_technique);
+    }
+    
+    exposeFormElement(formType, "spatialExtent");
+    element(by.model('currentRecord.east_lon')).sendKeys(newRecord.east_lon);
+    element(by.model('currentRecord.west_lon')).sendKeys(newRecord.west_lon);
+    element(by.model('currentRecord.north_lat')).sendKeys(newRecord.north_lat);
+    element(by.model('currentRecord.south_lat')).sendKeys(newRecord.south_lat);
+    
+    element(by.model('currentRecord.reference_system')).sendKeys(newRecord.reference_system);
+    
+    //Check disclaimer page
+    exposeFormElement(formType, "optionsAndDisclaimer");
+    element(by.id('data-one-checkbox')).click();
+    //Agree to all the terms 
+    element(by.id('agree-terms-conditions')).click();
+    element(by.id('right-to-publish')).click();
+    element(by.id('no-sensitive-information')).click();
+    
+    //Check review page
+    exposeFormElement(formType, "review");
+}

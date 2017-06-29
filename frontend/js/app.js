@@ -51,7 +51,7 @@ var metadataEditorApp = angular
 		templateUrl:  partialsPrefix + 'contacts.html'
 	    })
 
-
+	
 	    .state('dublinForm',{
 		templateURL: 'partials/dublin.html'
 	    })
@@ -90,6 +90,7 @@ var metadataEditorApp = angular
  	$urlRouterProvider
 	    .when(/iso/i, '/iso')
 	    .when(/dublin/i, '/dublin')
+	    .when(/admin/i, '/admin')
 	    .otherwise('/iso');
 
 	//Set Angular environment variables
@@ -101,13 +102,16 @@ var metadataEditorApp = angular
 	    },
 	    vars: {
 		development: {
-		    uploadUrl: 'http://localhost:4000/api/upload'
+		    uploadUrl: 'http://localhost:4000/api/upload',
+		    backendUrl: "http://localhost:4000"
 		},
 		developmentServer: {
-		    uploadUrl: 'https://nknportal-dev.nkn.uidaho.edu/portal/simpleUpload/upload.php'
+		    uploadUrl: 'https://nknportal-dev.nkn.uidaho.edu/portal/simpleUpload/upload.php',
+		    backendUrl: "http://nknportal-dev.nkn.uidaho.edu/"
 		},
 		production: {
-		    uploadUrl: 'https://nknportal-prod.nkn.uidaho.edu/portal/simpleUpload/upload.php'
+		    uploadUrl: 'https://nknportal-prod.nkn.uidaho.edu/portal/simpleUpload/upload.php',
+		    backendUrl: "http://nknportal-prod.nkn.uidaho.edu/"
 		}
 	    }
 	});

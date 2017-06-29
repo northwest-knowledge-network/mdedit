@@ -304,13 +304,13 @@ a.dropdown-toggle, a.btn {
 }
     
 /* enter animation */
-#form-views.ng-enter            { 
+#form-views.ng-enter { 
     -webkit-animation:slideInRight 0.5s both ease;
 	-moz-animation:slideInRight 0.5s both ease;
 	animation:slideInRight 0.5s both ease; 
 }
 
-#form-views.ng-leave            { 
+#form-views.ng-leave { 
     -webkit-animation:slideOutLeft 0.5s both ease;
 	-moz-animation:slideOutLeft 0.5s both ease;
 	animation:slideOutLeft 0.5s both ease; 
@@ -465,6 +465,76 @@ a.initial:after {
 	min-height:300px;
 }
 
+/* Table of results for admin view */
+.admin-results-table {
+    width:100%;
+}
+
+/*Width of table cells in admin results page */
+.admin-results-title {
+    width: 30%;
+}
+
+.admin-results-pub-date {
+    width: 20%;
+}
+
+.admin-results-summary {
+    width: 50%;
+}
+
+/* Table for admin page numbers from pagination of 
+   return results.
+*/
+.page-numbers {
+    border: 2px solid black;
+    padding: 10px;
+    margin-left: 50%;
+    margin-right: 50%;
+    cursor: pointer;
+    color: blue;
+}
+
+.page-table {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.page-table td:hover {
+    background-color:#e1e1e1;
+}
+
+/* Upper and lower borders for rows of admin record list */
+.admin-record-list {
+    border-bottom: 1px solid black;
+    border-top: 1px solid black;
+}
+
+.admin-menu {
+    background-color: #cccccc;
+    width: 80%;
+}
+
+.admin-menu td{
+    padding:5px;
+}
+
+.admin-menu .admin-search {
+    width:100%;
+}
+
+.admin-menu .admin-search input {
+    width: 100%;
+}
+
+.admin-menu th {
+    padding: 10px;
+}
+
+.results-row {
+    cursor:pointer;
+}
+
 /* Setting the Resource url contact association select box to align
    with sibling elements
 */
@@ -475,3 +545,10 @@ a.initial:after {
 .resource-contact-select, .resource-contact-description {
     margin-left: 20px;
 }
+
+/* Admin Panel Styling */
+/* Delete selected records button styling */
+#delete-selected-records {
+	float:right;
+}
+

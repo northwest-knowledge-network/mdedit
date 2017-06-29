@@ -1,0 +1,39 @@
+Backlog for Admin View
+
+*Search for records
+	-*Search bar
+	-*Sort results based on attribute of record
+	-*List results
+
+Edit record from search
+	-Click on record, and have it load in Metadata editor
+		-*Get oid value from record, and put it into ng-click function to find record in backend in ng-repeat statement for search results
+		-Load record into Metadata editor
+			-*Make route change from #/admin to #/iso or #/dublin to load correct editor (Casey)
+			-*Make the record load on initalization of baseController instead of loading a fresh, blank record. (Casey)
+			-*Allow for admin to save record
+				-(Cancelled) Make new route in backend to allow for admin to save record that is not theirs, or update current save record route
+				      	 -Didnt actually need to do this. Angular code had a boolean value that was either creating a new id for the record or not
+					 if the record was considered "new." Just had to set this to false to make sure the record's id wasnt being changed, so
+					 a new record with the different id was being created.
+			-Change authentication in routes to check for admin privledges for user.		 
+
+	-*Need button to switch between Admin and Editing mode
+	      -Need to make sure this only shows up for admins. Need to make sure this is secure and cannot be faked client-side. (Casey)
+	      	    -Test if $scope variable can be faked in the browser
+		    -Check and see if button can be placed in Javascript in Drupal framework (?).
+
+Update user authentication database and add attribute "admin" to authenticate as admin for a user.
+	-Talk to David about changing this database.
+	-If David gives me access to database, then update it. Otherwise, ask if he can add "admin" attribute to user table
+	-Update backend routes in python backend to allow for verification of admins				
+
+Authenticate against user database for admin rights for all operations that allow admin to edit someone else's record
+	     -Get user information, and check if admin from user database.
+	     
+
+=====================================================
+
+
+
+Current sprint ends 11/10 (Thursday) at 3:00 PM.

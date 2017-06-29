@@ -1,0 +1,20 @@
+Backlog for Admin View
+
+*Search for records
+	-*Search bar
+	-*Sort results based on attribute of record
+	-*List results
+
+Edit record from search
+	-Click on record, and have it load in Metadata editor
+		-*Get oid value from record, and put it into ng-click function to find record in backend in ng-repeat statement for search results
+		-Load record into Metadata editor
+			-Make route change from #/admin to #/iso or #/dublin to load correct editor (Casey)
+			-Make the record load on initalization of baseController instead of loading a fresh, blank record. (Casey)
+			-Allow for admin to save record
+				-Make new route in backend to allow for admin to save record that is not theirs, or update current save record route
+
+Update user authentication database and add attribute "admin" to authenticate as admin for a user.
+	-Talk to David about changing this database.
+	-If David gives me access to database, then update it. Otherwise, ask if he can add "admin" attribute to user table
+	-Update backend routes in python backend to allow for verification of admins				

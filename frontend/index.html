@@ -75,17 +75,15 @@
   </div>
 
   <div ng-app="metadataEditor">
-    <div ng-controller="BaseController as baseCtrl">
+    <div ng-controller="BaseController as baseCtrl"> 
       <div id="ngMain">
-
-        <!-- <div ng-controller="BaseController as baseCtrl"> -->
-	 <br>
-         <div ng-include="partialsPrefix + 'partials/appHeader.html'"></div>
-	 
-         <div id="main-container">
-           <div ng-view></div>
-         </div>
-      </div>
+	<br>
+        <div ng-include="partialsPrefix + 'partials/appHeader.html'"></div>
+	
+        <div id="main-container">
+          <div ng-view></div>
+        </div>
+      </div>  
     </div>
   </div>
 </div>

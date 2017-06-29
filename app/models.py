@@ -19,7 +19,13 @@ class Contact(db.EmbeddedDocument):
     phone = db.StringField(max_length=255)
     resource_url = db.ListField(db.StringField(max_length=255))
 
-
+    
+class Identifier(db.EmbeddedDocument):
+    """Class for Identifier, which holds DOI's, ARK's, and whatever other identifier you want"""
+    type = db.StringField(max_length=255)
+    id = db.StringField(max_length=255)
+    
+    
 class Metadata(db.Document):
     """MongoDB Document representation of metadata"""
     # basic info
@@ -35,6 +41,9 @@ class Metadata(db.Document):
     #for last published date for metadata record published to server
     md_pub_date = db.DateTimeField()
 
+    #If record has been submitted for publication or not
+    published = db.StringField(max_length=10)
+    
     ## detailed info
     # detailed info lists
     topic_category = db.ListField(db.StringField(max_length=255))
@@ -76,9 +85,15 @@ class Metadata(db.Document):
     start_date = db.DateTimeField()
     end_date = db.DateTimeField()
 
+    #identifiers: ID, DOI, and ARK
+    identifiers = db.ListField(db.EmbeddedDocumentField('Identifier'))
+    
     # request for DOI or ARK
     doi_ark_request = db.StringField(max_length=255)
 
+    # Assigned DOI or ARK
+    assigned_doi_ark = db.StringField(max_length=255)
+    
     # request to be searchable on DataOne
     data_one_search = db.StringField(max_length=255)
     
@@ -102,6 +117,46 @@ class Metadata(db.Document):
                        for k in self._fields_ordered])
 
 
+class Metadata_Subset(db.Document):
+    """MongoDB Document representation of subset of metadata for Elasticsearch. """
+    # basic info
+    title = db.StringField(max_length=255)
+    abstract = db.StringField(max_length=3000)
+
+    # contacts
+    contacts = db.ListField(db.EmbeddedDocumentField('Contact'))
+
+    # extents
+    sbeast = db.FloatField()
+    sbnorth = db.FloatField()
+    sbsouth = db.FloatField()
+    sbwest = db.FloatField()
+
+    #Keywords
+    keywords = db.ListField(db.StringField(max_length=512))
+    
+    #Path on file system to XML file
+    mdXmlPath = db.StringField(max_length=256)
+    
+    #identifiers: ID, DOI, and ARK
+    #identifiers = db.ListField(db.EmbeddedDocumentField('Identifier'))
+    identifiers = db.ListField(db.StringField(max_length=255))
+
+
+    uid = db.StringField(max_length=256)
+
+    #Source of the record: metadata editor or harvest?
+    record_source = db.StringField(max_length=255)
+
+    meta = {'allow_inheritance': True}
+
+    def __str__(self):
+
+        return \
+            '\n'.join(["{}: {}".format(k, self[k])
+                       for k in self._fields_ordered])
+
+    
 class Attachment(db.EmbeddedDocument):
     id = db.ObjectIdField(required=True, default=ObjectId)
     url = db.StringField(required=True)

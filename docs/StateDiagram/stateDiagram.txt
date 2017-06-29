@@ -1,0 +1,18 @@
+@startuml
+database MongoDB
+actor Admin
+actor User
+Frontend -> Backend : Save
+Backend -> MongoDB : Update or Create Record
+User -> Frontend : Publish 
+Frontend -> Backend : Publish
+Backend -> MongoDB : Update Record
+Backend -> nknportalDevFileSystem : Write
+Admin -> GeoPortal : Approve Dataset
+GeoPortal -> postPublishScript : Copy Files Command
+postPublishScript -> datastorePublishedDirectory : Copy Files
+User -> NKNSearchResultsPage : Download File
+NKNSearchResultsPage -> download.php : Get published file
+download.php -> datastorePublishedDirectory : Get
+download.php -> User : Send file
+@enduml
