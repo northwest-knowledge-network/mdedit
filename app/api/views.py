@@ -580,7 +580,7 @@ def admin_publish_metadata_record(_oid):
 	time = datetime.now().strftime("%Y-%m-%dT%H:%M:%S") 
 
 	#Take /datastore-pre or /datastore-prod out of path to allow for different mount points in path
-	path_without_mount_dir = re.sub(r'^/datastore./', "", prod_path)
+        path_without_mount_dir = re.sub(r'^\/datastore-[a-zA-Z]*\/{1}', "", prod_path)
     	#Set up and execute the query
     	query = "INSERT INTO " + conn_param['database'] + "." + conn_param['table'] + " ([path], [md5], [isMetadata], [isCanonicalMetadata], [metadataStandard], [created], [published]) VALUES ('" + path_without_mount_dir  + "', '" + checksum + "', 'true', 'true', '" + schema_type + "', '" + time + "', '" + time + "');"
 
@@ -592,10 +592,10 @@ def admin_publish_metadata_record(_oid):
 					conn.commit()
 			except:
 				#Should move file back to preprod directory in case of failure too
-				return "Error: checksum database insertion query failure."
+                                return Response('Error: insertion in to checksum database error', status=500)
 	except:
 		#Should move file back to preprod directory in case of failure too
-		return "Error: checksum database connection failure."
+                return Response('Error: connection to checksum database error', status=500)
 
 	return jsonify(res)
 
