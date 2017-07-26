@@ -526,6 +526,17 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 			recordService.checkAdmin(status); 
 		    });
 		};
+
+		/** Re-submit for review by the data manager.
+		 */
+		$scope.regenerateXML = function(){
+		    recordService.publish($scope)
+		    .success( function (data) {
+
+			}).error(function(error, status){
+				console.log("Error: error when trying to re-generate XML.");
+			    });		    
+		};
 	    },
 	    controllerAs: 'doiArkAssignCtrl'
 	}

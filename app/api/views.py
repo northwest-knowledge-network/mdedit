@@ -987,7 +987,7 @@ def _authenticate_user_from_session(request):
 
         if username:
             return username
-        # username will be u'' if the session id was not valid; make explicit
+        # username will be '' if the session id was not valid; make explicit
         else:
             return None
 

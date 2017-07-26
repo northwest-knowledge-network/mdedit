@@ -69,7 +69,7 @@
 		<input type="text" ng-show="record.doi_ark_request == 'ARK' || (record.doi_ark_request == 'both')" ng-model="record.identifiers[2].id"></input>
 	   </div>
 	</form>
-	<button class="btn btn-primary" ng-click="saveRecord($index)">Assign</button></div></td>
+	<button class="btn btn-primary" ng-click="saveRecord($index); regenerateXML();">Assign</button></div></td>
     </tr>
   </table>
 </div>
