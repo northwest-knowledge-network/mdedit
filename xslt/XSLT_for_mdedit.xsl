@@ -161,6 +161,19 @@
                                     </gmd:dateType>
                                 </gmd:CI_Date>
                             </gmd:date>
+			    <gmd:identifier>
+			      <gmd:MD_Identifier>
+				<gmd:authority>
+				</gmd:authority>
+				<gmd:code>
+				  <gco:CharacterString>
+				    <xsl:for-each select="/root/record/identifiers/item[type = 'doi']">
+				      <xsl:value-of select="id"/>
+				    </xsl:for-each>
+				  </gco:CharacterString>
+				</gmd:code>
+			      </gmd:MD_Identifier>
+			    </gmd:identifier>
                             <!-- Enables entry for multiple authors and parses each 'item' in the citiation list in the mdedit generic xml as a separate citedResponsibleParty -->
                             <xsl:for-each select="/root/record/citation/item">
                                 <gmd:citedResponsibleParty>
