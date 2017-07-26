@@ -867,8 +867,6 @@ metadataEditorApp
 	    //Change record's 'published' attribute to 'pending' to allow for search by admin
 	    record.published = "pending";
 
-	    console.log("Printing record state: >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + scope.currentRecord.published);
-	    
             var serverReady = angular.copy(record);
 
             // do this sync (1/26 um.. what? -mt)
