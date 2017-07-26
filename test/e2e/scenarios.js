@@ -1,4 +1,3 @@
-
 'use strict';
 
 var mongo = require('mongodb');
@@ -1486,227 +1485,206 @@ function testAdminView(schemaType) {
 		//afterEach(clearCollection);
 		
 		it('the admin view button should not be clickable from /iso or /dublin paths, but should be visible on /admin',
-			function () {
+		   function () {
 			var formType = getFormType();
 			if(formType.indexOf("admin") == -1)
-			expect(element(by.id("admin-view-button")).isDisplayed()).toBe(false);
-		});
-			
-	/*		
-	it('Should change the order of the listed records when an option from the \"Sort by:\" drop down menu is selected', 
-	function(){
-	
-	
-	}); 
-	*/
-
-
-	it('Should change the number of records listed on the page', 
-		function(done) {
-		var formType;
-		browser.get('/frontend');
-		setFormType("iso");
-		formType = getFormType();
-
-		newRecords.forEach(function(item){
-
- 			//Click on setup page button		
-			exposeFormElement(formType, "setup");
-	
-        	        element(by.id('create-new-dataset')).click();
-	    
-			//Change to "basic" information page where the title and summary form input are
-			exposeFormElement(formType, "basic");
-
-			//Add a title and summary so we can differentiate between these test records
-			element(by.model('currentRecord.title')).sendKeys(item["title"]);
-		        element(by.model('currentRecord.summary')).sendKeys(item["summary"]);
-
-			//Need to change to the next form section to save the record
-			exposeFormElement(formType, "detailed");
-
-		});
-	
-		browser.get('/frontend');
-		setFormType("admin");
-		formType = getFormType();
-		browser.get('frontend/#/admin');
-
-		var dipslayedRecordsCount = 5;
-		var recordState = {"optionLabel":"Not Submitted For Review",
-				   "value": "false"};
-
-		//Set number of displayed records on page to 5 by selecting "5" from the "Number of records per page:" selector
-		element(by.id('admin-records-list-amount-select')).sendKeys(dipslayedRecordsCount.toString());
-		//Change the "Record State:" element to records that have not been submitted yet ("Not Submitted For Review").
-		element(by.id('record-state')).sendKeys(recordState.optionLabel);
-
-		element(by.id("record-state")).getAttribute('value').then( (val) => {
-			expect(val).toBe(recordState.value);	
-		});
-	
-		//Check if only 5 records are on page. Can't use element.all(by.css()) because for some reason the DOM is not clearning from 10 to 5 rows (even though only 5 are showing).
-		for(var i = 0; i < dipslayedRecordsCount; i++){
-			expect(element(by.id("record-" + i.toString() + "-false")).isPresent()).toBe(true);
-		}
-
-		//The 6th element should not be on the page
-		expect(element(by.id("record-5-false")).isPresent()).toBe(false);
-
-		//Now change the max records per page to 10, and check to see if all 7 records are displaying on the page
-		dipslayedRecordsCount = 10;
-
-		element(by.id('admin-records-list-amount-select')).sendKeys(dipslayedRecordsCount.toString());
-
-		//Check to make sure we are still showing non-submitted and non-published records
-		element(by.id("record-state")).getAttribute('value').then( (val) => {
-			expect(val).toBe('false');	
-		});
-
-		//Check if all 7 records are on page. 
-		for(var i = 0; i < newRecords.length; i++){
-			expect(element(by.id("record-" + i.toString() + "-false")).isPresent()).toBe(true);
-		}
-
-		//There should not be an 8th element on the page
-		expect(element(by.id("record-7-false")).isPresent()).toBe(false);
-
-		done();
-	});
-
-
-	it('Should change page from the publishing page to the DOI/ARK assignment page, then back to publishing page.', 
-		function() {
-
-
-		/**
-		 *	This test will check if the displayed page in the admin panel will change from the "Browse" records section
-		 *  	to the "Assign DOI/ARK" section.
-		 */
-
-		//Click on button in sidebar to switch to "Assign DOI/ARK" section
-		element(by.id("assign-doi-ark-button-browse")).click();
-
-		//Check if table on Assign DOI/ARK page is showing
-		expect(element(by.css(".assign-doi-ark-table")).isDisplayed()).toBeTruthy();
-		expect(element(by.css(".browse-records-table")).isDisplayed()).toBeFalsy();
-
-		//Click on button in sidebar to switch to "Browse" section
-		element(by.id("browse-records-button-assign")).click();
-
-		//Check if table on Assign DOI/ARK page is showing
-		expect(element(by.css(".assign-doi-ark-table")).isDisplayed()).toBeFalsy();
-		expect(element(by.css(".browse-records-table")).isDisplayed()).toBeTruthy();
-
+			    expect(element(by.id("admin-view-button")).isDisplayed()).toBe(false);
+		   });
 		
-	}); 
+		it('Should change the number of records listed on the page', 
+		   function(done) {
+		       var formType;
+		       browser.get('/frontend');
+		       setFormType("iso");
+		       formType = getFormType();
 
-
-
-	it('Should change the visible records from records not submitted yet, to submitted records, then to published records',
-		function() {
+		       newRecords.forEach(function(item){
+			       
+			       //Click on setup page button		
+			       exposeFormElement(formType, "setup");
+			       
+			       element(by.id('create-new-dataset')).click();
+			       
+			       //Change to "basic" information page where the title and summary form input are
+			       exposeFormElement(formType, "basic");
+			       
+			       //Add a title and summary so we can differentiate between these test records
+			       element(by.model('currentRecord.title')).sendKeys(item["title"]);
+			       element(by.model('currentRecord.summary')).sendKeys(item["summary"]);
+			       
+			       //Need to change to the next form section to save the record
+			       exposeFormElement(formType, "detailed");
+			       
+			   });
+		       
+		       browser.get('/frontend');
+		       setFormType("admin");
+		       formType = getFormType();
+		       browser.get('frontend/#/admin');
+		       
+		       var dipslayedRecordsCount = 5;
+		       var recordState = {"optionLabel":"Not Submitted For Review",
+					  "value": "false"};
+		       
+		       //Set number of displayed records on page to 5 by selecting "5" from the "Number of records per page:" selector
+		       element(by.id('admin-records-list-amount-select')).sendKeys(dipslayedRecordsCount.toString());
+		       //Change the "Record State:" element to records that have not been submitted yet ("Not Submitted For Review").
+		       element(by.id('record-state')).sendKeys(recordState.optionLabel);
+		       
+		       element(by.id("record-state")).getAttribute('value').then( (val) => {
+			       expect(val).toBe(recordState.value);	
+			   });
+		       
+		       //Check if only 5 records are on page. Can't use element.all(by.css()) because for some reason the DOM is not clearning from 10 to 5 rows (even though only 5 are showing).
+		       for(var i = 0; i < dipslayedRecordsCount; i++){
+			   expect(element(by.id("record-" + i.toString() + "-false")).isPresent()).toBe(true);
+		       }
+		       
+		       //The 6th element should not be on the page
+		       expect(element(by.id("record-5-false")).isPresent()).toBe(false);
+		       
+		       //Now change the max records per page to 10, and check to see if all 7 records are displaying on the page
+		       dipslayedRecordsCount = 10;
+		       
+		       element(by.id('admin-records-list-amount-select')).sendKeys(dipslayedRecordsCount.toString());
+		       
+		       //Check to make sure we are still showing non-submitted and non-published records
+		       element(by.id("record-state")).getAttribute('value').then( (val) => {
+			       expect(val).toBe('false');	
+			   });
+		       
+		       //Check if all 7 records are on page. 
+		       for(var i = 0; i < newRecords.length; i++){
+			   expect(element(by.id("record-" + i.toString() + "-false")).isPresent()).toBe(true);
+		       }
+		       
+		       //There should not be an 8th element on the page
+		       expect(element(by.id("record-7-false")).isPresent()).toBe(false);
+		       
+		       done();
+		   });
 		
-		// This test checks to see if the displayed records are of the correct type: not submitted yet, submitted and awainting review,
-		 //  and published records. 
-		 
-	       /* Fill out one record, but don't publish. Only need to fill out partial data to save 
-		* (also saves time during testing to not complete record).
-		*/
-
-		var formType;
-		browser.get('/frontend');
-		setFormType("iso");
-		formType = getFormType();
-
-		//Click on setup page button		
-		exposeFormElement(formType, "setup");
 		
-		element(by.id('create-new-dataset')).click();
+		it('Should change page from the publishing page to the DOI/ARK assignment page, then back to publishing page.', 
+		   function() {
+		       
+		       
+		       /**
+			*	This test will check if the displayed page in the admin panel will change from the "Browse" records section
+			*  	to the "Assign DOI/ARK" section.
+			*/
+		       
+		       //Click on button in sidebar to switch to "Assign DOI/ARK" section
+		       element(by.id("assign-doi-ark-button-browse")).click();
+		       
+		       //Check if table on Assign DOI/ARK page is showing
+		       expect(element(by.css(".assign-doi-ark-table")).isDisplayed()).toBeTruthy();
+		       expect(element(by.css(".browse-records-table")).isDisplayed()).toBeFalsy();
+		       
+		       //Click on button in sidebar to switch to "Browse" section
+		       element(by.id("browse-records-button-assign")).click();
+		       
+		       //Check if table on Assign DOI/ARK page is showing
+		       expect(element(by.css(".assign-doi-ark-table")).isDisplayed()).toBeFalsy();
+		       expect(element(by.css(".browse-records-table")).isDisplayed()).toBeTruthy();
+		       
+		       
+		   }); 
 		
-		//Change to "basic" information page where the title and summary form input are
-		exposeFormElement(formType, "basic");
 		
-		//Add a title and summary so we can differentiate between these test records
-		element(by.model('currentRecord.title')).sendKeys(completeRecord.title);
-		element(by.model('currentRecord.summary')).sendKeys(completeRecord.summary);
-
-		//Need to change to the next form section to save the record
-		exposeFormElement(formType, "detailed");
 		
-	        //Fill out complete record
-		exposeFormElement(formType, "setup");
-    
-		//Creating an ISO record, so click on the appropriate button.
-		element(by.id('create-new-dataset')).click();
+		it('Should change the visible records from records not submitted yet, to submitted records, then to published records',
+		   function() {
+		       
+		       // This test checks to see if the displayed records are of the correct type: not submitted yet, submitted and awainting review,
+		       //  and published records. 
+		       
+		       /* Fill out one record, but don't publish. Only need to fill out partial data to save 
+			* (also saves time during testing to not complete record).
+			*/
+		       
+		       var formType;
+		       browser.get('/frontend');
+		       setFormType("iso");
+		       formType = getFormType();
+		       
+		       //Click on setup page button		
+		       exposeFormElement(formType, "setup");
+		       
+		       element(by.id('create-new-dataset')).click();
+		       
+		       //Change to "basic" information page where the title and summary form input are
+		       exposeFormElement(formType, "basic");
+		       
+		       //Add a title and summary so we can differentiate between these test records
+		       element(by.model('currentRecord.title')).sendKeys(completeRecord.title);
+		       element(by.model('currentRecord.summary')).sendKeys(completeRecord.summary);
+		       
+		       //Need to change to the next form section to save the record
+		       exposeFormElement(formType, "detailed");
+		       
+		       //Fill out complete record
+		       exposeFormElement(formType, "setup");
+		       
+		       //Creating an ISO record, so click on the appropriate button.
+		       element(by.id('create-new-dataset')).click();
+		       
+		       element(by.id("add-coordinate-system")).click();
+		       
+		       /* Make a copy of the record object and change the title */
+		       var submittedRecord = createRecordObject();
+		       submittedRecord.title = "Record Two";
+		       
+		       fillOutForm(submittedRecord);
+		       
+		       //Now, on the review page, click "Submit"
+		       element(by.id('record-options-publish')).click();
+		       //Make sure submit modal appears
+		       expect(element(by.id("submitModal")).isPresent()).toBe(true);
+		       //Close the modal
+		       element(by.id('close-modal-button')).click();
+		       
+		       //Now change to admin panel to inspect records
+		       setFormType("admin");
+		       formType = getFormType();
+		       browser.get('frontend/#/admin');
+		       
+		       //By default, the record showing on page load are the submitted records. Change to unsubmitted records to make sure the first record is displaying there.
+		       changeRecordsDisplayed("not-submitted");
+		       
+		       browser.sleep(1000);
+		       
+		       //There should be one record with the title "Record One"
+		       expect(element(by.id("record-0-false")).isPresent()).toBe(true);
+		       element(by.id('record-0-title')).getText().then( (text) => {
+			       expect(text.trim()).toBe('Record One');
+			   });
+		       
+		       //There should be one record showing in the list with the title "Record Two" 
+		       //changeRecordsDisplayed("submitted");
+		       element(by.id('record-state')).sendKeys("Awaiting Review");
+		       browser.sleep(1000);
+		       //There should be one record with the title "Record Two"
+		       expect(element(by.id("record-0-pending")).isPresent()).toBe(true);
+		       element(by.id('record-0-title')).getText().then( (text) => {
+			       expect(text.trim()).toBe('Record Two');
+			   });
+		       
+		       //There should be no records displayed for published records
+		       element(by.id('record-state')).sendKeys("Published");
+		       browser.sleep(1000);
+		       //There should be one record with the title "Record Two"
+		       expect(element(by.id("record-0-true")).isPresent()).toBe(true);
+		       element(by.id('record-0-title')).getText().then( (text) => {
+			       expect(text.trim()).toBe('No results!');
+			   });
+		       
+		       //Now we publish the record, and check to see if it is in the "Published" state
+		       //element(by.id('admin-publish-button')).click();
+		       //Need to come up with backend routes that can mimic Elasticsearch response
+		       
+		   });
 		
-		element(by.id("add-coordinate-system")).click();
-		
-		/* Make a copy of the record object and change the title */
-		var submittedRecord = createRecordObject();
-		submittedRecord.title = "Record Two";
-
-	        fillOutForm(submittedRecord);
-		
-		//Now, on the review page, click "Submit"
-		element(by.id('record-options-publish')).click();
-		//Make sure submit modal appears
-		expect(element(by.id("submitModal")).isPresent()).toBe(true);
-		//Close the modal
-		element(by.id('close-modal-button')).click();
-		
-		//Now change to admin panel to inspect records
-		setFormType("admin");
-		formType = getFormType();
-		browser.get('frontend/#/admin');
-		
-		//By default, the record showing on page load are the submitted records. Change to unsubmitted records to make sure the first record is displaying there.
-		changeRecordsDisplayed("not-submitted");
-
-		browser.sleep(1000);
-
-		//There should be one record with the title "Record One"
-		expect(element(by.id("record-0-false")).isPresent()).toBe(true);
-		element(by.id('record-0-title')).getText().then( (text) => {
-			expect(text.trim()).toBe('Record One');
-		    });
-		
-		//There should be one record showing in the list with the title "Record Two" 
-		//changeRecordsDisplayed("submitted");
-		element(by.id('record-state')).sendKeys("Awaiting Review");
-		browser.sleep(1000);
-		//There should be one record with the title "Record Two"
-		expect(element(by.id("record-0-pending")).isPresent()).toBe(true);
-		element(by.id('record-0-title')).getText().then( (text) => {
-			expect(text.trim()).toBe('Record Two');
-		    });
-
-		//There should be no records displayed for published records
-		element(by.id('record-state')).sendKeys("Published");
-		browser.sleep(1000);
-		//There should be one record with the title "Record Two"
-		expect(element(by.id("record-0-true")).isPresent()).toBe(true);
-		element(by.id('record-0-title')).getText().then( (text) => {
-			expect(text.trim()).toBe('No results!');
-		    });
-
-		//Now we publish the record, and check to see if it is in the "Published" state
-		//element(by.id('admin-publish-button')).click();
-		//Need to come up with backend routes that can mimic Elasticsearch response
-
-	});
-
-
-/*
-	it('Should move the uploaded data file from /datastore-pre/uploads to /datastore-pre/published when the "Publish" button is clicked', 
-	   function() {
-	   
-	});
-
-	it('Should search for and find specific nodes from the possible nodes', 
-	   function() {
-	   
-	});
-*/
 	clearCollection();
   });
 }
