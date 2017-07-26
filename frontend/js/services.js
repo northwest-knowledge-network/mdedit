@@ -739,6 +739,16 @@ metadataEditorApp
 	    );
 	};
 
+	/** 
+ 	 * Check if current user is admin by authenticating admin though backend route
+ 	 */
+	var authenticateAdmin = function(){
+		return $http.post(
+	                   '//' + hostname + '/api/authenticate-admin/',
+		           {'session_id':session_id}
+		);
+	};
+
 	//Unpublish a record
 	var unpublishRecord = function(recordID, scope){
 		scope.currentRecord.published = "pending";
@@ -857,8 +867,6 @@ metadataEditorApp
 	    //Change record's 'published' attribute to 'pending' to allow for search by admin
 	    record.published = "pending";
 
-	    console.log("Printing record state: >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + scope.currentRecord.published);
-	    
             var serverReady = angular.copy(record);
 
             // do this sync (1/26 um.. what? -mt)
