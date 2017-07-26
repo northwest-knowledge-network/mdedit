@@ -17,3 +17,6 @@ docs/_build
 docs/devServerInstall.aux
 docs/devServerInstall.log
 docs/devServerInstall.tex~
+docs/SSDD/*.aux
+docs/SSDD/*.log
+docs/SSDD/*.tex
