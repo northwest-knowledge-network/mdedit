@@ -228,7 +228,7 @@ metadataEditorApp
 	console.log(record);
 
 	//Change to hostname service function instead of hard coded host name
-	elasticsearchRecord.mdXmlPath = "https://nknportal.nkn.uidaho.edu/api/metadata/" + record._id.$oid + "/metadata.xml";
+	elasticsearchRecord.mdXmlPath = "http://www.northwestknowledge.net/data/" + record._id.$oid + "/metadata.xml";
 
 	//Set lat and lon coordinates 
  	elasticsearchRecord.sbeast = record.east_lon;
