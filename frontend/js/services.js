@@ -314,7 +314,9 @@ metadataEditorApp
     data_one_search: 'false',
     reference_system: '',
     attachments: [],
-    published: 'false'
+    published: 'false',
+    associated_metadata:'',
+    associated_metadata_type:''
 })
 
 .value('emptyDCRecord',
@@ -372,7 +374,9 @@ metadataEditorApp
     data_one_search: 'false',
     reference_system: '',
     attachments: [],
-    published: 'false'
+    published: 'false',
+    associated_metadata:'',
+    associated_metadata_type:''
 })
 //This record is a reduced set of attributes used by Elasticsearch. 
 .value('elasticsearchRecord', {

@@ -657,7 +657,7 @@ def publish_metadata_record(_oid):
                 rep = requests.post(nkn_upload_url,{'uuid': str_id, 'session_id': session_id}, files={'uploadedfile': open(save_path, 'rb')})
 
                 #If production environment, then send email about new dataset 
-                email_publishing_group(record.title, record.username, record.uid)
+                #email_publishing_group(record.title, record.username, record.uid)
 
 	    #Save XML file of ISO record to backend server's file system
 #            if 'localhost' not in request.base_url:

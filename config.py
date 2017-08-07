@@ -7,12 +7,12 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 PREPROD_DIRECTORY = (os.environ.get('MDEDIT_PREPROD_DIRECTORY') or
                          'local-preprod-directory')
-MAIL_SERVER = ""
-MAIL_PORT = ""
-MAIL_USE_TLS = False
-MAIL_USE_SSL = True
-MAIL_USERNAME = (os.environ.get('MAIL_USERNAME') or 'test@example.com')
-MAIL_PASSWORD = (os.environ.get('MAIL_PASSWORD') or 'password')
+#MAIL_SERVER = ""
+#MAIL_PORT = ""
+#MAIL_USE_TLS = False
+#MAIL_USE_SSL = True
+#MAIL_USERNAME = (os.environ.get('MAIL_USERNAME') or 'test@example.com')
+#MAIL_PASSWORD = (os.environ.get('MAIL_PASSWORD') or 'password')
 
 class Config:
     PRODUCTION = False
@@ -82,12 +82,12 @@ class ProductionConfig(Config):
     SIMPLE_UPLOAD_URL = "https://nknportal-prod.nkn.uidaho.edu/portal/simpleUpload/upload.php"
     PREPROD_DIRECTORY = "/datastore-prod/uploads"
     PROD_DIRECTORY = "/datastore-prod/published"
-    MAIL_SERVER = ""
-    MAIL_PORT = ""
-    MAIL_USE_TLS = False
-    MAIL_USE_SSL = True
-    MAIL_USERNAME = (os.environ.get('MAIL_USERNAME') or 'test@example.com')
-    MAIL_PASSWORD = (os.environ.get('MAIL_PASSWORD') or 'password')
+#    MAIL_SERVER = ""
+#    MAIL_PORT = ""
+#    MAIL_USE_TLS = False
+#    MAIL_USE_SSL = True
+#    MAIL_USERNAME = (os.environ.get('MAIL_USERNAME') or 'test@example.com')
+#    MAIL_PASSWORD = (os.environ.get('MAIL_PASSWORD') or 'password')
     
 config = {
     'development': DevelopmentConfig,

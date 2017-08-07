@@ -93,6 +93,12 @@ class Metadata(db.Document):
 
     # Assigned DOI or ARK
     assigned_doi_ark = db.StringField(max_length=255)
+
+    # Link to associated Metadata or Data
+    associated_metadata = db.StringField(max_length=255)
+
+    # Type of link to associated Metadata or Data
+    associated_metadata_type = db.StringField(max_length=255)
     
     # request to be searchable on DataOne
     data_one_search = db.StringField(max_length=255)

@@ -182,7 +182,25 @@ var metadataEditorApp = angular
         'zipcode': 'Zip Code',
         'country': 'Country',
         'phone': 'Phone'
-    }
+    },
+	
+	linkTypes:[
+              {"title":"Download link", 
+	       "value":"download"
+	      },
+              {"title":"Information link", 
+	       "value":"information"
+	      }, 
+              {"title":"Online instructions for requesting the resource", 
+	       "value":"offlineAccess"
+	      },
+              {"title":"Online order process for obtening the resource",
+	       "value":"order"
+	      },
+              {"title":"Online search interface",
+	       "value":"search"
+	      }
+        ]
 }
 ).constant('emptyContact', {
       'name': '', 'email': '', 'org': '', 'address': '',

@@ -28,7 +28,7 @@
     <input type="file" id="attachment-select"
 	   value="Attach File" ng-show="currentRecord._id"
 	   file-model="attachmentInfo.newAttachment"
-	   required >
+	   ng-required="!currentRecord.associated_metadata" >
     <button id="attach-file-button" class="btn btn-primary btn-contact"
             ng-show="attachmentInfo.newAttachment"
             ng-click="attachFile()"
@@ -36,5 +36,19 @@
       Attach File
     </button>
     </input>
+    <div>
+      <h5>Existing Data</h5>
+      <strong>If this metadata refers to existing data or an existing metadata record please enter a link to the data or metadata below:</strong>
+      <div>
+	<input id="associated-metadata-input" tabindex=1 style="width:95%" type="url"
+               ng-model="currentRecord.associated_metadata" maxlength="254" ng-required="currentRecord.attachments[0] == ''" />	
+	<select tabindex=20 id="associated-metadata-type-selector" 
+		ng-options="item.value as item.title for item in linkTypes"
+		ng-model="currentRecord.associated_metadata_type" ng-multiple="false"
+		ng-required="currentRecord.associated_metadata != ''" >
+	  <option value=""></option>
+	</select>
+      </div>
+    </div>
   </div>
 </div>

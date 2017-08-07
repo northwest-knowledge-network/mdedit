@@ -162,11 +162,14 @@ metadataEditorApp.controller('BaseController',
           $scope.minute_seconds.push(i);
         }
 
+	//Loading constants from js/app.js
         $scope.knownDataFormats = formOptions.knownDataFormats;
 
         $scope.spatialDataOptions = formOptions.spatialDataOptions;
 
         $scope.hierarchyLevels = formOptions.hierarchyLevels;
+
+	$scope.linkTypes = formOptions.linkTypes;
 
         //for user sorting and filtering of records list, sets defaults
         $scope.sortType = '-last_mod_date';
@@ -1070,11 +1073,6 @@ metadataEditorApp.controller('BaseController',
 		    formComplete = false;
 		    break;
 		}
-		//If attachments array's length in currentRecord is 0 (i.e. no files have been attached),
-		//then form for "dataFormats" is not complete.
-		else if($scope.currentRecord.attachments.length == 0)
-		    formComplete = false;
-		
 		break;
 	    default:
 		break;
