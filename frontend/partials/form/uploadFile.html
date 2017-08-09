@@ -2,53 +2,75 @@
   <h2 class="section-header">
     <span class="glyphicon glyphicon-list-alt"></span> Upload File
   </h2>
-
   <div class="subform">
     <h4 class="attribute-label" id="attachment-header">Associated Data</h4>
-
-    <h5>
-      <strong>Please contact <a href="mailto:portal@northwestknowledge.net?subject=NKN Metadata Editor" alt="email NKN">NKN</a>
-      </strong>if you have questions or if the data associated with your record are <strong>larger than 10GB</strong>.
-    </h5>
-    
     <ol>
-      <li ng-repeat="att in currentRecord.attachments">
-	<a ng-href="{{att.url}}">{{att.url | filename}}</a>
-	(<a id="{{'remove-attachment-' + $index}}" ng-click="detachFile(att.id.$oid)" style="color:red">remove</a>)
+      <li><h5>File upload (and/or):</h5>
+	<div class="file-upload">
+	  <h5>
+	    <strong>Please contact <a href="mailto:portal@northwestknowledge.net?subject=NKN Metadata Editor" alt="email NKN">NKN</a>
+	    </strong>if you have questions or if the data associated with your record are <strong>larger than 10GB</strong>.
+	  </h5>
+	  
+	  <ol>
+	    <li ng-repeat="att in currentRecord.attachments">
+	      <a ng-href="{{att.url}}">{{att.url | filename}}</a>
+	      (<a id="{{'remove-attachment-' + $index}}" ng-click="detachFile(att.id.$oid)" style="color:red">remove</a>)
+	    </li>
+	  </ol>
+	  <div id="attach-file-div">
+	    <input type="button" class="btn btn-primary btn-contact disabled"
+		   value="Please save a draft to add files"
+	       ng-hide="currentRecord._id"
+		   />
+	  </div>
+	  <!-- <label for="fileSelect">Select file:</label> -->
+	  <input type="file" id="attachment-select"
+	     value="Attach File" ng-show="currentRecord._id"
+		 file-model="attachmentInfo.newAttachment"
+		 ng-required="!currentRecord.associated_metadata" >
+	          <button id="attach-file-button" class="btn btn-primary btn-contact"
+			  ng-show="attachmentInfo.newAttachment"
+			  ng-click="attachFile()"
+			  >
+		    Attach File
+		  </button>
+          </input>
+	</div>
+      </li>
+      <li>
+	<div>
+	  <h5>Existing Data</h5>
+	  <div class="associated-data-subsection">
+	    
+	    <strong>If this metadata refers to existing data or an existing metadata record please enter a link to the data or metadata below:</strong>
+	    <div>
+	      <input id="associated-metadata-input" tabindex=1 style="width:95%" type="url"
+		     ng-model="currentRecord.associated_metadata" maxlength="254" ng-required="currentRecord.attachments[0] == ''" />	
+	      <h6>This link is a (select one option below):</h6>
+	      <select tabindex=20 id="associated-metadata-type-selector" 
+		      ng-options="item.value as item.title for item in linkTypes"
+		      ng-model="currentRecord.associated_metadata_type" ng-multiple="false"
+		      ng-required="currentRecord.attachments[0] == ''" >
+		<option value=""></option>
+	      </select>
+	      <h6>This file is approximately (optional):</h6>
+	      <input id="associated-metadata-file-size" tabindex=1 style="width:10%" type="number"
+		     ng-model="currentRecord.associated_metadata_file_size" />	
+	      <select tabindex=20 id="associated-metadata-size-selector" 
+		      ng-options="item for item in associatedDataSizeUnit"
+		      ng-model="currentRecord.associated_metadata_size_unit" ng-multiple="false">
+		<option value=""></option>
+	      </select>
+	      <h6>Desription of the link (optional):</h6>
+	      <textarea id="associated_metadata_description" style="width:100%" tabindex=1 rows="3"
+			ng-model="currentRecord.associated_metadata_description">
+	      </textarea>
+	    </div>
+	  </div>
+	</div>
       </li>
     </ol>
-    
-    <div id="attach-file-div">
-      <input type="button" class="btn btn-primary btn-contact disabled"
-	     value="Please save a draft to add files"
-	     ng-hide="currentRecord._id"
-	     />
-    </div>
-    <!-- <label for="fileSelect">Select file:</label> -->
-    <input type="file" id="attachment-select"
-	   value="Attach File" ng-show="currentRecord._id"
-	   file-model="attachmentInfo.newAttachment"
-	   ng-required="!currentRecord.associated_metadata" >
-    <button id="attach-file-button" class="btn btn-primary btn-contact"
-            ng-show="attachmentInfo.newAttachment"
-            ng-click="attachFile()"
-	    >
-      Attach File
-    </button>
-    </input>
-    <div>
-      <h5>Existing Data</h5>
-      <strong>If this metadata refers to existing data or an existing metadata record please enter a link to the data or metadata below:</strong>
-      <div>
-	<input id="associated-metadata-input" tabindex=1 style="width:95%" type="url"
-               ng-model="currentRecord.associated_metadata" maxlength="254" ng-required="currentRecord.attachments[0] == ''" />	
-	<select tabindex=20 id="associated-metadata-type-selector" 
-		ng-options="item.value as item.title for item in linkTypes"
-		ng-model="currentRecord.associated_metadata_type" ng-multiple="false"
-		ng-required="currentRecord.associated_metadata != ''" >
-	  <option value=""></option>
-	</select>
-      </div>
-    </div>
   </div>
 </div>
+

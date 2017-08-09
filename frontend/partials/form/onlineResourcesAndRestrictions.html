@@ -34,29 +34,47 @@
 			ng-click="removeOnlineResource($index)">Remove </button>
               </div>
             </div>
-	    <div class="row">
+	    <div class="row resource-link-description">
 	      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-		<!-- Associate a URL with a contact -->
-		<h5 class="resource-contact-description">If this URL is associated with a Data Access Contact, select Contact below:</h5>
-		<select  class="resource-contact-select" ng-model="accessNames[$index]" ng-options="contact.name as contact.name for contact in currentRecord.access" ng-change="associateContactResource($index, currentRecord.online[$index])">
+		<h6>This link is a (select one option below):</h6>
+		<select tabindex=20 id="associated-metadata-type-selector"
+			ng-options="item.value as item.title for item in linkTypes"
+			ng-model="currentRecord.online_description[$index].type" ng-multiple="false"
+			ng-required="currentRecord.attachments[0] == ''" >
+                <option value=""></option>
 		</select>
 	      </div>
 	    </div>
+	    <div class="row resource-link-description">
+	      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<h6>Desription of the link (optional):</h6>
+		<textarea id="associated_metadata_description" style="width:100%" tabindex=1 rows="3"
+                          ng-model="currentRecord.online_description[$index].description">
+		</textarea>
+	      </div>
+	    </div>
+	    <div class="row resource-link-description">
+	      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<!-- Associate a URL with a contact -->
+		  <h5>If this URL is associated with a Data Access Contact, select Contact below:</h5>
+		  <select  class="resource-contact-select" ng-model="accessNames[$index]" ng-options="contact.name as contact.name for contact in currentRecord.access" ng-change="associateContactResource($index, currentRecord.online[$index])">
+		  </select>
+	      </div>
+	    </div>
           </div>
-        </div>
+	</div>
       </div>
       <div id="online-buttons">
-        <input type="button" tabindex=21 class="btn btn-primary btn-contact"
+	<input type="button" tabindex=21 class="btn btn-primary btn-contact"
                ng-click="addOnlineResource()" value="Add an Online Resource"
 	       maxlength="254" />
       </div>
     </form>
-
   </div>
-
-
+  
+  
   <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-
+    
     <a class="anchor" name="online"></a>
     <h2 class="section-header">
       <span class="mega-octicon octicon-issue-opened"></span>  Use Restrictions
@@ -75,8 +93,8 @@
         </textarea>
       </form>
     </div>
-
+    
   </div>
-
+  
 </div>
 

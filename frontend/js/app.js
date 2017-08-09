@@ -200,7 +200,14 @@ var metadataEditorApp = angular
               {"title":"Online search interface",
 	       "value":"search"
 	      }
-        ]
+		   ],
+
+	dataSizeUnit: [
+		       "kB",
+	 	       "MB",
+		       "GB",
+		       "TB"
+		       ]
 }
 ).constant('emptyContact', {
       'name': '', 'email': '', 'org': '', 'address': '',

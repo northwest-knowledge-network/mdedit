@@ -546,9 +546,19 @@ a.initial:after {
     margin-left: 20px;
 }
 
+.resource-link-description {
+    margin-left:10px; 
+    margin-right:10px;
+}
+
 /* Admin Panel Styling */
 /* Delete selected records button styling */
 #delete-selected-records {
 	float:right;
+}
+
+/* Upload page  */
+.associated-data-subsection, .file-upload {
+     margin-left:3%;
 }
 

@@ -286,7 +286,19 @@ metadataEditorApp
     
     data_format: [''],
     compression_technique: '',
+	//online was the original string array, and we needed to make an array of objects later for the 
+	//data in online_descriptions related to the url stored in "online" but we can't update 
+	//the MongoDB in place to convert the "online" strings to JSON objects. This extra array is a byproduct
+	//of scope-creep. And we can't just change to array of objects because it will break
+	//compatibility with existing records already in the system. 
     online: [''],
+    online_description: [
+	{
+	    "type":"",
+	    "description":""
+	}
+    ],
+
     use_restrictions: '',
 
     citation: [{
@@ -316,7 +328,10 @@ metadataEditorApp
     attachments: [],
     published: 'false',
     associated_metadata:'',
-    associated_metadata_type:''
+    associated_metadata_type:'',
+    associated_metadata_description:'',
+    associated_metadata_size_unit:'',
+    associated_metadata_file_size:''
 })
 
 .value('emptyDCRecord',
@@ -347,6 +362,12 @@ metadataEditorApp
     data_format: [''],
     compression_technique: '',
     online: [''],
+    online_description: [
+	{
+	    "type":"",
+	    "description":""
+	}
+    ],
     use_restrictions: '',
 
     citation: [{
@@ -376,7 +397,10 @@ metadataEditorApp
     attachments: [],
     published: 'false',
     associated_metadata:'',
-    associated_metadata_type:''
+    associated_metadata_type:'',
+    associated_metadata_description:'',
+    associated_metadata_size_unit:'',
+    associated_metadata_file_size:''
 })
 //This record is a reduced set of attributes used by Elasticsearch. 
 .value('elasticsearchRecord', {

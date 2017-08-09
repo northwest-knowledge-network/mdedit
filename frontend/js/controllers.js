@@ -171,6 +171,9 @@ metadataEditorApp.controller('BaseController',
 
 	$scope.linkTypes = formOptions.linkTypes;
 
+	$scope.associatedDataSizeUnit = formOptions.dataSizeUnit;
+
+
         //for user sorting and filtering of records list, sets defaults
         $scope.sortType = '-last_mod_date';
         $scope.sortReverse = false;
@@ -452,6 +455,11 @@ metadataEditorApp.controller('BaseController',
             $scope.currentRecord.online.splice(resourceIndex, 1);
           }
 
+	  if($scope.currentRecord.online_description.length === 1)
+	      $scope.currentRecord.online_description[0] = {"title":"","description":""};
+	  else
+	      $scope.currentRecord.online_description.splice(resourceIndex, 1);
+
 	    //Remove the last resource url from the last access contact object because url has been removed from
 	    //the "Resources" section.
 	    $scope.currentRecord.access[$scope.currentRecord.access.length-1].resource_url.pop();
@@ -463,6 +471,9 @@ metadataEditorApp.controller('BaseController',
         {
             $scope.currentRecord.online.push("");
 	    $scope.accessNames.push("");
+	    $scope.currentRecord.online_description.push({"type":"","description":""});
+	    console.log("Adding stuff");
+	    console.log($scope.currentRecord.online_description);
         };
 
         $scope.getBbox = function()

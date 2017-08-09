@@ -24,7 +24,11 @@ class Identifier(db.EmbeddedDocument):
     """Class for Identifier, which holds DOI's, ARK's, and whatever other identifier you want"""
     type = db.StringField(max_length=255)
     id = db.StringField(max_length=255)
-    
+
+class OnlineDescription(db.EmbeddedDocument):
+    """Class for information describing an online resource """
+    type = db.StringField(max_length=255)
+    description = db.StringField(max_length=255)
     
 class Metadata(db.Document):
     """MongoDB Document representation of metadata"""
@@ -61,6 +65,10 @@ class Metadata(db.Document):
 
     # online resources; these are URLs, but opting to be more permissive
     online = db.ListField(db.StringField(max_length=255))
+
+    # online resource descriptions; these are objects describing the 
+    # online resource in the same index location in the online array
+    online_description = db.ListField(db.EmbeddedDocumentField('OnlineDescription'))
 
     # use restrictions
     use_restrictions = db.StringField()
@@ -99,7 +107,16 @@ class Metadata(db.Document):
 
     # Type of link to associated Metadata or Data
     associated_metadata_type = db.StringField(max_length=255)
-    
+
+    # Description of associated Metadata or Data
+    associated_metadata_description = db.StringField(max_length=255)
+
+    # Associated Metadata or Data file size unit
+    associated_metadata_file_size = db.FloatField()
+
+    # Associated Metadata or Data file size unit
+    associated_metadata_size_unit = db.StringField(max_length=255)    
+
     # request to be searchable on DataOne
     data_one_search = db.StringField(max_length=255)
     

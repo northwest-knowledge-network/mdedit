@@ -58,7 +58,6 @@ testDynamicFormAddition('dublin');
 testReviewSection('iso');
 testReviewSection('dublin');
 
-//Admin tests not ready yet
 testAdminView("admin");
 
 describe('ISO and Dublin Core editing views', function () {
@@ -1466,7 +1465,7 @@ function testAdminView(schemaType) {
 		 summary: "g summary"}
 	];
 
-	var completeRecord = createRecordObject();
+	var completeRecord = createISORecordObject();
 
 	describe('Admin panel tests: ', function() {
 		
@@ -1632,7 +1631,7 @@ function testAdminView(schemaType) {
 		       element(by.id("add-coordinate-system")).click();
 		       
 		       /* Make a copy of the record object and change the title */
-		       var submittedRecord = createRecordObject();
+		       var submittedRecord = createISORecordObject();
 		       submittedRecord.title = "Record Two";
 		       
 		       fillOutForm(submittedRecord);
@@ -1716,7 +1715,7 @@ function changeRecordsDisplayed(recordState){
 
 /** This function returns an ISO record object 
  */
-function createRecordObject(){
+function createISORecordObject(){
 
        var completeRecord = {
 
@@ -1762,6 +1761,12 @@ function createRecordObject(){
 	    compression_technique: 'zip, jar',
 	    reference_system: 'UTM, NAD83',
 	    
+	    status: 'historicalArchive',
+	    spatial_dtype: 'grid',
+	    hierarchy_level: 'dataset',
+	    topic_category: ['biota', 'economy'],
+	    compression_technique: 'zlib',
+
             start_date: {$date: new Date(2009, 2, 6),
 			 input: '03/06/2009'},
             end_date: {$date: new Date(2012, 3, 8),
@@ -2133,7 +2138,7 @@ function fillOutForm(newRecord){
 	element(by.model('currentRecord.spatial_dtype')).sendKeys(newRecord.spatial_dtype);
 	element(by.model('currentRecord.compression_technique')).sendKeys(newRecord.compression_technique);
     }
-    
+
     exposeFormElement(formType, "spatialExtent");
     element(by.model('currentRecord.east_lon')).sendKeys(newRecord.east_lon);
     element(by.model('currentRecord.west_lon')).sendKeys(newRecord.west_lon);
