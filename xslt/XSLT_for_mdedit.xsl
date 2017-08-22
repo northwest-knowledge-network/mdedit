@@ -494,27 +494,15 @@
                     <!-- Sets codes for other constraints as acceess and use constraints. These apply to the text provided in the next section. -->
                     <gmd:resourceConstraints>
                         <gmd:MD_LegalConstraints>
-                            <gmd:accessConstraints>
-                                <gmd:MD_RestrictionCode
-                                    codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode"
-                                    codeListValue="otherRestrictions"
-                                    >otherRestrictions</gmd:MD_RestrictionCode>
-                            </gmd:accessConstraints>
-                            <gmd:useConstraints>
-                                <gmd:MD_RestrictionCode
-                                    codeList="http:http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode"
-                                    codeListValue="otherRestrictions"
-                                    >otherRestrictions</gmd:MD_RestrictionCode>
-                            </gmd:useConstraints>
-                            <!-- Selects text for general use/access restrictions and license from the mdedit generic xml. 
-        Defaults for projects will be built into the front-end, for now -->
-                            <gmd:otherConstraints>
-                                <xsl:if test="root/record/use_restrictions != ''">
-                                    <gco:CharacterString>
-                                        <xsl:value-of select="root/record/use_restrictions"/>
-                                    </gco:CharacterString>
-                                </xsl:if>
-                            </gmd:otherConstraints>
+                          <!-- Selects text for general use/access restrictions and license from the mdedit generic xml. 
+			       Defaults for projects will be built into the front-end, for now -->
+                          <gmd:otherConstraints>
+                            <xsl:if test="root/record/use_restrictions != ''">
+                              <gco:CharacterString>
+                                <xsl:value-of select="root/record/use_restrictions"/>
+                              </gco:CharacterString>
+                            </xsl:if>
+                          </gmd:otherConstraints>
                         </gmd:MD_LegalConstraints>
                     </gmd:resourceConstraints>
                     <!-- Uses an IF statement to select spatial representation type -->
@@ -630,7 +618,7 @@
 
                 <!-- Sets the contact block for NKN as the distributor of the data.
         This will be enabled as an 'if' statement based on if the download_url looks like an NKN download link -->
-                    <xsl:if test="contains(/root/record/download_url, 'https://www.northwestknowledge.net/data/download.php')">
+                    <xsl:if test="contains(/root/record/download_url, 'https://www.northwestknowledge.net/data/download.php') or /root/record/associated_metadata != ''">
                         <gmd:distributor>
                             <gmd:MD_Distributor>
                                 <gmd:distributorContact xlink:title="NKN">
@@ -691,18 +679,20 @@
                                 </gmd:distributorContact>
                                 <gmd:distributorTransferOptions>
                                     <gmd:MD_DigitalTransferOptions>
+				      <xsl:if test="contains(/root/record/download_url, 'https://www.northwestknowledge.net/data/download.php')">
                                         <gmd:onLine>
-                                            <gmd:CI_OnlineResource>
-                                                <gmd:linkage>
-                                                    <gmd:URL>
-                                                        <xsl:value-of select="/root/record/download_url"/>
-                                                    </gmd:URL>
-                                                </gmd:linkage>
-                                                <gmd:function>
-                                                    <gmd:CI_OnLineFunctionCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode" codeListValue="download">download</gmd:CI_OnLineFunctionCode>
-                                                </gmd:function>
-                                            </gmd:CI_OnlineResource>
+                                          <gmd:CI_OnlineResource>
+                                            <gmd:linkage>
+                                              <gmd:URL>
+                                                <xsl:value-of select="/root/record/download_url"/>
+                                              </gmd:URL>
+                                            </gmd:linkage>
+                                            <gmd:function>
+                                              <gmd:CI_OnLineFunctionCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode" codeListValue="download">download</gmd:CI_OnLineFunctionCode>
+                                            </gmd:function>
+                                          </gmd:CI_OnlineResource>
                                         </gmd:onLine>
+				      </xsl:if>
                                     </gmd:MD_DigitalTransferOptions>
                                 </gmd:distributorTransferOptions>
                             </gmd:MD_Distributor>                                   
@@ -785,7 +775,13 @@
                                 </gmd:distributorContact>
                                 <gmd:distributorTransferOptions>
                                     <gmd:MD_DigitalTransferOptions>
+
                                         <xsl:for-each select="$contact/resource_url/item">
+				          <xsl:variable name="access_array" select="$contact/resource_url_description/item" as="element()*"/>
+
+       					  <xsl:variable name="currenturl" select="."/>
+					  <xsl:variable name="j" select="position()"/>
+
                                             <gmd:onLine>
                                                 <gmd:CI_OnlineResource>
                                                   <gmd:linkage>
@@ -793,12 +789,43 @@
                                                   <xsl:value-of select="."/>
                                                   </gmd:URL>
                                                   </gmd:linkage>
-                                                  <gmd:function>
-                                                  <gmd:CI_OnLineFunctionCode
-                                                  codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode"
-                                                  codeListValue="download"
-                                                  >download</gmd:CI_OnLineFunctionCode>
-                                                  </gmd:function>
+						  <gmd:function>
+						    <xsl:if test="$access_array[$j]/type = 'download'">
+						      <gmd:CI_OnlineFunctionCode 
+							 codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode"
+							 codeListValue="download">download</gmd:CI_OnlineFunctionCode>
+						    </xsl:if>
+						    <xsl:if test="$access_array[$j]/type = 'information'">
+						      <gmd:CI_OnlineFunctionCode 
+							 codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode"
+							 codeListValue="information">information</gmd:CI_OnlineFunctionCode>
+						    </xsl:if>
+						    <xsl:if test="$access_array[$j]/type = 'offlineAccess'">
+						      <gmd:CI_OnlineFunctionCode 
+							 codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode"
+							 codeListValue="offlineAccess">offlineAccess</gmd:CI_OnlineFunctionCode>
+						    </xsl:if>
+						    <xsl:if test="$access_array[$j]/type = 'order'">
+						      <gmd:CI_OnlineFunctionCode 
+							 codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode"
+							 codeListValue="order">order</gmd:CI_OnlineFunctionCode>
+						    </xsl:if>
+                                                    <xsl:if test="$access_array[$j]/type = 'search'">
+                                                      <gmd:CI_OnlineFunctionCode
+                                                         codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode"
+                                                         codeListValue="search">search</gmd:CI_OnlineFunctionCode>
+                                                    </xsl:if>
+						  </gmd:function>
+						  <gmd:description>
+						    <gco:CharacterString>
+						      <xsl:if test="$access_array[$j]/description != '' and ($access_array[$j]/file_size != '' or $access_array[$j]/size_unit != '')">
+							<xsl:value-of select="concat('(File size: ', $access_array[$j]/file_size, ' ', $access_array[$j]/size_unit, '.) ', $access_array[$j]/description)"/>
+						      </xsl:if>
+						      <xsl:if test="$access_array[$j]/description != '' and ($access_array[$j]/file_size = '' and $access_array[$j]/size_unit = '')">
+							<xsl:value-of select="$access_array[$j]/description"/>
+						      </xsl:if>
+						    </gco:CharacterString>
+						  </gmd:description>
                                                 </gmd:CI_OnlineResource>
                                             </gmd:onLine>
                                         </xsl:for-each>
@@ -810,6 +837,9 @@
                     
                     <!-- Entries for anonymous resources, those unrelated to any data access contact -->
                     <xsl:for-each select="/root/record/online/item/url[not(.=/root/record/access/item/resource_url/item)]">
+       		        <xsl:variable name="currenturl" select="."/>
+			<xsl:variable name="array" select="/root/record/online_description/item" as="element()*"/>
+                        <xsl:variable name="i" select="position()"/>
                         <gmd:distributor>
                             <gmd:MD_Distributor>
                                 <gmd:distributorContact gco:nilReason="unknown" />
@@ -817,19 +847,55 @@
                                     <gmd:MD_DigitalTransferOptions>
                                         <gmd:onLine>
                                             <gmd:CI_OnlineResource>
-                                                <gmd:linkage>
-                                                    <gmd:URL>
-                                                        <xsl:value-of select="."/>
-                                                    </gmd:URL>
-                                                </gmd:linkage>
-                                            </gmd:CI_OnlineResource>
+                                              <gmd:linkage>
+                                                <gmd:URL>
+                                                  <xsl:value-of select="."/>
+                                                </gmd:URL>
+                                              </gmd:linkage>
+					      <gmd:function>
+						<xsl:if test="$array[$i]/type = 'download'">
+						  <gmd:CI_OnlineFunctionCode 
+						     codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode"
+						     codeListValue="download">download</gmd:CI_OnlineFunctionCode>
+						</xsl:if>
+						<xsl:if test="$array[$i]/type = 'information'">
+						  <gmd:CI_OnlineFunctionCode 
+						     codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode"
+						     codeListValue="information">information</gmd:CI_OnlineFunctionCode>
+						</xsl:if>
+						<xsl:if test="$array[$i]/type = 'offlineAccess'">
+						  <gmd:CI_OnlineFunctionCode 
+						     codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode"
+						     codeListValue="offlineAccess">offlineAccess</gmd:CI_OnlineFunctionCode>
+						</xsl:if>
+						<xsl:if test="$array[$i]/type = 'order'">
+						  <gmd:CI_OnlineFunctionCode 
+						     codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode"
+						     codeListValue="order">order</gmd:CI_OnlineFunctionCode>
+						</xsl:if>
+                                                <xsl:if test="$array[$i]/type = 'search'">
+                                                  <gmd:CI_OnlineFunctionCode
+                                                     codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode"
+                                                     codeListValue="search">search</gmd:CI_OnlineFunctionCode>
+                                                </xsl:if>
+					      </gmd:function>
+					      <gmd:description>
+						<gco:CharacterString>
+						  <xsl:if test="$array[$i]/description != '' and ($array[$i]/file_size != '' or $array[$i]/size_unit != '')">
+						    <xsl:value-of select="concat('(File size: ', $array[$i]/file_size, ' ', $array[$i]/size_unit, '.) ', $array[$i]/description)" />
+						  </xsl:if>
+						  <xsl:if test="$array[$i]/description != '' and ($array[$i]/file_size = '' and $array[$i]/size_unit = '')">
+						    <xsl:value-of select="$array[$i]/description" />
+						  </xsl:if>
+						</gco:CharacterString>
+					      </gmd:description>
+					    </gmd:CI_OnlineResource>
                                         </gmd:onLine>
                                     </gmd:MD_DigitalTransferOptions>
                                 </gmd:distributorTransferOptions>
                             </gmd:MD_Distributor>
                         </gmd:distributor>
-                    </xsl:for-each>
-                    
+                    </xsl:for-each>                    
                 </gmd:MD_Distribution>
             </gmd:distributionInfo>
             <gmd:dataQualityInfo>

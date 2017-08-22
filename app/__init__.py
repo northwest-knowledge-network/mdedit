@@ -7,6 +7,7 @@ from flask_mongoengine import MongoEngine
 from flask_cors import CORS
 from flask_uploads import UploadSet, ALL, configure_uploads
 from flask.ext.elasticsearch import FlaskElasticsearch
+#from flask_mail import Mail
 
 # if there is an exception, we are running tests
 try:
@@ -23,6 +24,8 @@ es = FlaskElasticsearch()
 
 def create_app(config_name):
     app = Flask(__name__)
+    #Initializing the mailer
+    #mail = Mail(app)
 
     app.config.from_object(config[config_name])
     app.config['CORS_HEADERS'] = 'Content-Type'

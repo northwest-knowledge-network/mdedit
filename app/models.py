@@ -18,14 +18,22 @@ class Contact(db.EmbeddedDocument):
     zipcode = db.StringField(max_length=255)
     phone = db.StringField(max_length=255)
     resource_url = db.ListField(db.StringField(max_length=255))
-
+    # online resource descriptions; these are objects describing the 
+    # online resource in the same index location in the online array
+    resource_url_description = db.ListField(db.EmbeddedDocumentField('OnlineDescription'))
     
 class Identifier(db.EmbeddedDocument):
     """Class for Identifier, which holds DOI's, ARK's, and whatever other identifier you want"""
     type = db.StringField(max_length=255)
     id = db.StringField(max_length=255)
-    
-    
+
+class OnlineDescription(db.EmbeddedDocument):
+    """Class for information describing an online resource """
+    type = db.StringField(max_length=255)
+    description = db.StringField(max_length=255)
+    file_size = db.StringField(max_length=255)
+    size_unit = db.StringField(max_length= 255)
+
 class Metadata(db.Document):
     """MongoDB Document representation of metadata"""
     # basic info
@@ -62,8 +70,18 @@ class Metadata(db.Document):
     # online resources; these are URLs, but opting to be more permissive
     online = db.ListField(db.StringField(max_length=255))
 
+    # online resource descriptions; these are objects describing the 
+    # online resource in the same index location in the online array
+    online_description = db.ListField(db.EmbeddedDocumentField('OnlineDescription'))
+
     # use restrictions
     use_restrictions = db.StringField()
+
+    #If user defined use restriction has been used
+    user_defined_use_restrictions = db.BooleanField();
+
+    #If user defined use restriction has been used
+    references_existing_data = db.BooleanField();
 
     #research methods
     research_methods = db.StringField()
@@ -93,7 +111,7 @@ class Metadata(db.Document):
 
     # Assigned DOI or ARK
     assigned_doi_ark = db.StringField(max_length=255)
-    
+
     # request to be searchable on DataOne
     data_one_search = db.StringField(max_length=255)
     

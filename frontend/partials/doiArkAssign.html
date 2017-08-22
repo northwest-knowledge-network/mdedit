@@ -60,7 +60,7 @@
       <td class="col-md-2">
 	<div ng-repeat="author in record.citation" ng-if="author.name != ''"> - {{author.name}} </div>
       </td>
-      <td class="col-md-1"> {{record.md_pub_date}} </td><td class="col-md-3"> {{record.summary}} </td><td class="col-md-2"> {{record.doi_ark_request}} <div ng-show="doiVisible$index">
+      <td class="col-md-1"> {{record.md_pub_date.$date | date : "short"}} </td><td class="col-md-3"> {{record.summary}} </td><td class="col-md-2"> {{record.doi_ark_request}} <div ng-show="doiVisible$index">
 	<form name="doiArkAssignCtrl.doiAssignForm">
 	   <div ng-show="(record.doi_ark_request == 'DOI') || (record.doi_ark_request == 'both')">{{record.identifiers[1].type}} : 
 		<input type="text" ng-show="record.doi_ark_request == 'DOI' || (record.doi_ark_request == 'both')" ng-model="record.identifiers[1].id"></input>

@@ -228,7 +228,7 @@ metadataEditorApp
 	console.log(record);
 
 	//Change to hostname service function instead of hard coded host name
-	elasticsearchRecord.mdXmlPath = "https://nknportal.nkn.uidaho.edu/api/metadata/" + record._id.$oid + "/" + recordType;
+	elasticsearchRecord.mdXmlPath = "http://www.northwestknowledge.net/data/" + record._id.$oid + "/metadata.xml";
 
 	//Set lat and lon coordinates 
  	elasticsearchRecord.sbeast = record.east_lon;
@@ -286,18 +286,33 @@ metadataEditorApp
     
     data_format: [''],
     compression_technique: '',
+	//online was the original string array, and we needed to make an array of objects later for the 
+	//data in online_descriptions related to the url stored in "online" but we can't update 
+	//the MongoDB in place to convert the "online" strings to JSON objects. This extra array is a byproduct
+	//of scope-creep. And we can't just change to array of objects because it will break
+	//compatibility with existing records already in the system. 
     online: [''],
+    online_description: [
+	{
+	    "type":"",
+	    "description":"",
+	    "file_size":"",
+	    "size_unit":""		
+	}
+    ],
+
     use_restrictions: '',
+    user_defined_use_restrictions: false,
 
     citation: [{
       'name': '', 'email': '', 'org': '', 'address': '',
-	'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': '',
-	'resource_url': ['']
+      'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': '',
+	  'resource_url': [''], 'resource_url_description': [{"type":"","description":"","file_size":"","size_unit":""}]
     }],
     access: [{
       'name': '', 'email': '', 'org': '', 'address': '',
       'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': '',
-	'resource_url': ['']
+	  'resource_url': [''], 'resource_url_description': [{"type":"","description":"","file_size":"","size_unit":""}]	
     }],
 
     west_lon: '',
@@ -309,12 +324,14 @@ metadataEditorApp
     
     end_date: {$date:''},
     
+    references_existing_data: false,
+
     doi_ark_request: 'neither',
     assigned_doi_ark: '',
     data_one_search: 'false',
     reference_system: '',
     attachments: [],
-    published: 'false'
+    published: 'false',
 })
 
 .value('emptyDCRecord',
@@ -345,17 +362,26 @@ metadataEditorApp
     data_format: [''],
     compression_technique: '',
     online: [''],
+    online_description: [
+	{
+	    "type":"",
+	    "description":"",
+	    "file_size":"",
+	    "size_unit":""
+	}
+    ],
     use_restrictions: '',
+    user_defined_use_restrictions: false,
 
     citation: [{
       'name': '', 'email': '', 'org': '', 'address': '',
       'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': '',
-	'resource_url': ['']
+	  'resource_url': [''], 'resource_url_description': [{"type":"","description":""}]
     }],
     access: [{
       'name': '', 'email': '', 'org': '', 'address': '',
       'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': '',
-	'resource_url': ['']
+	  'resource_url': [''], 'resource_url_description': [{"type":"","description":""}]
     }],
 
     west_lon: '',
@@ -367,12 +393,14 @@ metadataEditorApp
     
     end_date: {	$date:''},
     
+    references_existing_data: false,
+
     doi_ark_request: 'neither',
     assigned_doi_ark: '',
     data_one_search: 'false',
     reference_system: '',
     attachments: [],
-    published: 'false'
+    published: 'false',
 })
 //This record is a reduced set of attributes used by Elasticsearch. 
 .value('elasticsearchRecord', {
@@ -937,6 +965,7 @@ metadataEditorApp
  */
     .service('AttachmentService', ['$http', '$log', 'hostname', 'session_id', 'envService', function($http, $log, hostname, session_id, envService) {
     //Get Angular enviroment variables
+    envService.set('development');
     var environment = envService.get();	
 	
     /* use a test uploadUrl for e2e tests.

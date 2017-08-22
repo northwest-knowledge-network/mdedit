@@ -53,6 +53,8 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 	    controller: function($scope, recordService){
 		var currentPage = 0;
 
+		$scope.$parent.isAdmin = true;
+
 		$scope.showBrowse = true;
 
 		$scope.recordsPerPage = "10";
@@ -257,7 +259,6 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 
 			    $scope.$parent.newRecord = false;
 			    $scope.$parent.currentRecord = record;
-			    $scope.$parent.isAdmin = true;
 
 			    console.log("Added record to record sharing service.");
 
@@ -279,7 +280,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		$scope.initAdminView = function(){
 		    
 		    $scope.recordsPerPage = "10";
-		    
+
 		    //Records initially sorted by the publish date. This is the name of the publish date in the database.
 		    $scope.selectedOrderFilter = "md_pub_date";
 		    

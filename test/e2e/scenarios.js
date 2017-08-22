@@ -58,7 +58,6 @@ testDynamicFormAddition('dublin');
 testReviewSection('iso');
 testReviewSection('dublin');
 
-//Admin tests not ready yet
 testAdminView("admin");
 
 describe('ISO and Dublin Core editing views', function () {
@@ -302,7 +301,7 @@ function testLoadDeleteDropdown(schemaType) {
 
             data_format: ['netCDF'],
             online: ['http://example.com/mynetcdfs/33422525'],
-            use_restrictions: 'None',
+            use_restrictions: 'CC Attribution-Non-Commercial-ShareAlike 3.0 USA (CC BY-NC-SA 3.0 US)',
 
             citation: [{
               'name': 'Matt', 'email': 'matt@example.com', 'org': 'NKN', 'address': '34 Concord',
@@ -1176,7 +1175,7 @@ function testReviewSection(schemaType) {
             data_format: ['netCDF'],
 	    data_format_aux: 'mp4',
             online: ['http://example.com/mynetcdfs/33422525'],
-            use_restrictions: 'None',
+            use_restrictions: 'CC Attribution-Non-Commercial-ShareAlike 3.0 USA (CC BY-NC-SA 3.0 US)',
 	    spatial_dtype: 'vector',
 	    
             citation: [{
@@ -1265,113 +1264,6 @@ function testReviewSection(schemaType) {
 
 	       fillOutForm(newRecord);
 
-	       /*
-	       exposeFormElement(formType, "basic");
-	       element(by.model('currentRecord.title')).sendKeys(newRecord.title);
-	       element(by.model('currentRecord.summary')).sendKeys(newRecord.summary);
-	       element(by.model('currentRecord.place_keywords')).sendKeys(newRecord.place_keywords);
-	       element(by.model('currentRecord.thematic_keywords')).sendKeys(newRecord.thematic_keywords);
-	       if((typeof newRecord.topic_category !== 'undefined')
-		 && (newRecord.topic_category.length > 0)){
-			//Click on select menu to expose options
-			for(var i = 0; i < newRecord.topic_category.length; i++) 
-				element(by.css('[label="' + newRecord.topic_category[i] + '"]')).click();
-		}
-
-	       //If iso form type, then fill out detailed info page too
-	       if(formType.indexOf('dublin') == -1){
-		   exposeFormElement(formType, "detailed");
-		   element(by.model('currentRecord.research_methods')).sendKeys(newRecord.research_methods);
-	       }
-	       
-	       exposeFormElement(formType, "onlineResourcesAndRestrictions");
-	       element(by.id('online')).sendKeys(newRecord.online[0]);
-	       element(by.model('currentRecord.use_restrictions')).sendKeys(newRecord.use_restrictions);
-	       
-	       exposeFormElement(formType, "temporalExtent");
-	       element(by.id('start-date')).clear().sendKeys(newRecord.start_date.input).sendKeys(protractor.Key.TAB);;
-	       element(by.id('end-date')).clear().sendKeys(newRecord.end_date.input).sendKeys(protractor.Key.TAB);;
-	       element(by.id('first-pub-date-input')).clear().sendKeys(newRecord.first_pub_date.input).sendKeys(protractor.Key.TAB);;
-	       
-	       //If not dubin form, then form is 'iso' type, and check extra form fields in this seciton
-	       if(formType.indexOf("dublin") == -1){
-		   // For some reason, status has "string:" concatinated to the beginning of the select option's value. So we need to add "string:" to the beginning here 
-		    // or we won't find the select element's option correctly. 
-		    
-		   element(by.model('currentRecord.status')).sendKeys("string:" + newRecord.status);
-		   element(by.model('currentRecord.update_frequency')).sendKeys(newRecord.update_frequency);
-		   element(by.model('currentRecord.hierarchy_level')).sendKeys(newRecord.hierarchy_level);		   
-	       }
-
-	       //Fill out contacts
-	       exposeFormElement(formType, "contacts");
-	       
-	       var addCitationButton =
-                   element(by.css('[ng-click="addContactCitation()"]'));
-	       
-               var citationContacts =
-                   element.all(by.repeater('contact in currentRecord.citation'));
-	       
-               var accessContacts =
-                   element.all(by.repeater('contact in currentRecord.access'));
-	       
-               for (var i = 0; i < 2; i++){
-                   var c = newRecord.citation[i];
-                   var contactFieldIdx = 0;
-                   for (var k in c){
-                       element(by.id('citation-' + k + '-' + i)).sendKeys(c[k]);
-		       
-                   }
-                   if (i === 0){
-                       addCitationButton.click();
-                   }
-               }
-	       
-               var ca = newRecord.access[0];
-               for (var ka in ca){
-                   element(by.id('access-' + ka + '-0')).sendKeys(ca[ka]);
-               }
-	       
-
-	       //Check file upload page
-	       exposeFormElement(formType, "dataFormats");
-	       element(by.model('dataFormats.iso')).sendKeys(newRecord.data_format[0]);
-	       element(by.model('dataFormats.aux')).sendKeys(newRecord.data_format_aux);
-
-	       //Attach file
-	       // send keys to give the file name desired
-               var fname1 = 'file1.txt',
-                   f1 = path.resolve(__dirname, fname1),
-                   fname2 = 'file2.nc',
-                   f2 = path.resolve(__dirname, fname2);
-	       
-               // upload 1
-
-               element(by.id('attachment-select')).sendKeys(f1);
-               browser.executeScript('window.scrollTo(0,0);');
-               element(by.css('[ng-click="attachFile()"]')).click();
-	       
-	       //If not dublin form type, then send keys to exta form elements in 'iso' type
-	       if(formType.indexOf("dublin") == -1){
-		   element(by.model('currentRecord.spatial_dtype')).sendKeys(newRecord.spatial_dtype);
-		   element(by.model('currentRecord.compression_technique')).sendKeys(newRecord.compression_technique);
-	       }
-	       
-	       exposeFormElement(formType, "spatialExtent");
-	       element(by.model('currentRecord.east_lon')).sendKeys(newRecord.east_lon);
-	       element(by.model('currentRecord.west_lon')).sendKeys(newRecord.west_lon);
-	       element(by.model('currentRecord.north_lat')).sendKeys(newRecord.north_lat);
-	       element(by.model('currentRecord.south_lat')).sendKeys(newRecord.south_lat);
-
-	       element(by.model('currentRecord.reference_system')).sendKeys(newRecord.reference_system);
-	       
-	       //Check disclaimer page
-	       exposeFormElement(formType, "optionsAndDisclaimer");
-	       element(by.id('data-one-checkbox')).click();
-
-	       //Check review page
-	       exposeFormElement(formType, "review");
-*/
 	       //Check all parts of the form except _cls, _id, access, citation, last_mod_date, dataFormats.aux, and data_formats_aux
 	       //dataFormats.aux gets added on to data_format, so we need to do the same before checking data_format. Also, last_mod_date is
 	       //set on the last time the record was saved, so hard to check that. access and citation are checked later since they are arrays of objects.
@@ -1466,7 +1358,7 @@ function testAdminView(schemaType) {
 		 summary: "g summary"}
 	];
 
-	var completeRecord = createRecordObject();
+	var completeRecord = createISORecordObject();
 
 	describe('Admin panel tests: ', function() {
 		
@@ -1632,7 +1524,7 @@ function testAdminView(schemaType) {
 		       element(by.id("add-coordinate-system")).click();
 		       
 		       /* Make a copy of the record object and change the title */
-		       var submittedRecord = createRecordObject();
+		       var submittedRecord = createISORecordObject();
 		       submittedRecord.title = "Record Two";
 		       
 		       fillOutForm(submittedRecord);
@@ -1716,7 +1608,7 @@ function changeRecordsDisplayed(recordState){
 
 /** This function returns an ISO record object 
  */
-function createRecordObject(){
+function createISORecordObject(){
 
        var completeRecord = {
 
@@ -1733,7 +1625,7 @@ function createRecordObject(){
             data_format: ['netCDF'],
 	    data_format_aux: 'mp4',
             online: ['http://example.com/mynetcdfs/33422525'],
-            use_restrictions: 'None',
+            use_restrictions: 'CC Attribution-Non-Commercial-ShareAlike 3.0 USA (CC BY-NC-SA 3.0 US)',
 	    spatial_dtype: 'vector',
 	    
             citation: [{
@@ -1762,6 +1654,12 @@ function createRecordObject(){
 	    compression_technique: 'zip, jar',
 	    reference_system: 'UTM, NAD83',
 	    
+	    status: 'historicalArchive',
+	    spatial_dtype: 'grid',
+	    hierarchy_level: 'dataset',
+	    topic_category: ['biota', 'economy'],
+	    compression_technique: 'zlib',
+
             start_date: {$date: new Date(2009, 2, 6),
 			 input: '03/06/2009'},
             end_date: {$date: new Date(2012, 3, 8),
@@ -2133,7 +2031,7 @@ function fillOutForm(newRecord){
 	element(by.model('currentRecord.spatial_dtype')).sendKeys(newRecord.spatial_dtype);
 	element(by.model('currentRecord.compression_technique')).sendKeys(newRecord.compression_technique);
     }
-    
+
     exposeFormElement(formType, "spatialExtent");
     element(by.model('currentRecord.east_lon')).sendKeys(newRecord.east_lon);
     element(by.model('currentRecord.west_lon')).sendKeys(newRecord.west_lon);

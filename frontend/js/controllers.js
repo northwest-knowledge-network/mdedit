@@ -28,6 +28,8 @@ metadataEditorApp.controller('BaseController',
 	//Scope variable to show or hide the "coordinate system" input in the "spatialExtent.html" partial.
 	$scope.coordinateInputVisible = false;
 
+	$scope.userDefinedUseRestrictions = false;
+
 	//Scope variable to track if user has agreed to terms and conditions of using metadata editor.
 	//Used to allow publishing of record, but not saved in the database.
 	$scope.agreeTermsConditions = false;
@@ -41,6 +43,11 @@ metadataEditorApp.controller('BaseController',
 	$scope.currentRecord = sharedRecord.getRecord();
 
 	$scope.isAdmin = false;
+
+	/** Scope variable to determine if file upload is requred or not. If a user wants to point to existing data instead
+	 *  then they can input an Online Resource that points to that data. But they need to flip this boolean value to do that. 
+	 */
+	$scope.references_metadata = false;
 	
 	//Objects for background colors of buttons used in ng-style tags in iso.html and dublin.html 
 	var backgroundColor = {"background-color": "#cccccc"};
@@ -102,6 +109,10 @@ metadataEditorApp.controller('BaseController',
 	//Jump to "setup" form element on page load
 	defaultState();
 
+	$scope.printAssociatedMetadata = function(){
+	    console.log("Printing assicated_metadata.checked: " + $scope.references_metadata);
+	};
+
 	//Variable to keep track of current form element "page". Used to index arrays of
 	//form names. To modify this value, use either the "getCurrentPage()" function to
 	//get value, "setCurrentPage(value)" to set the value of currentPageIndex, and
@@ -162,11 +173,40 @@ metadataEditorApp.controller('BaseController',
           $scope.minute_seconds.push(i);
         }
 
+	//Loading constants from js/app.js
         $scope.knownDataFormats = formOptions.knownDataFormats;
 
         $scope.spatialDataOptions = formOptions.spatialDataOptions;
 
         $scope.hierarchyLevels = formOptions.hierarchyLevels;
+
+	$scope.linkTypes = formOptions.linkTypes;
+
+	$scope.associatedDataSizeUnit = formOptions.dataSizeUnit;
+
+	//AngularJS 1.* can't do a select on an element in an object: it will return the entire object. We only want a string.
+	//So scrape all title strings out of array of Creative Commons use restrictions and put in to array for use in Resource section.
+	$scope.possibleUseRestrictions = [];
+	//Get the list of possible licenses and save in scope variable for use in populating select options
+	formOptions.possibleUseRestrictions.forEach(function(restriction){
+		$scope.possibleUseRestrictions.push(restriction.title);
+	    });
+
+	//Save array of objects for use elsewhere
+	$scope.possibleUseRestrictionsDescriptions = formOptions.possibleUseRestrictions;
+
+	$scope.useRestrictionURL = "";
+	$scope.changeUseRestrictionURL = function(){
+	    setUseRestrictionURL();
+	};
+
+	function setUseRestrictionURL(){
+	    var index = $scope.possibleUseRestrictions.indexOf($scope.currentRecord.use_restrictions);
+	    if(index > -1)
+		$scope.useRestrictionURL = $scope.possibleUseRestrictionsDescriptions[index].url;
+	    else
+		$scope.useRestrictionURL = "";
+	}
 
         //for user sorting and filtering of records list, sets defaults
         $scope.sortType = '-last_mod_date';
@@ -449,10 +489,16 @@ metadataEditorApp.controller('BaseController',
             $scope.currentRecord.online.splice(resourceIndex, 1);
           }
 
-	    //Remove the last resource url from the last access contact object because url has been removed from
-	    //the "Resources" section.
-	    $scope.currentRecord.access[$scope.currentRecord.access.length-1].resource_url.pop();
-	    $scope.accessNames.pop();
+	  if($scope.currentRecord.online_description.length === 1)
+	      $scope.currentRecord.online_description[0] = {"title":"","description":"","file_size":"","size_unit":""};
+	  else
+	      $scope.currentRecord.online_description.splice(resourceIndex, 1);
+	  
+	  //Remove the last resource url from the last access contact object because url has been removed from
+	  //the "Resources" section.
+	  $scope.currentRecord.access[$scope.currentRecord.access.length-1].resource_url.pop();
+	  $scope.accessNames.pop();
+	  $scope.currentRecord.access[$scope.currentRecord.access.length-1].resource_url_description.pop();
 	    
         };
 
@@ -460,6 +506,8 @@ metadataEditorApp.controller('BaseController',
         {
             $scope.currentRecord.online.push("");
 	    $scope.accessNames.push("");
+	    $scope.currentRecord.online_description.push({"type":"","description":"","file_size":"","size_unit":""});
+	    console.log($scope.currentRecord.online_description);
         };
 
         $scope.getBbox = function()
@@ -632,6 +680,34 @@ metadataEditorApp.controller('BaseController',
 	    else
 		$scope.hasMap = true;
 	}
+
+	$scope.toggleReferencesMetadata = function(){
+	    $scope.currentRecord.references_existing_data = !$scope.currentRecord.references_existing_data;
+	};
+
+	$scope.setUseRestrictions = function(value){
+	    if(typeof value === 'boolean')
+		$scope.userDefinedUseRestrictions = value;
+	    else
+		console.log("Error: tried to set boolean var to non-boolean value.");
+	};
+
+
+	$scope.resetUseRestrictions = function(type){
+	    if(type.indexOf("other") > -1){
+		//If the radio button labeled "Other" is checked, and there is a non-user defined value from the 
+		//possible Creative Commons options in the record's use_restrictions attribute, then clear that 
+		//Creative Commons string for currentRecord.use_restrictions. This also clears the newly displayed textarea.
+		//		console.log("Printing if in array: " + $scope.possibleUseRestrictions.indexOf($scope.currentRecord.use_restrictions));
+		if(!$scope.possibleUseRestrictions.indexOf($scope.currentRecord.use_restrictions) > -1){
+		    $scope.currentRecord.use_restrictions = "";
+		}
+	    }else if(type.indexOf("CreativeCommons") > -1){
+		if($scope.possibleUseRestrictions.length > 0){
+		    $scope.currentRecord.use_restrictions = $scope.possibleUseRestrictions[0];
+		}
+	    }
+	};
 	 
 	//Request either DOI or ARK: sets currentRecord.doi_ark_request to either "DOI", "ARK", or "".
 	$scope.applyForDOI = function(type) {
@@ -688,7 +764,7 @@ metadataEditorApp.controller('BaseController',
 	    return $scope.searchableOnDataOne;
 	}
 
-	//Initializes scope variables used in controller, but not stored in the database,
+	//Initializes scope variables used in controller when new record is loaded, but not stored in the database,
 	//to determine if user has agreed to terms & conditions, has the right to publish,
 	// and their data has no sensitive information. Called on page load.
 	function initScopeValues(){
@@ -701,6 +777,7 @@ metadataEditorApp.controller('BaseController',
 	    $scope.coordinateInputVisible = false;
 
 	    $scope.accessNames = [];
+	    $scope.currentRecord.use_restrictions = $scope.possibleUseRestrictions[0];
 	    //Reset form validity 
 	    resetFormValidity();
 	    
@@ -717,6 +794,9 @@ metadataEditorApp.controller('BaseController',
 		}else
 		    $scope.searchableOnDataOne = false;
 	    }
+
+	    //Set the link to the currently selected license on the Resources section
+	    setUseRestrictionURL();
 	}
 
 	//Resets all variables in list of objects that track if each form section is complete ($valid was true: all required
@@ -1066,15 +1146,15 @@ metadataEditorApp.controller('BaseController',
 		break;
 	    case "dataFormats":
 		//If attachments array in currentRecord is null, then form for "dataFormats" is not complete
-		if($scope.currentRecord.attachments == null){
-		    formComplete = false;
+		if(($scope.currentRecord.attachments == null)
+		   || ($scope.currentRecord.attachments.length == 0)){
+
+		    if($scope.currentRecord.references_existing_data == true)
+			formComplete = true;
+		    else
+			formComplete = false;
 		    break;
 		}
-		//If attachments array's length in currentRecord is 0 (i.e. no files have been attached),
-		//then form for "dataFormats" is not complete.
-		else if($scope.currentRecord.attachments.length == 0)
-		    formComplete = false;
-		
 		break;
 	    default:
 		break;
@@ -1418,6 +1498,11 @@ metadataEditorApp.controller('BaseController',
 	    //Change route to admin view
 	    $location.path("/admin");
 	};
+
+	$scope.showMetadataEditorView = function() {
+	    //Change route to iso metadata editor view
+	    $location.path("/iso");
+	};
 	
 	$scope.accessNames = [];
 	$scope.accessNames.push("");
@@ -1427,18 +1512,26 @@ metadataEditorApp.controller('BaseController',
 
 	   This function adds the resource URL into an attribute in currentRecord for the specified access contact
 	   to associate that url with that contact.
+	   @param {integer} index, {string} url, {object} description
 	  */
-	$scope.associateContactResource = function(index, url){
+	$scope.associateContactResource = function(index, url, description){
 	    console.log("Printing indecies: " + index);
+	    console.log("Printing description object: ");
+	    console.log(description);
 	    for(var i = 0; i < $scope.currentRecord.access.length; i++){
 		if($scope.currentRecord.access[i].name == $scope.accessNames[index]){
 		    if($scope.currentRecord.access[i].resource_url == null)
 			$scope.currentRecord.access[i].resource_url = [""];
 		    
-		    if($scope.currentRecord.access[i].resource_url[0] == "")
+		    if($scope.currentRecord.access[i].resource_url[0] == ""){
 			$scope.currentRecord.access[i].resource_url[0] = url;
-		    else
+			$scope.currentRecord.access[i].resource_url_description[0] = description;
+		    }else{
 			$scope.currentRecord.access[i].resource_url.push(url);
+			$scope.currentRecord.access[i].resource_url_description.push(description);
+		    }
+		    console.log("Printing the new object:");
+		    console.log($scope.currentRecord.access[i].resource_url_description);
 		}
 	    }
 	};

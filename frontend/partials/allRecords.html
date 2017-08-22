@@ -94,7 +94,7 @@
       <td class="col-md-3">
 	<div ng-repeat="author in record.citation" ng-if="author.name != ''"> - {{author.name}} </div>
       </td>
-      <td class="col-md-1"> {{record.md_pub_date}} </td>
+      <td class="col-md-1"> {{record.md_pub_date.$date | date : "short"}} </td>
       <td class="col-md-3"> {{record.summary}} </td>
       <td class="col-md-1"><button id="admin-publish-button" class="btn btn-primary" ng-show="canPublish" ng-click="publishRecordToPortal(record._id.$oid)">Publish</button>
     </tr>
