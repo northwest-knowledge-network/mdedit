@@ -228,7 +228,7 @@ metadataEditorApp
 	console.log(record);
 
 	//Change to hostname service function instead of hard coded host name
-	elasticsearchRecord.mdXmlPath = "https://nknportal.nkn.uidaho.edu/api/metadata/" + record._id.$oid + "/" + recordType;
+	elasticsearchRecord.mdXmlPath = "http://www.northwestknowledge.net/data/" + record._id.$oid + "/metadata.xml";
 
 	//Set lat and lon coordinates 
  	elasticsearchRecord.sbeast = record.east_lon;
@@ -295,21 +295,24 @@ metadataEditorApp
     online_description: [
 	{
 	    "type":"",
-	    "description":""
+	    "description":"",
+	    "file_size":"",
+	    "size_unit":""		
 	}
     ],
 
     use_restrictions: '',
+    user_defined_use_restrictions: false,
 
     citation: [{
       'name': '', 'email': '', 'org': '', 'address': '',
-	'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': '',
-	'resource_url': ['']
+      'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': '',
+	  'resource_url': [''], 'resource_url_description': [{"type":"","description":"","file_size":"","size_unit":""}]
     }],
     access: [{
       'name': '', 'email': '', 'org': '', 'address': '',
       'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': '',
-	'resource_url': ['']
+	  'resource_url': [''], 'resource_url_description': [{"type":"","description":"","file_size":"","size_unit":""}]	
     }],
 
     west_lon: '',
@@ -327,11 +330,6 @@ metadataEditorApp
     reference_system: '',
     attachments: [],
     published: 'false',
-    associated_metadata:'',
-    associated_metadata_type:'',
-    associated_metadata_description:'',
-    associated_metadata_size_unit:'',
-    associated_metadata_file_size:''
 })
 
 .value('emptyDCRecord',
@@ -365,20 +363,23 @@ metadataEditorApp
     online_description: [
 	{
 	    "type":"",
-	    "description":""
+	    "description":"",
+	    "file_size":"",
+	    "size_unit":""
 	}
     ],
     use_restrictions: '',
+    user_defined_use_restrictions: false,
 
     citation: [{
       'name': '', 'email': '', 'org': '', 'address': '',
       'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': '',
-	'resource_url': ['']
+	  'resource_url': [''], 'resource_url_description': [{"type":"","description":""}]
     }],
     access: [{
       'name': '', 'email': '', 'org': '', 'address': '',
       'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': '',
-	'resource_url': ['']
+	  'resource_url': [''], 'resource_url_description': [{"type":"","description":""}]
     }],
 
     west_lon: '',
@@ -396,11 +397,6 @@ metadataEditorApp
     reference_system: '',
     attachments: [],
     published: 'false',
-    associated_metadata:'',
-    associated_metadata_type:'',
-    associated_metadata_description:'',
-    associated_metadata_size_unit:'',
-    associated_metadata_file_size:''
 })
 //This record is a reduced set of attributes used by Elasticsearch. 
 .value('elasticsearchRecord', {
@@ -965,6 +961,7 @@ metadataEditorApp
  */
     .service('AttachmentService', ['$http', '$log', 'hostname', 'session_id', 'envService', function($http, $log, hostname, session_id, envService) {
     //Get Angular enviroment variables
+    envService.set('development');
     var environment = envService.get();	
 	
     /* use a test uploadUrl for e2e tests.

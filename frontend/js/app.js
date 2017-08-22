@@ -207,7 +207,12 @@ var metadataEditorApp = angular
 	 	       "MB",
 		       "GB",
 		       "TB"
-		       ]
+		       ],
+	possibleUseRestrictions: [
+				  "Creative Commons Attribution-Non-Commercial-ShareAlike 3.0",
+				  "Creative Commons Zero (0) Public Domain",
+				  "Creative Commons Attribution"
+        ]
 }
 ).constant('emptyContact', {
       'name': '', 'email': '', 'org': '', 'address': '',
