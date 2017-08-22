@@ -215,9 +215,6 @@ metadataEditorApp
 		elasticsearchRecord.keywords.push(record.topic_category[i]);
 	}
 
-
-	//Not really sure how Geoportal is constructing urls. Could be using _id??  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<Not sure if this is correct! Need to talk to Ed to see what new url schema should be.
-
 	//Set record type to 'iso', and change if record is actually dublin core. Used for url building.
 	var recordType = 'iso';
 
@@ -303,7 +300,7 @@ metadataEditorApp
 
     use_restrictions: '',
     user_defined_use_restrictions: false,
-
+    
     citation: [{
       'name': '', 'email': '', 'org': '', 'address': '',
       'city': '', 'state': '', 'zipcode': '', 'country': '', 'phone': '',
@@ -331,6 +328,9 @@ metadataEditorApp
     data_one_search: 'false',
     reference_system: '',
     attachments: [],
+    uploaded_file_size:'',
+    uploaded_file_size_unit:'',
+    uploaded_file_description:'',
     published: 'false',
 })
 
@@ -400,6 +400,9 @@ metadataEditorApp
     data_one_search: 'false',
     reference_system: '',
     attachments: [],
+    uploaded_file_size:'',
+    uploaded_file_size_unit:'',
+    uploaded_file_description:'',
     published: 'false',
 })
 //This record is a reduced set of attributes used by Elasticsearch. 

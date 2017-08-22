@@ -618,7 +618,7 @@
 
                 <!-- Sets the contact block for NKN as the distributor of the data.
         This will be enabled as an 'if' statement based on if the download_url looks like an NKN download link -->
-                    <xsl:if test="contains(/root/record/download_url, 'https://www.northwestknowledge.net/data/download.php') or /root/record/associated_metadata != ''">
+                    <xsl:if test="contains(/root/record/download_url, 'https://www.northwestknowledge.net/data/download.php')">
                         <gmd:distributor>
                             <gmd:MD_Distributor>
                                 <gmd:distributorContact xlink:title="NKN">
@@ -690,6 +690,16 @@
                                             <gmd:function>
                                               <gmd:CI_OnLineFunctionCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode" codeListValue="download">download</gmd:CI_OnLineFunctionCode>
                                             </gmd:function>
+					    <gmd:description>
+					      <gco:CharacterString>
+						<xsl:if test="uploaded_file_description != '' and (uploaded_file_size != '' or uploaded_file_size_unit != '')">
+						  <xsl:value-of select="concat('(File size: ', uploaded_file_size, ' ', uploaded_file_size_unit, '.) ', uploaded_file_description)"/>
+						</xsl:if>
+						<xsl:if test="uploaded_file_description != '' and (uploaded_file_size = '' and uploaded_file_size_unit = '')">
+							<xsl:value-of select="uploaded_file_description"/>
+						</xsl:if>
+					      </gco:CharacterString>
+					    </gmd:description>
                                           </gmd:CI_OnlineResource>
                                         </gmd:onLine>
 				      </xsl:if>
@@ -778,11 +788,9 @@
 
                                         <xsl:for-each select="$contact/resource_url/item">
 				          <xsl:variable name="access_array" select="$contact/resource_url_description/item" as="element()*"/>
-
        					  <xsl:variable name="currenturl" select="."/>
 					  <xsl:variable name="j" select="position()"/>
-
-                                            <gmd:onLine>
+                                          <gmd:onLine>
                                                 <gmd:CI_OnlineResource>
                                                   <gmd:linkage>
                                                   <gmd:URL>
