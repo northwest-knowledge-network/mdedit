@@ -184,9 +184,30 @@ metadataEditorApp.controller('BaseController',
 
 	$scope.associatedDataSizeUnit = formOptions.dataSizeUnit;
 
+	//AngularJS 1.* can't do a select on an element in an object: it will return the entire object. We only want a string.
+	//So scrape all title strings out of array of Creative Commons use restrictions and put in to array for use in Resource section.
+	$scope.possibleUseRestrictions = [];
 	//Get the list of possible licenses and save in scope variable for use in populating select options
-	$scope.possibleUseRestrictions = formOptions.possibleUseRestrictions;
-	
+	formOptions.possibleUseRestrictions.forEach(function(restriction){
+		$scope.possibleUseRestrictions.push(restriction.title);
+	    });
+
+	//Save array of objects for use elsewhere
+	$scope.possibleUseRestrictionsDescriptions = formOptions.possibleUseRestrictions;
+
+	$scope.useRestrictionURL = "";
+	$scope.changeUseRestrictionURL = function(){
+	    setUseRestrictionURL();
+	};
+
+	function setUseRestrictionURL(){
+	    var index = $scope.possibleUseRestrictions.indexOf($scope.currentRecord.use_restrictions);
+	    if(index > -1)
+		$scope.useRestrictionURL = $scope.possibleUseRestrictionsDescriptions[index].url;
+	    else
+		$scope.useRestrictionURL = "";
+	}
+
         //for user sorting and filtering of records list, sets defaults
         $scope.sortType = '-last_mod_date';
         $scope.sortReverse = false;
@@ -773,6 +794,9 @@ metadataEditorApp.controller('BaseController',
 		}else
 		    $scope.searchableOnDataOne = false;
 	    }
+
+	    //Set the link to the currently selected license on the Resources section
+	    setUseRestrictionURL();
 	}
 
 	//Resets all variables in list of objects that track if each form section is complete ($valid was true: all required

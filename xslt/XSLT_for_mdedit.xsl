@@ -818,7 +818,12 @@
 						  </gmd:function>
 						  <gmd:description>
 						    <gco:CharacterString>
-						      <xsl:value-of select="concat($access_array[$j]/description, ' $::: ', $access_array[$j]/file_size, ' ', $access_array[$j]/size_unit)"/>
+						      <xsl:if test="$access_array[$j]/description != '' and ($access_array[$j]/file_size != '' or $access_array[$j]/size_unit != '')">
+							<xsl:value-of select="concat('(File size: ', $access_array[$j]/file_size, ' ', $access_array[$j]/size_unit, '.) ', $access_array[$j]/description)"/>
+						      </xsl:if>
+						      <xsl:if test="$access_array[$j]/description != '' and ($access_array[$j]/file_size = '' and $access_array[$j]/size_unit = '')">
+							<xsl:value-of select="$access_array[$j]/description"/>
+						      </xsl:if>
 						    </gco:CharacterString>
 						  </gmd:description>
                                                 </gmd:CI_OnlineResource>
@@ -876,7 +881,12 @@
 					      </gmd:function>
 					      <gmd:description>
 						<gco:CharacterString>
-						  <xsl:value-of select="concat($array[$i]/description,  ' $::: ', $array[$i]/file_size, ' ', $array[$i]/size_unit)" />
+						  <xsl:if test="$array[$i]/description != '' and ($array[$i]/file_size != '' or $array[$i]/size_unit != '')">
+						    <xsl:value-of select="concat('(File size: ', $array[$i]/file_size, ' ', $array[$i]/size_unit, '.) ', $array[$i]/description)" />
+						  </xsl:if>
+						  <xsl:if test="$array[$i]/description != '' and ($array[$i]/file_size = '' and $array[$i]/size_unit = '')">
+						    <xsl:value-of select="$array[$i]/description" />
+						  </xsl:if>
 						</gco:CharacterString>
 					      </gmd:description>
 					    </gmd:CI_OnlineResource>

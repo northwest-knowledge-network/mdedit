@@ -4,6 +4,7 @@
   </h2>
   <div class="subform">
     <h4 class="attribute-label" id="attachment-header">Associated Data</h4>
+    <h5><b>Please upload your data, or indicate that your data are hosted in another repository.</b><h5>
     <h5>File upload</h5>
     <div class="file-upload">
       <h5>
@@ -37,13 +38,14 @@
 	</button>
        </input>
        </div>
-      <input type="checkbox"
-	     ng-model="references_metadata"
-	     ng-checked="references_metadata"
-	     ng-click="toggleReferencesMetadata()"
-	     >
-      <strong>This metadata is for data already hosted in a data repository (please fill out at least one Online Resource in the Resources section)</strong>
     </div>
+    <br>
+    <input type="checkbox"
+	   ng-model="references_metadata"
+	   ng-checked="references_metadata"
+	   ng-click="toggleReferencesMetadata()"
+	   >
+    <strong>This metadata describes data already hosted in a data repository (please fill out at least one Online Resource in the Resources section with URL to data)</strong>
   </div>
 </div>
 

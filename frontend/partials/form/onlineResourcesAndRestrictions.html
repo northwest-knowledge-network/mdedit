@@ -103,16 +103,23 @@
 	<input type="radio" name="useRestrictions" ng-value="false" ng-model="currentRecord.user_defined_use_restrictions" ng-click="resetUseRestrictions('CreativeCommons')">Creative Commons (CC)
 	<div ng-if="!currentRecord.user_defined_use_restriction">
 	  <select tabindex=20 id="possible-use-restrictions-list"
-		  ng-options="item for item in possibleUseRestrictions"
+		  ng-options="restriction for restriction in possibleUseRestrictions"
 		  ng-model="currentRecord.use_restrictions" ng-multiple="false"
-		  ng-required="!currentRecord.user_defined_use_restrictions">
+		  ng-required="!currentRecord.user_defined_use_restrictions"
+		  ng-multiple="false"
+		  ng-change="changeUseRestrictionURL()"
+		  style="width:100%;">
 	  </select>
+	  <div>
+	    <a href="{{useRestrictionURL}}" target="_blank">Link to license</a>
+	  </div>
 	</div>
 	<input type="radio" name="useRestrictions" ng-value="true" ng-model="currentRecord.user_defined_use_restrictions" ng-click="resetUseRestrictions('other')">Other
 	<div ng-if="currentRecord.user_defined_use_restrictions">
         <textarea style="width:100%" tabindex=21 rows=4
                   ng-model="currentRecord.use_restrictions"
-		  ng-required="currentRecord.user_defined_use_restrictions">
+		  ng-required="currentRecord.user_defined_use_restrictions"
+		  >
         </textarea>
 	</div>
       </form>

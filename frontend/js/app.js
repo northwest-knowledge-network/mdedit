@@ -190,15 +190,18 @@ var metadataEditorApp = angular
 	      },
               {"title":"Information link", 
 	       "value":"information"
-	      }, 
+	      },
               {"title":"Online instructions for requesting the resource", 
 	       "value":"offlineAccess"
 	      },
-              {"title":"Online order process for obtening the resource",
+              {"title":"Online order process for obtaining the resource",
 	       "value":"order"
 	      },
               {"title":"Online search interface",
 	       "value":"search"
+	      },
+              {"title":"Web Service or API", 
+	       "value":"information"
 	      }
 		   ],
 
@@ -209,9 +212,9 @@ var metadataEditorApp = angular
 		       "TB"
 		       ],
 	possibleUseRestrictions: [
-				  "Creative Commons Attribution-Non-Commercial-ShareAlike 3.0",
-				  "Creative Commons Zero (0) Public Domain",
-				  "Creative Commons Attribution"
+                       {"title":"CC Attribution-Non-Commercial-ShareAlike 3.0 USA (CC BY-NC-SA 3.0 US)", "url":"https://creativecommons.org/licenses/by-nc-sa/3.0/us/"},
+                       {"title":"CC Zero Public Domain (CC0)", "url":"https://creativecommons.org/publicdomain/zero/1.0/"},
+                       {"title":"CC Attribution USA (CC BY 3.0 US)", "url":"https://creativecommons.org/licenses/by/3.0/us/"}
         ]
 }
 ).constant('emptyContact', {
