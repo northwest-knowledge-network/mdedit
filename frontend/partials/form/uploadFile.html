@@ -25,7 +25,7 @@
 	       />
       </div>
       <!-- <label for="fileSelect">Select file:</label> -->
-      <div ng-if="!references_metadata">
+      <div ng-if="!currentRecord.references_existing_data">
 	<input type="file" id="attachment-select"
 	       value="Attach File" ng-show="currentRecord._id"
 	       file-model="attachmentInfo.newAttachment"
@@ -41,9 +41,8 @@
     </div>
     <br>
     <input type="checkbox"
-	   ng-model="references_metadata"
-	   ng-checked="references_metadata"
-	   ng-click="toggleReferencesMetadata()"
+	   ng-model="currentRecord.references_existing_data"
+	   ng-checked="currentRecord.references_existing_data"
 	   >
     <strong>This metadata describes data already hosted in a data repository (please fill out at least one Online Resource in the Resources section with URL to data)</strong>
   </div>

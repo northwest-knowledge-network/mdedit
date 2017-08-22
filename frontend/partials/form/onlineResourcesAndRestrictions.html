@@ -7,7 +7,7 @@
     <h2 class="section-header optional-field-header">
       <span class="mega-octicon octicon-device-desktop"></span>  Online Resources
     </h2>
-    <span>
+    <span ng-show="!currentRecord.references_existing_data">
       (Optional)
     </span>
     <h6>
@@ -26,7 +26,7 @@
                 <input id="online" type="url" tabindex="21" style="margin-left:10px;width:100%"
                        ng-model="currentRecord.online[$index]" class="optional"
 		       maxlength="254" 
-		       ng-required="associated_metadata.checked == true"
+		       ng-required="currentRecord.references_existing_data == true"
 		       />
               </div>
               <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
@@ -40,7 +40,7 @@
 		<select tabindex=20 id="associated-metadata-type-selector"
 			ng-options="item.value as item.title for item in linkTypes"
 			ng-model="currentRecord.online_description[$index].type" ng-multiple="false"
-			ng-required="associated_metadata.checked == true">
+			ng-required="currentRecord.references_existing_data == true">
                 <option value=""></option>
 		</select>
 	      </div>

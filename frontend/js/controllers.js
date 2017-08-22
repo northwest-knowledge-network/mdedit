@@ -682,7 +682,7 @@ metadataEditorApp.controller('BaseController',
 	}
 
 	$scope.toggleReferencesMetadata = function(){
-	    $scope.references_metadata = !$scope.references_metadata;
+	    $scope.currentRecord.references_existing_data = !$scope.currentRecord.references_existing_data;
 	};
 
 	$scope.setUseRestrictions = function(value){
@@ -1148,8 +1148,8 @@ metadataEditorApp.controller('BaseController',
 		//If attachments array in currentRecord is null, then form for "dataFormats" is not complete
 		if(($scope.currentRecord.attachments == null)
 		   || ($scope.currentRecord.attachments.length == 0)){
-		    console.log("Printing references_metadata: " + $scope.references_metadata);
-		    if($scope.references_metadata == true)
+
+		    if($scope.currentRecord.references_existing_data == true)
 			formComplete = true;
 		    else
 			formComplete = false;

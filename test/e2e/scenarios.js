@@ -301,7 +301,7 @@ function testLoadDeleteDropdown(schemaType) {
 
             data_format: ['netCDF'],
             online: ['http://example.com/mynetcdfs/33422525'],
-            use_restrictions: 'Creative Commons Attribution-Non-Commercial-ShareAlike 3.0',
+            use_restrictions: 'CC Attribution-Non-Commercial-ShareAlike 3.0 USA (CC BY-NC-SA 3.0 US)',
 
             citation: [{
               'name': 'Matt', 'email': 'matt@example.com', 'org': 'NKN', 'address': '34 Concord',
@@ -1175,7 +1175,7 @@ function testReviewSection(schemaType) {
             data_format: ['netCDF'],
 	    data_format_aux: 'mp4',
             online: ['http://example.com/mynetcdfs/33422525'],
-            use_restrictions: 'Creative Commons Attribution-Non-Commercial-ShareAlike 3.0',
+            use_restrictions: 'CC Attribution-Non-Commercial-ShareAlike 3.0 USA (CC BY-NC-SA 3.0 US)',
 	    spatial_dtype: 'vector',
 	    
             citation: [{
@@ -1625,7 +1625,7 @@ function createISORecordObject(){
             data_format: ['netCDF'],
 	    data_format_aux: 'mp4',
             online: ['http://example.com/mynetcdfs/33422525'],
-            use_restrictions: 'Creative Commons Attribution-Non-Commercial-ShareAlike 3.0',
+            use_restrictions: 'CC Attribution-Non-Commercial-ShareAlike 3.0 USA (CC BY-NC-SA 3.0 US)',
 	    spatial_dtype: 'vector',
 	    
             citation: [{

@@ -324,6 +324,8 @@ metadataEditorApp
     
     end_date: {$date:''},
     
+    references_existing_data: false,
+
     doi_ark_request: 'neither',
     assigned_doi_ark: '',
     data_one_search: 'false',
@@ -391,6 +393,8 @@ metadataEditorApp
     
     end_date: {	$date:''},
     
+    references_existing_data: false,
+
     doi_ark_request: 'neither',
     assigned_doi_ark: '',
     data_one_search: 'false',

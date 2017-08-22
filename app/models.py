@@ -80,6 +80,9 @@ class Metadata(db.Document):
     #If user defined use restriction has been used
     user_defined_use_restrictions = db.BooleanField();
 
+    #If user defined use restriction has been used
+    references_existing_data = db.BooleanField();
+
     #research methods
     research_methods = db.StringField()
 
