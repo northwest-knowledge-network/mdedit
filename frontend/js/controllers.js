@@ -1498,6 +1498,11 @@ metadataEditorApp.controller('BaseController',
 	    //Change route to admin view
 	    $location.path("/admin");
 	};
+
+	$scope.showMetadataEditorView = function() {
+	    //Change route to iso metadata editor view
+	    $location.path("/iso");
+	};
 	
 	$scope.accessNames = [];
 	$scope.accessNames.push("");

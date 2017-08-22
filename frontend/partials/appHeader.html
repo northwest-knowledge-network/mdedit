@@ -152,8 +152,11 @@
             </ul>
 
         </li>
-	<li ng-show="isAdmin" ng-click="showAdminView()">
+	<li ng-if="isAdmin" ng-click="showAdminView()">
 	  <a  id="admin-view-button">Admin View</a>
+	</li>
+	<li ng-if="isAdmin" ng-click="showMetadataEditorView()">
+	  <a  id="metadata-editor-view-button">Metadata Editor</a>
 	</li>
       </ul>
     </div><!-- /.navbar-collapse -->
