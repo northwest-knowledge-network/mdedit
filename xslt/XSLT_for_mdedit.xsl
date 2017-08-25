@@ -692,12 +692,14 @@
                                             </gmd:function>
 					    <gmd:description>
 					      <gco:CharacterString>
-						<xsl:if test="uploaded_file_description != '' and (uploaded_file_size != '' or uploaded_file_size_unit != '')">
-						  <xsl:value-of select="concat('(File size: ', uploaded_file_size, ' ', uploaded_file_size_unit, '.) ', uploaded_file_description)"/>
-						</xsl:if>
-						<xsl:if test="uploaded_file_description != '' and (uploaded_file_size = '' and uploaded_file_size_unit = '')">
-							<xsl:value-of select="uploaded_file_description"/>
-						</xsl:if>
+						<xsl:choose>
+						  <xsl:when test="uploaded_file_description != '' and (uploaded_file_size != '' or uploaded_file_size_unit != '')">
+						    <xsl:value-of select="concat('(File size: ', uploaded_file_size, ' ', uploaded_file_size_unit, '.) ', uploaded_file_description)"/>
+						  </xsl:when>
+						  <xsl:otherwise>
+						    <xsl:value-of select="uploaded_file_description"/>
+						  </xsl:otherwise>
+						</xsl:choose>
 					      </gco:CharacterString>
 					    </gmd:description>
                                           </gmd:CI_OnlineResource>
@@ -826,12 +828,14 @@
 						  </gmd:function>
 						  <gmd:description>
 						    <gco:CharacterString>
-						      <xsl:if test="$access_array[$j]/description != '' and ($access_array[$j]/file_size != '' or $access_array[$j]/size_unit != '')">
-							<xsl:value-of select="concat('(File size: ', $access_array[$j]/file_size, ' ', $access_array[$j]/size_unit, '.) ', $access_array[$j]/description)"/>
-						      </xsl:if>
-						      <xsl:if test="$access_array[$j]/description != '' and ($access_array[$j]/file_size = '' and $access_array[$j]/size_unit = '')">
-							<xsl:value-of select="$access_array[$j]/description"/>
-						      </xsl:if>
+						      <xsl:choose>
+							<xsl:when test="$access_array[$j]/description != '' and ($access_array[$j]/file_size != '' or $access_array[$j]/size_unit != '')">
+							  <xsl:value-of select="concat('(File size: ', $access_array[$j]/file_size, ' ', $access_array[$j]/size_unit, '.) ', $access_array[$j]/description)"/>
+							</xsl:when>
+							<xsl:otherwise>
+							  <xsl:value-of select="$access_array[$j]/description"/>
+							</xsl:otherwise>
+						      </xsl:choose>
 						    </gco:CharacterString>
 						  </gmd:description>
                                                 </gmd:CI_OnlineResource>
