@@ -693,7 +693,7 @@
 					    <gmd:description>
 					      <gco:CharacterString>
 						<xsl:choose>
-						  <xsl:when test="uploaded_file_description != '' and (uploaded_file_size != '' or uploaded_file_size_unit != '')">
+						  <xsl:when test="/root/record/uploaded_file_description != '' and (/root/record/uploaded_file_size != '' or /root/record/uploaded_file_size_unit != '')">
 						    <xsl:value-of select="concat('(File size: ', /root/record/uploaded_file_size, ' ', /root/record/uploaded_file_size_unit, '.) ', /root/record/uploaded_file_description)"/>
 						  </xsl:when>
 						  <xsl:otherwise>
