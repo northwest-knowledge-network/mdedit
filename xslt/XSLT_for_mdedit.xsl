@@ -694,10 +694,10 @@
 					      <gco:CharacterString>
 						<xsl:choose>
 						  <xsl:when test="uploaded_file_description != '' and (uploaded_file_size != '' or uploaded_file_size_unit != '')">
-						    <xsl:value-of select="concat('(File size: ', uploaded_file_size, ' ', uploaded_file_size_unit, '.) ', uploaded_file_description)"/>
+						    <xsl:value-of select="concat('(File size: ', /root/record/uploaded_file_size, ' ', /root/record/uploaded_file_size_unit, '.) ', /root/record/uploaded_file_description)"/>
 						  </xsl:when>
 						  <xsl:otherwise>
-						    <xsl:value-of select="uploaded_file_description"/>
+						    <xsl:value-of select="/root/record/uploaded_file_description"/>
 						  </xsl:otherwise>
 						</xsl:choose>
 					      </gco:CharacterString>
