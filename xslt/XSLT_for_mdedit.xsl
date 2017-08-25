@@ -618,7 +618,7 @@
 
                 <!-- Sets the contact block for NKN as the distributor of the data.
         This will be enabled as an 'if' statement based on if the download_url looks like an NKN download link -->
-                    <xsl:if test="contains(/root/record/download_url, 'https://www.northwestknowledge.net/data/download.php') or /root/record/associated_metadata != ''">
+                    <xsl:if test="contains(/root/record/download_url, 'https://www.northwestknowledge.net/data/download.php')">
                         <gmd:distributor>
                             <gmd:MD_Distributor>
                                 <gmd:distributorContact xlink:title="NKN">
@@ -690,6 +690,18 @@
                                             <gmd:function>
                                               <gmd:CI_OnLineFunctionCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode" codeListValue="download">download</gmd:CI_OnLineFunctionCode>
                                             </gmd:function>
+					    <gmd:description>
+					      <gco:CharacterString>
+						<xsl:choose>
+						  <xsl:when test="/root/record/uploaded_file_description != '' and (/root/record/uploaded_file_size != '' or /root/record/uploaded_file_size_unit != '')">
+						    <xsl:value-of select="concat('(File size: ', /root/record/uploaded_file_size, ' ', /root/record/uploaded_file_size_unit, '.) ', /root/record/uploaded_file_description)"/>
+						  </xsl:when>
+						  <xsl:otherwise>
+						    <xsl:value-of select="/root/record/uploaded_file_description"/>
+						  </xsl:otherwise>
+						</xsl:choose>
+					      </gco:CharacterString>
+					    </gmd:description>
                                           </gmd:CI_OnlineResource>
                                         </gmd:onLine>
 				      </xsl:if>
@@ -778,11 +790,9 @@
 
                                         <xsl:for-each select="$contact/resource_url/item">
 				          <xsl:variable name="access_array" select="$contact/resource_url_description/item" as="element()*"/>
-
        					  <xsl:variable name="currenturl" select="."/>
 					  <xsl:variable name="j" select="position()"/>
-
-                                            <gmd:onLine>
+                                          <gmd:onLine>
                                                 <gmd:CI_OnlineResource>
                                                   <gmd:linkage>
                                                   <gmd:URL>
@@ -818,12 +828,14 @@
 						  </gmd:function>
 						  <gmd:description>
 						    <gco:CharacterString>
-						      <xsl:if test="$access_array[$j]/description != '' and ($access_array[$j]/file_size != '' or $access_array[$j]/size_unit != '')">
-							<xsl:value-of select="concat('(File size: ', $access_array[$j]/file_size, ' ', $access_array[$j]/size_unit, '.) ', $access_array[$j]/description)"/>
-						      </xsl:if>
-						      <xsl:if test="$access_array[$j]/description != '' and ($access_array[$j]/file_size = '' and $access_array[$j]/size_unit = '')">
-							<xsl:value-of select="$access_array[$j]/description"/>
-						      </xsl:if>
+						      <xsl:choose>
+							<xsl:when test="$access_array[$j]/description != '' and ($access_array[$j]/file_size != '' or $access_array[$j]/size_unit != '')">
+							  <xsl:value-of select="concat('(File size: ', $access_array[$j]/file_size, ' ', $access_array[$j]/size_unit, '.) ', $access_array[$j]/description)"/>
+							</xsl:when>
+							<xsl:otherwise>
+							  <xsl:value-of select="$access_array[$j]/description"/>
+							</xsl:otherwise>
+						      </xsl:choose>
 						    </gco:CharacterString>
 						  </gmd:description>
                                                 </gmd:CI_OnlineResource>

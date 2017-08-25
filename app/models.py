@@ -118,6 +118,11 @@ class Metadata(db.Document):
     # files associated with the metadata record
     attachments = db.EmbeddedDocumentListField('Attachment')
 
+    #Statistics on known file size of the uploaded file input by the user
+    uploaded_file_size = db.StringField(max_length=255)
+    uploaded_file_size_unit = db.StringField(max_length=255)
+    uploaded_file_description = db.StringField(max_length=255)
+
     meta = {'allow_inheritance': True}
 
     def format_dates(self):

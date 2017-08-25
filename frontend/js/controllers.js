@@ -507,7 +507,6 @@ metadataEditorApp.controller('BaseController',
             $scope.currentRecord.online.push("");
 	    $scope.accessNames.push("");
 	    $scope.currentRecord.online_description.push({"type":"","description":"","file_size":"","size_unit":""});
-	    console.log($scope.currentRecord.online_description);
         };
 
         $scope.getBbox = function()
@@ -1530,8 +1529,6 @@ metadataEditorApp.controller('BaseController',
 			$scope.currentRecord.access[i].resource_url.push(url);
 			$scope.currentRecord.access[i].resource_url_description.push(description);
 		    }
-		    console.log("Printing the new object:");
-		    console.log($scope.currentRecord.access[i].resource_url_description);
 		}
 	    }
 	};
