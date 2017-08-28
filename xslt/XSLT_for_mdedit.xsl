@@ -694,7 +694,7 @@
 					      <gco:CharacterString>
 						<xsl:choose>
 						  <xsl:when test="/root/record/uploaded_file_description != '' and (/root/record/uploaded_file_size != '' or /root/record/uploaded_file_size_unit != '')">
-						    <xsl:value-of select="concat('(File size: ', /root/record/uploaded_file_size, ' ', /root/record/uploaded_file_size_unit, '.) ', /root/record/uploaded_file_description)"/>
+						    <xsl:value-of select="concat('(File size: ', /root/record/uploaded_file_size, ' ', /root/record/uploaded_file_size_unit, ') ', /root/record/uploaded_file_description)"/>
 						  </xsl:when>
 						  <xsl:otherwise>
 						    <xsl:value-of select="/root/record/uploaded_file_description"/>
@@ -830,7 +830,7 @@
 						    <gco:CharacterString>
 						      <xsl:choose>
 							<xsl:when test="$access_array[$j]/description != '' and ($access_array[$j]/file_size != '' or $access_array[$j]/size_unit != '')">
-							  <xsl:value-of select="concat('(File size: ', $access_array[$j]/file_size, ' ', $access_array[$j]/size_unit, '.) ', $access_array[$j]/description)"/>
+							  <xsl:value-of select="concat('(File size: ', $access_array[$j]/file_size, ' ', $access_array[$j]/size_unit, ') ', $access_array[$j]/description)"/>
 							</xsl:when>
 							<xsl:otherwise>
 							  <xsl:value-of select="$access_array[$j]/description"/>
@@ -894,7 +894,7 @@
 					      <gmd:description>
 						<gco:CharacterString>
 						  <xsl:if test="$array[$i]/description != '' and ($array[$i]/file_size != '' or $array[$i]/size_unit != '')">
-						    <xsl:value-of select="concat('(File size: ', $array[$i]/file_size, ' ', $array[$i]/size_unit, '.) ', $array[$i]/description)" />
+						    <xsl:value-of select="concat('(File size: ', $array[$i]/file_size, ' ', $array[$i]/size_unit, ') ', $array[$i]/description)" />
 						  </xsl:if>
 						  <xsl:if test="$array[$i]/description != '' and ($array[$i]/file_size = '' and $array[$i]/size_unit = '')">
 						    <xsl:value-of select="$array[$i]/description" />
