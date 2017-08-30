@@ -801,29 +801,29 @@
                                                   </gmd:linkage>
 						  <gmd:function>
 						    <xsl:if test="$access_array[$j]/type = 'download'">
-						      <gmd:CI_OnlineFunctionCode 
+						      <gmd:CI_OnLineFunctionCode 
 							 codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode"
-							 codeListValue="download">download</gmd:CI_OnlineFunctionCode>
+							 codeListValue="download">download</gmd:CI_OnLineFunctionCode>
 						    </xsl:if>
 						    <xsl:if test="$access_array[$j]/type = 'information'">
-						      <gmd:CI_OnlineFunctionCode 
+						      <gmd:CI_OnLineFunctionCode 
 							 codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode"
-							 codeListValue="information">information</gmd:CI_OnlineFunctionCode>
+							 codeListValue="information">information</gmd:CI_OnLineFunctionCode>
 						    </xsl:if>
 						    <xsl:if test="$access_array[$j]/type = 'offlineAccess'">
-						      <gmd:CI_OnlineFunctionCode 
+						      <gmd:CI_OnLineFunctionCode 
 							 codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode"
-							 codeListValue="offlineAccess">offlineAccess</gmd:CI_OnlineFunctionCode>
+							 codeListValue="offlineAccess">offlineAccess</gmd:CI_OnLineFunctionCode>
 						    </xsl:if>
 						    <xsl:if test="$access_array[$j]/type = 'order'">
-						      <gmd:CI_OnlineFunctionCode 
+						      <gmd:CI_OnLineFunctionCode 
 							 codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode"
-							 codeListValue="order">order</gmd:CI_OnlineFunctionCode>
+							 codeListValue="order">order</gmd:CI_OnLineFunctionCode>
 						    </xsl:if>
                                                     <xsl:if test="$access_array[$j]/type = 'search'">
-                                                      <gmd:CI_OnlineFunctionCode
+                                                      <gmd:CI_OnLineFunctionCode
                                                          codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode"
-                                                         codeListValue="search">search</gmd:CI_OnlineFunctionCode>
+                                                         codeListValue="search">search</gmd:CI_OnLineFunctionCode>
                                                     </xsl:if>
 						  </gmd:function>
 						  <gmd:description>
@@ -866,29 +866,29 @@
                                               </gmd:linkage>
 					      <gmd:function>
 						<xsl:if test="$array[$i]/type = 'download'">
-						  <gmd:CI_OnlineFunctionCode 
+						  <gmd:CI_OnLineFunctionCode 
 						     codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode"
-						     codeListValue="download">download</gmd:CI_OnlineFunctionCode>
+						     codeListValue="download">download</gmd:CI_OnLineFunctionCode>
 						</xsl:if>
 						<xsl:if test="$array[$i]/type = 'information'">
-						  <gmd:CI_OnlineFunctionCode 
+						  <gmd:CI_OnLineFunctionCode 
 						     codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode"
-						     codeListValue="information">information</gmd:CI_OnlineFunctionCode>
+						     codeListValue="information">information</gmd:CI_OnLineFunctionCode>
 						</xsl:if>
 						<xsl:if test="$array[$i]/type = 'offlineAccess'">
-						  <gmd:CI_OnlineFunctionCode 
+						  <gmd:CI_OnLineFunctionCode 
 						     codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode"
-						     codeListValue="offlineAccess">offlineAccess</gmd:CI_OnlineFunctionCode>
+						     codeListValue="offlineAccess">offlineAccess</gmd:CI_OnLineFunctionCode>
 						</xsl:if>
 						<xsl:if test="$array[$i]/type = 'order'">
-						  <gmd:CI_OnlineFunctionCode 
+						  <gmd:CI_OnLineFunctionCode 
 						     codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode"
-						     codeListValue="order">order</gmd:CI_OnlineFunctionCode>
+						     codeListValue="order">order</gmd:CI_OnLineFunctionCode>
 						</xsl:if>
                                                 <xsl:if test="$array[$i]/type = 'search'">
-                                                  <gmd:CI_OnlineFunctionCode
+                                                  <gmd:CI_OnLineFunctionCode
                                                      codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode"
-                                                     codeListValue="search">search</gmd:CI_OnlineFunctionCode>
+                                                     codeListValue="search">search</gmd:CI_OnLineFunctionCode>
                                                 </xsl:if>
 					      </gmd:function>
 					      <gmd:description>
