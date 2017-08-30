@@ -200,6 +200,9 @@ var metadataEditorApp = angular
               {"title":"Online search interface",
 	       "value":"search"
 	      },
+              {"title":"Related dataset", 
+	       "value":"information"
+              },
               {"title":"Web Service or API", 
 	       "value":"information"
 	      }
