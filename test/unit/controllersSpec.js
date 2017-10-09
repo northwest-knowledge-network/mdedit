@@ -256,22 +256,6 @@ describe('Save record as draft', function () {
         expect(recordService.saveDraft).toHaveBeenCalled();
     });
 
-    it('should reset the access and citation\'s addedContacts count to 0', function () {
-
-        testScope.addContactCitation();
-        expect(testScope.addedContacts.citation).toEqual(1);
-
-        testScope.addContactAccess();
-        expect(testScope.addedContacts.access).toEqual(1);
-
-        testScope.submitDraftRecord();
-        expect(recordService.saveDraft).toHaveBeenCalled();
-        expect(testScope.addedContacts).toEqual({
-            access: 0,
-            citation: 0
-        });
-    });
-
     it('should set newRecord to false on the scope', function () {
         expect(testScope.newRecord).toEqual(true);
         testScope.submitDraftRecord();
