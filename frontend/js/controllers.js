@@ -343,11 +343,6 @@ metadataEditorApp.controller('BaseController',
 
 			$scope.newRecord = false;
 
-			$scope.addedContacts = {
-                            'access': 0,
-                            'citation': 0
-			};
-
 			$scope.updateRecordsList();
                     })
                     .error( function (data) {
@@ -415,22 +410,11 @@ metadataEditorApp.controller('BaseController',
 
                     $scope.newRecord = false;
 
-                    $scope.addedContacts = {
-                        'access': 0,
-                        'citation': 0
-                    };
-
                     $scope.updateRecordsList();
                 })
                 .error( function (data) {
                     // TODO
                 });
-        };
-
-        $scope.addedContacts =
-        {
-          'access': 0,
-          'citation': 0
         };
 
         $scope.addContactCitation = function()
@@ -442,8 +426,6 @@ metadataEditorApp.controller('BaseController',
                     'country': '', 'phone': ''
                 }
             );
-
-            $scope.addedContacts.citation += 1;
         };
 
         $scope.addContactAccess = function()
@@ -455,26 +437,18 @@ metadataEditorApp.controller('BaseController',
                     'country': '', 'phone': ''
                 }
             );
-
-            $scope.addedContacts.access += 1;
         };
 
 
-        $scope.cancelAddContactCitation = function()
-        {
-          if ($scope.addedContacts.citation > 0)
-          {
-            $scope.currentRecord.citation.pop();
-            $scope.addedContacts.citation -= 1;
+        $scope.cancelAddContactCitation = function(){
+          if ($scope.currentRecord.citation.length > 1){
+	      $scope.currentRecord.citation.pop();
           }
         };
 
-        $scope.cancelAddContactAccess = function()
-        {
-          if ($scope.addedContacts.access > 0)
-          {
-            $scope.currentRecord.access.pop();
-            $scope.addedContacts.access -= 1;
+        $scope.cancelAddContactAccess = function(){
+          if ($scope.currentRecord.access.length > 1){
+	      $scope.currentRecord.access.pop();
           }
         };
 
@@ -697,7 +671,6 @@ metadataEditorApp.controller('BaseController',
 		//If the radio button labeled "Other" is checked, and there is a non-user defined value from the 
 		//possible Creative Commons options in the record's use_restrictions attribute, then clear that 
 		//Creative Commons string for currentRecord.use_restrictions. This also clears the newly displayed textarea.
-		//		console.log("Printing if in array: " + $scope.possibleUseRestrictions.indexOf($scope.currentRecord.use_restrictions));
 		if(!$scope.possibleUseRestrictions.indexOf($scope.currentRecord.use_restrictions) > -1){
 		    $scope.currentRecord.use_restrictions = "";
 		}
@@ -717,7 +690,6 @@ metadataEditorApp.controller('BaseController',
 	    }else if(type.indexOf("ARK") > -1){
 		$scope.currentRecord.doi_ark_request = type;
 	    }else if(type.indexOf("both") > -1){
-		console.log("Inside both if statement");
 		$scope.currentRecord.doi_ark_request = type;
 	    }else if(type.indexOf("neither") > -1){
 		$scope.currentRecord.doi_ark_request = type;
@@ -1514,9 +1486,6 @@ metadataEditorApp.controller('BaseController',
 	   @param {integer} index, {string} url, {object} description
 	  */
 	$scope.associateContactResource = function(index, url, description){
-	    console.log("Printing indecies: " + index);
-	    console.log("Printing description object: ");
-	    console.log(description);
 	    for(var i = 0; i < $scope.currentRecord.access.length; i++){
 		if($scope.currentRecord.access[i].name == $scope.accessNames[index]){
 		    if($scope.currentRecord.access[i].resource_url == null)
