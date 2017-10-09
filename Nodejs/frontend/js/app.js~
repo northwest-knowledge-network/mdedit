@@ -226,8 +226,14 @@ var metadataEditorApp = angular
     $rootScope.$on('$stateChangeStart', function(event, toState, toParams) {
 	//If app is not a local instance, and in Drupal, then we need to add "frontend/" to the path
 	//for states. 
-	if(hostname.indexOf('localhost') == -1)
-	    if(toState.templateUrl.indexOf("frontend/") == -1)
-		toState.templateUrl = "frontend/" + toState.templateUrl;
+	//if(hostname.indexOf('localhost') == -1)
+	  //  if(toState.templateUrl.indexOf("frontend/") == -1)
+	//	toState.templateUrl = "frontend/" + toState.templateUrl;
+
+	/* Bash deployment script will add code after this multiline comment 
+	   to set IP address of hostname based on number of deployed containers.
+	 */
+	//Set hostname
+	
     })
 });
