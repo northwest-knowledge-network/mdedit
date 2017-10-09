@@ -1,0 +1,165 @@
+<!-- Modals -->
+<div class="modal fade" id="submitModal" tabindex="-1" role="dialog" aria-labelledby="submitModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="submitModalLabel">Metadata Record Submitted</h4>
+      </div>
+      <div class="modal-body">
+        <p>Your metadata record has been submitted to NKN for publication and we have been alerted of
+          your submission. Once we review and approve your record, you will be able to search
+          for it on our <a href="https://www.northwestknowledge.net/data-search" target="_blank">data search page</a>. 
+          If modifications need to be made before your record can be approved, NKN will contact you.</p>
+      </div>
+      <div class="modal-footer">
+        <button id="close-modal-button" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--NavBar -->
+<nav id="navbar" class="navbar navbar-default" style="border-style: none">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div id="navbar-custom" class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li class="dropdown" is-open="status.isopen">
+            <a id="load-delete-record-dropdown" class="dropdown-toggle"
+               data-toggle="dropdown" role="button" aria-haspopup="true"
+               aria-expanded="false"
+	       >
+                My Records <span class="caret"></span>
+            </a>
+            <ul id="records-table" class="dropdown-menu" role="menu">
+
+                <table class="table" style="width:1000px;margin-bottom:-5px">
+
+                    <li>
+                        <thead>
+                           <input type="text" class="form-control" placeholder="Search Your Records" ng-model="searchRecords" disable-auto-close></input>
+                            <tr>
+                                <td>
+                                    <a ng-click="sortType = '-schema_type'; sortReverse = !sortReverse"  disable-auto-close>
+                                      <b>Record Type</b>
+                                        <span ng-show="sortType =='-schema_type' && sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType =='-schema_type' && !sortReverse" class="fa fa-caret-up"></span>
+                                    </a>
+                                </td>
+                                <td>
+                                    <a ng-click="sortType = '-title'; sortReverse = !sortReverse" disable-auto-close>
+                                      <b>Title</b>
+                                        <span ng-show="sortType =='-title' && sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType =='-title' && !sortReverse" class="fa fa-caret-up"></span>
+                                    </a>
+                                </td>
+                                <td>
+                                    <a ng-click="sortType = '-summary'; sortReverse = !sortReverse" disable-auto-close>
+                                      <b>Summary</b>
+                                        <span ng-show="sortType =='-summary' && sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType =='-summary' && !sortReverse" class="fa fa-caret-up"></span>
+                                    </a>
+                                </td>
+                                <td>
+                                    <a ng-click="sortType = '-last_mod_date'; sortReverse = !sortReverse" disable-auto-close>
+                                      <b>Last Edited</b>
+                                        <span ng-show="sortType =='-last_mod_date' && sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType =='-last_mod_date' && !sortReverse" class="fa fa-caret-up"></span>
+                                    </a>
+                                </td>
+                                <td>
+                                    <a ng-click="sortType = '-md_pub_date'; sortReverse = !sortReverse" disable-auto-close>
+                                      <b>Last Published</b>
+                                        <span ng-show="sortType =='-md_pub_date' && sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType =='-md_pub_date' && !sortReverse" class="fa fa-caret-up"></span>
+                                    </a>
+                                </td>
+                                <td>
+                                    <b>Load/Delete</b>
+                                </td>
+                            </tr>
+                        </thead>
+                    </li>
+
+                    <li>
+                        <tr ng-repeat="record in allRecords | orderBy:sortType:sortReverse | filter:searchRecords">
+                            <td ng-attr-id="{{'record-list-type_' + $index}}">{{record.schema_type}}</td>
+                            <td ng-attr-id="{{'record-list-title-' + $index}}">{{record.title | limitTo:20}}</td>
+                            <td class="record-list-summary">{{record.summary | limitTo:30}}</td>
+                            <td class="record-list-last-saved">{{record.last_mod_date.$date | date:'short'}}</td>
+                            <td class="record-list-last-published">{{record.md_pub_date.$date | date:'short'}}</td>
+                            <td class="record-list-actions">
+                                <a ng-show="isISO(record.schema_type)"
+                                   ng-click="editRecord(record._id.$oid); resetFormButtons('iso'); checkCoordinateInput();"
+                                   class="btn btn-xs record-list-edit"
+                                   id="{{'edit-record-iso-' + $index}}"
+                                   href="#/iso">
+                                   Load
+                                </a>
+                                <a ng-show="!isISO(record.schema_type)"
+                                   ng-click="editRecord(record._id.$oid); resetFormButtons('dublin'); checkCoordinateInput(); checkSpatialData();"
+                                   class="btn btn-xs record-list-edit"
+                                   id="{{'edit-record-dublin-' + $index}}"
+                                   href="#/dublin">
+                                   Load
+                                </a>
+                                <a ng-show="!isPublished(record.md_pub_date.$date)"
+                                   ng-click="deleteById(record._id.$oid)"
+                                   ng-confirm-click="Are you sure you want to delete?"
+                                   class="btn btn-xs record-list-delete"
+                                   id="{{'delete-record-' + $index}}"
+                                   >
+                                    Delete
+                                </a>
+                            </td>
+                        </tr>
+                    </li>
+
+                </table>
+
+            </ul>
+        </li>
+
+        <li class="dropdown" ng-show="currentRecord._id.$oid">
+
+            <a id="export-dropdown" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                Export as... <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+                <li><a id="default-miles"
+                       ng-click="export_('iso')"
+                       class="btn btn-sm btn-default navbar-btn header-button">
+                    ISO 19115 XML
+                </a></li>
+                <li><a id="default-nkn" ng-click="export_('dc')"
+                       class="btn btn-sm btn-default navbar-btn header-button">
+                    Dublin Core XML
+                </a></li>
+                <li><a id="default-nkn" ng-click="export_('esri')"
+                       class="btn btn-sm btn-default navbar-btn header-button">
+                    ESRI-ISO XML
+                </a></li>
+            </ul>
+
+        </li>
+	<li ng-if="isAdmin" ng-click="showAdminView()">
+	  <a  id="admin-view-button">Admin View</a>
+	</li>
+	<li ng-if="isAdmin" ng-click="showMetadataEditor()">
+	  <a  id="metadata-editor-view-button">Metadata Editor</a>
+	</li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+

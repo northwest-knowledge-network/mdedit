@@ -1,0 +1,16 @@
+version: '2'
+services:
+  apache-server:
+    build: Nodejs/
+    ports:
+      - "3000:80"
+    links:
+      - Python
+  Python:
+      build: Python/
+      ports:
+        - "4000:4000"
+  mongodb:
+      build: MongoDB/
+      ports:
+        - "5000:27017"  

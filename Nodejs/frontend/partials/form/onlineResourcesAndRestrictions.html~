@@ -1,0 +1,131 @@
+<div class="row">
+  
+  <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+    
+
+    <a class="anchor" name="online"></a>
+    <h2 class="section-header optional-field-header">
+      <span class="mega-octicon octicon-device-desktop"></span>  Online Resources
+    </h2>
+    <span>
+      (Optional)
+    </span>
+    <h6>
+      Is your data or any additional information specific to the data available
+      online or is your data provided as a web service (e.g., Web Mapping
+      Services, Catalog Services for the Web, REST services)? Provide the
+      URL for each online resource.
+    </h6>
+    <form name="onlineSubform" id="onlineSubform">
+      <div class="subform">
+        <div class="row">
+          <div ng-repeat="el in currentRecord.online track by $index">
+            <h4 style="margin-left:10px">URL {{ $index + 1 }}</h4>
+            <div class="row">
+              <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+                <input id="online" type="url" tabindex="21" style="margin-left:10px;width:100%"
+                       ng-model="currentRecord.online[$index]" class="optional"
+		       maxlength="254" 
+		       ng-required="currentRecord.references_existing_data == true"
+		       />
+              </div>
+              <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                <button tabindex=20 class="btn btn-default btn-xs"
+			ng-click="removeOnlineResource($index)">Remove </button>
+              </div>
+            </div>
+	    <div class="row resource-link-description">
+	      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<h6>This link is a (select one option below):</h6>
+		<select tabindex=20 id="associated-metadata-type-selector"
+			ng-options="item.value as item.title for item in linkTypes"
+			ng-model="currentRecord.online_description[$index].type" ng-multiple="false"
+			ng-required="currentRecord.references_existing_data == true">
+                <option value=""></option>
+		</select>
+	      </div>
+	    </div>
+	    <div class="row resource-link-description" ng-show="currentRecord.online_description[$index].type == 'download'">
+	      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<h6>This file is approximately (optional):</h6>
+		<input id="associated-metadata-file-size" tabindex=1 style="width:10%" 
+                       ng-model="currentRecord.online_description[$index].file_size" />
+		<select tabindex=20 id="associated-metadata-size-selector"
+			ng-options="item for item in associatedDataSizeUnit"
+			ng-model="currentRecord.online_description[$index].size_unit" ng-multiple="false">
+                  <option value=""></option>
+		</select>
+	      </div>
+	    </div>
+	    <div class="row resource-link-description">
+	      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<h6>Description of the link (optional):</h6>
+		<textarea id="associated_metadata_description" style="width:100%" tabindex=1 rows="3"
+                          ng-model="currentRecord.online_description[$index].description">
+		</textarea>
+	      </div>
+	    </div>
+	    <div class="row resource-link-description">
+	      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<!-- Associate a URL with a contact -->
+		  <h5>If this URL is associated with a Data Access Contact, select Contact below:</h5>
+		  <select  class="resource-contact-select" ng-model="accessNames[$index]" ng-options="contact.name as contact.name for contact in currentRecord.access" ng-change="associateContactResource($index, currentRecord.online[$index], currentRecord.online_description[$index])">
+		  </select>
+	      </div>
+	    </div>
+          </div>
+	</div>
+      </div>
+      <div id="online-buttons">
+	<input type="button" tabindex=21 class="btn btn-primary btn-contact"
+               ng-click="addOnlineResource()" value="Add an Online Resource"
+	       maxlength="254" />
+      </div>
+    </form>
+  </div>
+  
+  
+  <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+    
+    <a class="anchor" name="online"></a>
+    <h2 class="section-header">
+      <span class="mega-octicon octicon-issue-opened"></span>  Use Restrictions
+    </h2>
+    <div class="subform">
+      <h6>
+        List any use restrictions for how others should use your data.
+        For example, you might want to stipulate that "This
+        dataset should be cited in any publications for which it is
+        used." If there are no restrictions for how your dataset is
+        used, please state so here.
+      </h6>
+      <form>
+	<input type="radio" name="useRestrictions" ng-value="false" ng-model="currentRecord.user_defined_use_restrictions" ng-click="resetUseRestrictions('CreativeCommons')">Creative Commons (CC)
+	<div ng-if="!currentRecord.user_defined_use_restriction">
+	  <select tabindex=20 id="possible-use-restrictions-list"
+		  ng-options="restriction for restriction in possibleUseRestrictions"
+		  ng-model="currentRecord.use_restrictions" ng-multiple="false"
+		  ng-required="!currentRecord.user_defined_use_restrictions"
+		  ng-multiple="false"
+		  ng-change="changeUseRestrictionURL()"
+		  style="width:100%;">
+	  </select>
+	  <div>
+	    <a href="{{useRestrictionURL}}" target="_blank">Link to license</a>
+	  </div>
+	</div>
+	<input type="radio" name="useRestrictions" ng-value="true" ng-model="currentRecord.user_defined_use_restrictions" ng-click="resetUseRestrictions('other')">Other
+	<div ng-if="currentRecord.user_defined_use_restrictions">
+        <textarea style="width:100%" tabindex=21 rows=4
+                  ng-model="currentRecord.use_restrictions"
+		  ng-required="currentRecord.user_defined_use_restrictions"
+		  >
+        </textarea>
+	</div>
+      </form>
+    </div>
+    
+  </div>
+  
+</div>
+

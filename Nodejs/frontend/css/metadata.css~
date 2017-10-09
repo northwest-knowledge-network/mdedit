@@ -1,0 +1,558 @@
+.navbar {
+    border-bottom: 2px groove #595959;
+    background-color: #78C785;
+}
+
+.navbar-default {
+    color: white;
+}
+
+.panel-default > .panel-heading {
+    color: #333;
+    background-color: #000;
+    border-color: #ddd;
+}
+
+a:hover {
+    cursor: pointer;
+}
+
+
+.navbar {
+    font-family: Verdana,Arial,Helvetica,sans-serif;
+}
+
+.navbar-default .navbar-brand {
+    color: white;
+}
+
+.navbar-default .navbar-nav > li > a {
+    color: white;
+}
+
+#records-table {
+    font-size: .7em;
+    color: #333;
+}
+
+#records-table > span.badge {
+    font-size: .7em;
+}
+
+input {
+  border-width: 3px;
+  border-style: solid;
+}
+
+textarea {
+  border-width: 3px;
+  border-style: solid;
+}
+
+.ng-pristine.ng-invalid-required {
+    box-shadow: none;
+}
+
+input.ng-pristine {
+  border-style: none;
+}
+
+textarea.ng-pristine {
+  border-style: none;
+}
+
+select.ng-pristine {
+  border-style: none;
+}
+
+input.ng-touched.ng-invalid {
+  border-color: #FA787E;
+  border-width: 3px;
+  border-style: solid;
+}
+
+textarea.ng-touched.ng-invalid {
+  border-color: #FA787E;
+  border-width: 3px;
+  border-style: solid;
+}
+
+select.ng-touched.ng-invalid {
+  border-color: #FA787E;
+  border-width: 3px;
+  border-style: solid;
+}
+
+input.ng-not-empty.ng-valid {
+  border-color: #78C785;
+  border-width: 3px;
+  border-style: solid;
+}
+
+textarea.ng-not-empty.ng-valid {
+  border-color: #78C785;
+  border-width: 3px;
+  border-style: solid;
+}
+
+select.ng-dirty.ng-valid {
+  border-color: #78C785;
+  border-width: 3px;
+  border-style: solid;
+}
+
+.attribute-label {
+  color: #007acc;
+}
+
+.section-header {
+  color: #b1925c /*#080*/;
+  margin: 15px 10px;
+}
+
+.btn-danger {
+    background-color: #D15B59
+}
+
+.subform {
+  /*border-style: solid;*/
+  /*border-width:1px;*/
+  /*border-color: lightgrey;*/
+  padding: 5px 15px 10px;
+  background-color: #f4f4f4;
+  margin: 10px;
+}
+.subform h6, .ng-scope h6, .subform ul { 
+  font-size: 14px; 
+  font-weight: normal; 
+  line-height: 1.3; 
+}
+
+input[type="radio"], input[type="checkbox"] { margin-right:8px; }
+
+select { background-color: #fff; }
+
+h6 {
+  margin-left: 4px;
+}
+
+.btn-primary {
+  background-color: #4d94ff;
+}
+
+.btn-primary:hover {
+  background-color: #eaeaea;
+  color: #333;
+}
+
+.btn-cancel-contact {
+    background-color: #cd4e4b;
+    color: white;
+}
+
+#access-contacts {
+  /*margin: 0 -8px 0 8px;*/
+}
+
+#citation-contacts {
+  /*margin: 0 8px 0 -8px;*/
+}
+
+.field-description {
+  font-size: 12px;
+}
+.contacts-subheader {
+  width: 80%;
+}
+
+.btn-contact {
+  width:100%;
+}
+
+/* To make anchors used as headings the same style */
+.anchor, .anchor:hover {
+  color: #333;
+  text-decoration: none;
+}
+
+body {
+    padding-top: 70px;
+}
+
+h1#record-title {
+  margin-top: -10px;
+}
+
+h3#brand {
+  color:#aaa;
+  margin-right:15px;
+  text-align:right
+}
+
+
+#nav-button{
+  font-weight: bold;
+}
+
+#online-buttons {
+  margin: 10px auto;
+  width: 80%;
+}
+
+.extent-block {
+  margin: 10px auto;
+  width: 80%;
+}
+
+.header-button {
+    border: 0;
+    text-align: left;
+}
+
+div.centered-container {
+  position: relative;
+}
+
+div.centered-container>div {
+  margin: 0;
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+}
+
+div.centered-container>div>h4 {
+  margin-top: 50px;
+}
+
+a.dropdown-toggle, a.btn {
+    cursor: pointer;
+}
+
+/* To make it possible for (Optional) text be next to h2 header */
+
+.optional-field-header {
+    display: inline-block;
+}
+
+/* To remove line break between divs */
+.extra-detailed-align {
+    background-color: #cccccc;
+    margin:0px;
+    padding: 5px 15px 10px;
+}
+
+/* Style for review.html results table */
+.review-table tr td{
+    border: 1px solid black;
+}
+
+.review-table {
+    width: 70%;
+}
+
+.first-cell-width {
+    width: 25%;
+}
+
+.cell-padding {
+    padding: 5px;
+}
+
+.affix + .container-fluid {
+    padding-top: 70px;
+}
+
+.dublin-form-list {
+    float: left;
+}
+/* Animations for form wizard: sliding left and right out of the viewport */
+/* slide out to the left */
+@keyframes slideOutLeft {
+	to 		{ transform: translateX(-200%); }
+}
+
+@-moz-keyframes slideOutLeft {	
+	to 		{ -moz-transform: translateX(-200%); }
+}
+
+@-webkit-keyframes slideOutLeft {
+	to 		{ -webkit-transform: translateX(-200%); }
+}
+
+/* slide in from the right */
+@keyframes slideInRight {
+    from 	{ transform:translateX(200%); }
+    to 		{ transform: translateX(0); }
+}
+
+@-moz-keyframes slideInRight {
+    from 	{ -moz-transform:translateX(200%); }
+    to 		{ -moz-transform: translateX(0); }
+}
+
+@-webkit-keyframes slideInRight {
+    from 	{ -webkit-transform:translateX(200%); }
+    to 		{ -webkit-transform: translateX(0); }
+}
+
+/* Wizard form views having animations applied to them */
+#form-views.ng-enter,
+#form-views.ng-leave { position:absolute; left:30px; right:30px;
+    transition:0.5s all ease; -moz-transition:0.5s all ease; -webkit-transition:0.5s all ease; 
+}
+    
+/* enter animation */
+#form-views.ng-enter { 
+    -webkit-animation:slideInRight 0.5s both ease;
+	-moz-animation:slideInRight 0.5s both ease;
+	animation:slideInRight 0.5s both ease; 
+}
+
+#form-views.ng-leave { 
+    -webkit-animation:slideOutLeft 0.5s both ease;
+	-moz-animation:slideOutLeft 0.5s both ease;
+	animation:slideOutLeft 0.5s both ease; 
+}
+
+/* Styling for step buttons */
+/* numbered buttons */
+#status-buttons a               {
+    display:inline-block;
+    font-size: 14px;
+    margin-right:10px;
+    text-align:center;
+    text-transform:uppercase;
+}
+
+#status-buttons a:hover         { text-decoration:none; }
+#status-buttons .partial-button            {
+    display:block;
+    height: 25px;
+    margin:0 auto;
+    width:40px;
+    border-radius: 5px;
+}
+
+/* active buttons */
+.current-form-element   {
+    background:#00BC8C;
+}
+
+.form-button-stack {
+    width: 100%;
+}
+
+#form-display {
+    margin-right: 2em;
+    margin-left: 2em;
+    height: auto;
+}
+
+/* Arrow that points to the right for step button backgrounds */
+
+.breadcrumb {
+    list-style: none;
+    overflow: hidden;
+    font: 18px Helvetica, Arial, Sans-Serif;
+    background-color: white;
+}
+
+.breadcrumb li {
+    list-style: none;
+    float: left;
+    display: inline;
+    margin-top: 5px;
+    margin-left: -35px;
+}
+
+.breadcrumb li a{
+    margin-left: 0px;
+    margin-right: 0px;
+    height: 50px;
+    color: white;
+    text-decoration: none;
+    padding: 0px 5px 10px 30px;
+    position: relative;
+    display: block;
+}
+
+.breadcrumb li a:after {
+    content: "";
+    display: block;
+    width: 0;
+    height: 0;
+    border-top: 25px solid transparent;
+    border-bottom: 25px solid transparent;
+    border-left: 25px solid #cccccc;
+    position: absolute;
+    top: 50%;
+    margin-top: -25px;
+    left: 100%;
+    z-index: 2;
+}
+
+.breadcrumb li a:before {
+    content: " ";
+    display: block;
+    width: 0;
+    height: 0;
+    border-top: 25px solid transparent;
+    border-bottom: 25px solid transparent;
+    border-left: 25px solid white;
+    position: absolute;
+    top: 50%;
+    margin-top: -25px;
+    margin-left: 1px;
+    left: 100%;
+    z-index: 1;
+}
+
+.breadcrumb li a:hover {
+    background: #b3b3b3 !important;
+}
+
+.breadcrumb li a:hover:after {
+    border-left-color: #b3b3b3 !important;
+}
+
+a.selected:after{
+    border-left-color: #00BC8C !important;
+}
+
+a.not-complete:after{
+    border-left-color: #FF471A !important;
+}
+
+a.complete:after{
+    border-left-color: #00E600 !important;
+}
+
+a.initial:after {
+    border-left-color: #CCCCCC;
+}
+
+.access-table, .citation-table {
+    width: 100%;
+}
+
+.author-key {
+    width: 20%;
+}
+
+.author-value {
+    width: 80%;
+}
+
+/* Back and Save & Continue buttons in iso.html and dublin.html positioning */
+#back-button, #save-continue-button {
+    position: relative;
+    left: 80%;
+}
+
+/* Give form partials z-index of 100 to make them float over other text while
+   animation is playing.
+ */
+#form-display {
+    z-index: 100;
+}
+
+/* Setting minimum height on ui-view to prevent collapse of height
+   during animation.
+*/
+.ui-view-container {
+	min-height:300px;
+}
+
+/* Table of results for admin view */
+.admin-results-table {
+    width:100%;
+}
+
+/*Width of table cells in admin results page */
+.admin-results-title {
+    width: 30%;
+}
+
+.admin-results-pub-date {
+    width: 20%;
+}
+
+.admin-results-summary {
+    width: 50%;
+}
+
+/* Table for admin page numbers from pagination of 
+   return results.
+*/
+.page-numbers {
+    border: 2px solid black;
+    padding: 10px;
+    margin-left: 50%;
+    margin-right: 50%;
+    cursor: pointer;
+    color: blue;
+}
+
+.page-table {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.page-table td:hover {
+    background-color:#e1e1e1;
+}
+
+/* Upper and lower borders for rows of admin record list */
+.admin-record-list {
+    border-bottom: 1px solid black;
+    border-top: 1px solid black;
+}
+
+.admin-menu {
+    background-color: #cccccc;
+    width: 80%;
+}
+
+.admin-menu td{
+    padding:5px;
+}
+
+.admin-menu .admin-search {
+    width:100%;
+}
+
+.admin-menu .admin-search input {
+    width: 100%;
+}
+
+.admin-menu th {
+    padding: 10px;
+}
+
+.results-row {
+    cursor:pointer;
+}
+
+/* Setting the Resource url contact association select box to align
+   with sibling elements
+*/
+.resource-contact-description{
+    width: 100%;
+}
+
+.resource-contact-select, .resource-contact-description {
+    margin-left: 20px;
+}
+
+/* Admin Panel Styling */
+/* Delete selected records button styling */
+#delete-selected-records {
+	float:right;
+}
+
+/* Upload page  */
+.associated-data-subsection, .file-upload {
+     margin-left:3%;
+}

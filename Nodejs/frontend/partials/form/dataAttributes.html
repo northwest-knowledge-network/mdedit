@@ -1,0 +1,12 @@
+<h4 class="attribute-label">Data Type</h4>
+<h6>
+  How are your data represented? Through a text file, vector spatial representation, a spatial grid of values, a table, a
+  video of a scene, etc.?
+</h6>
+<select tabindex=8 id="spatial-dtype" name=""
+        ng-options="f for f in spatialDataOptions"
+          ng-model="currentRecord.spatial_dtype"
+	ng-required="!currentRecord.references_existing_data">
+</select>
+  
+  
