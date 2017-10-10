@@ -6,7 +6,7 @@
 	style="width:80%;height:120px"
         ng-options="fmt for fmt in knownDataFormats" 
         ng-model="dataFormats.iso" multiple ng-multiple="true"
-        required>
+        ng-required="!currentRecord.references_existing_data">
 </select>
 <h6>Write in formats not listed (comma-separate for multiple)</h6>
 <input tabindex=20 type="text" ng-model="dataFormats.aux" style="width:95%" maxlength="254" />
