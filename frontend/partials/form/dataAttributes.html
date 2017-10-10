@@ -5,7 +5,8 @@
 </h6>
 <select tabindex=8 id="spatial-dtype" name=""
         ng-options="f for f in spatialDataOptions"
-          ng-model="currentRecord.spatial_dtype" required >
+        ng-model="currentRecord.spatial_dtype"
+	ng-required="!currentRecord.references_existing_data">
 </select>
   
   
