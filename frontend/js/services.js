@@ -129,9 +129,6 @@ metadataEditorApp
 	var noResultsRecord = {"results":{}};
 	noResultsRecord.results = [{"title":"No results!", "summary":"", "citation":[{"name":""}], "md_pub_date":""}];
 
-	console.log("Printing inside updateAdmin: ");
-	console.log(record);
-	console.log("Printing record: " + record.results.length);
 	if(record.results.length == 0)
 	    scope.recordsList = noResultsRecord;
 	else

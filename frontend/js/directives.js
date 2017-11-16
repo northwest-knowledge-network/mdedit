@@ -248,6 +248,21 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		    queryDatabase(getSearchType());
 		};
 
+		/** Check if the record is requesting a DOI or ARK. If so, return false
+		 *  @params {object} record
+		 *  @return boolean
+		 */
+		$scope.checkIfDoiRequested(record){
+		    //Check if the value is something other than "neither" and is not empty string
+		    if(record.doi_ark_request.indexOf("neither") == 0 && record.doi_ark_request){
+			if(record.assigned_doi_ark == "")
+			    return true;
+			else
+			    return false;
+		    }
+		    return false;
+		};
+
 		$scope.loadRecord = function(recordId){
 		    recordService.adminGetUsersRecord(recordId)
 			.success(function (data){
