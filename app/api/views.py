@@ -36,19 +36,22 @@ import hashlib
 import ConfigParser
 import re
 
+#Email dependencies
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
 from datetime import datetime
 from dicttoxml import dicttoxml
 from flask import request, jsonify, Response
 from flask import current_app as app
 from flask_cors import cross_origin
 from mongoengine import ValidationError
-#from flask_mail import Message
 
 from . import api
 from .. import es
 from .. import uploadedfiles
 from ..models import Metadata, Attachment, Metadata_Subset
-#from .. import mail
 
 import gptInsert
 
@@ -656,14 +659,9 @@ def publish_metadata_record(_oid):
 
                 rep = requests.post(nkn_upload_url,{'uuid': str_id, 'session_id': session_id}, files={'uploadedfile': open(save_path, 'rb')})
 
-                #If production environment, then send email about new dataset 
-                #email_publishing_group(record.title, record.username, record.uid)
-
-	    #Save XML file of ISO record to backend server's file system
-#            if 'localhost' not in request.base_url:
-#                username = _authenticate_user_from_session(request)
-#                gptInsert.gptInsertRecord(iso, record.title, str_id, username)
-                
+            #Send email about new dataset 
+            email_publishing_group(record.title, record.username, str(record.id))
+            
             return jsonify(record=record)
 
         else:
@@ -963,12 +961,28 @@ def authenticate_admin():
 """
 Function that emails the NKN publishing group to notify of a new record
 """
-#def email_publishing_group(record_title, username, id):
-#    email = Message("NKN Metadata Editor", sender="portal@northwestknowledge.net", receipients=["portal@northwestknowledge.net"])
-                    
-#    email.html = "<p>Hi, NKN data publishers.  A new dataset has been submitted for publication<br> in the metadata editor admin interface.  Please take a look.<br> Record Details:<br><ul><li> Title: " + record_title + "</li><li> Date: " + datetime.now().strftime("%Y-%m-%dT%H:%M:%S") + "</li><li>User: " + username + "</li><li>Doc ID: " + id + "</li></ul><a href=\"https://northwestknowledge.net/metadata-editor\">https://northwestknowledge.net/metadata-editor</a>"
+def email_publishing_group(record_title, username, id):
 
-#    mail.send(email)
+    sender = "mdedit@northwestknowledge.net"
+    recipient = "caseyblair@uidaho.edu"
+
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = "New Dataset Submitted at NKN"
+    msg['From'] = sender
+    msg['To'] = recipient
+                    
+    text = "Hi, NKN data publishers.  A new dataset has been submitted for publication<br> in the metadata editor admin interface. Please take a look.\n Record Details:\n \tTitle: " + record_title + "\n\t Date: " + datetime.now().strftime("%Y-%m-%dT%H:%M:%S") + "\n\t User: " + username + "\n\t Doc ID: " + id + "\n\t https://northwestknowledge.net/metadata-editor" 
+    html = "<html><head></head><body><p>Hi, NKN data publishers.  A new dataset has been submitted for publication<br> in the metadata editor admin interface.  Please take a look.<br> Record Details:<br><ul><li> Title: " + record_title + "</li><li> Date: " + datetime.now().strftime("%Y-%m-%dT%H:%M:%S") + "</li><li>User: " + username + "</li><li>Doc ID: " + id + "</li></ul><a href=\"https://northwestknowledge.net/metadata-editor\">https://northwestknowledge.net/metadata-editor</a></body></html>"
+
+    part1 = MIMEText(text, 'plain')
+    part2 = MIMEText(html, 'html')
+
+    msg.attach(part1)
+    msg.attach(part2)
+
+    s = smtplib.SMTP('localhost')
+    s.sendmail(sender, recipient, msg.as_string())
+    s.quit()
 
 def _authenticate_user_from_session(request):
     """
