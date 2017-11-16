@@ -24,6 +24,7 @@ var clearCollection = function () {
 
 clearCollection();
 
+browser.driver.manage().window().setSize(1280, 1024);
 
 testNknAsDistributor('iso');
 testNknAsDistributor('dublin');
@@ -92,7 +93,6 @@ function waitForAnimation(item){
 function contactsTest() {
 
     describe('Adding and removing contacts using buttons', function () {
-	
         var addRemoveContacts = function () {
 	    var formType = getFormType();
 

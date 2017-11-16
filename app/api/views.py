@@ -47,13 +47,11 @@ from flask import request, jsonify, Response
 from flask import current_app as app
 from flask_cors import cross_origin
 from mongoengine import ValidationError
-from flask_mail import Message
 
 from . import api
 from .. import es
 from .. import uploadedfiles
 from ..models import Metadata, Attachment, Metadata_Subset
-#from .. import mail
 
 import gptInsert
 
@@ -661,14 +659,9 @@ def publish_metadata_record(_oid):
 
                 rep = requests.post(nkn_upload_url,{'uuid': str_id, 'session_id': session_id}, files={'uploadedfile': open(save_path, 'rb')})
 
-            #If production environment, then send email about new dataset 
+            #Send email about new dataset 
             email_publishing_group(record.title, record.username, str(record.id))
             
-	    #Save XML file of ISO record to backend server's file system
-#            if 'localhost' not in request.base_url:
-#                username = _authenticate_user_from_session(request)
-#                gptInsert.gptInsertRecord(iso, record.title, str_id, username)
-                
             return jsonify(record=record)
 
         else:
@@ -969,7 +962,6 @@ def authenticate_admin():
 Function that emails the NKN publishing group to notify of a new record
 """
 def email_publishing_group(record_title, username, id):
-    #email = Message("NKN Metadata Editor", sender="portal@northwestknowledge.net", recipients=["caseyblair@uidaho.edu"])
 
     sender = "mdedit@northwestknowledge.net"
     recipient = "caseyblair@uidaho.edu"
