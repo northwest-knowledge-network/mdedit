@@ -252,14 +252,18 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		 *  @params {object} record
 		 *  @return boolean
 		 */
-		$scope.checkIfDoiRequested(record){
+		$scope.checkIfDoiRequested = function(record){
 		    //Check if the value is something other than "neither" and is not empty string
-		    if(record.doi_ark_request.indexOf("neither") == 0 && record.doi_ark_request){
-			if(record.assigned_doi_ark == "")
+		    if((record.doi_ark_request.indexOf("neither") == -1)
+		       && (record.doi_ark_request != "")){
+			console.log("There is a doi/ark request. :: " + record.doi_ark_request);
+			if(record.identifiers[1].id == ""){
+			    console.log("Current doi/ark is blank and not yet assigned.");
 			    return true;
-			else
+			}else
 			    return false;
 		    }
+//		    console.log("There is not 
 		    return false;
 		};
 
