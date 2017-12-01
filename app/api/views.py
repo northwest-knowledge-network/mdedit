@@ -860,14 +860,25 @@ def attach_file(_oid, attachmentId=None):
                                 lambda a: str(a.id) == attachmentId, md.attachments
                             ).pop().url
 
-                        os.remove(
-                            os.path.join(
-                                app.config['UPLOADS_DEFAULT_DEST'],
-                                os.path.basename(url)
+                        if app.config['TESTING'] or app.config['LOCAL_DEVELOPMENT']:
+                            os.remove(
+                                os.path.join(
+                                    app.config['UPLOADS_DEFAULT_DEST'],
+                                    os.path.basename(url)
+                                )
                             )
-                        )
+                        else:
+                            os.remove(
+                                os.path.join(
+                                    app.config['UPLOADS_DEFAULT_DEST'],
+                                    _oid,
+                                    os.path.basename(url)
+
+                                )
+                            )
                     except (OSError, IndexError):
-                        pass
+                        file_path = app.config['UPLOADS_DEFAULT_DEST'] + "/" + _oid + "/" +  os.path.basename(url)
+                        print "There was a problem deleting the file! Tried to reach path: " + file_path 
 
                     # don't need to save after this since we're updating existing
                     Metadata.objects(id=_oid).update_one(
