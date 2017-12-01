@@ -876,7 +876,7 @@ def attach_file(_oid, attachmentId=None):
 
                                 )
                             )
-                    except (OSError, IndexError):
+                    except Exception:
                         file_path = app.config['UPLOADS_DEFAULT_DEST'] + "/" + _oid + "/" +  os.path.basename(url)
                         print "There was a problem deleting the file! Tried to reach path: " + file_path 
 
@@ -884,7 +884,6 @@ def attach_file(_oid, attachmentId=None):
                     Metadata.objects(id=_oid).update_one(
                         pull__attachments__id=attachmentId
                     )
-
 
                     md = Metadata.objects.get(id=_oid)
 
@@ -897,9 +896,13 @@ def attach_file(_oid, attachmentId=None):
                                status=405)
 
         except KeyError:
+            try:
+                keys = request.json.keys()
+                keys_str = ', '.join(keys)
+            except Exception as e:
+                print "Error: " + str(e)
+                return Response("Server error deleting file...", status=500)
 
-            keys = request.json.keys()
-            keys_str = ', '.join(keys)
             return jsonify(
                 {
                     'message':
