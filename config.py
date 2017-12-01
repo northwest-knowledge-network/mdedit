@@ -16,6 +16,8 @@ PREPROD_DIRECTORY = (os.environ.get('MDEDIT_PREPROD_DIRECTORY') or
 
 class Config:
     PRODUCTION = False
+    DEVELOPMENT_SERVER = False
+    LOCAL_DEVELOPMENT = False
 
     MONGODB_SETTINGS = {'db': 'mdedit'}
 
@@ -44,15 +46,21 @@ class Config:
 
 class DevelopmentServerConfig(Config):
     DEBUG = True
+    DEVELOPMENT_SERVER = True
 
     PREPROD_DIRECTORY = "/datastore-pre/uploads"
     PROD_DIRECTORY = "/datastore-pre/published"
 
+    UPLOADS_DEFAULT_DEST = PREPROD_DIRECTORY + "/"
+
 class DevelopmentConfig(Config):
     DEBUG = True
+    LOCAL_DEVELOPMENT = True
 
     PREPROD_DIRECTORY = "/local-datastore/uploads"
     PROD_DIRECTORY = "/local-datastore/published"
+
+    UPLOADS_DEFAULT_DEST = PREPROD_DIRECTORY  + "/"
 
 class TestingConfig(Config):
     TESTING = True
@@ -82,12 +90,7 @@ class ProductionConfig(Config):
     SIMPLE_UPLOAD_URL = "https://nknportal-prod.nkn.uidaho.edu/portal/simpleUpload/upload.php"
     PREPROD_DIRECTORY = "/datastore-prod/uploads"
     PROD_DIRECTORY = "/datastore-prod/published"
-#    MAIL_SERVER = ""
-#    MAIL_PORT = ""
-#    MAIL_USE_TLS = False
-#    MAIL_USE_SSL = True
-#    MAIL_USERNAME = (os.environ.get('MAIL_USERNAME') or 'test@example.com')
-#    MAIL_PASSWORD = (os.environ.get('MAIL_PASSWORD') or 'password')
+    UPLOADS_DEFAULT_DEST = PROD_DIRECTORY  + "/"
     
 config = {
     'development': DevelopmentConfig,
