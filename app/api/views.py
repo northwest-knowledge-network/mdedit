@@ -975,7 +975,7 @@ Function that emails the NKN publishing group to notify of a new record
 def email_publishing_group(record_title, username, id):
 
     sender = "mdedit@northwestknowledge.net"
-    recipient = "caseyblair@uidaho.edu"
+    recipient = "portal@northwestknowledge.net"
 
     msg = MIMEMultipart('alternative')
     msg['Subject'] = "New Dataset Submitted at NKN"
