@@ -109,17 +109,12 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		    else
 			selectedRecordIds.push(idValue);
 
-		    console.log(selectedRecordIds);
 		};
 
 		$scope.deleteSelectedRecords = function(){
 		    //For each record id in the list, make API call to Python backend to delete that record
-		    console.log("Printing selectedRecordIds: ");
-		    console.log(selectedRecordIds);
 		    for(var i = 0; i < selectedRecordIds.length; i++){
 			recordService.delete(selectedRecordIds[i]).success(function(data){
-			    console.log("Deleting record...");
-			    console.log(data);
 			    //Query database to refresh page with updated list of records
 		            queryDatabase(getSearchType());
 
@@ -186,7 +181,6 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 				    recordService.checkAdmin(status);
 				});
 			    }else{
-				console.log("queryType is " + queryType);
 				//If Search term is empty string, then use empty record to return "No results" message.
 				updateAdmin($scope, noResultsRecord);
 			    }
@@ -258,9 +252,8 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 			if((record.doi_ark_request)
 			   && (record.doi_ark_request.indexOf("neither") == -1)
 			   && (record.doi_ark_request != "")){
-			    console.log("There is a doi/ark request. :: " + record.doi_ark_request);
+			    //Current doi/ark is blank and not yet assigned
 			    if(record.identifiers[1].id == ""){
-				console.log("Current doi/ark is blank and not yet assigned.");
 				return true;
 			    }else
 				return false;
@@ -272,8 +265,6 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		$scope.loadRecord = function(recordId){
 		    recordService.adminGetUsersRecord(recordId)
 			.success(function (data){
-			    console.log("In loadRecord!");
-			    console.log(data);
 			    sharedRecord.setRecord(data.results);
 
 			    var record = data.results;
@@ -281,14 +272,12 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 			    $scope.$parent.newRecord = false;
 			    $scope.$parent.currentRecord = record;
 
-			    console.log("Added record to record sharing service.");
 
 			    //Change route to either ISO or Dublin form type based on record type.
 			    var path = "/iso";
 			    if(record.schema_type.indexOf("Dublin Core") > -1)
 				path = "/dublin";
 
-			    console.log("Printing url: " + $location.path());
 			    updateForms($scope, record);
 			    $location.path(path);
 			})
@@ -321,8 +310,6 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		var createElasticsearchRecord = function(record){
 		    var elasticsearchRecord = recordService.getFreshElasticsearchRecord();
 		    makeElasticsearchRecord($scope, record, elasticsearchRecord)
-		    console.log("Testing elasticsearchRecord: ");
-		    console.log($scope.elasticsearchRecord);
 		};
 		
 		
@@ -332,9 +319,6 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 			    createElasticsearchRecord(data.results);
 			    
 			    //Send searchableRecord to Elasticsearch
-		    	    console.log("Printing elasticsearchRecord: ");
-		    	    console.log($scope.elasticsearchRecord);
-		    	    console.log("Printing currentRecord identifier: ");
 
 			    $scope.currentRecord = data.results;
 			    //Not a new record. Need to set this to false or else it will try and make a new copy in the database. 
@@ -342,8 +326,6 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 	
 
 			    recordService.adminApprovePublish(recordId, $scope.elasticsearchRecord, $scope).success(function(response){
-				console.log("Printing return from backend: ");
-				console.log(response);
 
 				if(typeof response === 'string'){
 					if(response.indexOf("filesystem error"))
@@ -390,7 +372,6 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 	    controller: function($scope, recordService){
 		var currentPage = 0;
 
-		console.log("inside doi/ark");
 
 		$scope.showDoi = false;
 
@@ -462,8 +443,6 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		    else{
 			if(queryType.indexOf("browse") > -1){
 			    recordService.getDoiArkRequests(getCurrentPage(), $scope.recordsPerPage.toString(), $scope.selectedFilter).success(function(data){
-				console.log("Printing data : ");
-				console.log(data);
 				
 				updateAdmin($scope, data);
 			    }).error(function(error, status) {
@@ -474,9 +453,6 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 			    //If search term is not an empty string, use it to query database.
 			    if($scope.searchTerm !== ""){
 				recordService.searchDoiArkRequests($scope.searchTerm, getCurrentPage(), $scope.recordsPerPage.toString(), $scope.selectedFilter).success(function(data){
-				    console.log("Printing data : ");
-				    console.log(data);
-				    
 				    updateAdmin($scope, data);
 				}).error(function(error, status) {
 				    $scope.errors.push("Error in loading list of records.");
@@ -484,7 +460,6 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 				});
 			    }else{
 				//If Search term is empty string, then use empty record to return "No results" message.
-				console.log("in else");
 				updateAdmin($scope, noResultsRecord);
 			    }
 			}
@@ -538,8 +513,6 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		    $scope.searchType = "browse";
 		    
 		    recordService.getDoiArkRequests(0, 10, $scope.selectedFilter).success(function(data){
-			console.log("Printing data : ");
-			console.log(data);
 			
 			//Update admin page with response data
 			updateAdmin($scope, data);
