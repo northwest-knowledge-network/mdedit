@@ -248,18 +248,17 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		 */
 		$scope.checkIfDoiRequested = function(record){
 		    //Check if the value is something other than "neither" and is not empty string
-		    if(typeof record === "object"){
-			if((record.doi_ark_request)
-			   && (record.doi_ark_request.indexOf("neither") == -1)
-			   && (record.doi_ark_request != "")){
-			    //Current doi/ark is blank and not yet assigned
-			    if(record.identifiers[1].id == ""){
-				return true;
-			    }else
-				return false;
-			}
-			return false;
+		    if((typeof record === "object")
+		       && (record.doi_ark_request)
+		       && (record.doi_ark_request.indexOf("neither") == -1)
+		       && (record.doi_ark_request != "")){
+			//Current doi/ark is blank and not yet assigned
+			if(record.identifiers[1].id == ""){
+			    return true;
+			}else
+			    return false;
 		    }
+		    return false;
 		};
 
 		$scope.loadRecord = function(recordId){
