@@ -621,7 +621,7 @@ metadataEditorApp
 
         /**
          * Return a cleared, newly instantiated
-         * @return {[type]} [description]
+         * @return {object} freshyISO An instance of the ISO json object
          */
         var getFreshISORecord = function() {
 
