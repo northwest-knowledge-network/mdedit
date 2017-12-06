@@ -1012,7 +1012,7 @@ metadataEditorApp
     var detachFile = function(attachmentId, recordId) {
         var attachRoute =
             attachBaseRoute + recordId + '/attachments/' + attachmentId;
-        return $http.delete(attachRoute, 
+        return $http.post(attachRoute, 
                             {'session_id':session_id});
     };
 

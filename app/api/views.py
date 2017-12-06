@@ -822,9 +822,7 @@ def get_single_xml_metadata(_oid):
 # create a new attachment on the record _oid with a POST or delete
 # an attachment by its attachmentId on the record with id _oid using DELETE
 @api.route('/api/metadata/<string:_oid>/attachments', methods=['POST'])
-@api.route('/api/metadata/<string:_oid>/attachments/<attachmentId>',
-           methods=['DELETE'])
-@cross_origin(origin="*",  methods=['POST', 'DELETE'],
+@cross_origin(origin="*",  methods=['POST'],
               headers=['X-Requested-With', 'Content-Type', 'Origin'])
 def attach_file(_oid, attachmentId=None):
     """
@@ -836,64 +834,14 @@ def attach_file(_oid, attachmentId=None):
     username = _authenticate_user_from_session(request)
 
     if username:
-    
         try:
+            attachment = request.json['attachment']
+            if 'localhost' in request.url_root:
+                attachment = attachment.replace(' ', '_')
 
-            if request.method == 'POST':
-
-                attachment = request.json['attachment']
-                if 'localhost' in request.url_root:
-                    attachment = attachment.replace(' ', '_')
-
-                md.attachments.append(Attachment(url=attachment))
-
-                md.save()
-
-            elif request.method == 'DELETE':
-
-                try:
-                    md = Metadata.objects.get(id=_oid)
-
-                    try:
-                        # if developing locally we'll also want to remove file
-                        url = filter(
-                                lambda a: str(a.id) == attachmentId, md.attachments
-                            ).pop().url
-
-                        if app.config['TESTING'] or app.config['LOCAL_DEVELOPMENT']:
-                            os.remove(
-                                os.path.join(
-                                    app.config['UPLOADS_DEFAULT_DEST'],
-                                    os.path.basename(url)
-                                )
-                            )
-                        else:
-                            os.remove(
-                                os.path.join(
-                                    app.config['UPLOADS_DEFAULT_DEST'],
-                                    _oid,
-                                    os.path.basename(url)
-
-                                )
-                            )
-                    except Exception:
-                        file_path = app.config['UPLOADS_DEFAULT_DEST'] + "/" + _oid + "/" +  os.path.basename(url)
-                        print "There was a problem deleting the file! Tried to reach path: " + file_path 
-
-                    # don't need to save after this since we're updating existing
-                    Metadata.objects(id=_oid).update_one(
-                        pull__attachments__id=attachmentId
-                    )
-
-                    md = Metadata.objects.get(id=_oid)
-
-                # we'll just go ahead and not care if it doesn't exist
-                except ValueError:
-                    pass
-
-            else:
-                return jsonify({'message': 'HTTP Method must be DELETE or POST'},
-                               status=405)
+            md.attachments.append(Attachment(url=attachment))
+            
+            md.save()
 
         except KeyError:
             try:
@@ -916,6 +864,94 @@ def attach_file(_oid, attachmentId=None):
  
     else:
         return Response('Bad or missing session id.', status=401)
+
+
+@api.route('/api/metadata/<string:_oid>/attachments/<attachmentId>',
+           methods=['POST'])
+@cross_origin(origin="*",  methods=['POST'],
+              headers=['X-Requested-With', 'Content-Type', 'Origin'])
+def delete_file(_oid, attachmentId=None):
+    """
+    Add attachment URLs to a metadata record.
+    """
+    md = Metadata.objects.get_or_404(pk=_oid)
+    attachment = ''
+    test_upload_path_prefix = "uploadedfiles"
+    test_environment = False
+
+    username = _authenticate_user_from_session(request)
+
+    if username:
+        try:
+            try:
+                md = Metadata.objects.get(id=_oid)
+            
+                try:
+                    # if developing locally we'll also want to remove file
+                    url = filter(
+                        lambda a: str(a.id) == attachmentId, md.attachments
+                        ).pop().url
+                    if str(os.environ['FLASKCONFIG']) == 'testing' or str(os.environ['FLASKCONFIG']) == 'development':
+                        test_environment = True
+                        os.remove(
+                            os.path.join(
+                                app.config['UPLOADS_DEFAULT_DEST'],
+                                test_upload_path_prefix,
+                                _oid,
+                                os.path.basename(url)
+                                )
+                            )
+                    else:
+                        os.remove(
+                            os.path.join(
+                                app.config['UPLOADS_DEFAULT_DEST'],
+                                _oid,
+                                os.path.basename(url)
+                                )
+                            )
+                except Exception:
+                    #Throw exception specific for test or non-test enviroment
+                    if test_environment:
+                        file_path = app.config['UPLOADS_DEFAULT_DEST'] + "/" + test_upload_path_prefix + "/" + _oid + "/" +  os.path.basename(url)
+                    else:
+                        file_path = app.config['UPLOADS_DEFAULT_DEST'] + "/" + _oid + "/" +  os.path.basename(url)
+
+                    print "There was a problem deleting the file! Tried to reach path: " + file_path 
+                
+                # don't need to save after this since we're updating existing
+                Metadata.objects(id=_oid).update_one(
+                    pull__attachments__id=attachmentId
+                    )
+            
+                md = Metadata.objects.get(id=_oid)
+            
+                # we'll just go ahead and not care if it doesn't exist
+            except ValueError:
+                pass
+
+
+        except KeyError:
+            try:
+                keys = request.json.keys()
+                keys_str = ', '.join(keys)
+            except Exception as e:
+                print "Error: " + str(e)
+                return Response("Server error deleting file...", status=500)
+
+            return jsonify(
+                {
+                    'message':
+                        'Key(s) ' + keys_str + ' not recognized. ' +
+                        'Must contain \'attachment\''
+                },
+                status=400
+            )
+
+        return jsonify(dict(message=attachment + ' successfully (at/de)tached!', record=md))
+ 
+    else:
+        return Response('Bad or missing session id.', status=401)
+
 
 
 # Not actually used in mdedit production at NKN, only for testing.
