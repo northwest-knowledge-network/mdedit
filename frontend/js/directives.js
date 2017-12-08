@@ -57,6 +57,7 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 
 		$scope.showBrowse = true;
 
+		//How many records to display on a page.
 		$scope.recordsPerPage = "10";
 
 		//Records initially sorted by the publish date. This is the name of the publish date in the database.
@@ -76,13 +77,35 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		$scope.canDelete = true;
 	
 		var selectedRecordIds = [];
+
+		/** 
+		 *  Initialize admin view with list of records pending review by admin.
+		 *  Uses recordService service found in frontend/js/services.js.
+		 *  Use 0 based index for pages (first argument to getAllRecords) to make math work in backend
+		 *  for splicing results.
+		 */
+		recordService.getAllRecords(0, 10, $scope.selectedOrderFilter, $scope.publishState).success(function(data){
+		    updateAdmin($scope, data);
+		}).error(function(error, status) {
+		    $scope.errors.push("Error in loading list of records.");
+		    recordService.checkAdmin(status);
+		});
+
 		
-		//Get current search type 
+		/**
+		 * Get current search type 
+		 * @param {none} None
+		 * @return {string} $scope.searchType;
+		 */
 		function getSearchType(){
 		    return $scope.searchType;
 		}
 
-		//Set current search type
+		/** 
+		 *  Set current search type
+		 *  @param {string} value
+		 *  @return {none} none
+		 */
 		function setSearchType(value){
 		    if(typeof value === 'string')
 			$scope.searchType = value;
@@ -90,10 +113,20 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 			console.log("Error: tried to set search type to non-string value.");
 		}
 		
+		/** 
+		 *  Get current page 
+		 *  @param {none} none
+	    	 *  @return {Number} currentPage
+		 */
 		function getCurrentPage(){
 		    return currentPage;
 		}
 
+		/**
+		 *  Set the current page
+		 *  @param {Number} value
+		 *  @return {none} none
+		 */
 		function setCurrentPage(value){
 		    if(typeof value === 'number')
 			currentPage = value;
@@ -101,16 +134,33 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 			console.log("Error: tried to set current page to non-number");
 		}
 
+		/**
+		 *  When a user clicks on a checkbox for a record get the record.$oid 
+		 *  value for a record and put in a list of record ids. Used to delete records
+		 *  if user selects "Delete Selected Records" button on admin panel.
+		 *  @param {string} idValue
+		 *  @return {none} none
+		 */
 		$scope.selectRecord = function(idValue){
 		    var index = selectedRecordIds.indexOf(idValue);
-		    
+		    /* If record is already in list, then user has clicked to deselect (uncheck box). So 
+		     * remove from list using splice.
+		     */
 		    if( index > -1)
 			selectedRecordIds = selectedRecordIds.splice(index, 1);
-		    else
+		    else{
+			//Else, add new record id to list.
 			selectedRecordIds.push(idValue);
+		    }
 
 		};
 
+		/**
+		 *  Delete list of selected records. Only records whos checkboxes were checked in admin panel
+		 *  will be deleted.
+		 *  @param {none} none
+		 *  @return {none} none
+		 */
 		$scope.deleteSelectedRecords = function(){
 		    //For each record id in the list, make API call to Python backend to delete that record
 		    for(var i = 0; i < selectedRecordIds.length; i++){
@@ -130,6 +180,11 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 	
 		};
 
+		/**
+		 *  Increment the page number the admin is currently on
+		 *  @params {none} none
+		 *  @return {none} none
+		 */
 		$scope.incCurrentRecordsPage = function(){
 		    var newPage = getCurrentPage() + 1;
 		    if(newPage < 0)
@@ -142,6 +197,11 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		    queryDatabase(getSearchType());
 		};
 
+		/**
+		 *  Decrement the page number the admin is currently on
+		 *  @params {none} none
+		 *  @return {none} none
+		 */
 		$scope.decCurrentRecordsPage = function(){
 		    var newPage = getCurrentPage() -1;
 		    if(newPage < 0)
@@ -154,6 +214,11 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		    queryDatabase(getSearchType());
 		};
 
+		/**
+		 *  Query the database for records awaiting review by admin. If no results found, displays "No results!" as only record object in return list.
+		 *  @params {string} queryType
+		 *  @return {none} none
+		 */
 		function queryDatabase(queryType){
 		    //Contstruct empty record to display text that no results found. Don't want ng-repeat loop in partials/allRecords to try and
 		    //print variable that is not defined.
@@ -187,34 +252,46 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 			}
 		    }
 		}
-		
-		//Use 0 based index for pages (first argument to getAllRecords) to make math work in backend
-		//for splicing results.
-		recordService.getAllRecords(0, 10, $scope.selectedOrderFilter, $scope.publishState).success(function(data){
-		    updateAdmin($scope, data);
-		}).error(function(error, status) {
-		    $scope.errors.push("Error in loading list of records.");
-		    recordService.checkAdmin(status);
-		});
 
+		/**
+		 *  Sets database query system to search all records though user input (text box on left of admin view).
+		 *  @param {none} none
+		 *  @return {none} none
+		 */
 		$scope.searchAllRecords = function() {
 		    setSearchType("search");
 		    queryDatabase(getSearchType());
 		};
 
+		/**
+		 *  Set database search type to browse all records (do not accept user input from text input search).
+		 *  @param {none} none
+		 *  @return {none} none
+		 */
 		$scope.browseAllRecords = function(){
 		    setSearchType("browse");
 		    queryDatabase(getSearchType());
 		};
 
+		/**
+		 *  Select specific page of results to jump to. For list of page numbers across bottom of record list 
+		 *  in admin view page. 
+		 *  @param {number} pageNumber
+		 *  @return {none} none
+		 */
 		$scope.switchRecordsResultsPage = function(pageNumber){
-
 		    pageNumber--;
 		    setCurrentPage(pageNumber);
 
 		    queryDatabase(getSearchType());
 		};
 
+		/**
+		 *  Change the type of records to display. "pending" records have not been submitted for admin review.
+		 *  "true" records have been submitted, reviewed, and published by admin (and can't be deleted).
+		 *  @param {none} none
+		 *  @return {none} none
+		 */
 		$scope.switchLayout = function(){
 		    switch($scope.publishState){
 		    	case "pending":
@@ -261,6 +338,12 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		    return false;
 		};
 
+		/**
+		 *  Load specific record in to metadata editor interface when 
+		 *  record's list element clicked in admin view. 
+		 *  @param {number} recordId
+		 *  @return {none} none
+		 */
 		$scope.loadRecord = function(recordId){
 		    recordService.adminGetUsersRecord(recordId)
 			.success(function (data){
@@ -286,6 +369,11 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 			});
 		};
 
+		/**
+		 *  Initialize the Admin view with base values
+		 *  @param {none} none
+		 *  @return {none} none
+		 */
 		$scope.initAdminView = function(){
 		    
 		    $scope.recordsPerPage = "10";
@@ -306,12 +394,22 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		    });
 		};
 
+		/**
+		 *  Create an Elasticsearch record, which is a subset of the total record object elements.
+		 *  @param {object} record
+		 *  @return {none} none
+		 */
 		var createElasticsearchRecord = function(record){
 		    var elasticsearchRecord = recordService.getFreshElasticsearchRecord();
 		    makeElasticsearchRecord($scope, record, elasticsearchRecord)
 		};
 		
-		
+		/**
+		 *  Publish a record to Elasticsearch interface. Set record in MongoDB to record.published = "true" 
+		 *  This function happens when an admin approved a record for publication.
+		 *  @param {number} recordId
+		 *  @return {none} none
+		 */
 		$scope.publishRecordToPortal = function(recordId){
 		    recordService.adminGetUsersRecord(recordId)
 			.success(function (data){
@@ -370,7 +468,6 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 	    templateUrl: partialsPrefix + 'partials/doiArkAssign.html',
 	    controller: function($scope, recordService){
 		var currentPage = 0;
-
 
 		$scope.showDoi = false;
 

@@ -147,8 +147,6 @@ metadataEditorApp
 }])
 .factory('makeElasticsearchRecord', ['$log', function($log){
     return function(scope, record, elasticsearchRecord){
-	console.log("Printing record ");
-	console.log(record);
 
 	elasticsearchRecord.abstract = record.summary;
 
@@ -217,9 +215,6 @@ metadataEditorApp
 
 	if (record.schema_type.indexOf("Non-Dataset (Dublin Core)") > -1)
 	    recordType = 'dc';
-
-	console.log("Printing currentRecord: ");
-	console.log(record);
 
 	//Change to hostname service function instead of hard coded host name
 	elasticsearchRecord.mdXmlPath = "http://www.northwestknowledge.net/data/" + record._id.$oid + "/metadata.xml";
@@ -481,14 +476,10 @@ metadataEditorApp
 
             var serverReady = angular.copy(record);
 
-	    console.log("Printing currentRecord in prepareRecordForSave: ");
-	    console.log(record);
-
             // server requires list of strings
 
 	    if ((typeof record.place_keywords !== "undefined")
 		&& ($location.url().indexOf('admin') == -1)){
-		    console.log("Printing place_keywords: " + serverReady.place_keywords );
 		    serverReady.place_keywords =
 			serverReady.place_keywords.split(',')
 			.map(function(el) { return el.trim(); });
@@ -520,8 +511,6 @@ metadataEditorApp
                 && (typeof record.start_date.$date !== "undefined")
 		&& (typeof record.start_date.$date !== "number"))
             {
-		console.log("Printing start_date:")
-		console.log(record.start_date);
                 serverReady.start_date.$date =
                     record.start_date.$date.getTime();
             }
@@ -696,8 +685,6 @@ metadataEditorApp
 
                     .success(function(data)
                     {
-			console.log("Printing out the id: ");
-			console.log(data.record);
                         record = data.record;
                     }
             );
@@ -710,8 +697,6 @@ metadataEditorApp
 	 */
 	var getAllRecords = function(pageNumber, recordsPerPage, sortBy, publishState) {
 	    var record = {};
-	    console.log("Printing current state: ");
-	    console.log(publishState);
 	    return $http.post('//' + hostname + '/api/metadata/admin/' + pageNumber + '/' + recordsPerPage + '/' + sortBy + '/' + publishState,
 				      {'session_id': session_id}).success(function(data){
 					  record = data.record;
@@ -720,7 +705,6 @@ metadataEditorApp
 
 	var searchAllRecords = function(searchTerm, pageNumber, recordsPerPage, sortBy, recordState) {
 	    var record = {};
-	    console.log("In searchAllRecords: ");
 	    return  $http.post(
                 '//' + hostname + '/api/metadata/admin/search/' + searchTerm + "/" + pageNumber + "/" + recordsPerPage + "/" + sortBy,
 	        {'session_id': session_id,
@@ -1012,7 +996,7 @@ metadataEditorApp
     var detachFile = function(attachmentId, recordId) {
         var attachRoute =
             attachBaseRoute + recordId + '/attachments/' + attachmentId;
-        return $http.delete(attachRoute, 
+        return $http.post(attachRoute, 
                             {'session_id':session_id});
     };
 
