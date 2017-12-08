@@ -1097,8 +1097,6 @@ metadataEditorApp.controller('BaseController',
 	    else if(formType.indexOf('dublin') > -1)
 		parsedName = dublinButtonList[getCurrentPage()].split(".")[1];
 
-	    console.log("Checking form complete: " + formComplete);
-
 	    /*
 	      Function checks if $valid parameter passed in is true. If it is true, then all inputs with "required" tags
 	      have been filled out. We need a little extra functionality though since $valid only works on elements with "required"
