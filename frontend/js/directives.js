@@ -480,30 +480,54 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 
 		$scope.searchType = "browse";
 		
-		//Get current search type 
+		/**
+		 *  Get current search type 
+		 *  @param {none} none
+		 *  @return {none} none
+		 */
 		function getSearchType(){
 		    return $scope.searchType;
 		}
 
-		//Set current search type
-		function setSearchType(value){
-		    if(typeof value === 'string')
-			$scope.searchType = value;
+		/** 
+		 *  Set current search type
+		 *  @param {string} searchType
+		 *  @return {none} none
+		 */
+		function setSearchType(searchType){
+		    if(typeof searchType === 'string')
+			$scope.searchType = searchType;
 		    else
 			console.log("Error: tried to set search type to non-string value.");
 		}
 		
+		/** 
+		 *  Return the current results page the admin is on.
+		 *  @param {none} none
+		 *  @return {number} currentPage
+		 */
 		function getCurrentPage(){
 		    return currentPage;
 		}
 
-		function setCurrentPage(value){
-		    if(typeof value === 'number')
-			currentPage = value;
+		/** 
+		 *  Return the current results page the admin is on.
+		 *  @param {number} pageNumber
+		 *  @return {none} none
+		 */
+		function setCurrentPage(pageNumber){
+		    if(typeof pageNumber === 'number')
+			currentPage = pageNumber;
 		    else
 			console.log("Error: tried to set current page to non-number");
 		}
 
+		/** 
+		 *  Increment the current page by 1, then re-query database for new subset of results to be
+		 *  returned though pagnation. Used for "Next" page button.
+		 *  @param {none} none
+		 *  @return {none} none
+		 */
 		$scope.incCurrentPage = function(){
 		    var newPage = getCurrentPage() + 1;
 		    if(newPage < 0)
@@ -516,6 +540,12 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		    queryDatabase(getSearchType());
 		}
 
+		/** 
+		 *  Decrement the current page by -1, then re-query database for new subset of results to be
+		 *  returned though pagnation. Used for "Prev" page button.
+		 *  @param {none} none
+		 *  @return {none} none
+		 */
 		$scope.decCurrentPage = function(){
 		    var newPage = getCurrentPage() -1;
 		    if(newPage < 0)
@@ -528,6 +558,13 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		    queryDatabase(getSearchType());
 		}
 
+		/** 
+		 *  Query the database. Only return a page at a time of results. The number of results on a page are 
+		 *  specified in the admin panel user interface. Also, results can be ordered by publish date, title, or summary. 
+		 *  Database query in backend uses pagnation.
+		 *  @param {string} queryType
+		 *  @return {none} none
+		 */
 		function queryDatabase(queryType){
 		    //Contstruct empty record to display text that no results found. Don't want ng-repeat loop in partials/allRecords to try and
 		    //print variable that is not defined.
@@ -562,28 +599,57 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		    }
 		}
 
+		/**
+		 *  Set database query type to "Search", then query the database. Used when a user searches for a 
+		 *  specific record using the "Search for record:" text input. 
+		 *  @param {none} none
+		 *  @return {none} none
+		 */
 		$scope.searchForRecord = function() {
 		    setSearchType("search");
 		    queryDatabase(getSearchType());
 		};
 
+		/**
+		 *  Set database query type to "Browse", then query the database. Used to display all search results and
+		 *  order them by attributes set in the admin panel user interface.
+		 *  @param {none} none
+		 *  @return {none} none
+		 */
 		$scope.browseRecords = function(){
 		    setSearchType("browse");
 		    queryDatabase(getSearchType());
 		};
 
+		/**
+		 *  Switch to specific page number in Assing DOI/ARK section of admin panel. Number passed in from 
+		 *  AngularJS $index used in ng-repeat for page number buttons is a 1 based array, so we must decrement
+		 *  the number by one. 
+		 *  @param {number} pageNumber
+		 *  @return {none} none
+		 */
 		$scope.switchAdminResultsPage = function(pageNumber){
-
+		    //Need to decrement number passed in by AngularJS $index because $index starts it's range at 1.
 		    pageNumber--;
 		    setCurrentPage(pageNumber);
 
 		    queryDatabase(getSearchType());
 		};
 
+		/**
+		 *  Switch element in database record to sort by. 
+		 *  @param {none} none
+		 *  @return {none} none
+		 */
 		$scope.switchPageLayout = function(){
 		    queryDatabase(getSearchType());
 		};
 
+		/**
+		 *  Save the record after the "Assign" button is pressed. The assignded DOI or ARK in the database must be updated.
+		 *  @param {number} index
+		 *  @return {none} none
+		 */
 		$scope.saveRecord = function(index) {
 		    $scope.currentRecord = $scope.recordsList.results[index];
 
@@ -594,6 +660,11 @@ metadataEditorApp.directive('fileModel', ['$parse', function ($parse) {
 		    recordService.saveDraft($scope);
 		};
 
+		/**
+		 *  Initialize the DOI view with records from the database, and the default browse viewing type.
+		 *  @param {none} none
+		 *  @return {none} none
+		 */
 		$scope.initDoiView = function(){
 		    //Use 0 based index for pages (first argument to getAllRecords) to make math work in backend
 		    //for splicing results.

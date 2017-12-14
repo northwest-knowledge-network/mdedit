@@ -145,22 +145,24 @@ metadataEditorApp
 	scope.pageNumbers = numbers;
     }
 }])
+/**
+ *  Construct Elasticsearch record. This is a subset of the total record attributes.
+ */
 .factory('makeElasticsearchRecord', ['$log', function($log){
     return function(scope, record, elasticsearchRecord){
 
 	elasticsearchRecord.abstract = record.summary;
 
 	//set all the identifiers
-	for(var i = 0; i < record.identifiers.length; i++){
+	for(let i = 0; i < record.identifiers.length; i++){
 		if(i == 0)		
 	    		elasticsearchRecord.identifiers[i] = record.identifiers[i].type + " : " + record.identifiers[i].id; 
 		else
 			elasticsearchRecord.identifiers.push(record.identifiers[i].type + " : " + record.identifiers[i].id); 
-
 	}
 
 	//First, put all the access contacts' names in to elasticsearchRecord's contact array. 
-	for(var i = 0; i < record.access.length; i++){
+	for(var i = 0, x = record.access.length; i < x; i++){
 	    //Services initializes first value of array to empty string ('') so we can't push
 	    //onto array this first value or else the first value will be empty string. 
 	    if((i == 0) && (record.access[i] == ''))
@@ -170,7 +172,7 @@ metadataEditorApp
 	}
 
 	//Now push citation contacts onto list
-	for(var i = 0; i < record.citation.length; i++){
+	for(let i = 0, x = record.citation.length; i < x; i++){
 	    //Services initializes first value of array to empty string ('') so we can't push
 	    //onto array this first value or else the first value will be empty string. 
 	    if((i == 0) && (record.citation[i] == ''))
@@ -181,7 +183,7 @@ metadataEditorApp
  
 	//Get all keywords (from thematic_keyworks and place_keywords lists) and put them in same list.
 	//First, get thematic_keyworks.
-	for(var i = 0; i < record.thematic_keywords.length; i++){
+	for(let i = 0, x = record.thematic_keywords.length; i < x; i++){
 	    //Services initializes first value of array to empty string ('') so we can't push
 	    //onto array this first value or else the first value will be empty string. 
 	    if((i == 0) && (record.thematic_keywords[i] == ''))
@@ -191,7 +193,7 @@ metadataEditorApp
 	}
 
 	//Now, get place_keywords
-	for(var i = 0; i < record.place_keywords.length; i++){
+	for(let i = 0, x = record.place_keywords.length; i < x; i++){
 	    //Services initializes first value of array to empty string ('') so we can't push
 	    //onto array this first value or else the first value will be empty string. 
 	    if((i == 0) && (record.place_keywords[i] == ''))
@@ -201,7 +203,7 @@ metadataEditorApp
 	}
 
 	//Put topic_category in the keywords list too
-	for(var i = 0; i < record.topic_category.length; i++){
+	for(let i = 0, x = record.topic_category.length; i < x; i++){
 	    //Services initializes first value of array to empty string ('') so we can't push
 	    //onto array this first value or else the first value will be empty string. 
 	    if((i == 0) && (record.topic_category[i] == ''))
@@ -216,7 +218,7 @@ metadataEditorApp
 	if (record.schema_type.indexOf("Non-Dataset (Dublin Core)") > -1)
 	    recordType = 'dc';
 
-	//Change to hostname service function instead of hard coded host name
+	//Put the path to XML representation of data in Elasticsearch record.
 	elasticsearchRecord.mdXmlPath = "http://www.northwestknowledge.net/data/" + record._id.$oid + "/metadata.xml";
 
 	//Set lat and lon coordinates 
@@ -567,21 +569,26 @@ metadataEditorApp
 	    //Sanitize HTML in record to be sent to database
 	    for(var key in serverReady){
 		if(serverReady[key] != null){
-		    if((Array.isArray(serverReady[key]))){
-			//If value is array, then check each element for HTML
-			for(var i = 0; i < serverReady[key].length; i++){
+		    //If element in record is an array, then loop through the array and sanitize each element
+		    if(Array.isArray(serverReady[key])){
+			for(var i = 0, x = serverReady[key].length; i < x; i++){
+			    //If array element is an object, then loop though the object's attributes
 			    if(typeof serverReady[key][i] === 'object'){
-				//If element in array is an object, then check each value of object for HTML
 				for(var nestedKey in serverReady[key][i]){
+				    //If object's type is string, then return sanitized version of string
 				    if(typeof serverReady[key][i][nestedKey] === 'string')
 					serverReady[key][i][nestedKey] = sanitizeInput(serverReady[key][i][nestedKey]);
 				}
-			    }else if(typeof serverReady[key][i] === 'string'){
+			    }
+			    //If the array element is a string, then return a sanitized version of that string
+			    else if(typeof serverReady[key][i] === 'string'){
 				//If element in array is a string, then check for HTML
 				serverReady[key][i] = sanitizeInput(serverReady[key][i]);
 			    }
 			}
-		    }else if(typeof serverReady[key] === 'string'){
+		    }
+		    //If attribute is not an array, but is a string, then return a sanitized version of that string.
+		    else if(typeof serverReady[key] === 'string'){
 			//If value of serverReady record is a string, then check for HTML
 			serverReady[key] = sanitizeInput(serverReady[key]);
 		    }
@@ -591,15 +598,20 @@ metadataEditorApp
             return serverReady;
         };
 
-	function sanitizeInput(value) {
+	/**
+	 *  Checks string to see if it has an HTML or PHP tag in it. If so, then remove it
+	 *  @param {string} value
+	 *  @return {string} 
+	 */
+	function sanitizeInput(recordString) {
 	    //Perform HTML sanitization for user input.
 	    var htmlPattern = /((<){1}(!--)?(\/)?[a-zA-Z]{1}([a-zA-Z0-9 ])*([ \n\t])*([a-zA-Z])*([a-zA-Z]*(=){1}(\"){1}.*(\"){1}([a-zA-Z \n\t])*)*([a-zA-Z0-9 \n\t])*(\/)?(-){0,2}(>){1})*(<!--)*(-->)*/g;
 	    var phpPattern = /((<\?php){1}(.|\n)*(\?>){1}([ \n\t])*)*/g;
 
 	    //Replace any html or PHP in string with "" and return. Removes HTML and PHP from string.
-	    if((value != null)
-	       && (typeof value !== 'number')){
-		return value.replace(htmlPattern, "").replace(phpPattern, "");
+	    if((recordString != null)
+	       && (typeof recordString === 'string')){
+		return recordString.replace(htmlPattern, "").replace(phpPattern, "");
 	    }else
 		return "";
 	}
@@ -618,7 +630,12 @@ metadataEditorApp
 
             return freshyISO;
         };
-
+	
+	/**
+	 *  Get new Dublin Core object
+	 *  @param {none} none
+	 *  @return {object} freshyDC
+	 */
         var getFreshDCRecord = function() {
 
             var freshyDC = angular.copy(emptyDCRecord);
@@ -626,14 +643,23 @@ metadataEditorApp
             return freshyDC;
         };
 
-	//Get reduced set record that is used in Elasticsearch (for search performance optimization).
-	//We don't want to index the entire index: that would decrease search efficiency.  
+	/**
+	 *  Get reduced set record that is used in Elasticsearch (for search performance optimization).
+	 *  We don't want to index the entire index: that would decrease search efficiency.  
+	 *  @param {none} none
+	 *  @return {object} freshyElasticsearch
+	 */
 	var getFreshElasticsearchRecord = function(){
 	    var freshyElasticsearch = angular.copy(elasticsearchRecord);
 
 	    return freshyElasticsearch;
 	};
 
+	/**
+	 *  Get MILES default values
+	 *  @param {none} none
+	 *  @return {none} milesy
+	 */
         var getMilesDefaults = function() {
 
             var milesy = angular.copy(milesFields);
@@ -641,12 +667,22 @@ metadataEditorApp
             return milesy;
         };
 
+	/**
+	 *  Return default values if NKN is a data distributor
+	 *  @param {none} none
+	 *  @return {object} nkn
+	 */
         var getNKNAsDistributor = function() {
             var nknContact = angular.copy(nkn);
 
             return nkn;
         };
 	
+	/**
+	 *  Get a new object that represents a form element in the progress bar
+	 *  @param {none} none
+	 *  @return {object} freshFormElement
+	 */
 	var getFreshFormElement = function() {
 	    
             var freshFormElement = angular.copy(formElement);
@@ -673,8 +709,11 @@ metadataEditorApp
         };
 
 
-	/* When an admin needs to edit someone else's record, then they 
-	 * will use this route in the backend. It athenicates only admins.
+	/**
+	 *  When an admin needs to edit someone else's record, then they 
+	 *  will use this route in the backend. It athenicates only admins.
+	 *  @param {number} recordId
+	 *  @return {Promise} $http.post 
 	 */
 	var adminGetUsersRecord = function(recordId)
         {
@@ -694,6 +733,11 @@ metadataEditorApp
 	/**
 	 * Get all records for admin view. Returns a paginated list: only 10
 	 * records at a time, but has access to all records if the user is an admin.
+	 *  @param {number} pageNumber
+	 *  @param {number} recordsPerPage
+	 *  @param {string} sortBy
+	 *  @param {string} publishState
+	 *  @return {Promise} $http.post 
 	 */
 	var getAllRecords = function(pageNumber, recordsPerPage, sortBy, publishState) {
 	    var record = {};
@@ -703,6 +747,16 @@ metadataEditorApp
 				      });
 	};
 
+	/**
+	 *  Search all records for a record matching the search term. Sort by the selected attribute. And search records already
+	 *  published, waiting to be reviewed, or not yet submitted for review. 
+	 *  @param {string} searchTerm
+	 *  @param {number} pageNumber
+	 *  @param {number} recordsPerPage
+	 *  @param {string} sortBy
+	 *  @param {string} recordState
+	 *  @return {Promise} $http.post 
+	 */
 	var searchAllRecords = function(searchTerm, pageNumber, recordsPerPage, sortBy, recordState) {
 	    var record = {};
 	    return  $http.post(
@@ -714,7 +768,12 @@ metadataEditorApp
 		});
 	};
 
-	/* Get records that want a DOI or ARK associated with them
+	/** 
+	 *  Get records that want a DOI or ARK associated with them
+	 *  @param {number} pageNumber
+	 *  @param {number} recordsPerPage
+	 *  @param {string} sortBy
+	 *  @return {Promise} $http.post 
 	 */
 	var getDoiArkRequests = function(pageNumber, recordsPerPage, sortBy) {
 	    var record = {};
@@ -725,7 +784,13 @@ metadataEditorApp
 		});
 	};
 
-	/* Get records that want a DOI or ARK associated with them
+	/** 
+	 *  Get records that want a DOI or ARK associated with them
+	 *  @param {string} searchTerm
+         *  @param {number} pageNumber
+         *  @param {number} recordsPerPage
+         *  @param {string} sortBy
+         *  @return {Promise} $http.post
 	 */
 	var searchDoiArkRequests = function(searchTerm, pageNumber, recordsPerPage, sortBy) {
 	    var record = {};
@@ -737,7 +802,12 @@ metadataEditorApp
 		});
 	};
 
-	/* This function publishes the record to Elasticsearch and the production directory by the admin.
+	/**
+	 *  This function publishes the record to Elasticsearch and the production directory by the admin.
+	 *  @param {number} recordID
+         *  @param {object} elasticsearchRecord
+         *  @param {object} scope
+         *  @return {Promise} $http.post
 	 */
 	var adminApprovePublish = function(recordID, elasticsearchRecord, scope){
 		saveDraft(scope);
@@ -753,6 +823,8 @@ metadataEditorApp
 
 	/** 
  	 * Check if current user is admin by authenticating admin though backend route
+	 *  @param {none} none
+         *  @return {Promise} $http.post
  	 */
 	var authenticateAdmin = function(){
 		return $http.post(
@@ -761,14 +833,22 @@ metadataEditorApp
 		);
 	};
 
-	//Unpublish a record
+	/**
+	 *  Unpublish a record
+	 *  @param {number} recordID
+         *  @param {object} scope
+         *  @return {none} none
+	 */
 	var unpublishRecord = function(recordID, scope){
 		scope.currentRecord.published = "pending";
 		//Call backend route to move file from production to pre-production.
 	};
 
-	/* Check if response object from backend authenticated the user correctly. 
-	 * If not, then return false.
+	/**
+	 *  Check if response object from backend authenticated the user correctly. 
+	 *  If not, then return false.
+	 *  @param {number} status
+	 *  @return {none} none
 	 */
 	var checkAdmin = function(status){
 	    if((status == 401)
@@ -781,12 +861,17 @@ metadataEditorApp
 		$location.path('/iso');
 	    }
 	};
-	
+
+	/**
+	 *  Sends post request to backend to check if user is admin user or not
+	 *  @param {none} none
+	 *  @return {Promose} $http.post
+	 */
 	var authenticateAdmin = function() {
 	    var record = {};
 	    return $http.post(
                 '//' + hostname + '/api/metadata/authenticate-admin',
-	{'session_id': session_id});
+	        {'session_id': session_id});
 	};
 
 
@@ -846,7 +931,7 @@ metadataEditorApp
 
 
         /**
-         * Publish metadata, meaning request a curator to review metadata
+         * Publish metadata, meaning request a data curator to review metadata
          * quality then eventually have their data and metadata publicly
          * discoverable.
          *
@@ -886,14 +971,9 @@ metadataEditorApp
 
 		    var currentId = scope.currentRecord._id.$oid;
 		    
-		    return $http.post(
-				      '//' + hostname + '/api/metadata/' + currentId + '/publish',
-			      {'record': record, 'session_id': session_id}
-				      );
-		    
+		    return $http.post('//' + hostname + '/api/metadata/' + currentId + '/publish',
+			              {'record': record, 'session_id': session_id});
 		});
-	    
-	    
         };
 
         return {
@@ -947,62 +1027,78 @@ metadataEditorApp
  * The attachment service must do two things: upload data to the datastore
  * and, if successful, request the download URL be added to the
  */
-    .service('AttachmentService', ['$http', '$log', 'hostname', 'session_id', 'envService', function($http, $log, hostname, session_id, envService) {
-    //Get Angular enviroment variables
-    envService.set('development');
-    var environment = envService.get();	
-	
-    /* use a test uploadUrl for e2e tests.
-        comment out following block and uncomment the next block to
-        test with NKN resources
-    */
-	var uploadUrl = envService.read('uploadUrl');
-
-    var attachBaseRoute;
-	if (hostname !== 'localhost:4000') {
-            attachBaseRoute = 'https://' + hostname + '/api/metadata/';
-    }
-	else {
-            attachBaseRoute = '//' + hostname + '/api/metadata/';
-    }
-
-    var uploadFile = function(file, recordId) {
-
-        var fd = new FormData();
-
-        fd.append('uploadedfile', file);
-        fd.append('uuid', recordId);
-	fd.append('session_id', session_id);
-	
-        return $http.post(uploadUrl, fd, {
-            // transformRequest: angular.identity,
-            headers: {'Content-Type': undefined},
-	});
-    };
-
-    var attachFile = function(attachmentUrl, recordId) {
-        var attachRoute = attachBaseRoute + recordId + '/attachments';
-        return $http.post(attachRoute, {
-	    attachment: attachmentUrl,
-	    'session_id': session_id
-	});
-    };
-
-    /**
-     * Detach a file with the given attachmentId. Once an attachment has
-     * been created we create a URI for it, which can then be accessed for
-     * DELETE
-     */
-    var detachFile = function(attachmentId, recordId) {
-        var attachRoute =
-            attachBaseRoute + recordId + '/attachments/' + attachmentId;
-        return $http.post(attachRoute, 
-                            {'session_id':session_id});
-    };
-
-    return {
-        uploadFile: uploadFile,
-        attachFile: attachFile,
-        detachFile: detachFile
-    };
+.service('AttachmentService', ['$http', '$log', 'hostname', 'session_id', 'envService', function($http, $log, hostname, session_id, envService) {
+	    //Get Angular enviroment variables
+	    envService.set('development');
+	    var environment = envService.get();	
+	    
+	    /* use a test uploadUrl for e2e tests.
+	       comment out following block and uncomment the next block to
+	       test with NKN resources
+	    */
+	    var uploadUrl = envService.read('uploadUrl');
+	    
+	    var attachBaseRoute;
+	    if (hostname !== 'localhost:4000') {
+		attachBaseRoute = 'https://' + hostname + '/api/metadata/';
+	    }
+	    else {
+		attachBaseRoute = '//' + hostname + '/api/metadata/';
+	    }
+	    
+	    /**
+	     *  Upload a file to the Backend API
+	     *  @param {file} file
+	     *  @param {number} recordId
+	     *  @return {Promise} $http.post
+	     */
+	    var uploadFile = function(file, recordId) {
+		
+		var fd = new FormData();
+		
+		fd.append('uploadedfile', file);
+		fd.append('uuid', recordId);
+		fd.append('session_id', session_id);
+		
+		return $http.post(uploadUrl, fd, {
+			// transformRequest: angular.identity,
+			headers: {'Content-Type': undefined},
+			    });
+	    };
+	    
+	    /**
+	     *  Attach a file with the given URL. We create a URI for this
+	     *  file and store it.
+	     *  @param {string} attachmentUrl
+	     *  @param {number} recordId
+	     *  @return {Promise} $http.post
+	     */
+	    var attachFile = function(attachmentUrl, recordId) {
+		var attachRoute = attachBaseRoute + recordId + '/attachments';
+		return $http.post(attachRoute, {
+			attachment: attachmentUrl,
+			    'session_id': session_id
+			    });
+	    };
+	    
+	    /**
+	     * Detach a file with the given attachmentId. Once an attachment has
+	     * been created we create a URI for it, which can then be accessed for
+	     * deletion
+	     * @param {number} attachmentId
+	     * @param {number} recordId
+	     * @return {Promise} $http.post
+	     */
+	    var detachFile = function(attachmentId, recordId) {
+		var attachRoute =
+		attachBaseRoute + recordId + '/attachments/' + attachmentId;
+		return $http.post(attachRoute, 
+	    {'session_id':session_id});
+	    };
+	    
+	    return {
+		    uploadFile: uploadFile,
+		    attachFile: attachFile,
+		    detachFile: detachFile
+	    };
 }]);
