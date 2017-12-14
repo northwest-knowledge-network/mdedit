@@ -1101,4 +1101,4 @@ metadataEditorApp
 		    attachFile: attachFile,
 		    detachFile: detachFile
 	    };
-}]);
+	}]);

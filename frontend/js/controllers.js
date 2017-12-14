@@ -188,7 +188,8 @@ metadataEditorApp.controller('BaseController',
 	//Check to see if user is an admin. If so, redirect to admin page. 
 	recordService.authenticateAdmin().success(function(data, status){
 		//User has been authenticated as an admin. Redirecting to admin page
-		$location.path("/admin");
+		if(data != 'local_user')
+		    $location.path("/admin");
 	    }).error(function(error, status){
 		    //If the status code is not 401, then some other error happened. If it 
 		    //is 401, then the user is not admin. 
@@ -768,7 +769,7 @@ metadataEditorApp.controller('BaseController',
 	}
 
 	/** Resets scope variables used in controller when new record is loaded, but not stored in the database,
-	 *  to determine if user has agreed to terms & conditions, has the right to publish,
+	 *  to determine if user has agreed to terms and conditions, has the right to publish,
 	 *  and their data has no sensitive information. Called on page load.
 	 *  @param {none} none
 	 *  @return {none} none
@@ -1039,7 +1040,7 @@ metadataEditorApp.controller('BaseController',
 
 	/** 
 	 *  Checks if all sections of form are valid (complete), and if user has
-	 *  agreed to the terms & conditions, record doesn't have sensitive information, and they have
+	 *  agreed to the terms and conditions, record doesn't have sensitive information, and they have
 	 *  the right to publish the information. Used in review.html for publish button: publish button
 	 *  is hidden if not all form sections are complete to force user to complete form.
 	 *  @param {none} none
@@ -1056,7 +1057,7 @@ metadataEditorApp.controller('BaseController',
 			return false;
 		    }
 		}
-		/* Check scope variables that user checks to agree to terms & conditions, record does not have
+		/* Check scope variables that user checks to agree to terms and conditions, record does not have
 		 * sensitive information, and they have the right to publish the information. If true, the user
 		 * has agreed to the "Terms and Conditions" on the Disclaimer page. 
 		 */
@@ -1072,7 +1073,7 @@ metadataEditorApp.controller('BaseController',
 		    }
 		}
 
-		/* Check scope variables that user checks to agree to terms & conditions, record does not have
+		/* Check scope variables that user checks to agree to terms and conditions, record does not have
 		 * sensitive information, and they have the right to publish the information. In "Disclaimer" section.
 		 */
 		if(canPublish())
@@ -1395,7 +1396,7 @@ metadataEditorApp.controller('BaseController',
 
 	/**
 	 *  Set current form state to current state plus shift amount. Also returns to disclaimer state if back
-	 *  or Save & Continue buttons pressed on "Terms & Conditions" or "Sensitive Information" states.
+	 *  or Save and Continue buttons pressed on "Terms and Conditions" or "Sensitive Information" states.
 	 *  @param {number} shift  Amount to change the current page variable to
 	 *  @param {string} formType  Type of form we are currently on
 	 */
