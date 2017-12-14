@@ -673,11 +673,6 @@ def publish_metadata_record(_oid):
                                      'session_id': session_id},
                                     files={'uploadedfile': open(save_path, 'rb')})
 
-	    #Save XML file of Dublin record to backend server's file system
-#            if 'localhost' not in request.base_url:
-#    		username = _authenticate_user_from_session(request)
-#                gptInsert.gptInsertRecord(dc, record.title, str_id, username)
-
             return jsonify(record=record)
 
     else:
