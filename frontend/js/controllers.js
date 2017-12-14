@@ -105,10 +105,20 @@ metadataEditorApp.controller('BaseController',
 	var currentPageIndex = 0;
 
         //=== set up hostname-related scope variables ===//
-        // export to XML
+        /**
+	 *  export to XML
+	 *  @param {number} oid
+	 *  @param {string} xmlType
+	 */
         var exportAddr = function(oid, xmlType) {
             return hostname + '/api/metadata/' + oid + '/' + xmlType;
         };
+	
+	/**
+	 *  Open XML representation of metadata record in new tab in browser.
+	 *  @param {string} type
+	 *  @return {none} none
+	 */
         $scope.export_ = function(type) {
             var oid = $scope.currentRecord._id.$oid;
             var prefix = 'http://';
@@ -117,6 +127,11 @@ metadataEditorApp.controller('BaseController',
         // prefix on routes to partials
         $scope.partialsPrefix = partialsPrefix;
 
+	/**
+	 *  Update the list of user's records.
+	 *  @param {none} none
+	 *  @return {none} none
+	 */
         $scope.updateRecordsList = function() {
             recordService.list()
                 .success(function(data) {
@@ -181,11 +196,19 @@ metadataEditorApp.controller('BaseController',
 	$scope.possibleUseRestrictionsDescriptions = formOptions.possibleUseRestrictions;
 
 	$scope.useRestrictionURL = "";
+
+	/**
+	 *  When the "Use Restrictions" pre-made creative commons URL is changed, update the src
+	 *  in the link to the new description of that license.
+	 *  @param {none} none
+	 *  @return {none} none
+	 */
 	$scope.changeUseRestrictionURL = function(){
 	    setUseRestrictionURL();
 	};
 
-	//Check to see if user is an admin. If so, redirect to admin page. 
+	/* Check to see if user is an admin. If so, redirect to admin page. 
+	 */
 	recordService.authenticateAdmin().success(function(data, status){
 		//User has been authenticated as an admin. Redirecting to admin page
 		if(data != 'local_user')
@@ -202,7 +225,12 @@ metadataEditorApp.controller('BaseController',
 
 	//Jump to "setup" form element on page load
 	defaultState();
-
+	
+	/**
+	 *  Set the Use Restrictions URL in the src of the link labeled "Link to license" in Resources > Use Restrictions.
+	 *  @param {none} none
+	 *  @return {none} none
+	 */
 	function setUseRestrictionURL(){
 	    var index = $scope.possibleUseRestrictions.indexOf($scope.currentRecord.use_restrictions);
 	    if(index > -1)
@@ -216,6 +244,11 @@ metadataEditorApp.controller('BaseController',
         $scope.sortReverse = false;
         $scope.searchRecords = '';
 
+	/**
+	 *  Create a new blank ISO metadata record, and assign it to $scope.currentRecord.
+	 *  @params {none} none
+	 *  @return {none} none
+	 */
         $scope.createNewRecord = function() {
 
             var freshISO = recordService.getFreshISORecord();
@@ -244,6 +277,11 @@ metadataEditorApp.controller('BaseController',
         // initialize form with placeholder data for creating a new record
         $scope.createNewRecord();
 
+	/**
+	 *  Create a new Dublin Core record and assign it to $scope.currentRecord.
+	 *  @param {none} none
+	 *  @return {none} none
+	 */
         $scope.createNewDublinRecord = function() {
             var freshDC = recordService.getFreshDCRecord();
 
@@ -261,6 +299,8 @@ metadataEditorApp.controller('BaseController',
         /**
          * On click of Load MILES Defaults button,
          * load the defaults in MILES defaults json file
+	 * @param {none} none
+	 * @return {none} none
          */
         $scope.loadDefaultMILES = function() {
 
@@ -297,7 +337,10 @@ metadataEditorApp.controller('BaseController',
         };
 
         /**
-         * Load NKN as the only data access contact
+         * Load NKN as the first data access contact if they click the checkbox in
+	 * the "Setup" section that says NKN was a data distributor.
+	 * @param {none} none
+	 * @return {none} none
          */
         $scope.loadDefaultNKNAsDistributor = function () {
 
@@ -310,6 +353,7 @@ metadataEditorApp.controller('BaseController',
         /**
          * Load a record that from the server and display fields in form
          * @param  {string} recordId The server-generated ID
+	 * @return {none} none
          */
         $scope.editRecord = function (recordId) {
 
@@ -334,6 +378,8 @@ metadataEditorApp.controller('BaseController',
         /**
          * On submit of metadata form, submitRecord. This both updates the server
          * and makes sure the form is current.
+	 * @param {none} none
+	 * @return {none} none
          */
         $scope.submitDraftRecord = function() {
 		recordService.saveDraft($scope)
@@ -351,10 +397,12 @@ metadataEditorApp.controller('BaseController',
                     });
         };
 
-        /** Function to identify if the record is ISO or Dublin based on schema_type field
-        used to execute same function but set condition before hand, using for Edit
-        */
-
+        /** 
+	 *  Function to identify if the record is ISO or Dublin based on schema_type field
+	 *  used to execute same function but set condition before hand, using for Edit
+	 *  @param {string} schemaType
+	 *  @return {boolean}
+	 */
         $scope.isISO = function(schemaType){
             if (schemaType.indexOf('Dataset (ISO)') > -1)
                 return true;
@@ -362,9 +410,11 @@ metadataEditorApp.controller('BaseController',
                 return false;
         };
 
-        /** Function to enable restriction on deleting published records.
-        */
-
+        /** 
+	 *  Function to enable restriction on deleting published records.
+	 *  @param {number} pubDate
+	 *  @return {boolean}
+	 */
         $scope.isPublished = function(pubDate){
             if (pubDate > 0)
                 return true;
@@ -374,7 +424,8 @@ metadataEditorApp.controller('BaseController',
 
         /**
          * Delete a draft record.
-         *
+         * @param {number} recordId
+	 * @return {none} none
          */
         $scope.deleteById = function(recordId) {
 
@@ -400,14 +451,13 @@ metadataEditorApp.controller('BaseController',
 
         /**
          * Publish a record to the portal. Requires all fields to be valid
+	 * @param {none} none
+	 * @return {none} none
          */
         $scope.publishRecord = function() {
 
             recordService.publish($scope)
                 .success( function (data) {
-
-                    // why?
-                    // updateForms(data.record);
 
                     $scope.newRecord = false;
 
@@ -418,6 +468,11 @@ metadataEditorApp.controller('BaseController',
                 });
         };
 
+	/**
+	 *  Add a new blank citation contact to the list in currentRecord.
+	 *  @param {none} none
+	 *  @return {none} none
+	 */
         $scope.addContactCitation = function()
         {
             $scope.currentRecord.citation
@@ -429,6 +484,11 @@ metadataEditorApp.controller('BaseController',
             );
         };
 
+	/**
+	 *  Add a new blank Data Access contact to list in currentRecord
+	 *  @param {none} none
+	 *  @return {none} none
+	 */
         $scope.addContactAccess = function()
         {
             $scope.currentRecord.access
@@ -440,19 +500,33 @@ metadataEditorApp.controller('BaseController',
             );
         };
 
-
+	/**
+	 *  Remove the last citation contact on list in currentRecord
+	 *  @param {none} none
+	 *  @return {none} none
+	 */
         $scope.cancelAddContactCitation = function(){
           if ($scope.currentRecord.citation.length > 1){
 	      $scope.currentRecord.citation.pop();
           }
         };
 
+	/**
+	 *  Remove the last Data Access contact on list in currentRecord
+	 *  @param {none} none
+	 *  @return {none} none
+	 */
         $scope.cancelAddContactAccess = function(){
           if ($scope.currentRecord.access.length > 1){
 	      $scope.currentRecord.access.pop();
           }
         };
 
+	/**
+	 *  Remove the online resource specified at the list index.
+	 *  @param {number} resourceIndex 
+	 *  @return {none} none
+	 */
         $scope.removeOnlineResource = function(resourceIndex)
         {
           if ($scope.currentRecord.online.length === 1)
@@ -477,6 +551,11 @@ metadataEditorApp.controller('BaseController',
 	    
         };
 
+	/**
+	 *  Add new blank online resource (metadata about a URL) to the end of the online resource list in $scope.currentRecord.
+	 *  @param {none} none
+	 *  @return {none} none
+	 */
         $scope.addOnlineResource = function()
         {
             $scope.currentRecord.online.push("");
@@ -484,6 +563,11 @@ metadataEditorApp.controller('BaseController',
 	    $scope.currentRecord.online_description.push({"type":"","description":"","file_size":"","size_unit":""});
         };
 
+	/**
+	 *  Get the bounding box from the map in Spatial form section. 
+	 *  @param {none} none
+	 *  @return {none} none
+	 */
         $scope.getBbox = function()
         {
             Geoprocessing.getBbox($scope.options.bboxInput)
@@ -500,6 +584,12 @@ metadataEditorApp.controller('BaseController',
             newAttachment: ''
         };
 
+	/**
+	 *  Attach a file by sending it to the backend to be added to the file system,
+	 *  and it's URL on system be stored in metadata. 
+	 *  @param {none} none
+	 *  @return {none} none
+	 */
         $scope.attachFile = function() {
             // first upload file, then in success callback, attach to record
 
@@ -532,6 +622,12 @@ metadataEditorApp.controller('BaseController',
                 });
         };
 
+	/**
+	 *  Detach a file by removing it from the backend file system,
+	 *  and deleting its URL in the metadata record. 
+	 *  @param {none} none
+	 *  @return {none} none
+	 */
         $scope.detachFile = function(attachmentId) {
 
             // the attachmentId needs to be fetched from the attachments
@@ -546,27 +642,47 @@ metadataEditorApp.controller('BaseController',
 	//Functions that return colors for breadcrumb button states: Complete,
 	//not complete, selected, and default background color.
 	
-	//Get background color
+	/**
+	 *  Get default background color
+	 *  @param {none} none
+	 *  @return {none} none
+	 */
 	function getBackgroundColor(){
 	    return backgroundColor;
 	}
 
-	//Get selected color
+	/** 
+	 *  Get selected color
+	 *  @param {none} none
+	 *  @return {none} none
+	 */
 	function getSelectedColor(){
 	    return selectedColor;
 	}
 
-	//get color for button of completed form element
+	/**
+	 *  Get color for button of completed form element
+	 *  @param {none} none
+	 *  @return {none} none
+	 */	 
 	function getCompleteColor(){
 	    return completeColor;
 	}
 
-	//get color for button of not completed form element
+	/**
+	 *  get color for button of not completed form element
+	 *  @param {none} none
+	 *  @return {none} none
+	 */
 	function getNotCompleteColor(){
 	    return notCompleteColor;
 	}
 
-	//Reset form buttons to default color (currently grey). Used on load of existing record in partials/appHeader.html.
+	/** 
+	 *  Reset form buttons to default color (currently grey). Used on load of existing record in partials/appHeader.html.
+	 *  @param {string} formType
+	 *  @return {none} none
+	 */
 	$scope.resetFormButtons = function(formType) {
 	    if((formType.indexOf("iso") > -1)
 	       || (formType.indexOf("dublin") > -1))
@@ -575,8 +691,13 @@ metadataEditorApp.controller('BaseController',
 		console.log("Error: tried to reset button backgrounds on unsupported form type");
 	}
 	
-	//Sets form to Iso or Dublin core by modifying address path to either /iso or /dublin. Used when new
-	//form type is selected in setup.html page.
+	/** 
+	 *  Sets form to Iso or Dublin core by modifying address path to either /iso or /dublin. Used when new
+	 *  form type is selected in setup.html page.
+	 *  @param {string} type
+	 *  @param {object} form
+	 *  @return {none} none
+	 */	
 	$scope.setFormType = function(type, form) {
 	    if(type.indexOf("iso") > -1){
 		$location.path("/iso");
@@ -595,7 +716,12 @@ metadataEditorApp.controller('BaseController',
 		console.log("Error: tried to set path to unsupported url.");
 	}
 
-	//Add or remove Spatial Extent form element to Dublin form
+	/**
+	 *  Add or remove Spatial Extent form element to Dublin form
+	 *  @param {string} buttonName  The name of the button to add
+	 *  @param {string} buttonLabel  The label for the button to show in HTML
+	 *  @return {none} none
+	 */	 
 	$scope.setSpatialForm = function(buttonName, buttonLabel) {
 	    $scope.hasSpatialData = !$scope.hasSpatialData;
 	    //Make sure map is not visible if coordinate system has been added, but map has not been added
@@ -617,9 +743,11 @@ metadataEditorApp.controller('BaseController',
 	    }
 	}
 
-	/* Check currentRecord if reference_system attribute is null or length 0.
-	 * If not, then make coordinateInputVisible true to show reference system input
-	 *in spatialExtent.html. Useful on new record load.
+	/** Check currentRecord if reference_system attribute is null or length 0.
+	 *  If not, then make coordinateInputVisible true to show reference system input
+	 *  in spatialExtent.html. Useful on new record load.
+	 *  @param {none} none
+	 *  @return {none} none
 	 */
 	$scope.checkCoordinateInput = function(){
 	    if($scope.currentRecord.reference_system != null){
@@ -632,8 +760,11 @@ metadataEditorApp.controller('BaseController',
 	    }
 	}
 
-	/* Adds and subtracts spatialExtent.html partial from form if user clicks checkbox stating that they
-	 * have a coordinate system. This form input is on the spatialExtent.html form state.
+	/** 
+	 *  Adds and subtracts spatialExtent.html partial from form if user clicks checkbox stating that they
+	 *  have a coordinate system. This form input is on the spatialExtent.html form state.
+	 *  @param {none} none
+	 *  @return {none} none
 	 */
 	$scope.toggleCoordinateInput = function() {
 	    $scope.coordinateInputVisible = !$scope.coordinateInputVisible;
@@ -657,6 +788,14 @@ metadataEditorApp.controller('BaseController',
 		$scope.hasMap = true;
 	}
 
+	/**
+	 *  Toggle boolean value that states if metadata record is referencing data already uploaded somewhere,
+	 *  therefore hiding the file upload subsection of the "Upload" form section using an ng-show. Also,
+	 *  if true, this boolean makes at least one "Online Resource" on the "Resources" form section required
+	 *  by using an ng-required tag.
+	 *  @param {none} none
+	 *  @return {none} none
+	 */
 	$scope.toggleReferencesMetadata = function(){
 	    $scope.currentRecord.references_existing_data = !$scope.currentRecord.references_existing_data;
 	};
@@ -1729,6 +1868,12 @@ metadataEditorApp.controller('BaseController',
             $scope.currentRecord.west_lon = vm.sw.lng();
         }
   });
+    
+    /**
+     *  Refresh bounds of bounding box on map
+     *  @param {none} none
+     *  @return {none} none
+     */
     vm.boundsChanged = function() {
         vm.ne = this.getBounds().getNorthEast();
         vm.sw = this.getBounds().getSouthWest();
@@ -1743,12 +1888,21 @@ metadataEditorApp.controller('BaseController',
   })
     .controller('AdminController', ['$scope', '$compile', '$state', '$location', 'recordService', 'updateAdmin', 'updateForms', 'sharedRecord', 'makeElasticsearchRecord', 'elasticsearchRecord', 'partialsPrefix', function($scope, $compile, $state, $location, recordService, updateAdmin, updateForms, sharedRecord, makeElasticsearchRecord, elasticsearchRecord, partialsPrefix)
   {
-
+      /** 
+       *  Change to all records overview page
+       *  @param {none} none
+       *  @return {none} none
+       */
       $scope.changeToAllRecords = function(){
 	  $scope.showBrowse = true;
 	  $scope.showDoi = false;
       };
 
+      /**
+       *  Change to page where DOI or ARK URL's can be assigned.
+       *  @param {none} none
+       *  @return {none} none
+       */
       $scope.changeToDoiRequests = function(){
 	  $scope.showBrowse = false;
 	  $scope.showDoi = true;
