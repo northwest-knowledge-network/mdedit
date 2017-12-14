@@ -3,7 +3,6 @@
 var metadataEditorApp = angular
     .module('metadataEditor', ['ngRoute', 'ui.date', 'ngMap', 'ngAnimate', 'ui.router', 'ngRoute', 'environment'])
     .config(function($compileProvider, $stateProvider, $urlRouterProvider, $routeProvider, $locationProvider, envServiceProvider) {
-	// $compileProvider.aHrefSanitizationWhitelist(/localhost:/);
 	
 	var partialsPrefix = "partials/form/";
 
@@ -50,7 +49,6 @@ var metadataEditorApp = angular
 	    .state('form.contacts', {
 		templateUrl:  partialsPrefix + 'contacts.html'
 	    })
-
 	
 	    .state('dublinForm',{
 		templateURL: 'partials/dublin.html'
