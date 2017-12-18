@@ -90,7 +90,7 @@ class ProductionConfig(Config):
     SIMPLE_UPLOAD_URL = "https://nknportal-prod.nkn.uidaho.edu/portal/simpleUpload/upload.php"
     PREPROD_DIRECTORY = "/datastore-prod/uploads"
     PROD_DIRECTORY = "/datastore-prod/published"
-    UPLOADS_DEFAULT_DEST = PROD_DIRECTORY  + "/"
+    UPLOADS_DEFAULT_DEST = PREPROD_DIRECTORY  + "/"
     
 config = {
     'development': DevelopmentConfig,
