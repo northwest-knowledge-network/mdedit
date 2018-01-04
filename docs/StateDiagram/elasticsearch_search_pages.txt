@@ -1,0 +1,15 @@
+@startuml
+actor Admin
+actor User
+
+User -> NKN_Search_Page : Search for dataset
+NKN_Search_Page -> ElasticSearch : Search for record
+ElasticSearch -> NKN_Search_Page : Send search results
+User -> NKN_Search_Page : View search results
+User -> idahoecosystems.org_search_page : Search for data
+idahoecosystems.org_search_page -> ElasticSearch : Search for data with "IIA-1301792" keyword OR from BSU-MILES harvested data
+ElasticSearch -> idahoecosystems.org_search_page : Display results
+User -> reacchpna.org_search_page : Search for data
+reacchpna.org_search_page -> ElasticSearch : Search for data from REACCH harvested data
+ElasticSearch -> reacchpna.org_search_page : Display results
+@enduml
