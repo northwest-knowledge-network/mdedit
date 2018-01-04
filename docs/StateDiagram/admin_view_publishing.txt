@@ -1,0 +1,38 @@
+@startuml
+database MongoDB
+actor Admin
+actor User
+
+box "web-prod" #lightblue
+  participant AngularJS_Frontend
+end box
+
+box "nknportal-prod" #lightgreen
+  participant Python_Backend
+  participant MongoDB
+  participant File_System
+end box
+
+User -> AngularJS_Frontend : Save record's progress & Continue
+AngularJS_Frontend -> Python_Backend : Save metadata record request
+Python_Backend -> MongoDB : Update or Create Record
+User -> AngularJS_Frontend : Submit metadata record for review
+AngularJS_Frontend -> Python_Backend : Change record's state to "pending" review
+Python_Backend -> MongoDB : Update Record
+Python_Backend -> File_System : Create metadata.xml file and write file
+Python_Backend -> Admin : Send email describing awaiting dataset
+Admin -> AngularJS_Frontend : Log in as administrator
+AngularJS_Frontend -> Python_Backend : Authenticate User with session ID from LDAP
+Python_Backend -> getUsername : Send request for admin authentication
+getUsername -> LDAP : Validate session and if in admin group
+getUsername -> Python_Backend : Approve user if in Admin group
+Python_Backend -> AngularJS_Frontend : Display Admin Panel
+Admin -> AngularJS_Frontend : Approve Dataset
+AngularJS_Frontend -> Python_Backend : Approve Dataset request
+Python_Backend -> File_System : Move files from /datastore-prod/uploads to /datastore-prod/published/
+Python_Backend -> File_System : Change permissions on record's directory for security
+Python_Backend -> ElasticSearch : Insert smaller version of record in to index
+Python_Backend -> File_System : Recursively traverse record's files and calculate checksum MD5 hash
+Python_Backend -> MSSQL : Insert MD5 checksum in to checksum database
+Python_Backend -> MongoDB : Change "published" attribute to "true"
+@enduml
